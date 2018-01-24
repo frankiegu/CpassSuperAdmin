@@ -1,11 +1,14 @@
 <template>
   <el-breadcrumb class="app-levelbar" separator="/">
-    <el-breadcrumb-item v-for="(item,index) in levelList" :key="index">
-
-      <router-link v-if="item.name" :to="item.path">{{item.name}}</router-link>
-      <router-link v-else to="">{{navCrumb}}</router-link>
-
-    </el-breadcrumb-item>
+    <transition-group name="breadcrumb">
+      <el-breadcrumb-item
+        v-for="(item,index) in levelList"
+        :key="index"
+        v-if='item.name'>
+        <router-link v-if="item.name" :to="item.redirect || item.path">{{item.name}}</router-link>
+        <span v-else>{{navCrumb}}</span>
+      </el-breadcrumb-item>
+    </transition-group>
   </el-breadcrumb>
 </template>
 
@@ -20,6 +23,11 @@
         levelList: null
       }
     },
+    watch: {
+      $route () {
+        this.getBreadcrumb();
+      }
+    },
     computed: {
       ...mapGetters([
         'navCrumb'
@@ -27,17 +35,12 @@
     },
     methods: {
       getBreadcrumb () {
-        let matched = this.$route.matched;
-        const first = matched[0];
+        let matched = this.$route.matched
+        const first = matched[0]
         if (first && (first.name !== '首页' || first.path !== '')) {
           matched = [{ name: '首页', path: '/' }].concat(matched)
         }
-        this.levelList = matched;
-      }
-    },
-    watch: {
-      $route () {
-        this.getBreadcrumb();
+        this.levelList = matched
       }
     }
   }
@@ -50,10 +53,5 @@
     line-height: 50px;
     margin-left: 10px;
     outline: none;
-
-    .no-redirect {
-      color: #97a8be;
-      cursor: text;
-    }
   }
 </style>

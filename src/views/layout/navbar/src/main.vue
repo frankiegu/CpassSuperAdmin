@@ -1,40 +1,34 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <router-link
-              :class="{'sidebar-close': !sidebar.opened}"
-              class="logo-box db"
-              tag="a"
-              to="/spatial-info">
+    <span
+      :class="{'sidebar-close': !sidebar.opened}"
+      class="logo-box db"
+      tag="a">
 
       <img v-if="getSpaceLogo" class="user-avatar" :src="getSpaceLogo + zoomImgSize(40, 40)">
-      <img v-else src="../../../../images/admin-logo.png?v=2">
+      <img v-else src="../../../../images/admin-logo.png">
       <span>{{ getSpaceName }}</span>
-    </router-link>
+    </span>
 
     <div @click="toggleSideBarWay" class="outline-none">
       <lh-svg
-      :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
-      :class=""
-      class="svg-icon hamburger hamburger-container"></lh-svg>
+        :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
+        class="svg-icon hamburger hamburger-container"></lh-svg>
     </div>
 
     <levelbar></levelbar>
-
-    <navbar-menu class="fr reset-menu mr30 el-menu-demo"></navbar-menu>
   </el-menu>
 </template>
 
 <script>
   import svg from '@/components/svg'
   import levelbar from './levelbar'
-  import navbarMenu from './menu'
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
-    components: {levelbar, navbarMenu, [svg.name]: svg},
+    components: {levelbar, [svg.name]: svg},
     data () {
-      return {
-      }
+      return {}
     },
     computed: {
       ...mapGetters([

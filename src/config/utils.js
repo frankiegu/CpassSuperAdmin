@@ -5,7 +5,7 @@ import { PHONEREG } from './env'
 // logout no token
 export function logoutNoToken() {
   store.commit('SET_TOKEN', '')
-  store.commit('SET_LOGIN', 'no')
+  store.commit('SET_RESOURCES', 'no')
   sessionStorage.removeItem('token')
   store.commit('SET_PERMISSION', '')
 

@@ -1,5 +1,5 @@
 /**
- * 错误页面，如404
+ * 错误页面，404、500、没有权限
  */
 import { _import } from '@/config/env'
 import layout from '@/views/layout/layout.vue'
@@ -10,6 +10,7 @@ export default [
     path: '/error',
     redirect: '/500',
     component: layout,
+    hidden: true,
     children: [
       {
         name: '服务器出错了',
@@ -24,10 +25,12 @@ export default [
   }, {
     name: '没有发现',
     path: '/not-found',
-    component: _import('error/not-found')
+    component: _import('error/not-found'),
+    hidden: true
   }, {
     name: '没有发现 ',
     path: '*',
-    redirect: '/not-found'
+    redirect: '/not-found',
+    hidden: true
   }
 ]

@@ -16,3 +16,9 @@ export const resetUsername = (ajaxParams) => fetch(API_PATH + '/manage/adminUser
 
 // 获取secret
 export const generateSecret = (ajaxParams) => fetch(API_PATH + '/manage/adminUser/generateSecret', ajaxParams, 'POST')
+
+// 发送验证码（修改手机号码）
+export const sendResetUsernameCode = (dataJson) => fetch(API_PATH + '/manage/message/sendResetUsernameCode', dataJson, 'GET')
+
+// 用户是否存在
+export const userIsExist = (dataJson) => fetch(API_PATH + '/manage/adminUser/isExist', dataJson, 'POST')

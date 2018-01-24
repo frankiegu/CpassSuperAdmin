@@ -6,7 +6,6 @@ const user = {
     name: Cookies.get('name') || '',
     username: Cookies.get('username') || '',
     avatar: Cookies.get('avatar') || '',
-    getUserInfoed: 'no', // yes 表示未登录，no 表示已经登录
     spaceId: Cookies.get('spaceId') || ''
   },
 
@@ -14,7 +13,6 @@ const user = {
     avatar: state => state.avatar,
     name: state => state.name,
     getUsername: state => state.username,
-    getUserInfoed: state => state.getUserInfoed,
     getSpaceId: state => state.spaceId
   },
 
@@ -27,9 +25,6 @@ const user = {
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
-    },
-    SET_LOGIN: (state, inline) => {
-      state.getUserInfoed = inline
     },
     SET_SPACEID: (state, spaceId) => {
       state.spaceId = spaceId
@@ -54,8 +49,6 @@ const user = {
 
             Cookies.set('spaceId', data.spaceId)
             commit('SET_SPACEID', data.spaceId)
-
-            commit('SET_LOGIN', 'yes') // 设置已经登录成功
 
             resolve(res)
           } else {

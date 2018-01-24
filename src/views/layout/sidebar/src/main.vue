@@ -1,5 +1,10 @@
 <template>
-  <el-menu class="sidebar-box" mode="vertical" :unique-opened="uniqueOpened" theme="light" :default-active="$route.path">
+  <el-menu
+    :default-active="$route.path"
+    :unique-opened="uniqueOpened"
+    class="sidebar-box"
+    mode="vertical"
+    theme="light" >
     <sidebar-item :routes='getAddRouters'></sidebar-item>
   </el-menu>
 </template>

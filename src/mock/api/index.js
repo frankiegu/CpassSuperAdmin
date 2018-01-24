@@ -1,2 +1,0 @@
-// demo
-export * from './demo'

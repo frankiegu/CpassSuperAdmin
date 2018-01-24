@@ -69,8 +69,16 @@
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
 
-              this.$router.replace({
-                path: this.redirectRouter || '/'
+              store.dispatch('getUserInfo').then(res => {
+                store.dispatch('getSpaceInfo').then(res => {
+                  this.$router.replace({
+                    path: this.redirectRouter || '/home'
+                  })
+                }).catch(err => {
+                  this.setMsg('error', err)
+                })
+              }).catch(err => {
+                this.setMsg('error', err)
               })
             }).catch(err => {
               this.setMsg('error', err)
