@@ -2,12 +2,10 @@
   <el-menu class="navbar" mode="horizontal">
     <span
       :class="{'sidebar-close': !sidebar.opened}"
-      class="logo-box db"
-      tag="a">
+      class="logo-box db">
 
-      <img v-if="getSpaceLogo" class="user-avatar" :src="getSpaceLogo + zoomImgSize(40, 40)">
-      <img v-else src="../../../../images/admin-logo.png">
-      <span>{{ getSpaceName }}</span>
+      <img src="../../../../images/login-logo.png">
+      <span>智众总后台</span>
     </span>
 
     <div @click="toggleSideBarWay" class="outline-none">
@@ -32,9 +30,7 @@
     },
     computed: {
       ...mapGetters([
-        'sidebar',
-        'getSpaceLogo',
-        'getSpaceName'
+        'sidebar'
       ])
     },
     methods: {

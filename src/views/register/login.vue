@@ -68,17 +68,8 @@
             this.loading = true;
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
-
-              store.dispatch('getUserInfo').then(res => {
-                store.dispatch('getSpaceInfo').then(res => {
-                  this.$router.replace({
-                    path: this.redirectRouter || '/home'
-                  })
-                }).catch(err => {
-                  this.setMsg('error', err)
-                })
-              }).catch(err => {
-                this.setMsg('error', err)
+              this.$router.replace({
+                path: this.redirectRouter || '/home'
               })
             }).catch(err => {
               this.setMsg('error', err)
@@ -134,7 +125,7 @@
   }
 </style>
 <style lang="scss" scoped>
-  @import '../../../src/styles/common.scss';
+  @import 'src/styles/common.scss';
 
   .login-container {
     @include relative;
@@ -196,7 +187,7 @@
           color: #FFFFFF;
           letter-spacing: 0;
           margin: 22px 0;
-          background: #7A96E8;
+          background: $theme-blue;
           border-radius: 6px;
         }
       }

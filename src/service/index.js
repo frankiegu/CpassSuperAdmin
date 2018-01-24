@@ -9,6 +9,3 @@ export * from './common'
 
 // 注册登录
 export * from './register'
-
-// 个人、空间管理
-export * from './admin'

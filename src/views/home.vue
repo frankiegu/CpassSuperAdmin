@@ -1,6 +1,6 @@
 <template>
   <div class="app-home">
-    home
+    <div class="page-title"> <h1>首页</h1> </div>
   </div>
 </template>
 
