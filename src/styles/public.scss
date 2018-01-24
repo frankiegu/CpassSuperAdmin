@@ -1,0 +1,453 @@
+// 公用的样式
+@import './config';
+
+/**
+ * navbar
+ * -----------
+ */
+.navbar {
+  .el-dropdown, .hamburger-container {
+    outline: none;
+  }
+  .el-dropdown {
+    cursor: pointer;
+  }
+}
+
+/**
+ * search
+ * -----------
+ */
+// 列表的搜索按钮
+.page-search {
+ float: right;
+ margin-bottom: 30px;
+}
+.search-left {
+  .el-form-item {
+   float: left !important;
+ }
+}
+
+/**
+ * form
+ * -----------
+ */
+// 查询筛选栏
+.sort-form-bar {
+  text-align: right;
+
+  .el-form-item__content {
+    line-height: 34px;
+  }
+}
+.input-center input {
+  text-align: center;
+}
+.el-select-dropdown__item {
+  text-align: center !important;
+}
+.item-ml0 {
+  .el-form-item__content {
+    margin-left: 0 !important;
+  }
+}
+
+/**
+ * table
+ * -----------
+ */
+// 排序前3名高亮
+.table-sort {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  margin: 0 auto;
+  background-color: $theme-blue;
+  border-radius: 20px;
+}
+.table-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin: 5px 0;
+  text-align: center;
+  overflow: hidden;
+
+  img {
+    width: 50px;
+  }
+}
+// 日历
+.el-range-editor.el-input__inner {
+  width: 265px;
+}
+.el-date-editor .el-range__close-icon {
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  opacity: 1;
+  display: block;
+}
+.el-table th, .el-table td {
+  text-align: center;
+}
+.margin-lr6 {
+  margin: 0 6px;
+}
+.table-search-selected {
+  width: 193px;
+}
+.filter-container {
+  padding-bottom: 20px;
+}
+// 表格里面的链接样式
+.table-link {
+  cursor: pointer;
+  vertical-align: middle;
+  color: $theme-blue;
+  &.theme-gray {
+    color: $theme-gray;
+  }
+}
+// 分页
+.pagination-container {
+  text-align: center;
+  margin: 30px auto 0;
+}
+// table 表格内的时间格式化
+.format-time {
+  display: inline-block;
+  width: 84px;
+  height: 24px;
+  overflow: hidden;
+}
+// 模态框样式
+/* 可以设置不同的进入和离开动画 */
+/* 设置持续时间和动画函数 */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+// .slide-fade-leave-active for below version 2.1.8
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+.set-table-dialog {
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  .content {
+    overflow: hidden;
+  }
+  .footer {
+    position: fixed;
+    bottom: 50px;
+    @media screen and (max-width: 1366px) {
+      bottom: 20px;
+    }
+    width: 320px;
+    text-align: center;
+
+    .btn-clear {
+      width: 100px;
+    }
+    .btn-save {
+      width: 200px;
+    }
+  }
+  h1 {
+    font-size: 18px;
+    text-align: center;
+    padding-top: 30px;
+
+    .el-icon-arrow-right {
+      cursor: pointer;
+    }
+  }
+  @media screen and (max-width: 1366px) {
+    h1 {
+      padding-top: 15px;
+    }
+    .content {
+      .date {
+        top: 120px;
+      }
+      .set-date {
+        margin-top: 30px;
+      }
+    }
+  }
+  .panel {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    z-index: 11111;
+    background-color: #fff;
+    width: 390px;
+    padding: 0 35px;
+    height: 100%;
+    border-radius: 2px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    border-top: 1px solid #f0f2f7;
+  }
+  .v-modal {
+    top: 60px;
+    left: -20px;
+    width: 150%;
+  }
+}
+
+/**
+ * member-tree 会员树状选择器模态框
+ * -----------
+ */
+// 会员选择对话框
+.role-tree {
+  .filter-bar {
+    margin-bottom: 15px;
+  }
+  .el-tree {
+    border: 1px solid rgb(223, 225, 236);
+  }
+  .el-tree, .el-table {
+    box-sizing: border-box;
+    border-radius: 4px;
+    overflow: auto;
+    height: 360px;
+    /*.el-tree-node > .el-tree-node__children {*/
+    /*overflow: auto;*/
+    /*}*/
+  }
+  .summary, .btn-reset {
+    margin-top: 15px;
+  }
+  .selectedNum {
+    color: $theme-blue;
+  }
+  .btn-reset {
+    cursor: pointer;
+    color: $theme-blue;
+    text-decoration: underline;
+  }
+  .btn-delete {
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    vertical-align: text-bottom;
+    line-height: 1;
+  }
+  .dialog-footer {
+    text-align: center;
+  }
+}
+.el-tree-node > .el-tree-node__children {
+  overflow: visible;
+  .el-tree-node__label {
+    margin-right: 6px;
+  }
+}
+.role-dialog {
+  .el-table__row:hover .btn-delete {
+    visibility: visible!important;
+  }
+}
+@media screen and (max-height: 768px) {
+  .role-dialog {
+    margin-top: 2%!important;
+    margin-bottom: 0;
+    width: 60%;
+  }
+}
+
+/**
+ * detail
+ * -----------
+ */
+.limit-words-in {
+  position: relative;
+  width: 180px;
+
+  .limit-words {
+    position: absolute;
+    top: 40px;
+    right: 20px;
+  }
+}
+.align-bottom {
+  position: relative;
+
+  .set-bottom {
+    position: absolute;
+    bottom: 0;
+  }
+}
+.detail-info {
+  .label {
+    text-align: left;
+    vertical-align: middle;
+    float: left;
+    font-size: 14px;
+    line-height: 1;
+    padding: 11px 12px 11px 16px;
+    box-sizing: border-box;
+  }
+  .label-con {
+    line-height: 36px;
+    position: relative;
+    font-size: 14px;
+    margin-left: 120px;
+    color: $theme-gray;
+  }
+}
+// 页面标题样式
+.page-title {
+  min-height: 20px;
+  padding: 30px 20px 20px 0;
+  clear: both;
+  overflow: hidden;
+
+  h1 {
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: $theme-black;
+    line-height: 20px;
+  }
+}
+// 富文本编辑器
+.quill-editor-box {
+  min-height: 150px;
+  margin-bottom: 54px;
+
+  .quill-editor {
+    // height: 300px;
+  }
+}
+.grid-title{
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid $theme-light-gray;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  vertical-align: middle;
+  //background-color: #eeeef6;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    width: 4px;
+    height: 20px;
+    vertical-align: text-bottom;
+    background-color: $theme-blue;
+  }
+}
+// 页面搜索，右侧新增按钮
+.add-new {
+  float: right;
+  color: #fff;
+}
+// 卡片padding
+.card-padding {
+  position: relative;
+  padding: 30px 20px;
+  background-color: #fff;
+  border-radius: 4px;
+
+  // .el-form--inline .el-form-item {
+  //   margin-right: 0 !important;
+  // }
+
+  &.card-padding-vertical {
+    border-top: 1px solid #fff;
+    padding-top: 0;
+  }
+}
+// 按钮链接
+.btn-link {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: $theme-blue;
+  border: 1px solid $theme-blue;
+  color: #ffffff;
+  margin: 0;
+  padding: 10px 15px;
+  border-radius: 4px;
+
+  & + .btn-link {
+    margin-left: 10px;
+  }
+  &:hover {
+    background: rgb(126, 153, 234);
+    border-color: rgb(126, 153, 234);
+    color: #fff;
+  }
+}
+.btn-green, .btn-link.btn-green {
+  background-color: $theme-green;
+  border-color: $theme-green;
+  color: #ffffff;
+
+  &:hover, &:focus {
+    background-color: lighten($theme-green, 8%);
+    border-color: lighten($theme-green, 8%);
+    color: #ffffff;
+  }
+}
+// 公共新增、编辑按钮，居中显示
+.button-row {
+  margin-left: -100px;
+  margin-bottom: 0;
+  margin-top: 20px;
+  text-align: center;
+
+  button {
+    width: 120px;
+  }
+
+  p {
+    margin-top: 10px;
+  }
+}
+// 针对.button-row，写的配套样式
+.width120 {
+  width: 120px;
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+.align-left {
+  text-align: left;
+}
+.align-center {
+  text-align: center;
+}
+
+/**
+ * reset
+ * -----------
+ */
+// 模拟 组件el-form-item，的样式
+.form-item-style {
+  line-height: 36px;
+  margin-bottom: 22px;
+}

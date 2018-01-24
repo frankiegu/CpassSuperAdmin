@@ -1,0 +1,51 @@
+/**
+ * 变量、mixin、主题颜色及变量
+ * ---------------------------------------------------------
+ */
+
+$theme-black:           #1C1C2F; // 主题黑
+$theme-gray:            #868696; // 主题灰
+$theme-light-gray:      #E1E1E6; // 主题浅灰
+$theme-blue:            #5E80E5; // 主题蓝
+$theme-light-blue:      #7A96E8; // 主题浅蓝
+$theme-red:             #ff4949; // 主题浅蓝
+$theme-green:           #10AD57; // 主题绿
+$theme-sidebar:         #f3f3f9; // 主题sidebar色
+
+// 主题颜色选择器
+.theme-black {
+  color: $theme-black;
+  vertical-align: middle;
+}
+.theme-red {
+  color: $theme-red;
+  vertical-align: middle;
+}
+.theme-gray {
+  color: $theme-gray;
+  vertical-align: middle;
+}
+.theme-blue {
+  color: $theme-blue;
+  vertical-align: middle;
+}
+.theme-green {
+  color: $theme-green;
+  vertical-align: middle;
+}
+
+.pointer-theme-blue {
+  color: $theme-blue;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pointer-theme-gray {
+  color: $theme-gray;
+  vertical-align: middle;
+  cursor: pointer;
+}
+@mixin relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
