@@ -41,7 +41,7 @@ module.exports = {
     env: require('./dev.env'),
 
     // 运行测试页面的端口
-    port: 9889,
+    port: 8989,
 
     // 项目npm run dev，autoOpenBrowser：true自动打开浏览器，访问localhost:8888
     autoOpenBrowser: false,
