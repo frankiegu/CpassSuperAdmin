@@ -1,6 +1,5 @@
 <template>
   <div class="app-home">
-    <div class="page-title"> <h1>首页</h1> </div>
   </div>
 </template>
 
@@ -17,4 +16,7 @@
 </script>
 
 <style lang="scss" scoped>
+  .app-home {
+    height: 80vh;
+  }
 </style>
