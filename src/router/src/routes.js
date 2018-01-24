@@ -3,6 +3,7 @@ import layout from '@/views/layout/layout.vue'     // 顶层路由，对应index
 import register from '@/router/register'           // 注册、找回密码
 import example from '@/router/example'             // 一些示例页面
 import error from '@/router/error'                 // 错误页面，如404
+import client from '@/router/client'               // 客户管理模块
 
 export const constantRouterMap = [
   {
@@ -21,7 +22,8 @@ export const constantRouterMap = [
   },
   ...example,
   ...register,
-  ...error
+  ...error,
+  ...client
 ]
 
 export const asyncRouterMap = [

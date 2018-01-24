@@ -314,19 +314,32 @@
     color: $theme-gray;
   }
 }
+// 页面主内容容器样式
+.main-content {
+  padding-top: 30px;
+}
 // 页面标题样式
 .page-title {
   min-height: 20px;
-  padding: 30px 20px 20px 0;
+  padding: 10px 20px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: $theme-blue;
+  color: #fff;
   clear: both;
   overflow: hidden;
 
   h1 {
     float: left;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    color: $theme-black;
+    color: #fff;
     line-height: 20px;
+  }
+  .el-icon-close {
+    font-size: 18px;
+    vertical-align: middle;
+    cursor: pointer;
   }
 }
 // 富文本编辑器
@@ -370,7 +383,8 @@
   position: relative;
   padding: 30px 20px;
   background-color: #fff;
-  border-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 
   // .el-form--inline .el-form-item {
   //   margin-right: 0 !important;
