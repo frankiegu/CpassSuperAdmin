@@ -3,7 +3,7 @@ export default {
   data () {
     return {
       tableData: [],
-      tableLoading: true,
+      tableLoading: false,
       tableEmpty: ' ',
 
       // 分页器配置
