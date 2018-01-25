@@ -4,7 +4,7 @@
       :class="{'sidebar-close': !sidebar.opened}"
       class="logo-box db">
 
-      <img src="../../../../images/login-logo.png">
+      <img src="/static/images/login-logo.png">
       <span>智众总后台</span>
     </span>
 
@@ -19,12 +19,11 @@
 </template>
 
 <script>
-  import svg from '@/components/svg'
   import levelbar from './levelbar'
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
-    components: {levelbar, [svg.name]: svg},
+    components: {levelbar},
     data () {
       return {}
     },
@@ -113,15 +112,15 @@
         float: left;
         width: 40px;
         height: 40px;
-        margin: 10px 15px 0 21px;
+        margin: 10px 7px 0 13px;
         vertical-align: middle;
         border-radius: 50%;
         animation: .5s rainbow2;
       }
       span {
         position: absolute;
-        left: 76px;
-        width: 104px;
+        left: 60px;
+        width: 120px;
         height: 42px;
         display: -webkit-box;
         -webkit-line-clamp: 1;

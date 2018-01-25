@@ -57,9 +57,20 @@ module.exports = {
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
       },
+      // [新增]当引用图标 svg 的时候引入指定目录下的文件
+      {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader',
+        include: [resolve('src/icons')],
+        options: {
+          symbolId: 'icon-[name]'
+        }
+      },
+      // [修改]这里 exclude 来忽略常规的 svg 引入
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
+        exclude: [resolve('src/icons')],   // 这一步必不可少
         options: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')

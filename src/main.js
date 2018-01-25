@@ -10,6 +10,7 @@ import vuePermissions from './directive/permissions/index'  // 如果参数为tr
 import App from './App'
 import './interceptors'                                     // 路由拦截
 import comMixins from '@/config/com-mixins'                 // 全局的方法
+import './icons' // icon
 
 Vue.use(ElementUI, { size: 'medium' })
 Vue.use(vuePermissions)

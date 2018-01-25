@@ -1,7 +1,7 @@
 <template>
   <div :class="classObject" class="error-style">
     <div :class="{'zoom': !isNoFound, 'no-found': this.isNoFound}">
-      <img src="../../images/no-found.png">
+      <img src="/static/images/no-found.png">
 
       <div :class="['con-box', {'com-style': isNoFound, '/not-found': !isNoFound}]">
         <div class="cont-title">{{ conTitle }}</div>

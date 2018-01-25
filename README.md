@@ -3,6 +3,11 @@
 ### 相关文档
 [前端文档](https://gitlab.gzleihou.cn/FE/docs)：https://gitlab.gzleihou.cn/FE/docs
 
+### 使用svg
+``` bash
+下载svg文件至src/icons/svg下，执行命令生成svgo：svgo -f ./svg
+```
+
 ### 在线访问
 [本地开发](http://localhost:8989)：http://localhost:8989
 
