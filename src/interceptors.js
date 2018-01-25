@@ -3,13 +3,14 @@ import store from '@/store'
 import router from '@/router'
 import nProgress from 'nprogress'       // Progress 进度条
 import '@/styles/nprogress.css'         // Progress 进度条 样式
-import {Message} from 'element-ui'      // 在js中引入ele组件 message
-
-const notify = Message
-Vue.prototype.$Message = notify
 
 function catchErr (next, error) {
-  Vue.prototype.$Message({ showClose: true, message: error, type: 'error' })
+  Vue.prototype.$Message({
+    showClose: true,
+    message: error,
+    type: 'error',
+    duration: 1500
+  })
   store.dispatch('logout').then(res => {
     next({path: '/'})
   })
@@ -29,6 +30,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       // 已登录，登录页转到首页
       next({ path: '/' })
+      nProgress.done()
     } else {
       // 判断当前用户是否已拉取完user_info信息
       if (store.getters.getResources === 'no') {

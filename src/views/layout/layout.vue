@@ -11,7 +11,7 @@
 
       <section class="app-main mt60">
         <transition name="fade" mode="out-in">
-          <router-view :key="key"></router-view>
+          <router-view class="app-in" :key="key"></router-view>
         </transition>
 
         <p class="layout-footer theme-gray">Copyright © {{ year }} 广州雷猴软件开发有限公司</p>
@@ -49,6 +49,9 @@
     height: 100%;
     width: 100%;
 
+    .app-in {
+      height: 80vh;
+    }
     .layout-footer {
       padding: 0 16px;
       margin: 48px 0 24px;

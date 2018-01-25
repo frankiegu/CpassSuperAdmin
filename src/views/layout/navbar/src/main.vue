@@ -1,12 +1,14 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <span
+    <router-link
       :class="{'sidebar-close': !sidebar.opened}"
-      class="logo-box db">
+      class="logo-box db"
+      tag="a"
+      to="/">
 
       <img src="/static/images/login-logo.png">
-      <span>智众总后台</span>
-    </span>
+      <span>酷雷托智能空间总管理后台</span>
+    </router-link>
 
     <div @click="toggleSideBarWay" class="outline-none">
       <lh-svg

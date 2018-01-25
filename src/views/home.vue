@@ -17,7 +17,4 @@
 </script>
 
 <style lang="scss" scoped>
-  .app-home {
-    height: 80vh;
-  }
 </style>

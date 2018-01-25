@@ -10,7 +10,7 @@
       <div class="login-box">
         <el-form-item>
           <p class="login-in">
-            <lh-svg slot="prefix" icon-class="icon-log-in" class="theme-blue"></lh-svg> 欢迎登陆
+            <lh-svg slot="prefix" icon-class="icon-log-in" class="theme-blue" /> 欢迎登陆
           </p>
         </el-form-item>
 
@@ -22,7 +22,7 @@
               v-model.trim="formData.username"
               @keyup.native.enter="handleLogin('formData')"
               placeholder="请输入账号">
-              <lh-svg slot="prefix" icon-class="icon-user" class="svg-icon"></lh-svg>
+              <lh-svg slot="prefix" icon-class="icon-user" class="svg-icon" />
             </el-input>
           </el-form-item>
 
@@ -35,7 +35,7 @@
               v-model.trim="formData.password"
               @keyup.native.enter="handleLogin('formData')"
               placeholder="请输入密码">
-              <lh-svg slot="prefix" icon-class="icon-password" class="svg-icon"></lh-svg>
+              <lh-svg slot="prefix" icon-class="icon-password" class="svg-icon" />
             </el-input>
           </el-form-item>
 
@@ -73,9 +73,7 @@
             this.loading = true;
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
-              this.$router.replace({
-                path: this.redirectRouter || '/home'
-              })
+              this.$router.push({path: '/'})
             }).catch(err => {
               this.setMsg('error', err)
               this.loading = false

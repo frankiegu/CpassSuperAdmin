@@ -15,6 +15,7 @@
     "@xkeshi/vue-qrcode": "github:xkeshi/vue-qrcode",
     "axios": "^0.16.2",
     "babel-polyfill": "^6.26.0",
+    "clipboard": "^1.7.1",
     "codemirror": "^5.33.0",
     "element-ui": "^2.0.11",
     "js-cookie": "^2.1.4",

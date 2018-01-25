@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    Component: Account
+    账户信息
   </div>
 </template>
 

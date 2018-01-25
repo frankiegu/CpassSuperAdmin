@@ -6,6 +6,7 @@
 ### 使用svg
 ``` bash
 下载svg文件至src/icons/svg下，执行命令生成svgo：svgo -f ./svg
+没有安装svgo，全局安装一下：npm install -g svgo
 ```
 
 ### 在线访问
