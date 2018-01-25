@@ -44,7 +44,7 @@
     </el-form-item>
 
     <el-form-item label="创建智众账户">
-      <el-switch v-model="modelForm.isCreateAccount"></el-switch>
+      <el-switch v-model="modelForm.isCreateAccount" @change="resetParent"></el-switch>
     </el-form-item>
   </div>
 </template>
@@ -100,7 +100,14 @@
     watch: {},
     computed: {},
     filters: {},
-    methods: {}
+    methods: {
+      // 触发父级的重置事件
+      resetParent(val) {
+        if (!val) {
+          // this.$parent.$parent.resetAccountFrom()
+        }
+      }
+    }
   }
 </script>
 
