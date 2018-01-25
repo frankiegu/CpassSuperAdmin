@@ -9,7 +9,7 @@ export default [{
   path: '/client',
   redirect: '/client/list',
   component: layout,
-  noDropdown: true,
+  // noDropdown: true,
   icon: 'icon-viip',
   children: [
     {name: '客户列表', path: 'list', component: _import('client/index'), hidden: true},

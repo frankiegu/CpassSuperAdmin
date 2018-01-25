@@ -5,9 +5,9 @@
       <span class="fr"><i class="el-icon-close"></i></span>
     </div>
     <div class="card-padding card-padding-vertical">
-      <el-form label-width="100px">
+      <el-form label-width="100px" :model="dataForm">
         <h3 class="grid-title">基础信息</h3>
-        <base-info></base-info>
+        <base-info :model-form="dataForm"></base-info>
       </el-form>
     </div>
   </div>
@@ -21,7 +21,19 @@
     data() {
       return {
         pageTitle: this.$route.query.id ? 'xx有限公司' : '新增客户',
-        clientId: this.$route.query.id
+        clientId: this.$route.query.id,
+
+        dataForm: {
+          clientName: '',
+          userName: '',
+          tel: '',
+          email: '',
+          address: '',
+          wxService: '',
+          remark: '',
+          saleManager: '',
+          isCreateAccount: false
+        }
       }
     },
     props: {},
