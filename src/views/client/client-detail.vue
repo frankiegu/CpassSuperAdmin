@@ -1,5 +1,10 @@
 <template>
   <div class="main-content">
+    <lh-title
+      title="详情"
+      :level2="false"
+      @goBack="goBack"></lh-title>
+
     Component: detail
   </div>
 </template>
@@ -19,7 +24,11 @@
     watch: {},
     computed: {},
     filters: {},
-    methods: {}
+    methods: {
+      goBack() {
+        console.log('详情');
+      }
+    }
   }
 </script>
 

@@ -10,7 +10,7 @@
 <script>
   export default {
     name: 'LhTitle',
-    props: ['title'],
+    props: ['title', 'level2'],
     watch: {},
     computed: {
     },
@@ -20,7 +20,12 @@
     },
     methods: {
       goBack() {
-        this.$router.go(-1)
+        // 如果表单页，用表单的事件，否则返回上一页
+        if (this.level2) {
+          this.$emit('goBack')
+        } else {
+          this.$router.go(-1)
+        }
       }
     }
   }

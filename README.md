@@ -3,7 +3,7 @@
 ### 相关文档
 [前端文档](https://gitlab.gzleihou.cn/FE/docs)：https://gitlab.gzleihou.cn/FE/docs
 
-### 使用svg
+### 如果有不能设置颜色的svg，可以用这个备用方案
 ``` bash
 下载svg文件至src/icons/svg下，执行命令生成svgo：svgo -f ./svg
 没有安装svgo，全局安装一下：npm install -g svgo
