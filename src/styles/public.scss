@@ -328,26 +328,15 @@
   }
 }
 .grid-title{
-  position: relative;
-  margin-top: 8px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid $theme-light-gray;
-  padding: 12px 0;
   font-size: 16px;
-  font-weight: bold;
-  line-height: 1;
-  vertical-align: middle;
-  //background-color: #eeeef6;
-
-  &:before {
-    content: '';
-    display: inline-block;
-    margin-right: 12px;
-    width: 4px;
-    height: 20px;
-    vertical-align: text-bottom;
-    background-color: $theme-blue;
-  }
+  padding: 0 32px;
+  margin-bottom: 22px;
+  line-height: 55px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid #e8e8e8;
+  overflow: hidden;
 }
 // 页面搜索，右侧新增按钮
 .add-new {
@@ -369,6 +358,16 @@
   &.card-padding-vertical {
     border-top: 1px solid #fff;
     padding-top: 0;
+  }
+}
+// 详情页的结构
+.detail-content {
+  background-color: #fff;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  .head-content {
+    padding: 30px 32px;
   }
 }
 // 按钮链接
