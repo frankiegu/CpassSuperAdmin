@@ -104,6 +104,9 @@
       top: 0;
       right: 0;
       width: 390px;
+      @media screen and (min-width: 1367px) {
+        width: 480px
+      }
       height: 100%;
       opacity: .1;
       background: #000;
@@ -132,6 +135,9 @@
       position: absolute;
       z-index: 2;
       right: 45px;
+      @media screen and (min-width: 1367px) {
+        right: 90px;
+      }
       top: 50%;
       width: 300px;
       -webkit-transform: translateY(-60%);
