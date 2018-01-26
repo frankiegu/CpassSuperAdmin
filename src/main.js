@@ -10,14 +10,22 @@ import vuePermissions from './directive/permissions/index'  // 如果参数为tr
 import App from './App'
 import './interceptors'                                     // 路由拦截
 import comMixins from '@/config/com-mixins'                 // 全局的方法
-import './icons' // icon
-import title from '@/components/title'
+import './icons'
+import {title, item, button} from '@/components'
 
 Vue.use(ElementUI, { size: 'medium' })
 Vue.use(vuePermissions)
 Vue.mixin(comMixins)
+
 // 全局注册组件
-Vue.component(title.name, title)
+const components = [
+  title,
+  item,
+  button
+]
+components.map(component => {
+  Vue.component(component.name, component);
+});
 
 // 设置为 false 以阻止 vue 在启动时生成生产提示。
 Vue.config.productionTip = false

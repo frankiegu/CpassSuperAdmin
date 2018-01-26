@@ -1,5 +1,5 @@
 <template>
-  <svg class="icon" aria-hidden="true">
+  <svg class="icon" :style="style" aria-hidden="true">
     <use :xlink:href="iconName"></use>
   </svg>
 </template>
@@ -7,10 +7,17 @@
 <script>
   export default {
     name: 'LhSvg',
-    props: ['iconClass'],
+    props: ['iconClass', 'size', 'color'],
     computed: {
       iconName() {
         return '#' + this.iconClass
+      },
+      style() {
+        return {
+          'width': `${this.size}px`,
+          'height': `${this.size}px`,
+          'color': this.color
+        }
       }
     }
   }
