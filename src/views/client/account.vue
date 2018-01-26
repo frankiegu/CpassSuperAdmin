@@ -2,13 +2,13 @@
   <div class="client-account main-content">
     <lh-title title="账户信息"></lh-title>
 
-    <div class="detail-content">
+    <div class="detail-box">
       <div class="grid-title">
         基础信息
         <!-- <el-button class="ml10" type="primary" size="mini">短信通知</el-button> -->
       </div>
 
-      <div class="head-content">
+      <div class="detail-content">
         <qr-code
           :text="qrUrl"
           :size="80"
