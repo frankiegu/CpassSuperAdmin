@@ -91,7 +91,9 @@
             </el-form-item>
 
             <el-form-item label="开通微信支付功能">
-              <el-switch v-model="dataForm.isOpenPayment" @change="resetItemField(['mchId', 'serviceKey', 'certificate'], false)"></el-switch>
+              <el-switch v-model="dataForm.isOpenPayment"
+                @change="resetItemField(['mchId', 'serviceKey', 'certificate'], false)">
+              </el-switch>
             </el-form-item>
 
             <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
@@ -145,6 +147,31 @@
           <el-button type="primary" class="width120px" @click="submitDataForm">保存</el-button>
         </el-form-item>
       </el-form>
+
+      <el-dialog
+        :visible.sync="dialogVisible"
+        top="32vh"
+        class="sp-confirm-box"
+        :show-close="!isCreateSuccess && !isOpenSuccess"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        center>
+        <span class="text-center">
+          <p v-if="!isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？</p>
+          <p v-if="!isCreateSuccess && !isOpenSuccess">（暂不开通客户账户）</p>
+          <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
+          <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">创建成功！</p>
+          <p v-if="isOpenSuccess" class="success-tip">开通成功！</p>
+          <p v-if="isOpenSuccess">
+            <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link>
+          </p>
+          <p v-if="isOpenSuccess">或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看</p>
+        </span>
+        <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess">
+          <el-button type="primary" class="width120px" @click="createClient">确定</el-button>
+          <el-button class="width120px" @click="cancelSave">放弃</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -258,6 +285,9 @@
         hasP12File: 0,
         uploadLoading1: false,
         uploadLoading2: false,
+        dialogVisible: false,
+        isCreateSuccess: false,
+        isOpenSuccess: false,
         dataForm: {
           // 客户基础信息
           clientName: '',
@@ -436,16 +466,34 @@
             // 开通账户被收起时，提交之前先清空开通账户信息
             if (!this.dataForm.isCreateAccount) {
               this.resetAccountFrom()
-            } else if (!this.dataForm.isOpenPayment) {
-              // 取消开通微信支付时，提交前清空微信支付开通信息
-              this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
+              this.dialogVisible = true
+            } else {
+              this.dialogVisible = true
+              this.isOpenSuccess = true
+              if (!this.dataForm.isOpenPayment) {
+                // 取消开通微信支付时，提交前清空微信支付开通信息
+                this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
+              }
             }
             console.log(this.dataForm, clientObj, accountObj, payObj)
-            this.$message.success('submit success!')
           } else {
             this.$message.error('submit error!')
           }
         })
+      },
+      // 创建客户资料
+      createClient() {
+        setTimeout(() => { // TODO 发送请求创建客户资料
+          this.isCreateSuccess = true
+          setTimeout(() => {
+            this.dialogVisible = false
+            this.$router.replace('/client/list')
+          }, 1000)
+        }, 1000)
+      },
+      // 放弃保存
+      cancelSave() {
+        this.dialogVisible = false
       }
     }
   }
@@ -477,6 +525,39 @@
     }
     .el-upload {
       display: block;
+    }
+  }
+  .sp-confirm-box {
+    border: none;
+    .el-dialog {
+      border-radius: 4px;
+      width: 420px;
+    }
+    .el-message-box__header, .el-dialog__header {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      padding-top: 10px;
+      /*background-color: $theme-blue;*/
+    }
+    .el-message-box__headerbtn, .el-dialog__headerbtn {
+      top: 10px;
+      .el-message-box__close, .el-dialog__close {
+        /*color: #ffffff;*/
+      }
+    }
+    .el-message-box__content, .el-dialog__body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+    span.el-icon-success {
+      display: block;
+      margin: 10px auto;
+      font-size: 30px;
+      color: $theme-blue;
+    }
+    .success-tip {
+      font-size: 18px;
+      margin-bottom: 12px;
     }
   }
 </style>
