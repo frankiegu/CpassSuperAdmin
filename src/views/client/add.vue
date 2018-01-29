@@ -36,7 +36,7 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item class="fl">
-                <el-checkbox v-model="dataForm.isPermanent" @change="resetField('validity')">永久</el-checkbox>
+                <el-checkbox v-model="dataForm.isPermanent" @change="resetItemField('validity', true)">永久</el-checkbox>
               </el-form-item>
             </el-form-item>
 
@@ -70,8 +70,10 @@
               <el-input
                 v-model="dataForm.interfaceFile"
                 readonly
+                placeholder='选择后缀名为"txt"的JS接口文件'
                 class="width300px upload-input">
                 <el-upload
+                  v-show="!uploadLoading1"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   accept="text/plain"
                   name="interfaceFile"
@@ -80,14 +82,16 @@
                   :show-file-list="false"
                   :on-change="changeInFile"
                   :before-upload="beforeUploadInFile"
+                  :on-success="successUploadInFile"
                   slot="suffix">
                   <span class="el-input__icon el-icon-upload"></span>
                 </el-upload>
+                <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
               </el-input>
             </el-form-item>
 
             <el-form-item label="开通微信支付功能">
-              <el-switch v-model="dataForm.isOpenPayment" @change="resetField(['mchId', 'serviceKey'])"></el-switch>
+              <el-switch v-model="dataForm.isOpenPayment" @change="resetItemField(['mchId', 'serviceKey', 'certificate'], false)"></el-switch>
             </el-form-item>
 
             <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
@@ -108,7 +112,32 @@
                 placeholder="客户微信支付商号API密钥"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号支付证书"></el-form-item>
+            <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
+              :rules="dataRules.certificate" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
+              <el-input
+                v-model="dataForm.certificate"
+                readonly
+                :disabled="!dataForm.isOpenPayment"
+                placeholder='选择后缀名为"p12"的支付证书文件'
+                class="width300px upload-input">
+                <el-upload
+                  v-show="!uploadLoading2"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  accept="application/x-pkcs12"
+                  name="certificate"
+                  :multiple="false"
+                  :data="{mchId: dataForm.mchId, key: dataForm.serviceKey}"
+                  :show-file-list="false"
+                  :on-change="changeCeFile"
+                  :before-upload="beforeUploadCeFile"
+                  :on-success="successUploadCeFile"
+                  :disabled="!dataForm.isOpenPayment"
+                  slot="suffix">
+                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.isOpenPayment}]"></span>
+                </el-upload>
+                <span v-show="uploadLoading2" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
+              </el-input>
+            </el-form-item>
           </div>
         </el-collapse-transition>
 
@@ -179,7 +208,11 @@
       var checkInFile = (rule, value, callback) => {
         if (this.dataForm.isCreateAccount) {
           if (!value) {
-            return callback(new Error('未上传接口文件！'))
+            if (this.hasJsFile > 0) {
+              return callback(new Error('非正确的接口文件！'))
+            } else {
+              return callback(new Error('未上传接口文件！'))
+            }
           }
           callback()
         }
@@ -203,11 +236,28 @@
         }
         callback()
       }
+      var checkCeFile = (rule, value, callback) => {
+        if (this.dataForm.isCreateAccount && this.dataForm.isOpenPayment) {
+          if (!value) {
+            if (this.hasP12File > 0) {
+              return callback(new Error('非正确的证书！'))
+            } else {
+              return callback(new Error('未上传证书！'))
+            }
+          }
+          callback()
+        }
+        callback()
+      }
       return {
         title: this.$route.query.id ? '客户详情' : '新增客户',
         pageTitle: this.$route.query.id ? 'xx有限公司' : '新增客户',
         clientId: this.$route.query.id,
 
+        hasJsFile: 0,
+        hasP12File: 0,
+        uploadLoading1: false,
+        uploadLoading2: false,
         dataForm: {
           // 客户基础信息
           clientName: '',
@@ -218,7 +268,7 @@
           wxService: '',
           remark: '',
           saleManager: '',
-          isCreateAccount: true,
+          isCreateAccount: false,
 
           // 开通账户信息
           product: '',
@@ -243,7 +293,8 @@
           appSecret: [{validator: checkAppSecret, trigger: 'blur, change'}],
           interfaceFile: [{validator: checkInFile, trigger: 'blur, change'}],
           mchId: [{validator: checkMchId, trigger: 'blur, change'}],
-          serviceKey: [{validator: checkServiceKey, trigger: 'blur, change'}]
+          serviceKey: [{validator: checkServiceKey, trigger: 'blur, change'}],
+          certificate: [{validator: checkCeFile, trigger: 'blur, change'}]
         }
       }
     },
@@ -262,62 +313,134 @@
       handleBackList() {
         this.$router.replace('/client/list')
       },
-      // 重置账户信息表单
-      resetField(fieldName) {
+      /**
+       * @description 重置一个或多个表单域
+       * @param {String | Array} fieldName 表单域的ref
+       * @param {Boolean} isClearAll true 清除全部（内容和校验结果）；false 只清除校验结果（保留内容）
+       */
+      resetItemField(fieldName, isClearAll) {
         if (typeof (fieldName) === 'string') {
-          this.$refs[fieldName].resetField()
+          if (isClearAll) {
+            this.$refs[fieldName].resetField()
+          } else {
+            this.$refs[fieldName].clearValidate()
+          }
         } else if (fieldName.length > 0) {
-          for (let i = 0; i < fieldName.length; i++) {
-            this.$refs[fieldName[i]].clearValidate()
+          if (isClearAll) {
+            for (let i = 0; i < fieldName.length; i++) {
+              this.$refs[fieldName[i]].resetField()
+            }
+          } else {
+            for (let i = 0; i < fieldName.length; i++) {
+              this.$refs[fieldName[i]].clearValidate()
+            }
           }
         }
       },
       resetAccountFrom() {
-        this.$refs['product'].resetField()
-        this.$refs['validity'].resetField()
+        let itemArr = [
+          'product',
+          'validity',
+          'account',
+          'appId',
+          'appSecret',
+          'interfaceFile',
+          'mchId',
+          'serviceKey',
+          'certificate'
+        ]
+        this.resetItemField(itemArr, true)
         this.dataForm.isPermanent = false
-        this.$refs['account'].resetField()
-        this.$refs['appId'].resetField()
-        this.$refs['appSecret'].resetField()
-        this.$refs['interfaceFile'].resetField()
+        this.dataForm.isOpenPayment = false
       },
 
       // JS接口文件状态改变时
-      changeInFile(file) {
-        this.dataForm.interfaceFile = file.name
+      changeInFile(file, fileList) {
+        if (file.status === 'success') {
+          this.hasJsFile = fileList.length
+        }
       },
       // JS接口文件上传之前判断AppID、AppSecret和txt格式
       beforeUploadInFile(file) {
+        this.uploadLoading1 = true
         const isCompleted = !!this.dataForm.appId && !!this.dataForm.appSecret
         const isTxt = file.type === 'text/plain'
         if (!isCompleted) {
+          this.uploadLoading1 = false
           this.$message.error('请先填写AppID和AppSecret！')
           this.$refs['appId'].validate()
           this.$refs['appSecret'].validate()
           this.$refs['appId'].validateMessage = 'AppId不能为空！'
           this.$refs['appSecret'].validateMessage = 'AppSecret不能为空！'
-          this.dataForm.interfaceFile = ''
           return isCompleted
         }
         if (!isTxt) {
+          this.uploadLoading1 = false
           this.dataForm.interfaceFile = ''
           this.$refs['interfaceFile'].validate()
           this.$refs['interfaceFile'].validateMessage = '非正确的接口文件！'
-          this.$message.error('选择后缀名为"txt"的JS接口文件')
+          this.$message.error('请选择后缀名为"txt"的JS接口文件')
           return isTxt
+        } else {
+          this.dataForm.interfaceFile = file.name
         }
         return isTxt && isCompleted
+      },
+      // JS接口文件上传成功
+      successUploadInFile(response, file, fileList) {
+        this.uploadLoading1 = false
+      },
+
+      // 支付证书文件状态改变时
+      changeCeFile(file, fileList) {
+        if (file.status === 'success') {
+          this.hasP12File = fileList.length
+        }
+      },
+      // 支付证书文件上传之前判断AppID、AppSecret和txt格式
+      beforeUploadCeFile(file) {
+        this.uploadLoading2 = true
+        const isCompleted = !!this.dataForm.mchId && !!this.dataForm.serviceKey
+        const isP12 = file.type === 'application/x-pkcs12'
+        if (!isCompleted) {
+          this.uploadLoading2 = false
+          this.$message.error('请先填写mch_ID和key！')
+          this.$refs['mchId'].validate()
+          this.$refs['serviceKey'].validate()
+          this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
+          this.$refs['serviceKey'].validateMessage = 'key不能为空！'
+          return isCompleted
+        }
+        if (!isP12) {
+          this.uploadLoading2 = false
+          this.dataForm.certificate = ''
+          this.$refs['certificate'].validate()
+          this.$refs['certificate'].validateMessage = '非正确的证书！'
+          this.$message.error('请选择后缀名为"p12"的支付证书文件')
+          return isP12
+        } else {
+          this.dataForm.certificate = file.name
+        }
+        return isP12 && isCompleted
+      },
+      // 支付证书文件上传成功
+      successUploadCeFile(response, file, fileList) {
+        this.uploadLoading2 = false
       },
 
       // 提交信息
       submitDataForm() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            let clientObj, accountObj, payObj
             // 开通账户被收起时，提交之前先清空开通账户信息
             if (!this.dataForm.isCreateAccount) {
               this.resetAccountFrom()
+            } else if (!this.dataForm.isOpenPayment) {
+              // 取消开通微信支付时，提交前清空微信支付开通信息
+              this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
             }
-            // console.log(this.dataForm)
+            console.log(this.dataForm, clientObj, accountObj, payObj)
             this.$message.success('submit success!')
           } else {
             this.$message.error('submit error!')
@@ -339,9 +462,18 @@
       z-index: 1;
       width: 100%;
       text-align: right;
+      &.disabled-upload {
+        cursor: not-allowed;
+      }
     }
     .upload-input .el-input__suffix{
       width: 100%;
+      text-align: right;
+    }
+    .el-input .upload-loading {
+      width: auto;
+      font-size: 22px;
+      color: $theme-blue;
     }
     .el-upload {
       display: block;
