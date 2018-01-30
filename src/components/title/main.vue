@@ -3,7 +3,22 @@
     <h1>{{ title }}</h1>
 
     <!-- 如果非一级页面，显示返回上一页按钮 -->
-    <i v-if="$route.meta.level2" @click="goBack" class="el-icon-close fr"></i>
+    <i
+      v-if="$route.meta.level2"
+      @click="goBack"
+      class="el-icon-close fr"></i>
+
+    <el-tooltip
+      v-if="$route.meta.pdf"
+      content="下载账户信息的主要内容为pdf格式"
+      placement="bottom"
+      effect="light">
+      <el-button
+        @click="downloadPdf"
+        class="mr10 fr download-pdf"
+        icon="el-icon-download"
+        size="mini">下载PDF</el-button>
+    </el-tooltip>
   </div>
 </template>
 
@@ -19,6 +34,9 @@
     mounted() {
     },
     methods: {
+      downloadPdf() {
+        this.$emit('downloadPdf')
+      },
       goBack() {
         // 如果表单页，用表单的事件，否则返回上一页
         if (this.level2) {
@@ -56,6 +74,9 @@
       font-size: 18px;
       vertical-align: middle;
       cursor: pointer;
+    }
+    .download-pdf {
+      margin-top: 5.5px;
     }
   }
 </style>

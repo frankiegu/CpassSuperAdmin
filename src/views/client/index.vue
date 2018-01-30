@@ -6,10 +6,52 @@
       <el-form :model="formData" :inline="true" class="text-right">
         <router-link
           to="/client/add"
-          class="btn-link fl el-icon-circle-plus"
+          class="btn-link fl "
           tag="a">
           &nbsp;新增客户
         </router-link>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.demo"
+            placeholder="请选择生成渠道"
+            class="width150px"
+            multiple>
+            <el-option
+              v-for="i in channels"
+              :label="i.channel"
+              :value="i.id"
+              :key="i.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.demo"
+            placeholder="请选择有效期"
+            class="width150px"
+            multiple>
+            <el-option
+              v-for="i in channels"
+              :label="i.channel"
+              :value="i.id"
+              :key="i.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.demo"
+            placeholder="状态"
+            class="width100px"
+            multiple>
+            <el-option
+              v-for="i in channels"
+              :label="i.channel"
+              :value="i.id"
+              :key="i.id"></el-option>
+          </el-select>
+        </el-form-item>
 
         <el-form-item>
           <el-date-picker
@@ -29,7 +71,7 @@
             v-model.trim="formData.no"
             @keyup.native.enter="getPageData"
             placeholder="请输入客户名称"
-            class="width220px">
+            class="width150px">
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
@@ -38,8 +80,7 @@
         <div class="fr">
           <el-button
             @click="exportExcel"
-            class="btn-green fr"
-            icon="el-icon-download">导出表格</el-button>
+            class="btn-green fr">导出表格</el-button>
         </div>
       </el-form>
 
@@ -141,15 +182,13 @@
     mixins: [tableMixins],
     data () {
       return {
-        orderStatusList: {},
-        statusList: [],
+        channels: [
+          {id: 1, channel: '后台创建'},
+          {id: 2, channel: '客户自助注册'}
+        ],
         pickerOptions: comPickerOptions,
         formData: {
-          date: '',
-          companyId: null,
-          storeId: null,
-          fieldId: null,
-          orderStatus: null,
+          demo: '',
           no: null,
           startDate: null,
           endDate: null

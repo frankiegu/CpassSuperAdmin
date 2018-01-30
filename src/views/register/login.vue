@@ -6,7 +6,8 @@
     </div>
 
     <el-form :model="formData" :rules="formRules" ref="formData" label-width="0px" class="card-box login-form">
-      <div class="mask-box"></div>
+      <!-- <div class="mask-box"></div> -->
+
       <div class="login-box">
         <el-form-item>
           <p class="login-in">
@@ -90,7 +91,7 @@
   .login-container {
     @include relative;
     min-height: 100vh;
-    background: url('./imgs/login-background.png') center center no-repeat fixed;
+    background: url('./imgs/login-background1.png') center center no-repeat fixed;
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/bgs/landscape.jpg', sizingMethod='scale');
     -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/bgs/landscape.jpg', sizingMethod='scale')";
     -webkit-background-size: cover;
@@ -98,19 +99,19 @@
     -o-background-size: cover;
     background-size: cover;
 
-    .mask-box {
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      right: 0;
-      width: 390px;
-      @media screen and (min-width: 1367px) {
-        width: 480px
-      }
-      height: 100%;
-      opacity: .1;
-      background: #000;
-    }
+    // .mask-box {
+    //   position: fixed;
+    //   z-index: 1;
+    //   top: 0;
+    //   right: 0;
+    //   width: 390px;
+    //   @media screen and (min-width: 1367px) {
+    //     width: 480px
+    //   }
+    //   height: 100%;
+    //   opacity: .1;
+    //   background: #000;
+    // }
     .svg-icon {
       height: 100%;
       width: 15px;
@@ -134,19 +135,17 @@
     .login-box {
       position: absolute;
       z-index: 2;
-      right: 45px;
-      @media screen and (min-width: 1367px) {
-        right: 90px;
-      }
       top: 50%;
+      left: 50%;
+      margin-left: -150px;
       width: 300px;
-      -webkit-transform: translateY(-60%);
-      transform: translateY(-60%);
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%);
       background: #fff;
       border-radius: 4px;
 
       .login-in {
-        line-height: 1;
+        line-height: 16px;
         padding: 14px 16px;
         font-weight: 700;
         border-bottom: 1px solid #e9eaec;

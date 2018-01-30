@@ -11,7 +11,7 @@ import App from './App'
 import './interceptors'                                     // 路由拦截
 import comMixins from '@/config/com-mixins'                 // 全局的方法
 import './icons'
-import {title, item, button} from '@/components'
+import {title, item} from '@/components'
 
 Vue.use(ElementUI, { size: 'medium' })
 Vue.use(vuePermissions)
@@ -20,8 +20,7 @@ Vue.mixin(comMixins)
 // 全局注册组件
 const components = [
   title,
-  item,
-  button
+  item
 ]
 components.map(component => {
   Vue.component(component.name, component);

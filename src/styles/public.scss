@@ -365,6 +365,27 @@
     padding: 24px 32px;
   }
 }
+.btn-link {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  background: $theme-blue;
+  border: 1px solid $theme-blue;
+  color: #ffffff;
+  margin: 0;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  & + .btn-link {
+    margin-left: 10px;
+  }
+  &:hover {
+    background: rgb(126, 153, 234);
+    border-color: rgb(126, 153, 234);
+    color: #fff;
+  }
+}
 .btn-green, .btn-link.btn-green {
   background-color: $theme-green;
   border-color: $theme-green;
