@@ -138,7 +138,7 @@
           width="110">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/client/modify', query: {id: scope.row.id}}"
+              :to="{path: scope.row.account === 2 ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
               class="table-link margin-lr6">编辑</router-link>
 
             <router-link
@@ -228,7 +228,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "src/styles/config";
+  @import "../../styles/config";
   .client-list {
     .svg-icon {
       color: $theme-blue;

@@ -50,7 +50,7 @@
         placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="创建智众账户" v-if="infoType !== 'detail'">
+    <el-form-item label="创建智众账户" v-if="!infoType && !hasAccount">
       <el-switch v-model="modelForm.isCreateAccount"></el-switch>
     </el-form-item>
   </div>
@@ -98,7 +98,8 @@
     },
     props: {
       modelForm: [Object], // 表单数据
-      infoType: [String] // 信息类型（未定义则默认为输入类型，'detail'为详情类型）
+      infoType: [String], // 信息类型（未定义则默认为输入类型，'detail'为详情类型）
+      hasAccount: [Boolean] // 是否存在账号
     },
     components: {},
     mounted() {

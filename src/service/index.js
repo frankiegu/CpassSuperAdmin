@@ -9,3 +9,11 @@ export * from './common'
 
 // 注册登录
 export * from './register'
+
+/**
+ * sidebar部分
+ * ------------------------------------------------------
+ */
+
+// 客户管理
+export * from './client'

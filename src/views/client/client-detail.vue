@@ -1,6 +1,6 @@
 <template>
   <div class="main-content client-detail">
-    <lh-title title="详情" :level2="false"></lh-title>
+    <lh-title :title="dataForm.name" :level2="false"></lh-title>
 
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm">

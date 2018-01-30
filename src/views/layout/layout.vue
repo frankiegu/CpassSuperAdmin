@@ -51,6 +51,7 @@
 
     .app-in {
       min-height: 80vh;
+      min-width: 600px;
     }
     .layout-footer {
       padding: 0 16px;

@@ -26,6 +26,12 @@ export default [{
         level2: true
       }
     }, {
+      name: '修改客户资料',
+      path: 'modify',
+      component: _import('client/modify'),
+      hidden: true,
+      meta: {level2: true}
+    }, {
       name: '客户详情',
       path: 'detail',
       component: _import('client/client-detail'),
