@@ -50,7 +50,7 @@
     width: 100%;
 
     .app-in {
-      height: 80vh;
+      min-height: 80vh;
     }
     .layout-footer {
       padding: 0 16px;

@@ -21,7 +21,12 @@ export default {
         msg = type
         type = 'info'
       }
-      this.$message({showClose: true, type: type, message: msg})
+      this.$message({
+        showClose: true,
+        type: type,
+        message: msg,
+        duration: 1500
+      })
     },
     // 判断权限
     handleHasPermissions(resource) {
