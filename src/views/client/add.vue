@@ -1,9 +1,6 @@
 <template>
   <div class="main-content client-data">
-    <lh-title :title="pageTitle"></lh-title>
-    <div class="page-title">
-      <span @click="handleBackList" class="fr"><i class="el-icon-close"></i></span>
-    </div>
+    <lh-title :title="pageTitle" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <h3 class="grid-title">基础信息</h3>
@@ -43,7 +40,7 @@
             <el-form-item label="管理后台登录账户" prop="account" ref="account"
               :rules="dataRules.account" :required="dataForm.isCreateAccount">
               <el-input
-                v-model="dataForm.account"
+                v-model.trim="dataForm.account"
                 class="width300px"
                 placeholder="输入管理后台登录账户（手机格式）"
                 :maxlength="11"></el-input>
@@ -52,7 +49,7 @@
             <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
               :rules="dataRules.appId" :required="dataForm.isCreateAccount">
               <el-input
-                v-model="dataForm.appId"
+                v-model.trim="dataForm.appId"
                 class="width300px"
                 placeholder="客户微信服务号AppID"></el-input>
             </el-form-item>
@@ -60,7 +57,7 @@
             <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
               :rules="dataRules.appSecret" :required="dataForm.isCreateAccount">
               <el-input
-                v-model="dataForm.appSecret"
+                v-model.trim="dataForm.appSecret"
                 class="width300px"
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
@@ -99,7 +96,7 @@
             <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
               :rules="dataRules.mchId" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
               <el-input
-                v-model="dataForm.mchId"
+                v-model.trim="dataForm.mchId"
                 class="width300px"
                 :disabled="!dataForm.isOpenPayment"
                 placeholder="客户微信支付商号mch_ID"></el-input>
@@ -108,7 +105,7 @@
             <el-form-item label="客户服务号key" prop="serviceKey" ref="serviceKey"
               :rules="dataRules.serviceKey" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
               <el-input
-                v-model="dataForm.serviceKey"
+                v-model.trim="dataForm.serviceKey"
                 class="width300px"
                 :disabled="!dataForm.isOpenPayment"
                 placeholder="客户微信支付商号API密钥"></el-input>
@@ -156,7 +153,9 @@
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         center>
-        <span class="text-center">
+
+        <!-- 仅创建客户确认弹窗内容 -->
+        <span class="text-center" v-if="dialogType === 'save'">
           <p v-if="!isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？</p>
           <p v-if="!isCreateSuccess && !isOpenSuccess">（暂不开通客户账户）</p>
           <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
@@ -167,9 +166,16 @@
           </p>
           <p v-if="isOpenSuccess">或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看</p>
         </span>
-        <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess">
+        <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess && dialogType === 'save'">
           <el-button type="primary" class="width120px" @click="createClient">确定</el-button>
-          <el-button class="width120px" @click="cancelSave">放弃</el-button>
+          <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
+        </span>
+
+        <!-- 跳转确认弹窗内容 -->
+        <p class="text-center" v-if="dialogType === 'jump'">已录入的资料将丢失，确定取消？</p>
+        <span slot="footer" v-if="dialogType === 'jump'">
+          <el-button type="primary" class="width120px" @click="$router.replace('/client/list')">确定</el-button>
+          <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
         </span>
       </el-dialog>
     </div>
@@ -278,8 +284,10 @@
       }
       return {
         title: this.$route.query.id ? '客户详情' : '新增客户',
-        pageTitle: this.$route.query.id ? 'xx有限公司' : '新增客户',
+        pageTitle: this.$route.query.id ? '' : '新增客户',
         clientId: this.$route.query.id,
+        dialogType: '',
+        hasChangeForm: false,
 
         hasJsFile: 0,
         hasP12File: 0,
@@ -290,12 +298,12 @@
         isOpenSuccess: false,
         dataForm: {
           // 客户基础信息
-          clientName: '',
-          userName: '',
-          tel: '',
+          name: '',
+          contact: '',
+          phone: '',
           email: '',
           address: '',
-          wxService: '',
+          weixin: '',
           remark: '',
           saleManager: '',
           isCreateAccount: false,
@@ -334,15 +342,27 @@
     },
     mounted() {
       document.title = this.title
+      if (this.clientId) this.handleGetDetail()
+
+      const initialForm = this.dataFormStr
+      this.$watch('dataFormStr', {
+        handler: function (newVal) {
+          if (!newVal || newVal === initialForm) {
+            this.hasChangeForm = false
+          } else if (newVal !== initialForm) {
+            this.hasChangeForm = true
+          }
+        }
+      })
     },
     watch: {},
-    computed: {},
+    computed: {
+      dataFormStr: function () {
+        return Object.values(this.dataForm).join('')
+      }
+    },
     filters: {},
     methods: {
-      // 返回列表页
-      handleBackList() {
-        this.$router.replace('/client/list')
-      },
       /**
        * @description 重置一个或多个表单域
        * @param {String | Array} fieldName 表单域的ref
@@ -382,6 +402,14 @@
         this.resetItemField(itemArr, true)
         this.dataForm.isPermanent = false
         this.dataForm.isOpenPayment = false
+      },
+
+      // 获取客户详情
+      handleGetDetail() {
+        console.log(this.clientId)
+        this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
+        this.dataForm.contact = 'PN'
+        this.dataForm.phone = '13566666666'
       },
 
       // JS接口文件状态改变时
@@ -462,16 +490,17 @@
       submitDataForm() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.dialogType = 'save'
             let clientObj, accountObj, payObj
-            // 开通账户被收起时，提交之前先清空开通账户信息
             if (!this.dataForm.isCreateAccount) {
+              // 开通账户被收起时，提交之前先清空账户开通信息
               this.resetAccountFrom()
               this.dialogVisible = true
             } else {
               this.dialogVisible = true
               this.isOpenSuccess = true
               if (!this.dataForm.isOpenPayment) {
-                // 取消开通微信支付时，提交前清空微信支付开通信息
+                // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
                 this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
               }
             }
@@ -491,9 +520,15 @@
           }, 1000)
         }, 1000)
       },
-      // 放弃保存
-      cancelSave() {
-        this.dialogVisible = false
+
+      // 返回按钮事件
+      handleBackList() {
+        if (this.hasChangeForm) {
+          this.dialogType = 'jump'
+          this.dialogVisible = true
+        } else {
+          this.$router.replace('/client/list')
+        }
       }
     }
   }

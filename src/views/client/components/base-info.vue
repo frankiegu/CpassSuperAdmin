@@ -1,46 +1,46 @@
 <template>
   <div class="base-info">
-    <el-form-item label="客户名称" prop="clientName"
+    <el-form-item label="客户名称" prop="name"
       :rules="[
         {required: true, message: '客户名称不能为空！', trigger: 'blur, change'}
       ]">
-      <el-input v-model="modelForm.clientName" class="width300px" placeholder="填写完整客户名称" :maxlength="200"></el-input>
+      <el-input v-model.trim="modelForm.name" class="width300px" placeholder="填写完整客户名称" :maxlength="200"></el-input>
     </el-form-item>
 
-    <el-form-item label="联系人" prop="userName"
+    <el-form-item label="联系人" prop="contact"
       :rules="[
         {required: true, message: '联系人不能为空！', trigger: 'blur, change'}
       ]">
-      <el-input v-model="modelForm.userName" class="width300px" placeholder="填写联系人名称" :maxlength="100"></el-input>
+      <el-input v-model.trim="modelForm.contact" class="width300px" placeholder="填写联系人名称" :maxlength="100"></el-input>
     </el-form-item>
 
-    <el-form-item label="联系电话" prop="tel" :rules="checkTel">
-      <el-input v-model="modelForm.tel" class="width300px" placeholder="填写联系人电话号码" :maxlength="100"></el-input>
+    <el-form-item label="联系电话" prop="phone" :rules="checkTel">
+      <el-input v-model.trim="modelForm.phone" class="width300px" placeholder="填写联系人电话号码" :maxlength="100"></el-input>
     </el-form-item>
 
     <el-form-item label="联系邮箱" prop="email" :rules="checkEmail">
-      <el-input v-model="modelForm.email" class="width300px" placeholder="填写联系人的邮箱地址" :maxlength="200"></el-input>
+      <el-input v-model.trim="modelForm.email" class="width300px" placeholder="填写联系人的邮箱地址" :maxlength="200"></el-input>
     </el-form-item>
 
     <el-form-item label="联系地址">
-      <el-input v-model="modelForm.address" class="width300px" placeholder="填写联系人的联系地址" :maxlength="500"></el-input>
+      <el-input v-model.trim="modelForm.address" class="width300px" placeholder="填写联系人的联系地址" :maxlength="500"></el-input>
     </el-form-item>
 
     <el-form-item label="微信服务号">
-      <el-input v-model="modelForm.wxService" class="width300px" placeholder="填写微信服务号"></el-input>
+      <el-input v-model.trim="modelForm.weixin" class="width300px" placeholder="填写微信服务号"></el-input>
     </el-form-item>
 
     <el-form-item label="备注">
       <el-input
         type="textarea"
-        v-model="modelForm.remark"
+        v-model.trim="modelForm.remark"
         class="width300px"
         placeholder="可填写联系人职位、负责事宜等内容"
         :maxlength="500"></el-input>
     </el-form-item>
 
     <el-form-item label="销售经理">
-      <el-input v-model="modelForm.saleManager" class="width300px" placeholder="填写负责跟进该客户的销售经理" :maxlength="100"></el-input>
+      <el-input v-model.trim="modelForm.saleManager" class="width300px" placeholder="填写负责跟进该客户的销售经理" :maxlength="100"></el-input>
     </el-form-item>
 
     <el-form-item label="创建智众账户">

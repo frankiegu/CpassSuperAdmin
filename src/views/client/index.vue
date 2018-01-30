@@ -97,7 +97,7 @@
           width="110">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/client/add', query: {id: scope.row.id}}"
+              :to="{path: '/client/modify', query: {id: scope.row.id}}"
               class="table-link margin-lr6">编辑</router-link>
 
             <router-link
@@ -166,8 +166,8 @@
       getPageData() {
         this.tableEmpty = '暂时无数据'
         this.tableData = [
-          {name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 1},
-          {name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 2}
+          {id: 1, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 1},
+          {id: 2, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 2}
         ]
       },
       exportExcel() {
