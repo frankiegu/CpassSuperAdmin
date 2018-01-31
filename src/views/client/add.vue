@@ -141,7 +141,7 @@
         </el-collapse-transition>
 
         <el-form-item>
-          <el-button type="primary" class="width120px" @click="submitDataForm"
+          <el-button type="primary" class="width120px" @click="createSubmit"
             :loading="dataForm.isCreateAccount && createLoading">
             {{dataForm.isCreateAccount && createLoading ? '执行中...' : '保存'}}
           </el-button>
@@ -159,9 +159,10 @@
 
         <!-- 仅创建客户确认弹窗内容 -->
         <span class="text-center" v-if="dialogType === 'save'">
-          <p v-if="!isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
+          <p v-if="!clientId && !isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
+          <p v-if="clientId && !isCreateSuccess && !isOpenSuccess">确认保存修改内容？</p>
           <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
-          <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">创建成功！</p>
+          <p v-if="!clientId && isCreateSuccess && !isOpenSuccess" class="success-tip">创建成功！</p>
           <p v-if="isOpenSuccess" class="success-tip">开通成功！</p>
           <p v-if="isOpenSuccess">
             <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>
@@ -214,6 +215,7 @@
     computed: {},
     filters: {},
     methods: {
+      // 【创建账户】收起时，点击【保存】丢弃已录入的开通资料
       resetAccountFrom() {
         let itemArr = [
           'product',
@@ -233,30 +235,37 @@
 
       // 获取客户详情
       handleGetDetail() {
-        // console.log(this.clientId)
         this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
         this.dataForm.contact = 'PN'
         this.dataForm.phone = '13566666666'
       },
 
-      // 提交信息
-      submitDataForm() {
+      // 提交创建信息
+      createSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.dialogType = 'save'
-            if (!this.dataForm.isCreateAccount) {
-              // 开通账户被收起时，提交之前先清空账户开通信息
-              this.resetAccountFrom()
-              this.dialogVisible = true
+            if (this.clientId && !this.hasChangeForm) {
+              this.$message.info('信息未改动！')
             } else {
-              if (!this.dataForm.isOpenPayment) {
-                // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
-                this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
+              if (!this.dataForm.isCreateAccount) {
+                // 开通账户被收起时，提交之前先清空账户开通信息
+                this.resetAccountFrom()
+                this.dialogVisible = true
+              } else {
+                if (!this.dataForm.isOpenPayment) {
+                  // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
+                  this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
+                }
+                if (!this.clientId) {
+                  this.createClient()
+                } else {
+                  this.updateClient()
+                }
               }
-              this.createClient()
             }
           } else {
-            this.$message.error('submit error!')
+            return false
           }
         })
       },
@@ -331,6 +340,11 @@
           this.dialogVisible = true
         }, 300)
         console.log(payObj, 'openPayment')
+      },
+
+      // 更新客户
+      updateClient() {
+        this.$message.success('update')
       },
 
       // 返回按钮事件
