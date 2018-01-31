@@ -141,7 +141,10 @@
         </el-collapse-transition>
 
         <el-form-item>
-          <el-button type="primary" class="width120px" @click="submitDataForm">保存</el-button>
+          <el-button type="primary" class="width120px" @click="submitDataForm"
+            :loading="dataForm.isCreateAccount && createLoading">
+            {{dataForm.isCreateAccount && createLoading ? '执行中...' : '保存'}}
+          </el-button>
         </el-form-item>
       </el-form>
 
@@ -156,18 +159,19 @@
 
         <!-- 仅创建客户确认弹窗内容 -->
         <span class="text-center" v-if="dialogType === 'save'">
-          <p v-if="!isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？</p>
-          <p v-if="!isCreateSuccess && !isOpenSuccess">（暂不开通客户账户）</p>
+          <p v-if="!isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
           <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
           <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">创建成功！</p>
           <p v-if="isOpenSuccess" class="success-tip">开通成功！</p>
           <p v-if="isOpenSuccess">
-            <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link>
+            <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>
+            或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看
           </p>
-          <p v-if="isOpenSuccess">或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看</p>
         </span>
         <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess && dialogType === 'save'">
-          <el-button type="primary" class="width120px" @click="createClient">确定</el-button>
+          <el-button type="primary" class="width120px" @click="createClient" :loading="createLoading">
+            {{createLoading ? '执行中...' : '确定'}}
+          </el-button>
           <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
         </span>
 
@@ -185,6 +189,7 @@
 <script>
   import {baseInfo} from './components'
   import commonMixins from './common.mixins'
+  // import {addClient} from '@/service'
 
   export default {
     name: 'add',
@@ -193,7 +198,7 @@
       return {
         pageTitle: this.$route.query.id ? '' : '新增客户',
         dialogType: '',
-
+        createLoading: false,
         isCreateSuccess: false,
         isOpenSuccess: false
       }
@@ -228,7 +233,7 @@
 
       // 获取客户详情
       handleGetDetail() {
-        console.log(this.clientId)
+        // console.log(this.clientId)
         this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
         this.dataForm.contact = 'PN'
         this.dataForm.phone = '13566666666'
@@ -239,20 +244,17 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.dialogType = 'save'
-            let clientObj, accountObj, payObj
             if (!this.dataForm.isCreateAccount) {
               // 开通账户被收起时，提交之前先清空账户开通信息
               this.resetAccountFrom()
               this.dialogVisible = true
             } else {
-              this.dialogVisible = true
-              this.isOpenSuccess = true
               if (!this.dataForm.isOpenPayment) {
                 // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
                 this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
               }
+              this.createClient()
             }
-            console.log(this.dataForm, clientObj, accountObj, payObj)
           } else {
             this.$message.error('submit error!')
           }
@@ -260,13 +262,75 @@
       },
       // 创建客户资料
       createClient() {
-        setTimeout(() => { // TODO 发送请求创建客户资料
+        console.log(this.dataForm)
+        let clientObj = {
+          name: this.dataForm.name,
+          contact: this.dataForm.contact,
+          phone: this.dataForm.phone,
+          email: this.dataForm.email,
+          address: this.dataForm.address,
+          weixin: this.dataForm.weixin,
+          remark: this.dataForm.remark,
+          saleManager: this.dataForm.saleManager
+        }
+        this.createLoading = true
+        // addClient(clientObj).then(res => {
+        //   if (res.status === 'true') {
+        //     this.isCreateSuccess = true
+        //     // 如果有仅创建客户的确认框，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
+        //     if (!this.isCreateAccount) {
+        //       setTimeout(() => {
+        //         this.dialogVisible = false
+        //         this.$router.replace('/client/list')
+        //       }, 1000)
+        //     } else {
+        //       this.$message.info('客户创建成功，等待开通账户。。。')
+        //     }
+        //   } else {
+        //     this.$message.error(res.msg)
+        //   }
+        // })
+        console.log(clientObj, 'createClient')
+        setTimeout(() => {
           this.isCreateSuccess = true
-          setTimeout(() => {
-            this.dialogVisible = false
-            this.$router.replace('/client/list')
-          }, 1000)
-        }, 1000)
+          // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
+          if (!this.dataForm.isCreateAccount) {
+            this.createLoading = false
+            setTimeout(() => {
+              this.dialogVisible = false
+              this.$router.replace('/client/list')
+            }, 1000)
+          } else {
+            this.openAccount()
+          }
+        }, 2000)
+      },
+      // 开通账户
+      openAccount() {
+        let accountObj = {
+          product: this.dataForm.product
+        }
+        setTimeout(() => {
+          this.isOpenSuccess = true
+          if (!this.dataForm.isOpenPayment) {
+            this.dialogVisible = true
+            this.createLoading = false
+          } else {
+            this.openPayment()
+          }
+        }, 3000)
+        console.log(accountObj, 'openAccount')
+      },
+      // 开通支付
+      openPayment() {
+        let payObj = {
+          mchId: this.dataForm.mchId
+        }
+        setTimeout(() => {
+          this.createLoading = false
+          this.dialogVisible = true
+        }, 300)
+        console.log(payObj, 'openPayment')
       },
 
       // 返回按钮事件
