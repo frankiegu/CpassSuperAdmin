@@ -3,8 +3,7 @@
     <transition-group name="breadcrumb">
       <el-breadcrumb-item
         v-for="(item,index) in levelList"
-        :key="index"
-        v-if='item.name'>
+        :key="index">
         <router-link v-if="item.name" :to="item.redirect || item.path">{{item.name}}</router-link>
         <span v-else>{{navCrumb}}</span>
       </el-breadcrumb-item>
@@ -25,7 +24,7 @@
     },
     watch: {
       $route () {
-        this.getBreadcrumb();
+        this.getBreadcrumb()
       }
     },
     computed: {

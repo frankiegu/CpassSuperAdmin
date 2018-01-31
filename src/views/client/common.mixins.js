@@ -149,6 +149,7 @@ export default {
   },
   mounted() {
     document.title = this.title
+    this.$store.commit('NAV_CRUMB', this.title)
     if (this.clientId) this.handleGetDetail()
 
     const initialForm = this.dataFormStr
