@@ -62,18 +62,18 @@
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号JS接口文件" prop="interfaceFile" ref="interfaceFile"
-              :rules="dataRules.interfaceFile" :required="dataForm.isCreateAccount">
+            <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
+              :rules="dataRules.jsFile" :required="dataForm.isCreateAccount">
               <el-input
-                v-model="dataForm.interfaceFile"
+                v-model="dataForm.jsFile"
                 readonly
                 placeholder='选择后缀名为"txt"的JS接口文件'
                 class="width300px upload-input">
                 <el-upload
                   v-show="!uploadLoading1"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :action="jsUploadPath"
                   accept="text/plain"
-                  name="interfaceFile"
+                  name="jsFile"
                   :multiple="false"
                   :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
                   :show-file-list="false"
@@ -162,8 +162,8 @@
           <p v-if="!clientId && !isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
           <p v-if="clientId && !isCreateSuccess && !isOpenSuccess">确认保存修改内容？</p>
           <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
-          <p v-if="!clientId && isCreateSuccess && !isOpenSuccess" class="success-tip">创建成功！</p>
-          <p v-if="isOpenSuccess" class="success-tip">开通成功！</p>
+          <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '创建成功！'}}</p>
+          <p v-if="isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '开通成功！'}}</p>
           <p v-if="isOpenSuccess">
             <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>
             或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看
@@ -190,7 +190,7 @@
 <script>
   import {baseInfo} from './components'
   import commonMixins from './common.mixins'
-  // import {addClient} from '@/service'
+  import {addClient, updateClientInfo, createAccount} from '@/service'
 
   export default {
     name: 'add',
@@ -223,7 +223,7 @@
           'account',
           'appId',
           'appSecret',
-          'interfaceFile',
+          'jsFile',
           'mchId',
           'serviceKey',
           'certificate'
@@ -257,11 +257,7 @@
                   // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
                   this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
                 }
-                if (!this.clientId) {
-                  this.createClient()
-                } else {
-                  this.updateClient()
-                }
+                this.createClient()
               }
             }
           } else {
@@ -269,10 +265,11 @@
           }
         })
       },
-      // 创建客户资料
-      createClient() {
-        console.log(this.dataForm)
+      // 创建或更新客户资料
+      createClient: function () {
+        // console.log(this.dataForm)
         let clientObj = {
+          id: this.clientId,
           name: this.dataForm.name,
           contact: this.dataForm.contact,
           phone: this.dataForm.phone,
@@ -283,23 +280,26 @@
           saleManager: this.dataForm.saleManager
         }
         this.createLoading = true
-        // addClient(clientObj).then(res => {
-        //   if (res.status === 'true') {
-        //     this.isCreateSuccess = true
-        //     // 如果有仅创建客户的确认框，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
-        //     if (!this.isCreateAccount) {
-        //       setTimeout(() => {
-        //         this.dialogVisible = false
-        //         this.$router.replace('/client/list')
-        //       }, 1000)
-        //     } else {
-        //       this.$message.info('客户创建成功，等待开通账户。。。')
-        //     }
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
-        console.log(clientObj, 'createClient')
+        let promise = this.clientId ? updateClientInfo(clientObj) : addClient(clientObj)
+        promise.then(res => {
+          if (res.status === 'true') {
+            this.isCreateSuccess = true
+            // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
+            if (!this.dataForm.isCreateAccount) {
+              this.createLoading = false
+              setTimeout(() => {
+                this.dialogVisible = false
+                this.$router.replace('/client/list')
+              }, 1000)
+            } else {
+              // this.$message.info('客户创建成功，等待开通账户。。。')
+              if (res.info) this.clientId = res.info.id
+              this.openAccount()
+            }
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
         setTimeout(() => {
           this.isCreateSuccess = true
           // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
@@ -340,11 +340,6 @@
           this.dialogVisible = true
         }, 300)
         console.log(payObj, 'openPayment')
-      },
-
-      // 更新客户
-      updateClient() {
-        this.$message.success('update')
       },
 
       // 返回按钮事件

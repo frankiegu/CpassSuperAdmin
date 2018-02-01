@@ -55,10 +55,10 @@
             placeholder="客户微信服务号AppSecret"></el-input>
         </el-form-item>
 
-        <el-form-item label="客户服务号JS接口文件" prop="interfaceFile" ref="interfaceFile"
-          :rules="dataRules.interfaceFile" :required="true">
+        <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
+          :rules="dataRules.jsFile" :required="true">
           <el-input
-            v-model="dataForm.interfaceFile"
+            v-model="dataForm.jsFile"
             readonly
             placeholder='选择后缀名为"txt"的JS接口文件'
             class="width300px upload-input">
@@ -66,7 +66,7 @@
               v-show="!uploadLoading1"
               action="https://jsonplaceholder.typicode.com/posts/"
               accept="text/plain"
-              name="interfaceFile"
+              name="jsFile"
               :multiple="false"
               :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
               :show-file-list="false"

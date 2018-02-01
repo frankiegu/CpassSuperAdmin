@@ -1,4 +1,4 @@
-import { PHONEREG } from '@/config/env'
+import {PHONEREG, API_PATH} from '../../config/env'
 
 export default {
   data () {
@@ -100,6 +100,7 @@ export default {
       clientId: this.$route.query.id,
       hasChangeForm: false,
 
+      jsUploadPath: API_PATH + '/admin/client/uploadJsFile',
       hasJsFile: 0,
       hasP12File: 0,
       uploadLoading1: false,
@@ -125,7 +126,7 @@ export default {
         useStatus: 1,
         appId: '',
         appSecret: '',
-        interfaceFile: '', // JS接口文件
+        jsFile: '', // JS接口文件
 
         // 开通微信支付功能
         isOpenPayment: false,
@@ -140,7 +141,7 @@ export default {
         account: [{validator: checkTel, trigger: 'blur, change'}],
         appId: [{validator: checkAppId, trigger: 'blur, change'}],
         appSecret: [{validator: checkAppSecret, trigger: 'blur, change'}],
-        interfaceFile: [{validator: checkInFile, trigger: 'blur, change'}],
+        jsFile: [{validator: checkInFile, trigger: 'blur, change'}],
         mchId: [{validator: checkMchId, trigger: 'blur, change'}],
         serviceKey: [{validator: checkServiceKey, trigger: 'blur, change'}],
         certificate: [{validator: checkCeFile, trigger: 'blur, change'}]
@@ -200,31 +201,31 @@ export default {
         this.hasJsFile = fileList.length
       }
     },
-    // JS接口文件上传之前判断AppID、AppSecret和txt格式
+    // JS接口文件上传之前判断txt格式
     beforeUploadInFile(file) {
       this.uploadLoading1 = true
-      const isCompleted = !!this.dataForm.appId && !!this.dataForm.appSecret
       const isTxt = file.type === 'text/plain'
-      if (!isCompleted) {
-        this.uploadLoading1 = false
-        this.$message.error('请先填写AppID和AppSecret！')
-        this.$refs['appId'].validate()
-        this.$refs['appSecret'].validate()
-        this.$refs['appId'].validateMessage = 'AppId不能为空！'
-        this.$refs['appSecret'].validateMessage = 'AppSecret不能为空！'
-        return isCompleted
-      }
+      // const isCompleted = !!this.dataForm.appId && !!this.dataForm.appSecret
+      // if (!isCompleted) {
+      //   this.uploadLoading1 = false
+      //   this.$message.error('请先填写AppID和AppSecret！')
+      //   this.$refs['appId'].validate()
+      //   this.$refs['appSecret'].validate()
+      //   this.$refs['appId'].validateMessage = 'AppId不能为空！'
+      //   this.$refs['appSecret'].validateMessage = 'AppSecret不能为空！'
+      //   return isCompleted
+      // }
       if (!isTxt) {
         this.uploadLoading1 = false
-        this.dataForm.interfaceFile = ''
-        this.$refs['interfaceFile'].validate()
-        this.$refs['interfaceFile'].validateMessage = '非正确的接口文件！'
+        this.dataForm.jsFile = ''
+        this.$refs['jsFile'].validate()
+        this.$refs['jsFile'].validateMessage = '非正确的接口文件！'
         this.$message.error('请选择后缀名为"txt"的JS接口文件')
         return isTxt
       } else {
-        this.dataForm.interfaceFile = file.name
+        this.dataForm.jsFile = file.name
       }
-      return isTxt && isCompleted
+      return isTxt
     },
     // JS接口文件上传成功
     successUploadInFile(response, file, fileList) {
@@ -240,17 +241,17 @@ export default {
     // 支付证书文件上传之前判断AppID、AppSecret和txt格式
     beforeUploadCeFile(file) {
       this.uploadLoading2 = true
-      const isCompleted = !!this.dataForm.mchId && !!this.dataForm.serviceKey
       const isP12 = file.type === 'application/x-pkcs12'
-      if (!isCompleted) {
-        this.uploadLoading2 = false
-        this.$message.error('请先填写mch_ID和key！')
-        this.$refs['mchId'].validate()
-        this.$refs['serviceKey'].validate()
-        this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
-        this.$refs['serviceKey'].validateMessage = 'key不能为空！'
-        return isCompleted
-      }
+      // const isCompleted = !!this.dataForm.mchId && !!this.dataForm.serviceKey
+      // if (!isCompleted) {
+      //   this.uploadLoading2 = false
+      //   this.$message.error('请先填写mch_ID和key！')
+      //   this.$refs['mchId'].validate()
+      //   this.$refs['serviceKey'].validate()
+      //   this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
+      //   this.$refs['serviceKey'].validateMessage = 'key不能为空！'
+      //   return isCompleted
+      // }
       if (!isP12) {
         this.uploadLoading2 = false
         this.dataForm.certificate = ''
@@ -261,7 +262,7 @@ export default {
       } else {
         this.dataForm.certificate = file.name
       }
-      return isP12 && isCompleted
+      return isP12
     },
     // 支付证书文件上传成功
     successUploadCeFile(response, file, fileList) {
