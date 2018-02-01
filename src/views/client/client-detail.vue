@@ -12,15 +12,15 @@
         <div v-if="dataForm.isCreateAccount">
           <!-- 产品信息 -->
           <h3 class="grid-title">产品信息</h3>
-          <el-form-item label="产品版本"><p class="theme-red">{{dataForm.product}}</p></el-form-item>
+          <el-form-item label="产品版本"><p class="theme-red">{{dataForm.productName}}</p></el-form-item>
 
           <el-form-item label="有效期">
             <p v-if="dataForm.isPermanent" class="theme-red">永久</p>
-            <p class="theme-red" v-else>{{dataForm.startTime}} 至 {{dataForm.endTime}}</p>
+            <p class="theme-red" v-else>{{dataForm.productStartDate}} 至 {{dataForm.productEndDate}}</p>
           </el-form-item>
 
           <el-form-item label="使用状态">
-            <p class="theme-red">{{dataForm.useStatus === 1 ? '正常' : '停用'}}</p>
+            <p class="theme-red">{{dataForm.productStatus === 1 ? '正常' : '停用'}}</p>
           </el-form-item>
 
           <el-form-item label="支付功能">
@@ -42,6 +42,7 @@
 
 <script>
   import baseInfo from './components/base-info'
+  import {clientDetail} from '@/service'
   export default {
     name: 'detail',
     data() {
@@ -60,11 +61,11 @@
           isCreateAccount: true,
 
           // 开通账户信息
-          product: '完整版',
-          startTime: '2017-12-25', // 有效期开始时间
-          endTime: '2018-12-24', // 有效期结束时间
+          productName: '完整版',
+          productStartDate: '2017-12-25', // 有效期开始时间
+          productEndDate: '2018-12-24', // 有效期结束时间
           isPermanent: false, // 是否永久有效
-          useStatus: 1,
+          productStatus: 1,
           appId: 'e2r22g44asg4g4g',
           appSecret: 'g44syy5setwyg5g54',
 
@@ -86,8 +87,14 @@
     methods: {
       // 获取客户详情
       handleGetDetail() {
-        let obj = {id: this.clientId}
-        console.log(obj)
+        let obj = {clientId: this.clientId}
+        clientDetail(obj).then(res => {
+          if (res.status === 'true') {
+            this.dataForm = res.info
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       }
     }
   }
