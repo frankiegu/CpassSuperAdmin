@@ -82,7 +82,7 @@
 
         <el-form-item label="开通微信支付功能">
           <el-switch v-model="dataForm.isOpenPayment"
-            @change="resetItemField(['mchId', 'serviceKey', 'certificate'], false)">
+            @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
           </el-switch>
         </el-form-item>
 
@@ -95,10 +95,10 @@
             placeholder="客户微信支付商号mch_ID"></el-input>
         </el-form-item>
 
-        <el-form-item label="客户服务号key" prop="serviceKey" ref="serviceKey"
-          :rules="dataRules.serviceKey" :required="dataForm.isOpenPayment">
+        <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
+          :rules="dataRules.mchKey" :required="dataForm.isOpenPayment">
           <el-input
-            v-model.trim="dataForm.serviceKey"
+            v-model.trim="dataForm.mchKey"
             class="width300px"
             :disabled="!dataForm.isOpenPayment"
             placeholder="客户微信支付商号API密钥"></el-input>
@@ -118,7 +118,7 @@
               accept="application/x-pkcs12"
               name="payCertFile"
               :multiple="false"
-              :data="{mchId: dataForm.mchId, key: dataForm.serviceKey}"
+              :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
               :show-file-list="false"
               :on-change="changeCeFile"
               :before-upload="beforeUploadCeFile"

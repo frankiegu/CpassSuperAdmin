@@ -33,7 +33,7 @@
           <el-form-item label="客户服务号AppSecret"><p>{{dataForm.appSecret}}</p></el-form-item>
           <!-- 如没有开通支付，则无mch_id和key信息 -->
           <el-form-item label="客户服务号mch_ID" v-if="dataForm.isOpenPayment"><p>{{dataForm.mchId}}</p></el-form-item>
-          <el-form-item label="客户服务号key" v-if="dataForm.isOpenPayment"><p>{{dataForm.serviceKey}}</p></el-form-item>
+          <el-form-item label="客户服务号key" v-if="dataForm.isOpenPayment"><p>{{dataForm.mchKey}}</p></el-form-item>
         </div>
       </el-form>
     </div>
@@ -71,7 +71,7 @@
           // 开通微信支付功能
           isOpenPayment: true,
           mchId: 'faaaaaageagea', // 客户服务号mch_ID
-          serviceKey: 'daegahikljldajigjaie' // 客户服务号key
+          mchKey: 'daegahikljldajigjaie' // 客户服务号key
         }
       }
     },

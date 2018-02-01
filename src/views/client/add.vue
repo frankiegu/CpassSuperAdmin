@@ -89,7 +89,7 @@
 
             <el-form-item label="开通微信支付功能">
               <el-switch v-model="dataForm.isOpenPayment"
-                @change="resetItemField(['mchId', 'serviceKey', 'certificate'], false)">
+                @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
               </el-switch>
             </el-form-item>
 
@@ -102,10 +102,10 @@
                 placeholder="客户微信支付商号mch_ID"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号key" prop="serviceKey" ref="serviceKey"
-              :rules="dataRules.serviceKey" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
+            <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
+              :rules="dataRules.mchKey" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
               <el-input
-                v-model.trim="dataForm.serviceKey"
+                v-model.trim="dataForm.mchKey"
                 class="width300px"
                 :disabled="!dataForm.isOpenPayment"
                 placeholder="客户微信支付商号API密钥"></el-input>
@@ -125,7 +125,7 @@
                   accept="application/x-pkcs12"
                   name="certificate"
                   :multiple="false"
-                  :data="{mchId: dataForm.mchId, key: dataForm.serviceKey}"
+                  :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
                   :show-file-list="false"
                   :on-change="changeCeFile"
                   :before-upload="beforeUploadCeFile"
@@ -190,7 +190,7 @@
 <script>
   import {baseInfo} from './components'
   import commonMixins from './common.mixins'
-  import {addClient, updateClientInfo, createAccount} from '@/service'
+  import {addClient, updateClientInfo, createAccount, bindWeixinPay} from '@/service'
 
   export default {
     name: 'add',
@@ -225,7 +225,7 @@
           'appSecret',
           'jsFile',
           'mchId',
-          'serviceKey',
+          'mchKey',
           'certificate'
         ]
         this.resetItemField(itemArr, true)
@@ -255,7 +255,7 @@
               } else {
                 if (!this.dataForm.isOpenPayment) {
                   // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
-                  this.resetItemField(['mchId', 'serviceKey', 'certificate'], true)
+                  this.resetItemField(['mchId', 'mchKey', 'certificate'], true)
                 }
                 this.createClient()
               }
@@ -330,12 +330,19 @@
       // 开通支付
       openPayment() {
         let payObj = {
-          mchId: this.dataForm.mchId
+          clientId: this.clientId,
+          mchId: this.dataForm.mchId,
+          mchKey: this.dataForm.mchKey,
+          payCertFileName: this.dataForm.certificate
         }
-        setTimeout(() => {
-          this.createLoading = false
-          this.dialogVisible = true
-        }, 300)
+        bindWeixinPay(payObj).then(res => {
+          if (res.status === 'true') {
+            this.createLoading = false
+            this.dialogVisible = true
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
         console.log(payObj, 'openPayment')
       },
 

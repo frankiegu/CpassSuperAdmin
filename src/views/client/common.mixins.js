@@ -134,7 +134,7 @@ export default {
         // 开通微信支付功能
         isOpenPayment: false,
         mchId: '', // 客户服务号mch_ID
-        serviceKey: '', // 客户服务号key
+        mchKey: '', // 客户服务号key
         certificate: '' // 支付证书
       },
 
@@ -146,7 +146,7 @@ export default {
         appSecret: [{validator: checkAppSecret, trigger: 'blur, change'}],
         jsFile: [{validator: checkInFile, trigger: 'blur, change'}],
         mchId: [{validator: checkMchId, trigger: 'blur, change'}],
-        serviceKey: [{validator: checkServiceKey, trigger: 'blur, change'}],
+        mchKey: [{validator: checkServiceKey, trigger: 'blur, change'}],
         certificate: [{validator: checkCeFile, trigger: 'blur, change'}]
       }
     }
@@ -254,14 +254,14 @@ export default {
     beforeUploadCeFile(file) {
       this.uploadLoading2 = true
       const isP12 = file.type === 'application/x-pkcs12'
-      // const isCompleted = !!this.dataForm.mchId && !!this.dataForm.serviceKey
+      // const isCompleted = !!this.dataForm.mchId && !!this.dataForm.mchKey
       // if (!isCompleted) {
       //   this.uploadLoading2 = false
       //   this.$message.error('请先填写mch_ID和key！')
       //   this.$refs['mchId'].validate()
-      //   this.$refs['serviceKey'].validate()
+      //   this.$refs['mchKey'].validate()
       //   this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
-      //   this.$refs['serviceKey'].validateMessage = 'key不能为空！'
+      //   this.$refs['mchKey'].validateMessage = 'key不能为空！'
       //   return isCompleted
       // }
       if (!isP12) {
