@@ -126,7 +126,7 @@ export default {
         validity: '', // 有效期
         isPermanent: false, // 是否永久有效
         account: '',
-        useStatus: 1,
+        productStatus: 1,
         appId: '',
         appSecret: '',
         jsFile: '', // JS接口文件

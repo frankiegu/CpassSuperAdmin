@@ -11,7 +11,7 @@
         <h3 class="grid-title">状态管理</h3>
         <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" :required="true">
           <el-select v-model="dataForm.productId" class="width300px">
-            <el-option value="完整版"></el-option>
+            <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
           </el-select>
         </el-form-item>
 
@@ -34,7 +34,7 @@
         </el-form-item>
 
         <el-form-item label="使用控制">
-          <el-switch v-model="dataForm.useStatus" :inative-value="0" :active-value="1"></el-switch>
+          <el-switch v-model="dataForm.productStatus" :inative-value="0" :active-value="1"></el-switch>
         </el-form-item>
 
         <!-- 开通资料 -->
@@ -144,6 +144,13 @@
         :close-on-press-escape="false"
         center>
 
+        <!-- 保存修改确认弹窗 -->
+        <p class="text-center" v-if="dialogType === 'save'">确认保存修改内容？</p>
+        <span slot="footer" v-if="dialogType === 'save'">
+          <el-button type="primary" class="width120px" @click="handleUpdateClient">确定</el-button>
+          <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
+        </span>
+
         <!-- 跳转确认弹窗内容 -->
         <p class="text-center" v-if="dialogType === 'jump'">已录入的资料将丢失，确定取消？</p>
         <span slot="footer" v-if="dialogType === 'jump'">
@@ -171,9 +178,7 @@
     },
     props: {},
     components: {baseInfo},
-    mounted() {
-      this.handleGetDetail()
-    },
+    mounted() {},
     watch: {},
     computed: {},
     filters: {},
@@ -186,10 +191,32 @@
         this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
         this.dataForm.contact = 'PN'
         this.dataForm.phone = '13566666666'
+        this.dataForm.productId = '1'
+        this.dataForm.isPermanent = true
+        this.dataForm.appId = 'sad'
+        this.dataForm.appSecret = 'dad'
+        this.dataForm.jsFile = 'dad.txt'
       },
 
       // 提交修改
-      submitDataForm () {},
+      submitDataForm () {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            this.dialogType = 'save'
+            if (this.hasChangeForm) {
+              this.dialogVisible = true
+            } else {
+              this.$message.info('信息未改动！')
+            }
+          } else {
+            return false
+          }
+        })
+      },
+      // 更新客户资料
+      handleUpdateClient() {
+        console.log('hhhh')
+      },
 
       // 返回按钮事件
       handleBackList() {

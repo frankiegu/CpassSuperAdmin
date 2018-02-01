@@ -24,7 +24,7 @@
           </el-form-item>
 
           <el-form-item label="支付功能">
-            <p class="theme-red">{{dataForm.isOpenPayment ? '已开通' : '关闭'}}</p>
+            <p class="theme-red">{{dataForm.spaceWeixinPayId ? '已开通' : '关闭'}}</p>
           </el-form-item>
 
           <!-- 客户微信服务号资料 -->
@@ -32,8 +32,8 @@
           <el-form-item label="客户服务号AppID"><p>{{dataForm.appId}}</p></el-form-item>
           <el-form-item label="客户服务号AppSecret"><p>{{dataForm.appSecret}}</p></el-form-item>
           <!-- 如没有开通支付，则无mch_id和key信息 -->
-          <el-form-item label="客户服务号mch_ID" v-if="dataForm.isOpenPayment"><p>{{dataForm.mchId}}</p></el-form-item>
-          <el-form-item label="客户服务号key" v-if="dataForm.isOpenPayment"><p>{{dataForm.mchKey}}</p></el-form-item>
+          <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId"><p>{{dataForm.mchId}}</p></el-form-item>
+          <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId"><p>{{dataForm.mchKey}}</p></el-form-item>
         </div>
       </el-form>
     </div>
@@ -70,7 +70,7 @@
           appSecret: 'g44syy5setwyg5g54',
 
           // 开通微信支付功能
-          isOpenPayment: true,
+          spaceWeixinPayId: 1,
           mchId: 'faaaaaageagea', // 客户服务号mch_ID
           mchKey: 'daegahikljldajigjaie' // 客户服务号key
         }
