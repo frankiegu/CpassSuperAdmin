@@ -9,8 +9,8 @@
 
         <!-- 状态管理 -->
         <h3 class="grid-title">状态管理</h3>
-        <el-form-item label="产品版本" prop="product" ref="product" :rules="dataRules.product" :required="true">
-          <el-select v-model="dataForm.product" class="width300px">
+        <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" :required="true">
+          <el-select v-model="dataForm.productId" class="width300px">
             <el-option value="完整版"></el-option>
           </el-select>
         </el-form-item>
@@ -64,7 +64,7 @@
             class="width300px upload-input">
             <el-upload
               v-show="!uploadLoading1"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="jsUploadPath"
               accept="text/plain"
               name="jsFile"
               :multiple="false"
@@ -114,9 +114,9 @@
             class="width300px upload-input">
             <el-upload
               v-show="!uploadLoading2"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="p12UploadPath"
               accept="application/x-pkcs12"
-              name="certificate"
+              name="payCertFile"
               :multiple="false"
               :data="{mchId: dataForm.mchId, key: dataForm.serviceKey}"
               :show-file-list="false"

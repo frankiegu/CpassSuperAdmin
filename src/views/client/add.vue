@@ -12,10 +12,10 @@
 
         <el-collapse-transition>
           <div class="account-form" v-show="dataForm.isCreateAccount">
-            <el-form-item label="产品" prop="product" ref="product"
-              :rules="dataRules.product" :required="dataForm.isCreateAccount">
-              <el-select v-model="dataForm.product" class="width300px">
-                <el-option value="完整版"></el-option>
+            <el-form-item label="产品" prop="productId" ref="productId"
+              :rules="dataRules.productId" :required="dataForm.isCreateAccount">
+              <el-select v-model="dataForm.productId" class="width300px">
+                <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
               </el-select>
             </el-form-item>
 
@@ -121,7 +121,7 @@
                 class="width300px upload-input">
                 <el-upload
                   v-show="!uploadLoading2"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :action="p12UploadPath"
                   accept="application/x-pkcs12"
                   name="certificate"
                   :multiple="false"
@@ -218,7 +218,7 @@
       // 【创建账户】收起时，点击【保存】丢弃已录入的开通资料
       resetAccountFrom() {
         let itemArr = [
-          'product',
+          'productId',
           'validity',
           'account',
           'appId',
@@ -266,8 +266,7 @@
         })
       },
       // 创建或更新客户资料
-      createClient: function () {
-        // console.log(this.dataForm)
+      createClient() {
         let clientObj = {
           id: this.clientId,
           name: this.dataForm.name,
@@ -292,7 +291,6 @@
                 this.$router.replace('/client/list')
               }, 1000)
             } else {
-              // this.$message.info('客户创建成功，等待开通账户。。。')
               if (res.info) this.clientId = res.info.id
               this.openAccount()
             }
@@ -300,34 +298,33 @@
             this.$message.error(res.msg)
           }
         })
-        setTimeout(() => {
-          this.isCreateSuccess = true
-          // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
-          if (!this.dataForm.isCreateAccount) {
-            this.createLoading = false
-            setTimeout(() => {
-              this.dialogVisible = false
-              this.$router.replace('/client/list')
-            }, 1000)
-          } else {
-            this.openAccount()
-          }
-        }, 2000)
       },
       // 开通账户
       openAccount() {
         let accountObj = {
-          product: this.dataForm.product
+          clientId: this.clientId,
+          productId: this.dataForm.productId,
+          productStartDate: this.dataForm.validity[0],
+          productEndDate: this.dataForm.validity[1],
+          isPermanent: this.dataForm.isPermanent,
+          adminUsername: this.dataForm.account,
+          appId: this.dataForm.appId,
+          appSecret: this.dataForm.appSecret,
+          jsFile: this.dataForm.jsFile
         }
-        setTimeout(() => {
-          this.isOpenSuccess = true
-          if (!this.dataForm.isOpenPayment) {
-            this.dialogVisible = true
-            this.createLoading = false
+        createAccount(accountObj).then(res => {
+          if (res.status === 'true') {
+            this.isOpenSuccess = true
+            if (!this.dataForm.isOpenPayment) {
+              this.dialogVisible = true
+              this.createLoading = false
+            } else {
+              this.openPayment()
+            }
           } else {
-            this.openPayment()
+            this.$message.error(res.msg)
           }
-        }, 3000)
+        })
         console.log(accountObj, 'openAccount')
       },
       // 开通支付

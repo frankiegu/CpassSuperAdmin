@@ -1,4 +1,5 @@
 import {PHONEREG, API_PATH} from '../../config/env'
+// import {loadConstant} from '@/service'
 
 export default {
   data () {
@@ -100,7 +101,9 @@ export default {
       clientId: this.$route.query.id,
       hasChangeForm: false,
 
+      productList: {1: '完整版'},
       jsUploadPath: API_PATH + '/admin/client/uploadJsFile',
+      p12UploadPath: API_PATH + '/admin/client/uploadPayCertFile',
       hasJsFile: 0,
       hasP12File: 0,
       uploadLoading1: false,
@@ -119,7 +122,7 @@ export default {
         isCreateAccount: false,
 
         // 开通账户信息
-        product: '',
+        productId: '',
         validity: '', // 有效期
         isPermanent: false, // 是否永久有效
         account: '',
@@ -136,7 +139,7 @@ export default {
       },
 
       dataRules: {
-        product: [{validator: checkProduct, trigger: 'blur, change'}],
+        productId: [{validator: checkProduct, trigger: 'blur, change'}],
         validity: [{validator: checkValidity, trigger: 'blur, change', type: 'array'}],
         account: [{validator: checkTel, trigger: 'blur, change'}],
         appId: [{validator: checkAppId, trigger: 'blur, change'}],
@@ -152,6 +155,15 @@ export default {
     document.title = this.title
     this.$store.commit('NAV_CRUMB', this.title)
     if (this.clientId) this.handleGetDetail()
+
+    // 获取产品类型 productConst
+    // loadConstant('productConst').then(res => {
+    //   if (res.status === 'true' && res.info) {
+    //     this.productList = res.info
+    //   } else {
+    //     this.$message.error(res.msg)
+    //   }
+    // })
 
     const initialForm = this.dataFormStr
     this.$watch('dataFormStr', {

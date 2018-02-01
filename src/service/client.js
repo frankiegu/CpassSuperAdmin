@@ -16,6 +16,21 @@ export const updateClientInfo = (obj) => fetch(API_PATH + '/admin/client/updateC
 // 创建智众账户
 export const createAccount = (obj) => fetch(API_PATH + '/admin/client/createAccount', obj, 'POST')
 
+// 设置智众账户状态
+export const setAccountStatus = (obj) => fetch(API_PATH + '/admin/client/setAccountStatus', obj, 'POST')
+
+// 编辑智众账户
+export const updateAccount = (obj) => fetch(API_PATH + '/admin/client/updateAccount', obj, 'POST')
+
+// 开通微信支付功能
+export const bindWeixinPay = (obj) => fetch(API_PATH + '/admin/client/bindWeixinPay', obj, 'POST')
+
+// 编辑微信支付信息
+export const updateWeixinPay = (obj) => fetch(API_PATH + '/admin/client/updateWeixinPay', obj, 'POST')
+
+// 设置微信支付状态
+export const setWeixinPayStatus = (obj) => fetch(API_PATH + '/admin/client/setWeixinPayStatus', obj, 'POST')
+
 // 客户详情
 export const clientDetail = (obj) => fetch(API_PATH + '/admin/client/detail', obj, 'GET')
 
