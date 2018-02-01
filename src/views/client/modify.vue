@@ -135,6 +135,22 @@
           <el-button type="primary" class="width120px" @click="submitDataForm">保存</el-button>
         </el-form-item>
       </el-form>
+
+      <el-dialog
+        :visible.sync="dialogVisible"
+        top="32vh"
+        class="sp-confirm-box"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        center>
+
+        <!-- 跳转确认弹窗内容 -->
+        <p class="text-center" v-if="dialogType === 'jump'">已录入的资料将丢失，确定取消？</p>
+        <span slot="footer" v-if="dialogType === 'jump'">
+          <el-button type="primary" class="width120px" @click="$router.replace('/client/list')">确定</el-button>
+          <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -148,14 +164,15 @@
     mixins: [commonMixins],
     data() {
       return {
-        pageTitle: ''
+        pageTitle: '',
+        dialogType: '',
+        createLoading: false
       }
     },
     props: {},
     components: {baseInfo},
     mounted() {
       this.handleGetDetail()
-      this.dataForm.isCreateAccount = true
     },
     watch: {},
     computed: {},
@@ -165,6 +182,7 @@
       handleGetDetail() {
         let obj = {id: this.clientId}
         console.log(obj)
+        this.dataForm.isCreateAccount = true
         this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
         this.dataForm.contact = 'PN'
         this.dataForm.phone = '13566666666'

@@ -1,5 +1,5 @@
 import {PHONEREG, API_PATH} from '../../config/env'
-// import {loadConstant} from '@/service'
+// import {loadConstant, clientDetail} from '@/service'
 
 export default {
   data () {
@@ -280,5 +280,17 @@ export default {
     successUploadCeFile(response, file, fileList) {
       this.uploadLoading2 = false
     }
+
+    // 获取客户详情
+    // handleGetDetail() {
+    //   let obj = {clientId: this.clientId}
+    //   clientDetail(obj).then(res => {
+    //     if (res.status === 'true') {
+    //       this.dataForm = res.info
+    //     } else {
+    //       this.$message.error(res.msg)
+    //     }
+    //   })
+    // }
   }
 }

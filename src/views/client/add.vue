@@ -387,37 +387,4 @@
       display: block;
     }
   }
-  .sp-confirm-box {
-    border: none;
-    .el-dialog {
-      border-radius: 4px;
-      width: 420px;
-    }
-    .el-message-box__header, .el-dialog__header {
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
-      padding-top: 10px;
-      /*background-color: $theme-blue;*/
-    }
-    .el-message-box__headerbtn, .el-dialog__headerbtn {
-      top: 10px;
-      .el-message-box__close, .el-dialog__close {
-        /*color: #ffffff;*/
-      }
-    }
-    .el-message-box__content, .el-dialog__body {
-      padding-top: 20px;
-      padding-bottom: 20px;
-    }
-    span.el-icon-success {
-      display: block;
-      margin: 10px auto;
-      font-size: 30px;
-      color: $theme-blue;
-    }
-    .success-tip {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-  }
 </style>
