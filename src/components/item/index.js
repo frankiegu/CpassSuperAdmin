@@ -1,3 +1,3 @@
 import detailItem from './main'
 
-export default detailItem;
+export default detailItem

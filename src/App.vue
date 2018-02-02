@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app">
     <router-view></router-view>
   </div>
 </template>
@@ -13,4 +13,3 @@
  @import "./styles/common";
  @import "./styles/public";
 </style>
-

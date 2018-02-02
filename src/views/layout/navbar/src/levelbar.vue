@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import { mapGetters } from 'vuex'
   export default {
     created () {
       this.getBreadcrumb()
@@ -38,6 +38,8 @@
         const first = matched[0]
         if (first && (first.name !== '首页' || first.path !== '')) {
           matched = [{ name: '首页', path: '/' }].concat(matched)
+        } else {
+          matched = [{ name: '首页', path: '/' }]
         }
         this.levelList = matched
       }

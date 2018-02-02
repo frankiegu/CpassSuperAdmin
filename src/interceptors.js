@@ -12,7 +12,7 @@ function catchErr (next, error) {
     duration: 1500
   })
   store.dispatch('logout').then(res => {
-    next({path: '/'})
+    next({ path: '/' })
   })
 }
 
@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
         // 拿到用户信息之后，马上设置了 hasResources = 'yes'
         store.dispatch('getPermission').then(() => {
           // 要加上 {...to}，否则一刷新就是空白，要再访问另一个路由才能把路由添加进来
-          next({...to})
+          next({ ...to })
         }).catch(err => catchErr(next, err))
       } else {
         next()
@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
       next({
         path: '/login',
         // 将跳转的路由path作为参数，登录成功后跳转到该路由
-        query: {redirect: to.fullPath}
+        query: { redirect: to.fullPath }
       })
       // 在hash模式下 改变手动改变hash 重定向回来 不会触发afterEach 暂时hack方案 ps：history模式下无问题，可删除该行！
       nProgress.done()

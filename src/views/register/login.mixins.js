@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import {checkPhone} from '@/config/utils'
+import { checkPhone } from '@/config/utils'
 
 export default {
   data () {
@@ -13,7 +13,6 @@ export default {
         callback();
       }
     };
-
     const validateUserName = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入账号'));
@@ -29,10 +28,9 @@ export default {
         password: '123456'
       },
       formRules: {
-        username: [{required: true, trigger: 'blur,change', validator: validateUserName}],
-        password: [{required: true, trigger: 'blur,change', validator: validatePass}]
+        username: [{ required: true, trigger: 'blur,change', validator: validateUserName }],
+        password: [{ required: true, trigger: 'blur,change', validator: validatePass }]
       }
     }
   }
 }
-

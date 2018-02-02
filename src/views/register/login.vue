@@ -74,12 +74,12 @@
             this.loading = true;
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
-              this.$router.push({path: '/'})
+              this.$router.push({ path: '/' })
             }).catch(err => {
               this.setMsg('error', err)
               this.loading = false
             })
-          } else return
+          }
         })
       }
     }

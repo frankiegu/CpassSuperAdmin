@@ -7,12 +7,12 @@
     <div class="detail-box" id="captureDom">
       <div class="detail-head">
         基础信息
-        <el-button
+        <!-- <el-button
           @click="sendMsg"
           icon="el-icon-bell"
           class="ml15"
           type="primary"
-          size="mini">短信通知</el-button>
+          size="mini">短信通知</el-button> -->
       </div>
 
       <div class="detail-content">
@@ -68,12 +68,13 @@
 
 <script>
   import accountMixins from './account.mixins'
-  import ClientDialog from './components/dialog'
+  import clientDialog from './components/dialog'
   import qrCode from 'vue-qrcode-component'
-  import capturePdfMixins from '@/config/mixins/capture-pdf'
+  import capturePdfMixins from '@/mixins/capture-pdf'
+
   export default {
     mixins: [accountMixins, capturePdfMixins],
-    components: { qrCode, [ClientDialog.name]: ClientDialog },
+    components: { qrCode, [clientDialog.name]: clientDialog },
     data () {
       return {
         dialogStatus: false,

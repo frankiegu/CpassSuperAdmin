@@ -175,18 +175,17 @@
 
 <script>
   import { API_PATH } from '@/config/env'
-  import tableMixins from '@/config/mixins/table'
-  import {comPickerOptions} from '@/config/data/head'
+  import tableMixins from '@/mixins/table'
+  import pickerOptions from '@/mixins/pickerOptions'
   import { formatTimeString, downloadFile } from '@/config/utils'
   export default {
-    mixins: [tableMixins],
+    mixins: [tableMixins, pickerOptions],
     data () {
       return {
         channels: [
-          {id: 1, channel: '后台创建'},
-          {id: 2, channel: '客户自助注册'}
+          { id: 1, channel: '后台创建' },
+          { id: 2, channel: '客户自助注册' }
         ],
-        pickerOptions: comPickerOptions,
         formData: {
           demo: '',
           no: null,
@@ -205,8 +204,8 @@
       getPageData() {
         this.tableEmpty = '暂时无数据'
         this.tableData = [
-          {id: 1, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 1},
-          {id: 2, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 2}
+          { id: 1, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 1 },
+          { id: 2, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 2 }
         ]
       },
       exportExcel() {

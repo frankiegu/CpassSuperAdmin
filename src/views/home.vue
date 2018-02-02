@@ -9,7 +9,6 @@
       return {}
     },
     mounted () {
-      // test
     },
     methods: {
     }

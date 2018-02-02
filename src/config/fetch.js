@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from '@/router'
 import qs from 'qs'
-import {logoutNoToken} from '@/config/utils'
+import { logoutNoToken } from '@/config/utils'
 
 // http request 拦截器
 axios.interceptors.request.use((config) => {
@@ -27,10 +27,10 @@ axios.interceptors.response.use(response => {
       case '200':
         break
       case '401':
-        router.replace({path: '/not-permission'})
+        router.replace({ path: '/not-permission' })
         break
       case '500':
-        router.replace({path: '/500'})
+        router.replace({ path: '/500' })
         break
       case '504':
       case '4010':
@@ -48,10 +48,10 @@ axios.interceptors.response.use(response => {
   if (error.response) {
     switch (error.response.data.code) {
       case '401':
-        router.replace({path: '/not-permission'})
+        router.replace({ path: '/not-permission' })
         break
       case '500':
-        router.replace({path: '/500'})
+        router.replace({ path: '/500' })
         break
       case '504':
       case '4010':
@@ -78,13 +78,11 @@ export default function fetch (url, params, method) {
   }
 
   return new Promise((resolve, reject) => {
-    axios(requestConfig)
-    .then(response => {
+    axios(requestConfig).then(response => {
       resolve(response.data)
     }, err => {
       reject(err)
-    })
-    .catch((error) => {
+    }).catch((error) => {
       reject(error)
     })
   })

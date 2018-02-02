@@ -1,9 +1,9 @@
 import store from '@/store'
 export default{
-  inserted: function (el, binding) {
-    let totalPermissions = store.getters.getPermissions
+  inserted: function(el, binding) {
+    const totalPermissions = store.getters.getPermissions
     let hasPermissions
-    let param = binding.value
+    const param = binding.value
 
     if ((typeof param) === 'object') {
       for (var item of param) {

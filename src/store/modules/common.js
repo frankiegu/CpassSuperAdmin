@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'
 
 const common = {
   state: {
@@ -19,17 +19,17 @@ const common = {
     },
     TOGGLE_SIDEBAR: state => {
       if (state.sidebar.opened) {
-        Cookies.set('sidebarStatus', 1);
+        Cookies.set('sidebarStatus', 1)
       } else {
-        Cookies.set('sidebarStatus', 0);
+        Cookies.set('sidebarStatus', 0)
       }
-      state.sidebar.opened = !state.sidebar.opened;
+      state.sidebar.opened = !state.sidebar.opened
     }
   },
 
   actions: {
-    toggleSideBar: ({commit}) => commit('TOGGLE_SIDEBAR')
+    toggleSideBar: ({ commit }) => commit('TOGGLE_SIDEBAR')
   }
 }
 
-export default common;
+export default common

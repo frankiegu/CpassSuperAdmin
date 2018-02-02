@@ -1,4 +1,4 @@
-import { hasPermissions } from './utils'
+import { hasPermissions } from '@/config/utils'
 // 公共的设置弹窗的方法
 export default {
   data () {

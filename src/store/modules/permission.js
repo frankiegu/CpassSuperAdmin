@@ -1,4 +1,4 @@
-import {constantRouterMap} from '@/router/src/routes'
+import { constantRouterMap } from '@/router/src/routes'
 // import {getByAdminUserId} from '@/service'
 // import {hasPermissions} from '@/config/utils'
 
@@ -57,6 +57,6 @@ const permission = {
       })
     }
   }
-};
+}
 
-export default permission;
+export default permission

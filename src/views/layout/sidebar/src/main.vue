@@ -1,58 +1,38 @@
 <template>
   <el-menu
+    :unique-opened="true"
     :default-active="$route.path"
-    :unique-opened="uniqueOpened"
+    :collapse="!sidebar.opened"
     class="sidebar-box"
     mode="vertical"
-    theme="light" >
+    theme="light">
     <sidebar-item :routes='getAddRouters'></sidebar-item>
   </el-menu>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import sidebarItem from './sidebar-item'
-  import {constantRouterMap} from '@/router/src/routes'
+  import { constantRouterMap } from '@/router/src/routes'
   export default {
     components: { sidebarItem },
+    data () {
+      return {}
+    },
     computed: {
+      ...mapGetters([
+        'sidebar'
+      ]),
       getAddRouters: function () {
         return constantRouterMap
       }
     },
-    data () {
-      return {
-        uniqueOpened: true
-      }
-    },
     mounted () {
+      // console.log('sidebar: ', this.getAddRouters)
     }
   }
 </script>
 
-<style lang="scss">
-  .sidebar-box {
-    .el-submenu .el-menu-item {
-      min-width: 180px;
-      padding-left: 51px !important;
-      padding-right: 0 !important;
-    }
-    .el-menu {
-      background-color: #fff !important;
-    }
-    .el-submenu .el-menu-item:hover, .el-menu-item.is-active, .el-submenu__title:hover {
-      background-color: #F3F3F9
-    }
-    .app-wrapper .sidebar-container {
-      right: 0 !important;
-      overflow: auto !important;
-    }
-  }
-</style>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .sidebar-box {
-    .el-menu {
-      min-height: 100%;
-    }
-  }
 </style>
 

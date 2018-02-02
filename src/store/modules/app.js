@@ -1,6 +1,6 @@
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'
 // import {login, logout} from '@/service'
-import {logoutNoToken} from '@/config/utils'
+import { logoutNoToken } from '@/config/utils'
 
 const app = {
   state: {
@@ -59,6 +59,6 @@ const app = {
       })
     }
   }
-};
+}
 
-export default app;
+export default app

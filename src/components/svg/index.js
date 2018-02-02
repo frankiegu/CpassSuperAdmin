@@ -1,3 +1,3 @@
 import svg from './main'
 
-export default svg;
+export default svg

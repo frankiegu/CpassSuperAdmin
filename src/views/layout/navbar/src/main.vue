@@ -22,10 +22,10 @@
 
 <script>
   import levelbar from './levelbar'
-  import {mapGetters, mapActions} from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: {levelbar},
+    components: { levelbar },
     data () {
       return {}
     },

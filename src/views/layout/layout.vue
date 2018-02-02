@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import { mapGetters } from 'vuex'
   import navbar from './navbar'
   import sidebar from './sidebar'
 
@@ -50,29 +50,23 @@
     width: 100%;
 
     .app-in {
-      min-height: 80vh;
-      min-width: 600px;
+      min-height: 77vh;
     }
     .layout-footer {
       padding: 0 16px;
-      margin: 48px 0 24px;
+      margin: 70px 0 24px;
       text-align: center;
     }
     &.hideSidebar {
       .sidebar-wrapper {
-        transform: translate(-140px, 0);
-        .sidebar-container {
-          transform: translate(132px, 0);
-        }
-        &:hover {
-          transform: translate(0, 0);
-          .sidebar-container {
-            transform: translate(0, 0);
-          }
-        }
+        left: -10px;
+        width: 50px;
       }
       .main-container {
         margin-left: 40px;
+      }
+      .sidebar-wrapper {
+        width: 50px;
       }
     }
     .navbar-wrapper {
@@ -80,7 +74,6 @@
       left: 0;
       top: 0;
       z-index: 1001;
-      // opacity: .9;
       width: 100%;
     }
     .sidebar-wrapper {
@@ -91,25 +84,20 @@
       left: 0;
       z-index: 1001;
       overflow: hidden;
-      transition: all .28s ease-out;
-    }
-    .sidebar-container {
-      transition: all .28s ease-out;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: -18px;
-      overflow-y: scroll;
+
+      .sidebar-container {
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+      }
     }
     .main-container {
       padding: 0 30px;
       min-height: 100%;
-      transition: all .28s ease-out;
       margin-left: 180px;
     }
     .app-main {
-      min-height: 90vh;
+      min-height: 88vh;
     }
   }
 </style>

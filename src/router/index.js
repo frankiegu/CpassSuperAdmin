@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import {routerMode} from '@/config/env'
-import {constantRouterMap} from './src/routes'
+import { routerMode } from '@/config/env'
+import { constantRouterMap } from './src/routes'
 
 Vue.use(VueRouter)
 

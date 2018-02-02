@@ -1,3 +1,3 @@
 import title from './main'
 
-export default title;
+export default title

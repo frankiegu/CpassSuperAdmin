@@ -1,6 +1,5 @@
 <template>
   <div class="logout-container"></div>
-</div>
 </template>
 
 <script>
@@ -8,11 +7,11 @@
     data() {
       return {}
     },
-    mounted () {
+    mounted() {
       this.logout()
     },
     methods: {
-      logout () {
+      logout() {
         this.$store.commit('SET_TOKEN', '')
         this.$store.commit('SET_RESOURCES', 'no')
         sessionStorage.removeItem('token')

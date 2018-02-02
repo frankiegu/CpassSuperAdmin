@@ -18,14 +18,14 @@ const counter = {
   },
 
   actions: {
-    increment: ({commit}) => commit('INCREMENT'),
-    decrement: ({commit}) => commit('DECREMENT'),
-    incrementIfOdd({commit, state}) {
+    increment: ({ commit }) => commit('INCREMENT'),
+    decrement: ({ commit }) => commit('DECREMENT'),
+    incrementIfOdd({ commit, state }) {
       if ((state.count + 1) % 2 === 0) {
         commit('INCREMENT')
       }
     },
-    incrementAsync({commit}) {
+    incrementAsync({ commit }) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           commit('INCREMENT')
@@ -36,4 +36,4 @@ const counter = {
   }
 }
 
-export default counter;
+export default counter

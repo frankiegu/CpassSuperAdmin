@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import {checkPhone} from '@/config/utils'
+  import { checkPhone } from '@/config/utils'
   import accountMixins from '../account.mixins'
   export default {
     name: 'ClientDialog',
@@ -87,7 +87,7 @@
           account: ''
         },
         rules: {
-          account: [{required: true, trigger: 'blur,change', validator: validateTel}]
+          account: [{ required: true, trigger: 'blur,change', validator: validateTel }]
         }
       }
     },
@@ -125,7 +125,7 @@
                   this.loadingStatus = false
                   this.dialogType = 'resetAccount'
                 }, 300)
-              } else return
+              }
             });
             break;
           case 'resetAccount':

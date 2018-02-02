@@ -1,3 +1,3 @@
 import option from './main'
 
-export default option;
+export default option
