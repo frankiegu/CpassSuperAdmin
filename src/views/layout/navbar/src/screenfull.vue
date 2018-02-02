@@ -5,8 +5,8 @@
       placement="bottom"
       effect="light">
       <lh-svg
-        :iconClass="(isFullscreen ? 'icon-caozuo-quanping-zhankai' : 'icon-caozuo-quanping-shousuo')"
-        class="screenfull"></lh-svg>
+        :iconClass="(isFullscreen ? 'icon-shipinquanping' : 'icon-tuichuquanping')"
+        class="screenfull-style"></lh-svg>
     </el-tooltip>
   </div>
 </template>
@@ -36,10 +36,10 @@
 <style lang="scss" scoped>
   @import 'src/styles/config';
 
-  .screenfull {
-    width: 30px;
-    height: 30px;
-    margin: 15px 40px 0 0;
+  .screenfull-style {
+    width: 25px;
+    height: 25px;
+    margin: 20px 35px 0 0;
     color: $theme-gray;
   }
 </style>

@@ -14,16 +14,16 @@
 <script>
   import { mapGetters } from 'vuex'
   export default {
-    created () {
+    created() {
       this.getBreadcrumb()
     },
-    data () {
+    data() {
       return {
         levelList: null
       }
     },
     watch: {
-      $route () {
+      $route() {
         this.getBreadcrumb()
       }
     },
