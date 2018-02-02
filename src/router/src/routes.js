@@ -9,7 +9,7 @@ export const constantRouterMap = [
   {
     name: '首页',
     path: '',
-    redirect: 'home',
+    redirect: '/client/list',
     component: layout,
     hidden: true,
     children: [

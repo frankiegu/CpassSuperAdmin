@@ -17,15 +17,18 @@
     </div>
 
     <levelbar></levelbar>
+
+    <screenfull class="fr"></screenfull>
   </el-menu>
 </template>
 
 <script>
   import levelbar from './levelbar'
+  import screenfull from './screenfull'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: { levelbar },
+    components: { levelbar, screenfull },
     data () {
       return {}
     },
