@@ -1,11 +1,11 @@
 import { PHONEREG, API_PATH } from '@/config/env'
-// import {loadConstant, clientDetail} from '@/service'
+import { loadConstant, clientDetail } from '@/service'
 
 export default {
   data () {
     // 自定义校验规则
     const checkTel = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount) {
+      if (this.isCreateAccount) {
         if (!value) {
           return callback(new Error('登录账号不能为空！'))
         }
@@ -17,7 +17,7 @@ export default {
       callback()
     }
     const checkProduct = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount) {
+      if (this.isCreateAccount) {
         if (!value) {
           return callback(new Error('产品不能为空！'))
         }
@@ -26,7 +26,7 @@ export default {
       callback()
     }
     const checkValidity = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount && !this.dataForm.isPermanent) {
+      if (this.isCreateAccount && !this.dataForm.isPermanent) {
         if (!value || value.length < 2) {
           return callback(new Error('请选择有效期限或永久有效'))
         }
@@ -35,7 +35,7 @@ export default {
       callback()
     }
     const checkAppId = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount) {
+      if (this.isCreateAccount) {
         if (!value) {
           return callback(new Error('AppID不能为空！'))
         }
@@ -44,7 +44,7 @@ export default {
       callback()
     }
     const checkAppSecret = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount) {
+      if (this.isCreateAccount) {
         if (!value) {
           return callback(new Error('AppSecret不能为空！'))
         }
@@ -53,7 +53,7 @@ export default {
       callback()
     }
     const checkInFile = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount) {
+      if (this.isCreateAccount) {
         if (!value) {
           if (this.hasJsFile > 0) {
             return callback(new Error('非正确的接口文件！'))
@@ -66,7 +66,7 @@ export default {
       callback()
     }
     const checkMchId = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount && this.dataForm.isOpenPayment) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenPayment) {
         if (!value) {
           return callback(new Error('mch_ID不能为空！'))
         }
@@ -75,7 +75,7 @@ export default {
       callback()
     }
     const checkServiceKey = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount && this.dataForm.isOpenPayment) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenPayment) {
         if (!value) {
           return callback(new Error('key不能为空！'))
         }
@@ -84,7 +84,7 @@ export default {
       callback()
     }
     const checkCeFile = (rule, value, callback) => {
-      if (this.dataForm.isCreateAccount && this.dataForm.isOpenPayment) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenPayment) {
         if (!value) {
           if (this.hasP12File > 0) {
             return callback(new Error('非正确的证书！'))
@@ -106,9 +106,10 @@ export default {
         }
       },
 
-      productList: { 1: '完整版' },
-      jsUploadPath: API_PATH + '/admin/client/uploadJsFile',
-      p12UploadPath: API_PATH + '/admin/client/uploadPayCertFile',
+      isCreateAccount: false,
+      productList: {},
+      jsUploadPath: API_PATH + '/supervisor/client/uploadJsFile',
+      p12UploadPath: API_PATH + '/supervisor/client/uploadPayCertFile',
       hasJsFile: 0,
       hasP12File: 0,
       uploadLoading1: false,
@@ -124,12 +125,11 @@ export default {
         weixin: '',
         remark: '',
         saleManager: '',
-        isCreateAccount: false,
 
         // 开通账户信息
         productId: '',
         validity: '', // 有效期
-        isPermanent: false, // 是否永久有效
+        isPermanent: 0, // 是否永久有效
         account: '',
         productStatus: 1,
         appId: '',
@@ -137,7 +137,8 @@ export default {
         jsFile: '', // JS接口文件
 
         // 开通微信支付功能
-        isOpenPayment: false,
+        isOpenPayment: 0,
+        spaceWeixinPayId: '',
         mchId: '', // 客户服务号mch_ID
         mchKey: '', // 客户服务号key
         certificate: '' // 支付证书
@@ -162,13 +163,13 @@ export default {
     if (this.clientId) this.handleGetDetail()
 
     // 获取产品类型 productConst
-    // loadConstant('productConst').then(res => {
-    //   if (res.status === 'true' && res.info) {
-    //     this.productList = res.info
-    //   } else {
-    //     this.$message.error(res.msg)
-    //   }
-    // })
+    loadConstant('productConst').then(res => {
+      if (res.status === 'true' && res.info) {
+        this.productList = res.info
+      } else {
+        this.$message.error(res.msg)
+      }
+    })
 
     const initialForm = this.dataFormStr
     this.$watch('dataFormStr', {
@@ -284,18 +285,22 @@ export default {
     // 支付证书文件上传成功
     successUploadCeFile(response, file, fileList) {
       this.uploadLoading2 = false
-    }
+    },
 
     // 获取客户详情
-    // handleGetDetail() {
-    //   let obj = {clientId: this.clientId}
-    //   clientDetail(obj).then(res => {
-    //     if (res.status === 'true') {
-    //       this.dataForm = res.info
-    //     } else {
-    //       this.$message.error(res.msg)
-    //     }
-    //   })
-    // }
+    handleGetDetail() {
+      let obj = { clientId: this.clientId }
+      clientDetail(obj).then(res => {
+        if (res.status === 'true') {
+          this.dataForm = res.info
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+
+    changeCreateStatus(status) {
+      this.isCreateAccount = status
+    }
   }
 }

@@ -4,16 +4,16 @@
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <h3 class="grid-title">基础信息</h3>
-        <base-info :model-form="dataForm"></base-info>
+        <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
 
         <el-collapse-transition>
-          <h3 class="grid-title" v-show="dataForm.isCreateAccount">开通账户</h3>
+          <h3 class="grid-title" v-show="isCreateAccount">开通账户</h3>
         </el-collapse-transition>
 
         <el-collapse-transition>
-          <div class="account-form" v-show="dataForm.isCreateAccount">
+          <div class="account-form" v-show="isCreateAccount">
             <el-form-item label="产品" prop="productId" ref="productId"
-              :rules="dataRules.productId" :required="dataForm.isCreateAccount">
+              :rules="dataRules.productId" :required="isCreateAccount">
               <el-select v-model="dataForm.productId" class="width300px">
                 <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
               </el-select>
@@ -21,10 +21,10 @@
 
             <el-form-item label="有效期至" required>
               <el-form-item prop="validity" ref="validity" class="fl mr20"
-                :rules="dataRules.validity" :required="dataForm.isCreateAccount && !dataForm.isPermanent">
+                :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
                 <el-date-picker
                   v-model="dataForm.validity"
-                  :disabled="dataForm.isPermanent"
+                  :disabled="!!dataForm.isPermanent"
                   type="date"
                   placeholder="结束日期"
                   value-format="yyyy-MM-dd"
@@ -33,12 +33,13 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item class="fl">
-                <el-checkbox v-model="dataForm.isPermanent" @change="resetItemField('validity', true)">永久</el-checkbox>
+                <el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"
+                  @change="resetItemField('validity', true)">永久</el-checkbox>
               </el-form-item>
             </el-form-item>
 
             <el-form-item label="管理后台登录账户" prop="account" ref="account"
-              :rules="dataRules.account" :required="dataForm.isCreateAccount">
+              :rules="dataRules.account" :required="isCreateAccount">
               <el-input
                 v-model.trim="dataForm.account"
                 class="width300px"
@@ -47,7 +48,7 @@
             </el-form-item>
 
             <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
-              :rules="dataRules.appId" :required="dataForm.isCreateAccount">
+              :rules="dataRules.appId" :required="isCreateAccount">
               <el-input
                 v-model.trim="dataForm.appId"
                 class="width300px"
@@ -55,7 +56,7 @@
             </el-form-item>
 
             <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
-              :rules="dataRules.appSecret" :required="dataForm.isCreateAccount">
+              :rules="dataRules.appSecret" :required="isCreateAccount">
               <el-input
                 v-model.trim="dataForm.appSecret"
                 class="width300px"
@@ -63,7 +64,7 @@
             </el-form-item>
 
             <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
-              :rules="dataRules.jsFile" :required="dataForm.isCreateAccount">
+              :rules="dataRules.jsFile" :required="isCreateAccount">
               <el-input
                 v-model="dataForm.jsFile"
                 readonly
@@ -88,13 +89,13 @@
             </el-form-item>
 
             <el-form-item label="开通微信支付功能">
-              <el-switch v-model="dataForm.isOpenPayment"
+              <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
                 @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
               </el-switch>
             </el-form-item>
 
             <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
-              :rules="dataRules.mchId" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
+              :rules="dataRules.mchId" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchId"
                 class="width300px"
@@ -103,7 +104,7 @@
             </el-form-item>
 
             <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
-              :rules="dataRules.mchKey" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
+              :rules="dataRules.mchKey" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchKey"
                 class="width300px"
@@ -112,7 +113,7 @@
             </el-form-item>
 
             <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
-              :rules="dataRules.certificate" :required="dataForm.isCreateAccount && dataForm.isOpenPayment">
+              :rules="dataRules.certificate" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model="dataForm.certificate"
                 readonly
@@ -142,8 +143,8 @@
 
         <el-form-item>
           <el-button type="primary" class="width120px" @click="createSubmit"
-            :loading="dataForm.isCreateAccount && createLoading">
-            {{dataForm.isCreateAccount && createLoading ? '执行中...' : '保存'}}
+            :loading="isCreateAccount && createLoading">
+            {{isCreateAccount && createLoading ? '执行中...' : '保存'}}
           </el-button>
         </el-form-item>
       </el-form>
@@ -209,7 +210,7 @@
       baseInfo
     },
     mounted() {
-      if (this.clientId) this.handleGetDetail()
+      // if (this.clientId) this.handleGetDetail()
     },
     watch: {},
     computed: {},
@@ -229,15 +230,8 @@
           'certificate'
         ]
         this.resetItemField(itemArr, true)
-        this.dataForm.isPermanent = false
-        this.dataForm.isOpenPayment = false
-      },
-
-      // 获取客户详情
-      handleGetDetail() {
-        this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
-        this.dataForm.contact = 'PN'
-        this.dataForm.phone = '13566666666'
+        this.dataForm.isPermanent = 0
+        this.dataForm.isOpenPayment = 0
       },
 
       // 提交创建信息
@@ -248,7 +242,7 @@
             if (this.clientId && !this.hasChangeForm) {
               this.$message.info('信息未改动！')
             } else {
-              if (!this.dataForm.isCreateAccount) {
+              if (!this.isCreateAccount) {
                 // 开通账户被收起时，提交之前先清空账户开通信息
                 this.resetAccountFrom()
                 this.dialogVisible = true
@@ -284,7 +278,7 @@
           if (res.status === 'true') {
             this.isCreateSuccess = true
             // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
-            if (!this.dataForm.isCreateAccount) {
+            if (!this.isCreateAccount) {
               this.createLoading = false
               setTimeout(() => {
                 this.dialogVisible = false

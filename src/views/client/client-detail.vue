@@ -9,13 +9,13 @@
         <base-info :model-form="dataForm" info-type="detail"></base-info>
 
         <!-- 如该客户未开通账户，则“产品信息”和“客户微信服务号资料”内容隐藏 -->
-        <div v-if="dataForm.isCreateAccount">
+        <div v-if="isCreateAccount">
           <!-- 产品信息 -->
           <h3 class="grid-title">产品信息</h3>
           <el-form-item label="产品版本"><p class="theme-red">{{dataForm.productName}}</p></el-form-item>
 
           <el-form-item label="有效期">
-            <p v-if="dataForm.isPermanent" class="theme-red">永久</p>
+            <p v-if="!!dataForm.isPermanent" class="theme-red">永久</p>
             <p class="theme-red" v-else>{{dataForm.productStartDate}} 至 {{dataForm.productEndDate}}</p>
           </el-form-item>
 
@@ -48,6 +48,7 @@
     data() {
       return {
         clientId: this.$route.query.id,
+        isCreateAccount: true,
         dataForm: {
           // 客户基础信息
           name: '广州雷猴软件开发有限公司',
@@ -58,13 +59,12 @@
           weixin: 'gzleihou',
           remark: '汇聚青春，集结创意',
           saleManager: '黄兴镇',
-          isCreateAccount: true,
 
           // 开通账户信息
           productName: '完整版',
           productStartDate: '2017-12-25', // 有效期开始时间
           productEndDate: '2018-12-24', // 有效期结束时间
-          isPermanent: false, // 是否永久有效
+          isPermanent: 0, // 是否永久有效
           productStatus: 1,
           appId: 'e2r22g44asg4g4g',
           appSecret: 'g44syy5setwyg5g54',
