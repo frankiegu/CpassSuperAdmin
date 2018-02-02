@@ -15,7 +15,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'home',
-        component: _import('home').default,
+        component: _import('home'),
         hidden: true
       }
     ]
