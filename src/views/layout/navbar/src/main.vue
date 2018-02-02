@@ -10,15 +10,25 @@
       <span>酷雷托智能空间总管理后台</span>
     </router-link>
 
-    <div @click="toggleSideBarWay" class="outline-none">
+    <lh-svg
+      @click.native="toggleSideBarWay"
+      :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
+      class="hamburger hamburger-container outline-none"></lh-svg>
+
+    <!-- @#TODO 加一个退出的功能，如果后期不需要就隐藏起来 -->
+    <el-tooltip
+      content="点击退出登录"
+      placement="bottom"
+      effect="light">
       <lh-svg
-        :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
-        class="svg-icon hamburger hamburger-container"></lh-svg>
-    </div>
+        @click.native="logout"
+        iconClass="icon-logout"
+        class="logout-style fr cursor-pointer outline-none"></lh-svg>
+    </el-tooltip>
 
     <levelbar></levelbar>
 
-    <screenfull class="fr"></screenfull>
+    <screenfull class="fr cursor-pointer"></screenfull>
   </el-menu>
 </template>
 
@@ -40,7 +50,17 @@
     methods: {
       ...mapActions({
         toggleSideBarWay: 'toggleSideBar'
-      })
+      }),
+      logout () {
+        this.$store.dispatch('logout').then(res => {
+          this.$router.push({
+            path: '/login',
+            query: {
+              redirect: this.$route.path
+            }
+          })
+        })
+      }
     }
   }
 </script>
@@ -53,12 +73,19 @@
   }
 </style>
 <style lang="scss" scoped>
+  @import 'src/styles/config';
   .navbar {
     height: 60px;
     line-height: 60px;
     border-radius: 0px !important;
     background-color: #ffffff;
 
+    .logout-style {
+      width: 25px;
+      height: 25px;
+      margin: 20px 35px 0 15px;
+      color: $theme-gray;
+    }
     .hamburger {
       display: inline-block;
       cursor: pointer;
