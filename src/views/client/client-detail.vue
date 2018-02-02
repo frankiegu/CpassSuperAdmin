@@ -42,7 +42,7 @@
 
 <script>
   import baseInfo from './components/base-info'
-  import {clientDetail} from '@/service'
+  import { clientDetail } from '@/service'
   export default {
     name: 'detail',
     data() {
@@ -77,7 +77,7 @@
       }
     },
     props: {},
-    components: {baseInfo},
+    components: { baseInfo },
     mounted() {
       this.handleGetDetail()
     },
@@ -87,7 +87,7 @@
     methods: {
       // 获取客户详情
       handleGetDetail() {
-        let obj = {clientId: this.clientId}
+        let obj = { clientId: this.clientId }
         clientDetail(obj).then(res => {
           if (res.status === 'true') {
             this.dataForm = res.info

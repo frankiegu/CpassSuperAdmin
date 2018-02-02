@@ -2,7 +2,7 @@
  * 客户管理
  */
 import fetch from '../config/fetch'
-import {API_PATH} from '../config/env'
+import { API_PATH } from '../config/env'
 
 // 客户列表
 export const listClient = (obj) => fetch(API_PATH + '/admin/client/list', obj, 'GET')

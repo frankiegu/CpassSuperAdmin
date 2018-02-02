@@ -188,9 +188,9 @@
 </template>
 
 <script>
-  import {baseInfo} from './components'
+  import { baseInfo } from './components'
   import commonMixins from './common.mixins'
-  import {addClient, updateClientInfo, createAccount, bindWeixinPay} from '@/service'
+  import { addClient, updateClientInfo, createAccount, bindWeixinPay } from '@/service'
 
   export default {
     name: 'add',

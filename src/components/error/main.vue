@@ -46,7 +46,7 @@
     methods: {
       settime () {
         if (this.countdown === 0) {
-          this.$router.replace({path: '/'})
+          this.$router.replace({ path: '/' })
 
           this.countdown = 10
         } else {

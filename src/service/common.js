@@ -6,4 +6,4 @@ import { API_PATH } from '../config/env'
 // export const uploadPic = (dataJson) => fetch(API_PATH + '/manage/file/uploadPic', dataJson, 'POST')
 
 // 获取系统常量值
-export const loadConstant = (key) => fetch(API_PATH + '/common/constant/load', {key}, 'POST')
+export const loadConstant = (key) => fetch(API_PATH + '/common/constant/load', { key }, 'POST')

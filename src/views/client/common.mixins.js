@@ -1,4 +1,4 @@
-import {PHONEREG, API_PATH} from '../../config/env'
+import { PHONEREG, API_PATH } from '@/config/env'
 // import {loadConstant, clientDetail} from '@/service'
 
 export default {
@@ -101,7 +101,7 @@ export default {
       clientId: this.$route.query.id,
       hasChangeForm: false,
 
-      productList: {1: '完整版'},
+      productList: { 1: '完整版' },
       jsUploadPath: API_PATH + '/admin/client/uploadJsFile',
       p12UploadPath: API_PATH + '/admin/client/uploadPayCertFile',
       hasJsFile: 0,
@@ -139,15 +139,15 @@ export default {
       },
 
       dataRules: {
-        productId: [{validator: checkProduct, trigger: 'blur, change'}],
-        validity: [{validator: checkValidity, trigger: 'blur, change', type: 'array'}],
-        account: [{validator: checkTel, trigger: 'blur, change'}],
-        appId: [{validator: checkAppId, trigger: 'blur, change'}],
-        appSecret: [{validator: checkAppSecret, trigger: 'blur, change'}],
-        jsFile: [{validator: checkInFile, trigger: 'blur, change'}],
-        mchId: [{validator: checkMchId, trigger: 'blur, change'}],
-        mchKey: [{validator: checkServiceKey, trigger: 'blur, change'}],
-        certificate: [{validator: checkCeFile, trigger: 'blur, change'}]
+        productId: [{ validator: checkProduct, trigger: 'blur, change' }],
+        validity: [{ validator: checkValidity, trigger: 'blur, change', type: 'array' }],
+        account: [{ validator: checkTel, trigger: 'blur, change' }],
+        appId: [{ validator: checkAppId, trigger: 'blur, change' }],
+        appSecret: [{ validator: checkAppSecret, trigger: 'blur, change' }],
+        jsFile: [{ validator: checkInFile, trigger: 'blur, change' }],
+        mchId: [{ validator: checkMchId, trigger: 'blur, change' }],
+        mchKey: [{ validator: checkServiceKey, trigger: 'blur, change' }],
+        certificate: [{ validator: checkCeFile, trigger: 'blur, change' }]
       }
     }
   },

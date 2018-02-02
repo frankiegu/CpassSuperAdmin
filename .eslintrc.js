@@ -182,6 +182,10 @@ module.exports = {
     'yield-star-spacing': [1, 'both'],
     'yoda': [1, 'never'],
     'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
+    // 强制在花括号中前后添加一个空格
+    'object-curly-spacing': [2, 'always', {
+      objectsInObjects: false
+    }],
     'array-bracket-spacing': [1, 'never']
   }
 }

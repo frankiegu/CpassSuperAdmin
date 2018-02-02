@@ -163,7 +163,7 @@
 </template>
 
 <script>
-  import {baseInfo} from './components'
+  import { baseInfo } from './components'
   import commonMixins from './common.mixins'
 
   export default {
@@ -177,7 +177,7 @@
       }
     },
     props: {},
-    components: {baseInfo},
+    components: { baseInfo },
     mounted() {},
     watch: {},
     computed: {},
@@ -185,7 +185,7 @@
     methods: {
       // 获取详情
       handleGetDetail() {
-        let obj = {id: this.clientId}
+        let obj = { id: this.clientId }
         console.log(obj)
         this.dataForm.isCreateAccount = true
         this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
