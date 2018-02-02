@@ -36,9 +36,9 @@
   @import 'src/styles/config';
 
   .screenfull-style {
-    width: 25px;
-    height: 25px;
-    margin: 20px 0 0 0;
+    width: 20px;
+    height: 20px;
+    margin: 25px 0 0 0;
     color: $theme-gray;
   }
 </style>

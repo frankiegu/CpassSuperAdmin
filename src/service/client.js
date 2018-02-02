@@ -5,7 +5,7 @@ import fetch from '../config/fetch'
 import { API_PATH } from '../config/env'
 
 // 客户列表
-export const listClient = (obj) => fetch(API_PATH + '/supervisor/client/list', obj, 'GET')
+export * from './client/index'
 
 // 新增客户基础信息
 export const addClient = (obj) => fetch(API_PATH + '/supervisor/client/add', obj, 'POST')

@@ -13,10 +13,9 @@
 
         <el-form-item>
           <el-select
-            v-model="formData.demo"
+            v-model="formData.registerWay"
             placeholder="请选择生成渠道"
-            class="width150px"
-            multiple>
+            class="width150px">
             <el-option
               v-for="i in channels"
               :label="i.channel"
@@ -27,13 +26,12 @@
 
         <el-form-item>
           <el-select
-            v-model="formData.demo"
+            v-model="formData.validaty"
             placeholder="请选择有效期"
-            class="width150px"
-            multiple>
+            class="width150px">
             <el-option
-              v-for="i in channels"
-              :label="i.channel"
+              v-for="i in timeValidity"
+              :label="i.validity"
               :value="i.id"
               :key="i.id"></el-option>
           </el-select>
@@ -41,21 +39,17 @@
 
         <el-form-item>
           <el-select
-            v-model="formData.demo"
+            v-model="formData.productStatus"
             placeholder="状态"
             class="width100px"
             multiple>
-            <el-option
-              v-for="i in channels"
-              :label="i.channel"
-              :value="i.id"
-              :key="i.id"></el-option>
+            <lh-option :statusList="statusList"></lh-option>
           </el-select>
         </el-form-item>
 
         <el-form-item>
           <el-date-picker
-            v-model="formData.date"
+            v-model="formData.reg_date"
             type="daterange"
             align="right"
             clearable
@@ -68,7 +62,7 @@
 
         <el-form-item>
           <el-input
-            v-model.trim="formData.no"
+            v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
             placeholder="请输入客户名称"
             class="width150px">
@@ -77,6 +71,7 @@
           </el-input>
         </el-form-item>
 
+        <!-- @#TODO 接口没有出 -->
         <div class="fr">
           <el-button
             @click="exportExcel"
@@ -96,36 +91,36 @@
             <router-link
               :to="{path: '/client/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.name1 }}
+              {{ scope.row.name }}
             </router-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="联系人" prop="name" align="left"></el-table-column>
-        <el-table-column label="联系电话" prop="name2" width="110" align="left"></el-table-column>
-        <el-table-column label="联系邮箱" prop="name3" width="165" align="left"></el-table-column>
-        <el-table-column label="生成时间" prop="name" align="left">
+        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
+        <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
+        <el-table-column label="联系邮箱" prop="email" width="165" align="left"></el-table-column>
+        <el-table-column label="生成时间" align="left" width="155">
           <template slot-scope="scope">
-            <i class="el-icon-time"></i> {{ scope.row.name }}
+            <i class="el-icon-time"></i> {{ formatTime(scope.row.createDate) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="生成渠道" prop="name" align="left"></el-table-column>
-        <el-table-column label="产品" prop="name" align="left">
+        <el-table-column label="生成渠道" align="left">
           <template slot-scope="scope">
             <div class="label-con">
-              <span v-if="scope.row.type===1">免费版</span>
-              <span v-else-if="scope.row.type===2">专业版</span>
+              <span v-if="scope.row.registerWay===1">后台创建</span>
+              <span v-else>自助注册</span>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column label="有效期" prop="name" align="left"></el-table-column>
-        <el-table-column label="状态" align="left">
+        <el-table-column label="产品" prop="productName" align="left" width="65"></el-table-column>
+        <el-table-column label="有效期" prop="validatyAlias" align="left"></el-table-column>
+        <el-table-column label="状态" align="left" width="65">
           <template slot-scope="scope">
             <div class="label-con">
-              <el-tag v-if="scope.row.status===1" type="success">正常</el-tag>
-              <el-tag v-else-if="scope.row.status===2" type="danger">停用</el-tag>
+              <el-tag v-if="scope.row.productStatus===1" type="success">正常</el-tag>
+              <el-tag v-else type="danger">停用</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -142,19 +137,13 @@
               class="table-link margin-lr6">编辑</router-link>
 
             <router-link
-              v-if="scope.row.account === 2"
-              :to="{path: '/client/account', query: {id: scope.row.id}}"
+              v-if="scope.row.adminUserId"
+              :to="{path: '/client/account', query: {id: scope.row.adminUserId}}"
               class="table-link">
               账户
-              <!-- <el-tooltip content="点击查看账户信息" placement="top" effect="light">
-                <lh-svg icon-class="icon-order" :size="15" class="svg-icon"/>
-              </el-tooltip> -->
             </router-link>
 
             <span class="theme-gray" v-else>无账户</span>
-            <!-- <el-tooltip v-else content="未开通账户" placement="top" effect="light">
-              <lh-svg icon-class="icon-file-empty" :size="13" class="svg-icon" />
-            </el-tooltip> -->
           </template>
         </el-table-column>
       </el-table>
@@ -176,37 +165,56 @@
 <script>
   import { API_PATH } from '@/config/env'
   import tableMixins from '@/mixins/table'
+  import indexMixins from './index.mixins'
+  import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import { formatTimeString, downloadFile } from '@/config/utils'
+  import { listClient } from '@/service/client'
+
   export default {
-    mixins: [tableMixins, pickerOptions],
+    mixins: [tableMixins, pickerOptions, indexMixins],
+    components: {
+      [option.name]: option
+    },
     data () {
-      return {
-        channels: [
-          { id: 1, channel: '后台创建' },
-          { id: 2, channel: '客户自助注册' }
-        ],
-        formData: {
-          demo: '',
-          no: null,
-          startDate: null,
-          endDate: null
-        }
-      }
+      return {}
     },
     mounted () {
       this.getPageData()
     },
     methods: {
-      formatter(row, column) {
-        return '￥ ' + row.payAmount
+      formatTime(time) {
+        return time.replace(/:\d{2}$/, '')
       },
       getPageData() {
-        this.tableEmpty = '暂时无数据'
-        this.tableData = [
-          { id: 1, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 1 },
-          { id: 2, name1: 'xxx有限公司', name2: '15989026006', name3: '2395456928@qq.com', name: 'name', status: 2, type: 1, account: 2 }
-        ]
+        let formData = this.formData
+        const paramsObj = {
+          pageSize: this.pageSize,
+          pageNum: this.currentPage,
+          name: formData.name,
+          createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
+          createEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null,
+          registerWay: formData.registerWay,
+          validaty: formData.validaty,
+          productStatus: formData.productStatus
+        }
+
+        listClient(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.pageTotal = data.total
+              this.tableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
       },
       exportExcel() {
         if (!this.tableData.length) {

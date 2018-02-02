@@ -81,9 +81,9 @@
     background-color: #ffffff;
 
     .logout-style {
-      width: 25px;
-      height: 25px;
-      margin: 20px 35px 0 15px;
+      width: 20px;
+      height: 20px;
+      margin: 25px 35px 0 10px;
       color: $theme-gray;
     }
     .hamburger {

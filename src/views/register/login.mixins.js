@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import { checkPhone } from '@/config/utils'
 
 export default {
@@ -23,8 +22,9 @@ export default {
       }
     };
     return {
+      // @#TODO 上线的时候，记得清空保存到内容
       formData: {
-        username: Cookies.get('telphone') || '13800138000',
+        username: '13800138000',
         password: '123456'
       },
       formRules: {
