@@ -14,12 +14,12 @@ export default [{
   children: [{
     name: '客户列表',
     path: 'list',
-    component: _import('client/index'),
+    component: _import('client/index').default,
     hidden: true
   }, {
     name: '',
     path: 'add',
-    component: _import('client/add'),
+    component: _import('client/add').default,
     hidden: true,
     meta: {
       level2: true
@@ -27,7 +27,7 @@ export default [{
   }, {
     name: '修改客户资料',
     path: 'modify',
-    component: _import('client/modify'),
+    component: _import('client/modify').default,
     hidden: true,
     meta: {
       level2: true
@@ -35,7 +35,7 @@ export default [{
   }, {
     name: '客户详情',
     path: 'detail',
-    component: _import('client/client-detail'),
+    component: _import('client/client-detail').default,
     hidden: true,
     meta: {
       level2: true
@@ -43,7 +43,7 @@ export default [{
   }, {
     name: '账户信息',
     path: 'account',
-    component: _import('client/account'),
+    component: _import('client/account').default,
     hidden: true,
     meta: {
       // 是否是二级页包括 3级 等

@@ -14,18 +14,18 @@ export default [{
     {
       name: '服务器出错了',
       path: '/500',
-      component: _import('error/500')
+      component: _import('error/500').default
     },
     {
       name: '没有访问权限',
       path: '/not-permission',
-      component: _import('error/not-permission')
+      component: _import('error/not-permission').default
     }
   ]
 }, {
   name: '没有发现',
   path: '/not-found',
-  component: _import('error/not-found'),
+  component: _import('error/not-found').default,
   hidden: true
 }, {
   name: '没有发现 ',
