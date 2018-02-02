@@ -19,16 +19,16 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="有效期" required>
+            <el-form-item label="有效期至" required>
               <el-form-item prop="validity" ref="validity" class="fl mr20"
                 :rules="dataRules.validity" :required="dataForm.isCreateAccount && !dataForm.isPermanent">
                 <el-date-picker
                   v-model="dataForm.validity"
                   :disabled="dataForm.isPermanent"
-                  type="daterange"
-                  range-separator="-"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  type="date"
+                  placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                  :picker-options="pickerOptions"
                   style="width: 300px">
                 </el-date-picker>
               </el-form-item>

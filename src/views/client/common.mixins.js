@@ -100,6 +100,11 @@ export default {
       title: this.$route.query.id ? '客户详情' : '新增客户',
       clientId: this.$route.query.id,
       hasChangeForm: false,
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now();
+        }
+      },
 
       productList: { 1: '完整版' },
       jsUploadPath: API_PATH + '/admin/client/uploadJsFile',

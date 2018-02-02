@@ -10,31 +10,33 @@
         <!-- 状态管理 -->
         <h3 class="grid-title">状态管理</h3>
         <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" :required="true">
-          <el-select v-model="dataForm.productId" class="width300px">
+          <el-select v-model="dataForm.productId" class="width300px" :disabled="dataForm.productStatus === 0">
             <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="有效期" required>
+        <el-form-item label="有效期至" required>
           <el-form-item prop="validity" ref="validity" class="fl mr20"
             :rules="dataRules.validity" :required="!dataForm.isPermanent">
             <el-date-picker
               v-model="dataForm.validity"
-              :disabled="dataForm.isPermanent"
-              type="daterange"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :disabled="dataForm.isPermanent || dataForm.productStatus === 0"
+              type="date"
+              placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
               style="width: 300px">
             </el-date-picker>
           </el-form-item>
           <el-form-item class="fl">
-            <el-checkbox v-model="dataForm.isPermanent" @change="resetItemField('validity', true)">永久</el-checkbox>
+            <el-checkbox v-model="dataForm.isPermanent" :disabled="dataForm.productStatus === 0"
+              @change="resetItemField('validity', true)">永久</el-checkbox>
           </el-form-item>
         </el-form-item>
 
         <el-form-item label="使用控制">
-          <el-switch v-model="dataForm.productStatus" :inative-value="0" :active-value="1"></el-switch>
+          <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
+            @change="changeUseStatus"></el-switch>
         </el-form-item>
 
         <!-- 开通资料 -->
@@ -146,6 +148,8 @@
 
         <!-- 保存修改确认弹窗 -->
         <p class="text-center" v-if="dialogType === 'save'">确认保存修改内容？</p>
+        <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
+        <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">已保存</p>
         <span slot="footer" v-if="dialogType === 'save'">
           <el-button type="primary" class="width120px" @click="handleUpdateClient">确定</el-button>
           <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
@@ -173,7 +177,9 @@
       return {
         pageTitle: '',
         dialogType: '',
-        createLoading: false
+        createLoading: false,
+        isCreateSuccess: false,
+        isOpenSuccess: false
       }
     },
     props: {},
@@ -196,6 +202,14 @@
         this.dataForm.appId = 'sad'
         this.dataForm.appSecret = 'dad'
         this.dataForm.jsFile = 'dad.txt'
+      },
+
+      // 关闭使用时置灰产品和有效期控件并清除校验
+      changeUseStatus(currStatus) {
+        if (currStatus === 0) {
+          console.log(currStatus, this.$refs['productId'])
+          this.resetItemField(['productId', 'validity'])
+        }
       },
 
       // 提交修改
