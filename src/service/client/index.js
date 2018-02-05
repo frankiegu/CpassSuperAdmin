@@ -3,4 +3,4 @@ import fetch from '@/config/fetch'
 import { API_PATH } from '@/config/env'
 
 // 客户列表
-export const listClient = (obj) => fetch(API_PATH + '/supervisor/client/list', obj, 'GET')
+export const clientList = (obj) => fetch(API_PATH + '/supervisor/client/list', obj, 'GET')

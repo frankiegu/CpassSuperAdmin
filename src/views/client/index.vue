@@ -137,7 +137,7 @@
           width="110">
           <template slot-scope="scope">
             <router-link
-              :to="{path: scope.row.account === 2 ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
+              :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
               class="table-link margin-lr6">
               编辑
             </router-link>
