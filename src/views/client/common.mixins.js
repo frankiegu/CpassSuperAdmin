@@ -108,6 +108,7 @@ export default {
 
       isCreateAccount: false,
       productList: {},
+      uploadHeaders: { token: sessionStorage.getItem('token') },
       jsUploadPath: API_PATH + '/supervisor/client/uploadJsFile',
       p12UploadPath: API_PATH + '/supervisor/client/uploadPayCertFile',
       hasJsFile: 0,
@@ -241,14 +242,20 @@ export default {
         this.$refs['jsFile'].validateMessage = '非正确的接口文件！'
         this.$message.error('请选择后缀名为"txt"的JS接口文件')
         return isTxt
-      } else {
-        this.dataForm.jsFile = file.name
       }
       return isTxt
     },
     // JS接口文件上传成功
     successUploadInFile(response, file, fileList) {
-      this.uploadLoading1 = false
+      if (response.status === 'true') {
+        this.dataForm.jsFile = response.info
+        this.uploadLoading1 = false
+      } else {
+        this.uploadLoading1 = false
+        this.dataForm.jsFile = ''
+        this.$refs['jsFile'].validate()
+        this.$refs['jsFile'].validateMessage = response.msg
+      }
     },
 
     // 支付证书文件状态改变时
@@ -261,16 +268,14 @@ export default {
     beforeUploadCeFile(file) {
       this.uploadLoading2 = true
       const isP12 = file.type === 'application/x-pkcs12'
-      // const isCompleted = !!this.dataForm.mchId && !!this.dataForm.mchKey
-      // if (!isCompleted) {
-      //   this.uploadLoading2 = false
-      //   this.$message.error('请先填写mch_ID和key！')
-      //   this.$refs['mchId'].validate()
-      //   this.$refs['mchKey'].validate()
-      //   this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
-      //   this.$refs['mchKey'].validateMessage = 'key不能为空！'
-      //   return isCompleted
-      // }
+      const isCompleted = !!this.dataForm.mchId
+      if (!isCompleted) {
+        this.uploadLoading2 = false
+        this.$message.error('请先填写mch_ID')
+        this.$refs['mchId'].validate()
+        this.$refs['mchId'].validateMessage = 'mch_ID不能为空！'
+        return isCompleted
+      }
       if (!isP12) {
         this.uploadLoading2 = false
         this.dataForm.certificate = ''
@@ -278,14 +283,20 @@ export default {
         this.$refs['certificate'].validateMessage = '非正确的证书！'
         this.$message.error('请选择后缀名为"p12"的支付证书文件')
         return isP12
-      } else {
-        this.dataForm.certificate = file.name
       }
       return isP12
     },
     // 支付证书文件上传成功
     successUploadCeFile(response, file, fileList) {
-      this.uploadLoading2 = false
+      if (response.status === 'true') {
+        this.dataForm.certificate = response.info
+        this.uploadLoading2 = false
+      } else {
+        this.uploadLoading2 = false
+        this.dataForm.certificate = ''
+        this.$refs['certificate'].validate()
+        this.$refs['certificate'].validateMessage = response.msg
+      }
     },
 
     // 获取客户详情

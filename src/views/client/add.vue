@@ -7,7 +7,7 @@
         <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
 
         <el-collapse-transition>
-          <h3 class="grid-title" v-show="isCreateAccount">开 通账户</h3>
+          <h3 class="grid-title" v-show="isCreateAccount">开通账户</h3>
         </el-collapse-transition>
 
         <el-collapse-transition>
@@ -76,6 +76,7 @@
                   accept="text/plain"
                   name="jsFile"
                   :multiple="false"
+                  :headers="uploadHeaders"
                   :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
                   :show-file-list="false"
                   :on-change="changeInFile"
@@ -124,8 +125,9 @@
                   v-show="!uploadLoading2"
                   :action="p12UploadPath"
                   accept="application/x-pkcs12"
-                  name="certificate"
+                  name="payCertFile"
                   :multiple="false"
+                  :headers="uploadHeaders"
                   :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
                   :show-file-list="false"
                   :on-change="changeCeFile"
@@ -326,7 +328,7 @@
           clientId: this.clientId,
           mchId: this.dataForm.mchId,
           mchKey: this.dataForm.mchKey,
-          payCertFileName: this.dataForm.certificate
+          payCertFile: this.dataForm.certificate
         }
         bindWeixinPay(payObj).then(res => {
           if (res.status === 'true') {
