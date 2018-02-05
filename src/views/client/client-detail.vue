@@ -16,7 +16,7 @@
 
           <el-form-item label="有效期">
             <p v-if="!!dataForm.isPermanent" class="theme-red">永久</p>
-            <p class="theme-red" v-else>{{dataForm.productStartDate}} 至 {{dataForm.productEndDate}}</p>
+            <p class="theme-red" v-else>{{dataForm.productStartDate | formatTime}} 至 {{dataForm.productEndDate | formatTime}}</p>
           </el-form-item>
 
           <el-form-item label="使用状态">
@@ -51,28 +51,28 @@
         isCreateAccount: true,
         dataForm: {
           // 客户基础信息
-          name: '广州雷猴软件开发有限公司',
-          contact: 'PN',
-          phone: '13566666666',
-          email: '13566666666@163.com',
-          address: '广东省广州市天河区天河北路233号中信广场3708室',
-          weixin: 'gzleihou',
-          remark: '汇聚青春，集结创意',
-          saleManager: '黄兴镇',
+          name: '',
+          contact: '',
+          phone: '',
+          email: '',
+          address: '',
+          weixin: '',
+          remark: '',
+          saleManager: '',
 
           // 开通账户信息
-          productName: '完整版',
-          productStartDate: '2017-12-25', // 有效期开始时间
-          productEndDate: '2018-12-24', // 有效期结束时间
+          productName: '',
+          productStartDate: '', // 有效期开始时间
+          productEndDate: '', // 有效期结束时间
           isPermanent: 0, // 是否永久有效
           productStatus: 1,
-          appId: 'e2r22g44asg4g4g',
-          appSecret: 'g44syy5setwyg5g54',
+          appId: '',
+          appSecret: '',
 
           // 开通微信支付功能
-          spaceWeixinPayId: 1,
-          mchId: 'faaaaaageagea', // 客户服务号mch_ID
-          mchKey: 'daegahikljldajigjaie' // 客户服务号key
+          spaceWeixinPayId: '',
+          mchId: '', // 客户服务号mch_ID
+          mchKey: '' // 客户服务号key
         }
       }
     },
@@ -83,16 +83,23 @@
     },
     watch: {},
     computed: {},
-    filters: {},
+    filters: {
+      formatTime(time) {
+        if (!time) return ''
+        return time.split(' ')[0] // 保留至日期
+        // return time.replace(/:\d{2}$/, '') // 保留至分钟
+      }
+    },
     methods: {
       // 获取客户详情
       handleGetDetail() {
         let obj = { clientId: this.clientId }
         clientDetail(obj).then(res => {
-          if (res.status === 'true') {
+          if (res.status === 'true' && res.info) {
             this.dataForm = res.info
+            this.isCreateAccount = !!res.info.productId
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.msg | '暂无数据')
           }
         })
       }

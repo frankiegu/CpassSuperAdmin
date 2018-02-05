@@ -21,30 +21,32 @@
       <el-input v-model.trim="modelForm.phone" class="width300px" placeholder="填写联系人电话号码" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item
-      label="联系邮箱" prop="email" :rules="checkEmail"
-      v-if="infoType === 'detail' && !!modelForm.email.length || !infoType">
+    <el-form-item label="联系邮箱" prop="email" :rules="checkEmail"
+      v-if="infoType === 'detail' && (modelForm.email && !!modelForm.email.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.email}}</p>
       <el-input v-model.trim="modelForm.email" class="width300px" placeholder="填写联系人的邮箱地址" :maxlength="200" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系地址" v-if="infoType === 'detail' && !!modelForm.address.length || !infoType">
+    <el-form-item label="联系地址"
+      v-if="infoType === 'detail' && (modelForm.address && !!modelForm.address.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.address}}</p>
       <el-input v-model.trim="modelForm.address" class="width300px" placeholder="填写联系人的联系地址" :maxlength="500" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="微信服务号" v-if="infoType === 'detail' && !!modelForm.weixin.length || !infoType">
+    <el-form-item label="微信服务号"
+      v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.weixin}}</p>
       <el-input v-model.trim="modelForm.weixin" class="width300px" placeholder="填写微信服务号" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="备注" v-if="infoType === 'detail' && !!modelForm.remark.length || !infoType">
+    <el-form-item label="备注"
+      v-if="infoType === 'detail' && (modelForm.remark && !!modelForm.remark.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.remark}}</p>
       <el-input type="textarea" v-model.trim="modelForm.remark"
         class="width300px" placeholder="可填写联系人职位、负责事宜等内容" :maxlength="500" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="销售经理" v-if="infoType === 'detail' && !!modelForm.saleManager.length || !infoType">
+    <el-form-item label="销售经理" v-if="infoType === 'detail' && (modelForm.saleManager && !!modelForm.saleManager.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.saleManager}}</p>
       <el-input v-model.trim="modelForm.saleManager" class="width300px"
         placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>
