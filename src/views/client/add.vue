@@ -7,7 +7,7 @@
         <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
 
         <el-collapse-transition>
-          <h3 class="grid-title" v-show="isCreateAccount">开通账户</h3>
+          <h3 class="grid-title" v-show="isCreateAccount">开 通账户</h3>
         </el-collapse-transition>
 
         <el-collapse-transition>
