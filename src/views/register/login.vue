@@ -71,7 +71,7 @@
       handleLogin (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.loading = true;
+            this.loading = true
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
               this.$router.push({ path: '/' })

@@ -34,9 +34,6 @@ export const setWeixinPayStatus = (obj) => fetch(API_PATH + '/supervisor/client/
 // 客户详情
 export const clientDetail = (obj) => fetch(API_PATH + '/supervisor/client/detail', obj, 'GET')
 
-// 账户信息
-export const accountInfo = (obj) => fetch(API_PATH + '/supervisor/client/accountInfo', obj, 'GET')
-
 // 重置账户
 export const resetAccount = (obj) => fetch(API_PATH + '/supervisor/client/resetAccount', obj, 'POST')
 

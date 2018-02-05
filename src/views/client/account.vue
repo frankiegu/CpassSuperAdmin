@@ -1,7 +1,7 @@
 <template>
   <div class="client-account main-content">
     <lh-title
-      title="账户信息"
+      :title="pagaData.name + '账户信息'"
       @downloadPdf="downloadPdf"></lh-title>
 
     <div class="detail-box" id="captureDom">
@@ -17,14 +17,13 @@
 
       <div class="detail-content">
         <lh-item label="访问地址" label-width="180px" align="right">
-          http://so.admin.symunity.cn/
+          {{ pagaData.manageUrl }}
         </lh-item>
         <lh-item label="登录账户" label-width="180px" con-width="280px" align="right">
-          <span>{{ pagaData.tel }}</span>
+          <span>{{ pagaData.username }}</span>
           <el-button @click="showDialog('account')" class="fr mt4" type="primary" size="mini">重置账户</el-button>
         </lh-item>
         <lh-item label="登录密码" label-width="180px" con-width="280px" align="right">
-          <!-- @#TODO 根据密码的长度，展示相同数量的* -->
           <span>***********</span>
           <el-button @click="showDialog('pwd')" class="fr mt4" type="primary" size="mini">重置密码</el-button>
         </lh-item>
@@ -35,16 +34,17 @@
 
         <div class="detail-content">
           <lh-item label="微信部署地址" label-width="180px" align="right">
-            http://so.admin.symunity.cn/
+            {{ pagaData.wxUrl }}
           </lh-item>
-          <lh-item label="二维码" label-width="180px" align="right">
+          <lh-item label="二维码" label-width="180px" label-height="171px" align="right">
             <qr-code
-              :text="qrUrl"
+              :text="pagaData.wxUrl || ''"
               :size="120"
               class="pt10 qr-code"
+              id="qrCode"
               error-level="L"></qr-code>
 
-            <a :href="qrUrl" :download="'公司名+二维码'" class="lh-button">
+            <a @click="downQrImg" href="javascript:;" id="downloadQr">
               <el-button
                 icon="el-icon-download"
                 class="mt10 download-qr"
@@ -61,7 +61,8 @@
     <client-dialog
       :dialogStatus="dialogStatus"
       :type="type"
-      :tel="pagaData.tel"
+      :tel="pagaData.username"
+      :clientId="clientId"
       @closeDialog="closeDialog"></client-dialog>
   </div>
 </template>
@@ -71,30 +72,70 @@
   import clientDialog from './components/dialog'
   import qrCode from 'vue-qrcode-component'
   import capturePdfMixins from '@/mixins/capture-pdf'
+  import { accountInfo } from '@/service/client'
 
   export default {
     mixins: [accountMixins, capturePdfMixins],
     components: { qrCode, [clientDialog.name]: clientDialog },
     data () {
       return {
+        clientId: this.$route.query.id,
         dialogStatus: false,
         type: '',
         pagaData: {
-          tel: '15989026006'
-        },
-
-        qrUrl: 'http://shared-office.oss-cn-shenzhen.aliyuncs.com/shared-office/img/20171128/20171128155642227pVi.jpg?x-oss-process=image/resize,m_lfit,h_80,w_80'
+          username: '',
+          spaceId: '',
+          name: '',
+          manageUrl: '',
+          wxUrl: ''
+        }
       }
     },
     props: {},
     watch: {},
     computed: {},
-    mounted() {},
+    mounted() {
+      this.getPageData()
+    },
     methods: {
+      // 将base64图片构建成画布下载
+      downQrImg() {
+        // 获取base64的图片节点
+        let img = document.getElementById('qrCode').getElementsByTagName('img')[0]
+        // 构建画布
+        let canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        canvas.getContext('2d').drawImage(img, 0, 0)
+        // 构造url
+        let url = canvas.toDataURL('image/png')
+
+        // 构造a标签并模拟点击
+        let downloadQr = document.getElementById('downloadQr')
+        downloadQr.setAttribute('href', url)
+        downloadQr.setAttribute('download', this.pagaData.name + '二维码.png')
+      },
+      getPageData() {
+        accountInfo({ clientId: this.clientId }).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            this.pagaData = {
+              username: data.username,
+              spaceId: data.spaceId,
+              name: data.name,
+              manageUrl: data.manageUrl,
+              wxUrl: data.wxUrl
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
       downloadPdf() {
         // 第一个参数name: 客户名+账户信息
-        // 第二个参数：下载的dom，id选择器
-        this.capturePdf('连明堂')
+        // 第二个参数：下载的dom，默认<div id="captureDom"></div>
+        let name = this.pagaData.name + '账户信息'
+        this.capturePdf(name)
       },
       closeDialog(status) {
         this.dialogStatus = status
@@ -110,6 +151,10 @@
 
 <style lang="scss" scoped>
   .client-account {
+    .qr-code {
+      height: 121px;
+    }
+
     .download-qr {
       width: 120px;
       height: 28px;

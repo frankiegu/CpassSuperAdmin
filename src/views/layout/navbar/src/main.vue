@@ -83,7 +83,7 @@
     .logout-style {
       width: 20px;
       height: 20px;
-      margin: 25px 35px 0 10px;
+      margin: 20px 35px 0 10px;
       color: $theme-gray;
     }
     .hamburger {

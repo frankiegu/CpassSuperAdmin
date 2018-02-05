@@ -24,7 +24,6 @@
           :maxlength="11"
           placeholder="请输入智众管理后台登录账号"></el-input>
       </el-form-item>
-
       <!-- 2. 重置登录密码 -->
       <p v-if="dialogType === 'pwd'" class="text-center dialog-tip">确定要重置登录密码？</p>
 
@@ -63,10 +62,12 @@
 <script>
   import { checkPhone } from '@/config/utils'
   import accountMixins from '../account.mixins'
+  import { clientResetAccount, clientResetPassword } from '@/service/client'
+
   export default {
     name: 'ClientDialog',
     mixins: [accountMixins],
-    props: ['dialogStatus', 'type', 'tel'],
+    props: ['dialogStatus', 'type', 'tel', 'clientId'],
     data () {
       const validateTel = (rule, value, callback) => {
         if (!value) {
@@ -112,30 +113,46 @@
         switch (this.dialogType) {
           case 'pwd':
             this.loadingStatus = true
-            setTimeout(() => {
-              this.loadingStatus = false
-              this.dialogType = 'resetPwd'
-            }, 300)
+
+            clientResetPassword({
+              clientId: this.clientId
+            }).then(res => {
+              if (res.status === 'true') {
+                this.loadingStatus = false
+                this.dialogType = 'resetPwd'
+              } else {
+                this.loadingStatus = false
+                this.setMsg('error', res.msg)
+              }
+            })
             break;
           case 'account':
             this.$refs[formName].validate((valid) => {
               if (valid) {
                 this.loadingStatus = true
-                setTimeout(() => {
-                  this.loadingStatus = false
-                  this.dialogType = 'resetAccount'
-                }, 300)
+
+                clientResetAccount({
+                  clientId: this.clientId,
+                  username: this.dialogForm.account
+                }).then(res => {
+                  if (res.status === 'true') {
+                    this.loadingStatus = false
+                    this.dialogType = 'resetAccount'
+                  } else {
+                    this.loadingStatus = false
+                    this.setMsg('error', res.msg)
+                  }
+                })
               }
             });
             break;
+          // @#TODO 发送短信接口没有对接
           case 'resetAccount':
-            this.sendMsg()
             setTimeout(() => {
               this.dialogType = 'sendSuc'
             }, 300)
             break;
           case 'resetPwd':
-            this.sendMsg()
             setTimeout(() => {
               this.dialogType = 'sendSuc'
             }, 300)

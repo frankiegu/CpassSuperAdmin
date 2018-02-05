@@ -11,7 +11,7 @@
 <script>
   export default {
     name: 'LhItem',
-    props: ['label', 'labelWidth', 'align', 'con-width'],
+    props: ['label', 'labelWidth', 'labelHeight', 'align', 'con-width'],
     data () {
       return {
       }
@@ -20,7 +20,8 @@
       labelStyle() {
         return {
           'text-align': this.align,
-          'width': this.labelWidth
+          'width': this.labelWidth,
+          'height': this.labelHeight
         }
       },
       conStyle() {
@@ -40,6 +41,9 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .detail-item {
+    clear: both;
+    box-sizing: border-box;
+
     .label {
       vertical-align: middle;
       float: left;
