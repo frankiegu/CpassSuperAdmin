@@ -210,7 +210,6 @@
       baseInfo
     },
     mounted() {
-      // if (this.clientId) this.handleGetDetail()
     },
     watch: {},
     computed: {},
@@ -298,8 +297,8 @@
         let accountObj = {
           clientId: this.clientId,
           productId: this.dataForm.productId,
-          productStartDate: this.dataForm.validity[0],
-          productEndDate: this.dataForm.validity[1],
+          // productStartDate: this.dataForm.validity[0],
+          productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent,
           adminUsername: this.dataForm.account,
           appId: this.dataForm.appId,
