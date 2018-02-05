@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas'
 export default {
   methods: {
     /**
-     * 下载的dom，如<div id="captureDom"></div>
+     * 下载的dom，默认<div id="captureDom"></div>
      * 下载文件的名称，不传默认为
      */
     capturePdf(name, dom) {

@@ -70,13 +70,13 @@
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
             placeholder="请输入客户名称"
-            class="width150px"
-            clearable>
+            class="width150px">
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
+        <!-- @#TODO 导出参数无效 -->
         <div class="fr">
           <el-button
             @click="exportExcel"
@@ -103,29 +103,24 @@
 
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
-        <el-table-column label="联系邮箱" prop="email" width="165" align="left"></el-table-column>
+        <el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>
         <el-table-column label="生成时间" align="left" width="155">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="scope.row.createDate">
             <i class="el-icon-time"></i> {{ formatTime(scope.row.createDate) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="生成渠道" align="left">
-          <template slot-scope="scope">
-            <div class="label-con">
-              <span v-if="scope.row.registerWay===1">后台创建</span>
-              <span v-else>自助注册</span>
-            </div>
-          </template>
-        </el-table-column>
+        <el-table-column label="生成渠道" prop="registerWayAlias" align="left"></el-table-column>
 
         <el-table-column label="产品" prop="productName" align="left" width="65"></el-table-column>
-        <el-table-column label="有效期" prop="validatyAlias" align="left"></el-table-column>
+        <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
+
         <el-table-column label="状态" align="left" width="65">
           <template slot-scope="scope">
             <div class="label-con">
               <el-tag v-if="scope.row.productStatus===1" type="success">正常</el-tag>
-              <el-tag v-else type="danger">停用</el-tag>
+              <el-tag v-else-if="scope.row.productStatus===0" type="danger">停用</el-tag>
+              <el-tag v-else>未开通</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -137,14 +132,14 @@
           width="110">
           <template slot-scope="scope">
             <router-link
-              :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
+              :to="{path: scope.row.account === 2 ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
               class="table-link margin-lr6">
               编辑
             </router-link>
 
             <router-link
               v-if="scope.row.adminUserId"
-              :to="{path: '/client/account', query: {id: scope.row.adminUserId}}"
+              :to="{path: '/client/account', query: {id: scope.row.id}}"
               class="table-link">
               账户
             </router-link>
