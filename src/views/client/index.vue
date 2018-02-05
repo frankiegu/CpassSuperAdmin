@@ -14,8 +14,10 @@
         <el-form-item>
           <el-select
             v-model="formData.registerWay"
+            @change="getPageData"
             placeholder="请选择生成渠道"
-            class="width150px">
+            class="width150px"
+            clearable>
             <el-option
               v-for="i in channels"
               :label="i.channel"
@@ -27,8 +29,10 @@
         <el-form-item>
           <el-select
             v-model="formData.validaty"
+            @change="getPageData"
             placeholder="请选择有效期"
-            class="width150px">
+            class="width150px"
+            clearable>
             <el-option
               v-for="i in timeValidity"
               :label="i.validity"
@@ -40,9 +44,10 @@
         <el-form-item>
           <el-select
             v-model="formData.productStatus"
+            @change="getPageData"
             placeholder="状态"
             class="width100px"
-            multiple>
+            clearable>
             <lh-option :statusList="statusList"></lh-option>
           </el-select>
         </el-form-item>
@@ -50,10 +55,10 @@
         <el-form-item>
           <el-date-picker
             v-model="formData.reg_date"
+            @change="getPageData"
             type="daterange"
             align="right"
             clearable
-            @change="getPageData"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             placeholder="选择下单日期"
@@ -65,13 +70,13 @@
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
             placeholder="请输入客户名称"
-            class="width150px">
+            class="width150px"
+            clearable>
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
-        <!-- @#TODO 接口没有出 -->
         <div class="fr">
           <el-button
             @click="exportExcel"
@@ -125,7 +130,6 @@
           </template>
         </el-table-column>
 
-        <!-- @#TODO table内筛选 -->
         <el-table-column
           fixed="right"
           align="left"
@@ -134,7 +138,9 @@
           <template slot-scope="scope">
             <router-link
               :to="{path: scope.row.account === 2 ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
-              class="table-link margin-lr6">编辑</router-link>
+              class="table-link margin-lr6">
+              编辑
+            </router-link>
 
             <router-link
               v-if="scope.row.adminUserId"
@@ -169,7 +175,7 @@
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import { formatTimeString, downloadFile } from '@/config/utils'
-  import { listClient } from '@/service/client'
+  import { clientList } from '@/service/client'
 
   export default {
     mixins: [tableMixins, pickerOptions, indexMixins],
@@ -184,22 +190,22 @@
     },
     methods: {
       formatTime(time) {
-        return time.replace(/:\d{2}$/, '')
+        return !time ? '' : time.replace(/:\d{2}$/, '')
       },
       getPageData() {
-        let formData = this.formData
+        const formData = this.formData
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
           name: formData.name,
-          createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
-          createEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null,
-          registerWay: formData.registerWay,
           validaty: formData.validaty,
-          productStatus: formData.productStatus
+          registerWay: formData.registerWay,
+          productStatus: formData.productStatus,
+          createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
+          createEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
         }
 
-        listClient(paramsObj).then(res => {
+        clientList(paramsObj).then(res => {
           if (res.status === 'true') {
             let data = res.info
             if (data) {
@@ -220,14 +226,16 @@
         if (!this.tableData.length) {
           return this.setMsg('暂无数据')
         }
+        const formData = this.formData
         const downParams = {
-          storeId: this.formData.storeId,
-          orderStatus: this.formData.orderStatus,
-          no: this.formData.no,
-          startDate: this.formData.date ? formatTimeString(this.formData.date[0]) : null,
-          endDate: this.formData.date ? formatTimeString(this.formData.date[1]) : null
+          name: formData.name,
+          validaty: formData.validaty,
+          registerWay: formData.registerWay,
+          productStatus: formData.productStatus,
+          createStartDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
+          createEndDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null
         }
-        let url = API_PATH + '/manage/order/exportOrderInfo'
+        let url = API_PATH + '/supervisor/client/exportAll'
         downloadFile(url, downParams)
       }
     }
@@ -235,7 +243,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../../styles/config";
+  @import "src/styles/config";
   .client-list {
     .svg-icon {
       color: $theme-blue;
