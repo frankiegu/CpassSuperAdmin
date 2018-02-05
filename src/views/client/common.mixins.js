@@ -161,6 +161,18 @@ export default {
     document.title = this.title
     this.$store.commit('NAV_CRUMB', this.title)
     if (this.clientId) this.handleGetDetail()
+    if (!this.clientId) {
+      const initialForm = this.dataFormStr
+      this.$watch('dataFormStr', {
+        handler: function (newVal, oldVal) {
+          if (!newVal || newVal === initialForm) {
+            this.hasChangeForm = false
+          } else if (newVal !== initialForm) {
+            this.hasChangeForm = true
+          }
+        }
+      })
+    }
 
     // 获取产品类型 productConst
     loadConstant('productConst').then(res => {
@@ -168,17 +180,6 @@ export default {
         this.productList = res.info
       } else {
         this.$message.error(res.msg)
-      }
-    })
-
-    const initialForm = this.dataFormStr
-    this.$watch('dataFormStr', {
-      handler: function (newVal) {
-        if (!newVal || newVal === initialForm) {
-          this.hasChangeForm = false
-        } else if (newVal !== initialForm) {
-          this.hasChangeForm = true
-        }
       }
     })
   },
@@ -293,6 +294,17 @@ export default {
       clientDetail(obj).then(res => {
         if (res.status === 'true') {
           this.dataForm = res.info
+          // 获取详情后再监听表单的变化
+          const initialForm = this.dataFormStr
+          this.$watch('dataFormStr', {
+            handler: function (newVal) {
+              if (!newVal || newVal === initialForm) {
+                this.hasChangeForm = false
+              } else if (newVal !== initialForm) {
+                this.hasChangeForm = true
+              }
+            }
+          })
         } else {
           this.$message.error(res.msg)
         }
