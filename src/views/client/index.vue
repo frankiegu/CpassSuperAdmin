@@ -1,6 +1,6 @@
 <template>
   <div class="client-list main-content">
-    <lh-title title="客户列表"></lh-title>
+    <lh-title title="客户 列表"></lh-title>
 
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right">
