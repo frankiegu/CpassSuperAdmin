@@ -187,6 +187,18 @@ export default {
   computed: {
     dataFormStr: function () {
       return Object.values(this.dataForm).join('')
+    },
+    infoStr: function () {
+      // console.log(Object.keys(this.dataForm).slice(0, 8))
+      return Object.values(this.dataForm).slice(0, 8).join('')
+    },
+    accountStr: function () {
+      // console.log(Object.keys(this.dataForm).slice(9, 16))
+      return Object.values(this.dataForm).slice(9, 16).join('')
+    },
+    payStr: function () {
+      // console.log(Object.keys(this.dataForm).slice(16))
+      return Object.values(this.dataForm).slice(16).join('')
     }
   },
   methods: {
@@ -303,16 +315,67 @@ export default {
     handleGetDetail() {
       let obj = { clientId: this.clientId }
       clientDetail(obj).then(res => {
-        if (res.status === 'true') {
-          this.dataForm = res.info
+        if (res.status === 'true' && res.info) {
+          let dataSource = res.info
+          this.dataForm.name = dataSource.name
+          this.dataForm.contact = dataSource.contact
+          this.dataForm.phone = dataSource.phone
+          this.dataForm.email = dataSource.email
+          this.dataForm.address = dataSource.address
+          this.dataForm.weixin = dataSource.weixin
+          this.dataForm.remark = dataSource.remark
+          this.dataForm.saleManager = dataSource.saleManager
+          this.dataForm.productId = dataSource.productId
+          this.dataForm.validity = dataSource.productEndDate
+          this.dataForm.isPermanent = dataSource.isPermanent
+          this.dataForm.account = ''
+          this.dataForm.productStatus = dataSource.productStatus
+          this.dataForm.appId = dataSource.appId
+          this.dataForm.appSecret = dataSource.appSecret
+          this.dataForm.jsFile = dataSource.jsFile
+          this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus
+          this.dataForm.spaceWeixinPayId = dataSource.spaceWeixinPayId
+          this.dataForm.mchId = dataSource.mchId
+          this.dataForm.mchKey = dataSource.mchKey
+          this.dataForm.certificate = dataSource.payCertFileName
           // 获取详情后再监听表单的变化
           const initialForm = this.dataFormStr
+          const initInfo = this.infoStr
+          const initAccount = this.accountStr
+          const initPay = this.payStr
           this.$watch('dataFormStr', {
             handler: function (newVal) {
               if (!newVal || newVal === initialForm) {
                 this.hasChangeForm = false
               } else if (newVal !== initialForm) {
                 this.hasChangeForm = true
+              }
+            }
+          })
+          this.$watch('infoStr', {
+            handler: function (newVal) {
+              if (!newVal || newVal === initInfo) {
+                this.hasChangeInfo = false
+              } else if (newVal !== initInfo) {
+                this.hasChangeInfo = true
+              }
+            }
+          })
+          this.$watch('accountStr', {
+            handler: function (newVal) {
+              if (!newVal || newVal === initAccount) {
+                this.hasChangeAccount = false
+              } else if (newVal !== initAccount) {
+                this.hasChangeAccount = true
+              }
+            }
+          })
+          this.$watch('payStr', {
+            handler: function (newVal) {
+              if (!newVal || newVal === initPay) {
+                this.hasChangePay = false
+              } else if (newVal !== initPay) {
+                this.hasChangePay = true
               }
             }
           })

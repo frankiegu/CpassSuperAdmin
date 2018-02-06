@@ -260,7 +260,7 @@
           }
         })
       },
-      // 创建或更新客户资料
+      // 创建或更新客户资料 FIXME 编辑时开通账户会无差别调用更新基础信息的接口
       createClient() {
         let clientObj = {
           id: this.clientId,
@@ -291,6 +291,7 @@
             }
           } else {
             this.$message.error(res.msg)
+            this.createLoading = false
           }
         })
       },
@@ -318,9 +319,9 @@
             }
           } else {
             this.$message.error(res.msg)
+            this.createLoading = false
           }
         })
-        console.log(accountObj, 'openAccount')
       },
       // 开通支付
       openPayment() {
@@ -336,9 +337,9 @@
             this.dialogVisible = true
           } else {
             this.$message.error(res.msg)
+            this.createLoading = false
           }
         })
-        console.log(payObj, 'openPayment')
       },
 
       // 返回按钮事件
