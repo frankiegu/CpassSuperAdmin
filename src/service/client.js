@@ -7,6 +7,9 @@ import { API_PATH } from '../config/env'
 // 客户列表
 export * from './client/index'
 
+// 账户信息
+export * from './client/account'
+
 // 新增客户基础信息
 export const addClient = (obj) => fetch(API_PATH + '/supervisor/client/add', obj, 'POST')
 
