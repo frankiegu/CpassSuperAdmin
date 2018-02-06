@@ -9,9 +9,9 @@
 
         <!-- 状态管理 -->
         <h3 class="grid-title">状态管理</h3>
-        <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" :required="true">
+        <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
           <el-select v-model="dataForm.productId" class="width300px" :disabled="dataForm.productStatus === 0">
-            <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
+            <el-option v-for="(value, key) in productList" :key="key" :value="parseInt(key)" :label="value"></el-option>
           </el-select>
         </el-form-item>
 
@@ -182,11 +182,11 @@
       return {
         pageTitle: '',
         dialogType: '',
-        createLoading: false,
+        updateLoading: false,
         hasUpdateInfo: false,
         hasUpdateAccount: false,
         hasUpdatePay: false,
-        hasUpdateComplete: false, // TODO 判断更新完成状态
+        // hasUpdateComplete: false, // TODO 判断更新完成状态
 
         hasChangeInfo: false,
         hasChangeAccount: false,
@@ -195,67 +195,15 @@
     },
     props: {},
     components: { baseInfo },
-    mounted() {
-      const initInfo = this.infoStr
-      const initAccount = this.accountStr
-      const initPay = this.payStr
-      this.$watch('infoStr', {
-        handler: function (newVal) {
-          if (!newVal || newVal === initInfo) {
-            this.hasChangeInfo = false
-          } else if (newVal !== initInfo) {
-            this.hasChangeInfo = true
-          }
-        }
-      })
-      this.$watch('accountStr', {
-        handler: function (newVal) {
-          if (!newVal || newVal === initAccount) {
-            this.hasChangeAccount = false
-          } else if (newVal !== initAccount) {
-            this.hasChangeAccount = true
-          }
-        }
-      })
-      this.$watch('payStr', {
-        handler: function (newVal) {
-          if (!newVal || newVal === initPay) {
-            this.hasChangePay = false
-          } else if (newVal !== initPay) {
-            this.hasChangePay = true
-          }
-        }
-      })
-    },
+    mounted() {},
     watch: {},
     computed: {
-      infoStr: function () {
-        return Object.values(this.dataForm).slice(0, 8).join('')
-      },
-      accountStr: function () {
-        return Object.values(this.dataForm).slice(9, 17).join('')
-      },
-      payStr: function () {
-        return Object.values(this.dataForm).slice(17).join('')
+      hasUpdateComplete: function () {
+
       }
     },
     filters: {},
     methods: {
-      // 获取详情
-      handleGetDetail() {
-        let obj = { id: this.clientId }
-        console.log(obj)
-        this.isCreateAccount = true
-        this.pageTitle = this.dataForm.name = '广州雷猴软件开发有限公司'
-        this.dataForm.contact = 'PN'
-        this.dataForm.phone = '13566666666'
-        this.dataForm.productId = '1'
-        this.dataForm.isPermanent = 1
-        this.dataForm.appId = 'sad'
-        this.dataForm.appSecret = 'dad'
-        this.dataForm.jsFile = 'dad.txt'
-      },
-
       // 关闭使用时置灰产品和有效期控件并清除校验
       changeUseStatus(currStatus) {
         if (currStatus === 0) {
@@ -312,6 +260,7 @@
             if (res.status === 'true') {
               this.hasUpdateInfo = true
             } else {
+              this.hasUpdateInfo = false
               this.$message.error(res.msg)
             }
           })
@@ -323,42 +272,40 @@
       },
       // 更新产品信息
       updateAccount() {
-        let statusObj = {
+        let accountObj = {
+          clientId: this.clientId,
+          productId: this.dataForm.productId,
+          productEndDate: this.dataForm.validity,
+          isPermanent: this.dataForm.isPermanent,
+          appId: this.dataForm.appId,
+          appSecret: this.dataForm.appSecret,
+          jsFile: this.dataForm.jsFile
+        }
+        setAccountStatus({
           clientId: this.clientId,
           status: this.dataForm.productStatus
-        }
-        if (this.dataForm.productStatus === 0) {
-          setAccountStatus(statusObj).then(res => {
-            if (res.status === 'true') {
-              this.hasUpdateAccount = true
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
-        } else {
-          let accountObj = {
-            clientId: this.clientId,
-            productId: this.dataForm.productId,
-            productEndDate: this.dataForm.validity,
-            isPermanent: this.dataForm.isPermanent,
-            appId: this.dataForm.appId,
-            appSecret: this.dataForm.appSecret,
-            jsFile: this.dataForm.jsFile
-          }
-          updateAccount(accountObj).then(res => {
-            if (res.status === 'true') {
-              setAccountStatus(statusObj).then(resp => {
+        }).then(res => {
+          if (res.status === 'true') {
+            // 更新账户使用状态成功后，关闭使用则无需更新产品信息
+            // 开启则更新产品信息
+            if (this.dataForm.productStatus === 1) {
+              updateAccount(accountObj).then(resp => {
                 if (resp.status === 'true') {
                   this.hasUpdateAccount = true
                 } else {
+                  this.hasUpdateAccount = false
                   this.$message.error(resp.msg)
                 }
               })
             } else {
-              this.$message.error(res.msg)
+              this.hasUpdateAccount = true
             }
-          })
-        }
+          } else {
+            // 更新账户使用状态失败
+            this.hasUpdateAccount = false
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 更新或开通支付
       updatePay() {
@@ -368,37 +315,37 @@
           mchKey: this.dataForm.mchKey,
           payCertFileName: this.dataForm.certificate
         }
-        if (this.dataForm.isOpenPayment) {
-          // 控件状态为开启时，且该客户未开通支付，则新开通支付功能
-          if (!this.dataForm.spaceWeixinPayId || !this.dataForm.spaceWeixinPayId.length) {
-            bindWeixinPay(payObj).then(res => {
-              if (res.status === 'true') {
-                this.createLoading = false
-                this.dialogVisible = true
-              } else {
-                this.$message.error(res.msg)
-              }
-            })
+        // 更新微信支付状态
+        setWeixinPayStatus({
+          clientId: this.clientId,
+          status: this.dataForm.isOpenPayment
+        }).then(res => {
+          if (res.status === 'true') {
+            // 微信支付状态更新成功后，关闭支付功能则无需更新支付信息
+            // 开启支付功能则根据微信支付id判断客户是否已开通支付功能
+            // 若开通过，则更新支付信息
+            // 若没开通过，则新开通支付功能
+            if (this.dataForm.isOpenPayment === 1) {
+              let promise = this.dataForm.spaceWeixinPayId ? updateWeixinPay(payObj) : bindWeixinPay(payObj)
+              promise.then(resp => {
+                if (resp.status === 'true') {
+                  this.hasUpdatePay = true
+                } else {
+                  this.hasUpdatePay = false
+                  this.updateLoading = false
+                  this.$message.error(resp.msg)
+                }
+              })
+            } else {
+              this.hasUpdatePay = true
+            }
           } else {
-            // 控件状态为开启时，且该客户已开通支付，则更新支付信息
-            setWeixinPayStatus({
-              clientId: this.clientId,
-              status: this.dataForm.isOpenPayment
-            }).then(res => {
-              if (res.status === 'true') {
-                updateWeixinPay(payObj).then(resp => {
-                  if (resp.status === 'true') {
-                    this.hasUpdatePay = true
-                  } else {
-                    this.$message.error(resp.msg)
-                  }
-                })
-              } else {
-                this.$message.error(res.msg)
-              }
-            })
+            // 更新支付状态失败
+            this.hasUpdatePay = false
+            this.updateLoading = false
+            this.$message.error(res.msg)
           }
-        } else {}
+        })
       },
 
       // 返回按钮事件
