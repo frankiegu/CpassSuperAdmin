@@ -13,7 +13,7 @@
       v-on:submit.native.prevent
       label-width="110px"
       label-position="right">
-      <!-- 1. 重置登录账户 -->
+      <!-- 1.  重置登录账户 -->
       <el-form-item
         v-if="dialogType === 'account'"
         label="重置登录账户"
@@ -33,28 +33,33 @@
         <span>是否短信通知客户（ {{ dialogForm.account || tel }} ）</span>
       </div>
 
-      <!-- 4. 登录密码重置成功！ -->
-      <div v-if="dialogType === 'resetPwd'" class="text-center">
-        <p class="dialog-tip">登录密码重置成功！</p>
-        <span>是否短信通知客户（ {{ tel }} ）</span>
-      </div>
-
-      <!-- 5. 短信发送成功！ -->
-      <div v-if="dialogType === 'sendSuc'" class="text-center">
+      <!-- 4. 短信发送成功！ -->
+      <div v-if="dialogType === 'sendAccSuc'" class="text-center">
         <i class="el-icon-success theme-green"></i>
         <p class="dialog-tip">短信发送成功！</p>
         <span>（ {{ dialogForm.account || tel }} ）</span>
         <p class="theme-red">{{ countdown }} s</p>
       </div>
+
+      <!-- 5. 短信发送成功！ -->
+      <div v-if="dialogType === 'sendPwaSuc'" class="text-center">
+        <i class="el-icon-success theme-green"></i>
+        <p class="dialog-tip">登录密码重置成功！</p>
+        <p>新密码已发送至您的手机，请注意查收!</p>
+        <span>（ {{ dialogForm.account || tel }} ）</span>
+        <p class="theme-red">{{ countdown }} s</p>
+      </div>
     </el-form>
 
-    <div slot="footer" class="dialog-footer text-center">
+    <div v-if="dialogType !== 'sendAccSuc' && dialogType !== 'sendPwaSuc'" slot="footer" class="dialog-footer text-center">
       <el-button
-        v-if="dialogType !== 'sendSuc'"
         :loading="loadingStatus"
         @click="submitForm('dialogForm')"
-        type="primary">{{ sureBtn }}</el-button>
-      <el-button v-if="dialogType !== 'sendSuc'" @click="closeDialog" class="width100px">取 消</el-button>
+        class="min-width100px"
+        type="primary">
+        {{ sureBtn }}
+      </el-button>
+      <el-button @click="closeDialog" class="width100px">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -62,7 +67,7 @@
 <script>
   import { checkPhone } from '@/config/utils'
   import accountMixins from '../account.mixins'
-  import { clientResetAccount, clientResetPassword } from '@/service/client'
+  import { clientResetAccount, clientResetPassword, clientSendSms } from '@/service/client'
 
   export default {
     name: 'ClientDialog',
@@ -119,7 +124,7 @@
             }).then(res => {
               if (res.status === 'true') {
                 this.loadingStatus = false
-                this.dialogType = 'resetPwd'
+                this.dialogType = 'sendPwaSuc'
               } else {
                 this.loadingStatus = false
                 this.setMsg('error', res.msg)
@@ -146,16 +151,17 @@
               }
             });
             break;
-          // @#TODO 发送短信接口没有对接
           case 'resetAccount':
-            setTimeout(() => {
-              this.dialogType = 'sendSuc'
-            }, 300)
-            break;
-          case 'resetPwd':
-            setTimeout(() => {
-              this.dialogType = 'sendSuc'
-            }, 300)
+            clientSendSms({
+              username: this.dialogForm.account
+            }).then(res => {
+              if (res.status === 'true') {
+                this.$emit('toggleAcc', this.dialogForm.account)
+                this.dialogType = 'sendAccSuc'
+              } else {
+                this.setMsg('error', res.msg)
+              }
+            })
             break;
         }
       },
@@ -166,7 +172,7 @@
         } else {
           this.countdown--
           setTimeout(() => {
-            if (this.dialogType === 'sendSuc') {
+            if (this.dialogType === 'sendAccSuc' || this.dialogType === 'sendPwaSuc') {
               this.settime()
             }
           }, 1000)
@@ -184,7 +190,8 @@
           case 'resetPwd':
             this.sureBtn = '发送短信通知'
             break;
-          case 'sendSuc':
+          case 'sendAccSuc':
+          case 'sendPwaSuc':
             setTimeout(() => {
               this.settime()
             }, 300)
@@ -209,6 +216,9 @@
     font-size: 18px;
     font-weight: 500;
     line-height: 32px;
+  }
+  .min-width100px {
+    min-width: 100px;
   }
   span {
     display: inline-block;

@@ -63,7 +63,8 @@
       :type="type"
       :tel="pagaData.username"
       :clientId="clientId"
-      @closeDialog="closeDialog"></client-dialog>
+      @closeDialog="closeDialog"
+      @toggleAcc="val => pagaData.username = val"></client-dialog>
   </div>
 </template>
 

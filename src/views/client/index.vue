@@ -76,7 +76,6 @@
           </el-input>
         </el-form-item>
 
-        <!-- @#TODO 导出参数无效 -->
         <div class="fr">
           <el-button
             @click="exportExcel"
@@ -104,18 +103,13 @@
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
         <el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>
-        <el-table-column label="生成时间" align="left" width="155">
-          <template slot-scope="scope" v-if="scope.row.createDate">
-            <i class="el-icon-time"></i> {{ formatTime(scope.row.createDate) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="生成渠道" prop="registerWayAlias" align="left"></el-table-column>
-
-        <el-table-column label="产品" prop="productName" align="left" width="65"></el-table-column>
+        <el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>
+        <el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>
+        <el-table-column label="产品" prop="productName" align="left"></el-table-column>
         <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
 
-        <el-table-column label="状态" align="left" width="65">
+        <!-- 小宽度可以不写死 -->
+        <el-table-column label="状态" align="left">
           <template slot-scope="scope">
             <div class="label-con">
               <el-tag v-if="scope.row.productStatus===1" type="success">正常</el-tag>
