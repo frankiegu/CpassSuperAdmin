@@ -252,7 +252,11 @@
                   // 开通账户但不开通微信支付时，提交前清空微信支付开通信息
                   this.resetItemField(['mchId', 'mchKey', 'certificate'], true)
                 }
-                this.createClient()
+                if (this.clientId) {
+                  this.dialogVisible = true
+                } else {
+                  this.createClient()
+                }
               }
             }
           } else {
@@ -291,6 +295,7 @@
             }
           } else {
             this.$message.error(res.msg)
+            this.dialogVisible = false
             this.createLoading = false
           }
         })
