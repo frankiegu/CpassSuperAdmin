@@ -1,9 +1,9 @@
 <template>
   <div class="client-list main-content">
-    <lh-title title="客户 列表"></lh-title>
+    <lh-title title="客户列表"></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right">
+      <el-form :model="formData" :inline="true" class="text-right mr-10">
         <router-link
           to="/client/add"
           class="btn-link fl "
@@ -76,11 +76,9 @@
           </el-input>
         </el-form-item>
 
-        <div class="fr">
-          <el-button
-            @click="exportExcel"
-            class="btn-green fr">导出表格</el-button>
-        </div>
+        <el-form-item class="fr">
+          <el-button @click="exportExcel" class="btn-green fr">导出表格</el-button>
+        </el-form-item>
       </el-form>
 
       <el-table
