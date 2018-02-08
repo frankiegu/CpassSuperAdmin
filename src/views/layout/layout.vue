@@ -13,9 +13,9 @@
         <transition name="fade" mode="out-in">
           <router-view class="app-in" :key="key"></router-view>
         </transition>
-
-        <p class="layout-footer theme-gray">Copyright © {{ year }} 广州雷猴软件开发有限公司</p>
       </section>
+
+      <p class="layout-footer theme-gray">Copyright © {{ year }} 广州雷猴软件开发有限公司</p>
     </div>
   </div>
 </template>
@@ -46,12 +46,11 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   .app-wrapper {
     position: relative;
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
+    background-color: #f0f2f7;
+    overflow: hidden;
 
-    .app-in {
-      min-height: 77vh;
-    }
     .layout-footer {
       padding: 0 16px;
       margin: 70px 0 24px;
@@ -96,8 +95,8 @@
       min-height: 100%;
       margin-left: 180px;
     }
-    .app-main {
-      min-height: 88vh;
+    .app-in {
+      min-height: 73vh;
     }
   }
 </style>
