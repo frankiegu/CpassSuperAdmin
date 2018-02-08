@@ -323,6 +323,7 @@
               this.openPayment()
             }
           } else {
+            // TODO 该错误字段的错误高亮
             this.$message.error(res.msg)
             this.createLoading = false
           }

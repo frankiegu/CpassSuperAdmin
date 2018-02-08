@@ -128,11 +128,11 @@ export default {
         saleManager: '',
 
         // 开通账户信息
+        productStatus: 1,
         productId: '',
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         account: '',
-        productStatus: 1,
         appId: '',
         appSecret: '',
         jsFile: '', // JS接口文件
@@ -147,7 +147,7 @@ export default {
 
       dataRules: {
         productId: [{ validator: checkProduct, trigger: 'blur, change' }],
-        validity: [{ validator: checkValidity, trigger: 'blur, change', type: 'array' }],
+        validity: [{ validator: checkValidity, trigger: 'blur, change' }],
         account: [{ validator: checkTel, trigger: 'blur, change' }],
         appId: [{ validator: checkAppId, trigger: 'blur, change' }],
         appSecret: [{ validator: checkAppSecret, trigger: 'blur, change' }],
@@ -188,17 +188,20 @@ export default {
     dataFormStr: function () {
       return Object.values(this.dataForm).join('')
     },
+    // 拼接name字段到saleManager字段
     infoStr: function () {
       // console.log(Object.keys(this.dataForm).slice(0, 8))
       return Object.values(this.dataForm).slice(0, 8).join('')
     },
+    // 拼接productId字段到jsFile字段
     accountStr: function () {
       // console.log(Object.keys(this.dataForm).slice(9, 16))
       return Object.values(this.dataForm).slice(9, 16).join('')
     },
+    // 拼接spaceWeixinPayId字段到certificate字段
     payStr: function () {
-      // console.log(Object.keys(this.dataForm).slice(16))
-      return Object.values(this.dataForm).slice(16).join('')
+      // console.log(Object.keys(this.dataForm).slice(17))
+      return Object.values(this.dataForm).slice(17).join('')
     }
   },
   methods: {
@@ -326,7 +329,7 @@ export default {
           this.dataForm.remark = dataSource.remark
           this.dataForm.saleManager = dataSource.saleManager
           this.dataForm.productId = dataSource.productId
-          this.dataForm.validity = dataSource.productEndDate
+          this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
           this.dataForm.account = ''
           this.dataForm.productStatus = dataSource.productStatus

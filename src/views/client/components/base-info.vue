@@ -1,6 +1,6 @@
 <template>
   <div class="base-info">
-    <el-form-item label="客户名称" prop="name"
+    <el-form-item label="客户名称" prop="name" ref="name"
       :rules="[
         { required: true, message: '客户名称不能为空！', trigger: 'blur, change' }
       ]">
@@ -8,7 +8,7 @@
       <el-input v-model.trim="modelForm.name" class="width300px" placeholder="填写完整客户名称" :maxlength="200" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系人" prop="contact"
+    <el-form-item label="联系人" prop="contact" ref="contact"
       :rules="[
         { required: true, message: '联系人不能为空！', trigger: 'blur, change' }
       ]">
@@ -16,37 +16,38 @@
       <el-input v-model.trim="modelForm.contact" class="width300px" placeholder="填写联系人名称" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系电话" prop="phone" :rules="checkTel">
+    <el-form-item label="联系电话" prop="phone" :rules="checkTel" ref="phone">
       <p v-if="infoType === 'detail'">{{modelForm.phone}}</p>
       <el-input v-model.trim="modelForm.phone" class="width300px" placeholder="填写联系人电话号码" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系邮箱" prop="email" :rules="checkEmail"
+    <el-form-item label="联系邮箱" prop="email" :rules="checkEmail" ref="email"
       v-if="infoType === 'detail' && (modelForm.email && !!modelForm.email.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.email}}</p>
       <el-input v-model.trim="modelForm.email" class="width300px" placeholder="填写联系人的邮箱地址" :maxlength="200" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系地址"
+    <el-form-item label="联系地址" ref="address"
       v-if="infoType === 'detail' && (modelForm.address && !!modelForm.address.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.address}}</p>
       <el-input v-model.trim="modelForm.address" class="width300px" placeholder="填写联系人的联系地址" :maxlength="500" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="微信服务号"
+    <el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin"
       v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.weixin}}</p>
       <el-input v-model.trim="modelForm.weixin" class="width300px" placeholder="填写微信服务号" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="备注"
+    <el-form-item label="备注" ref="remark"
       v-if="infoType === 'detail' && (modelForm.remark && !!modelForm.remark.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.remark}}</p>
       <el-input type="textarea" v-model.trim="modelForm.remark"
         class="width300px" placeholder="可填写联系人职位、负责事宜等内容" :maxlength="500" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="销售经理" v-if="infoType === 'detail' && (modelForm.saleManager && !!modelForm.saleManager.length) || !infoType">
+    <el-form-item label="销售经理" ref="saleManager"
+      v-if="infoType === 'detail' && (modelForm.saleManager && !!modelForm.saleManager.length) || !infoType">
       <p v-if="infoType === 'detail'">{{modelForm.saleManager}}</p>
       <el-input v-model.trim="modelForm.saleManager" class="width300px"
         placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>
@@ -89,6 +90,17 @@
         }
         callback()
       }
+      // 自定义微信号校验规则
+      var WXREG = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/
+      var checkWeixin = (rule, value, callback) => {
+        if (!value) {
+          return callback()
+        }
+        if (!WXREG.test(value)) {
+          callback(new Error('请输入正确的微信号'))
+        }
+        callback()
+      }
       return {
         isCreateAccount: this.isCreate,
         checkTel: [
@@ -96,6 +108,9 @@
         ],
         checkEmail: [
           { validator: checkEmail, trigger: 'blur, change' }
+        ],
+        checkWeixin: [
+          { validator: checkWeixin, trigger: 'blur, change' }
         ]
       }
     },

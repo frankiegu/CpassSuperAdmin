@@ -5,12 +5,12 @@
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <!-- 基础信息 -->
         <h3 class="grid-title">基础信息</h3>
-        <base-info :model-form="dataForm" :has-account="true" @changeCreateStatus="changeCreateStatus"/>
+        <base-info ref="baseInfo" :model-form="dataForm" :has-account="true" @changeCreateStatus="changeCreateStatus"/>
 
         <!-- 状态管理 -->
         <h3 class="grid-title">状态管理</h3>
         <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
-          <el-select v-model="dataForm.productId" class="width300px" :disabled="dataForm.productStatus === 0">
+          <el-select v-model="dataForm.productId" class="width300px" :disabled="!dataForm.productStatus">
             <el-option v-for="(value, key) in productList" :key="key" :value="parseInt(key)" :label="value"></el-option>
           </el-select>
         </el-form-item>
@@ -20,7 +20,7 @@
             :rules="dataRules.validity" :required="!dataForm.isPermanent">
             <el-date-picker
               v-model="dataForm.validity"
-              :disabled="!!dataForm.isPermanent || dataForm.productStatus === 0"
+              :disabled="!!dataForm.isPermanent || !dataForm.productStatus"
               type="date"
               placeholder="结束日期"
               value-format="yyyy-MM-dd"
@@ -29,24 +29,26 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item class="fl">
-            <el-checkbox v-model="dataForm.isPermanent" :disabled="dataForm.productStatus === 0"
+            <el-checkbox v-model="dataForm.isPermanent" :disabled="!dataForm.productStatus"
               @change="resetItemField('validity', true)" :true-label="1" :false-label="0">永久
             </el-checkbox>
           </el-form-item>
         </el-form-item>
 
         <el-form-item label="使用控制">
-          <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
-            @change="changeUseStatus"></el-switch>
+          <el-tooltip placement="top" content="关闭后微端和web-admin均不可使用">
+            <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
+              @change="changeUseStatus"></el-switch>
+          </el-tooltip>
         </el-form-item>
 
         <!-- 开通资料 -->
         <h3 class="grid-title">开通资料</h3>
-        <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
-          :rules="dataRules.appId" :required="true">
+        <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId" :required="true">
           <el-input
             v-model.trim="dataForm.appId"
             class="width300px"
+            :disabled="!dataForm.productStatus"
             placeholder="客户微信服务号AppID"></el-input>
         </el-form-item>
 
@@ -55,14 +57,16 @@
           <el-input
             v-model.trim="dataForm.appSecret"
             class="width300px"
+            :disabled="!dataForm.productStatus"
             placeholder="客户微信服务号AppSecret"></el-input>
         </el-form-item>
 
         <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
-          :rules="dataRules.jsFile" :required="true">
+          :rules="dataRules.jsFile" required>
           <el-input
             v-model="dataForm.jsFile"
             readonly
+            :disabled="!dataForm.productStatus"
             placeholder='选择后缀名为"txt"的JS接口文件'
             class="width300px upload-input">
             <el-upload
@@ -71,22 +75,27 @@
               accept="text/plain"
               name="jsFile"
               :multiple="false"
+              :headers="uploadHeaders"
               :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
               :show-file-list="false"
               :on-change="changeInFile"
               :before-upload="beforeUploadInFile"
               :on-success="successUploadInFile"
+              :disabled="!dataForm.productStatus"
               slot="suffix">
-              <span class="el-input__icon el-icon-upload"></span>
+              <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus}]"></span>
             </el-upload>
             <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
           </el-input>
         </el-form-item>
 
         <el-form-item label="开通微信支付功能">
-          <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
-            @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
-          </el-switch>
+          <el-tooltip placement="top" content="账户可用时才可以开启支付功能">
+            <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
+              :disabled="!dataForm.productStatus"
+              @change="changePayStatus">
+            </el-switch>
+          </el-tooltip>
         </el-form-item>
 
         <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
@@ -94,7 +103,7 @@
           <el-input
             v-model.trim="dataForm.mchId"
             class="width300px"
-            :disabled="!dataForm.isOpenPayment"
+            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
             placeholder="客户微信支付商号mch_ID"></el-input>
         </el-form-item>
 
@@ -103,7 +112,7 @@
           <el-input
             v-model.trim="dataForm.mchKey"
             class="width300px"
-            :disabled="!dataForm.isOpenPayment"
+            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
             placeholder="客户微信支付商号API密钥"></el-input>
         </el-form-item>
 
@@ -112,7 +121,7 @@
           <el-input
             v-model="dataForm.certificate"
             readonly
-            :disabled="!dataForm.isOpenPayment"
+            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
             placeholder='选择后缀名为"p12"的支付证书文件'
             class="width300px upload-input">
             <el-upload
@@ -121,6 +130,7 @@
               accept="application/x-pkcs12"
               name="payCertFile"
               :multiple="false"
+              :headers="uploadHeaders"
               :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
               :show-file-list="false"
               :on-change="changeCeFile"
@@ -143,16 +153,19 @@
         :visible.sync="dialogVisible"
         top="32vh"
         class="sp-confirm-box"
+        :show-close="!hasUpdateComplete"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         center>
 
         <!-- 保存修改确认弹窗 -->
-        <p class="text-center" v-if="dialogType === 'save'">确认保存修改内容？</p>
-        <span v-if="hasUpdateComplete" class="el-icon-success"></span>
-        <p v-if="hasUpdateComplete" class="success-tip">已保存！</p>
+        <p class="text-center" v-if="dialogType === 'save' && !hasUpdateComplete">确认保存修改内容？</p>
+        <span v-if="hasUpdateComplete" class="el-icon-success text-center"></span>
+        <p v-if="hasUpdateComplete" class="success-tip text-center">已保存！</p>
         <span slot="footer" v-if="dialogType === 'save' && !hasUpdateComplete">
-          <el-button type="primary" class="width120px" @click="handleUpdateClient">确定</el-button>
+          <el-button type="primary" class="width120px" @click="handleUpdateClient" :loading="updateLoading">
+            {{updateLoading ? '执行中...' : '确定'}}
+          </el-button>
           <el-button class="width120px" @click="dialogVisible = false">放弃</el-button>
         </span>
 
@@ -181,16 +194,18 @@
     data() {
       return {
         pageTitle: '',
+        isCreateAccount: true,
         dialogType: '',
         updateLoading: false,
         hasUpdateInfo: false,
         hasUpdateAccount: false,
         hasUpdatePay: false,
-        // hasUpdateComplete: false, // TODO 判断更新完成状态
 
         hasChangeInfo: false,
         hasChangeAccount: false,
-        hasChangePay: false
+        hasChangeAccountStatus: false,
+        hasChangePay: false,
+        hasChangePayStatus: false
       }
     },
     props: {},
@@ -199,17 +214,24 @@
     watch: {},
     computed: {
       hasUpdateComplete: function () {
-
+        return this.hasUpdateAccount && this.hasUpdateInfo && this.hasUpdatePay
       }
     },
     filters: {},
     methods: {
       // 关闭使用时置灰产品和有效期控件并清除校验
       changeUseStatus(currStatus) {
+        this.hasChangeAccountStatus = true
         if (currStatus === 0) {
-          console.log(currStatus, this.$refs['productId'])
-          this.resetItemField(['productId', 'validity'])
+          this.resetItemField(['productId', 'validity', 'appId', 'appSecret', 'jsFile'])
+          this.hasChangeAccount = false
+          this.hasChangePayStatus = false
+          this.hasChangePay = false
         }
+      },
+      changePayStatus() {
+        this.hasChangePayStatus = true
+        this.resetItemField(['mchId', 'mchKey', 'certificate'], false)
       },
 
       // 提交修改打开确认弹窗
@@ -224,24 +246,35 @@
               this.$message.info('信息未改动！')
             }
           } else {
-            return false
+            let arr = this.$refs['dataForm'].fields
+            arr.forEach((item) => {
+              // FIXME 需要验证所有的fields的数据结构是否一致
+              item.$children[0].$refs.input.focus()
+              console.log(item.$children[0].$refs.input)
+              // if (item.validateState === 'error') {
+              //   return true
+              // } else {
+              //   return false
+              // }
+            })
           }
         })
       },
       // 点击弹窗确定按钮更新客户资料
       handleUpdateClient() {
+        this.updateLoading = true
         // 表单根据新增时分为三个部分：基础信息、账户信息、支付信息
         // 若基础信息未发生修改
         if (!this.hasChangeInfo) {
+          this.hasUpdateInfo = true
           // 账户信息也未发生修改
-          if (!this.hasChangeAccount) {
+          if (!this.hasChangeAccount && !this.hasChangeAccountStatus) {
+            this.hasUpdateAccount = true
             // 那支付信息一定发生了修改
             this.updatePay()
           } else {
             // 或账户信息发生了修改
             this.updateAccount()
-            // 或支付信息发生了修改
-            if (this.hasChangePay) this.updatePay()
           }
         } else {
           // 或基础信息发生了修改
@@ -259,15 +292,26 @@
           updateClientInfo(clientObj).then(res => {
             if (res.status === 'true') {
               this.hasUpdateInfo = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
             } else {
               this.hasUpdateInfo = false
               this.$message.error(res.msg)
             }
           })
           // 或账户信息发生了修改
-          if (this.hasChangeAccount) this.updateAccount()
-          // 或支付信息发生了修改
-          if (this.hasChangePay) this.updatePay()
+          if (this.hasChangeAccount || this.hasChangeAccountStatus) {
+            this.updateAccount()
+          } else {
+            this.hasUpdateAccount = true
+            if (this.hasUpdateComplete) this.handleUpdateComplete()
+
+            if (this.hasChangePay || this.hasChangePayStatus) {
+              this.updatePay()
+            } else {
+              this.hasUpdatePay = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+            }
+          }
         }
       },
       // 更新产品信息
@@ -286,12 +330,13 @@
           status: this.dataForm.productStatus
         }).then(res => {
           if (res.status === 'true') {
-            // 更新账户使用状态成功后，关闭使用则无需更新产品信息
-            // 开启则更新产品信息
-            if (this.dataForm.productStatus === 1) {
+            // 1.更新账户使用状态成功后，关闭使用则无需更新产品信息
+            // 启用并且产品信息有更改，则更新产品信息
+            if (this.dataForm.productStatus === 1 && this.hasChangeAccount) {
               updateAccount(accountObj).then(resp => {
                 if (resp.status === 'true') {
                   this.hasUpdateAccount = true
+                  if (this.hasUpdateComplete) this.handleUpdateComplete()
                 } else {
                   this.hasUpdateAccount = false
                   this.$message.error(resp.msg)
@@ -299,6 +344,14 @@
               })
             } else {
               this.hasUpdateAccount = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+            }
+            // 2.支付信息或支付状态发生了修改
+            if (this.hasChangePay || this.hasChangePayStatus) {
+              this.updatePay()
+            } else {
+              this.hasUpdatePay = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
             }
           } else {
             // 更新账户使用状态失败
@@ -313,7 +366,21 @@
           clientId: this.clientId,
           mchId: this.dataForm.mchId,
           mchKey: this.dataForm.mchKey,
-          payCertFileName: this.dataForm.certificate
+          payCertFile: this.dataForm.certificate
+        }
+        // 新开通支付
+        if (!this.dataForm.spaceWeixinPayId && this.dataForm.isOpenPayment) {
+          bindWeixinPay(payObj).then(resp => {
+            if (resp.status === 'true') {
+              this.hasUpdatePay = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+            } else {
+              this.hasUpdatePay = false
+              this.updateLoading = false
+              this.$message.error(resp.msg)
+            }
+          })
+          return
         }
         // 更新微信支付状态
         setWeixinPayStatus({
@@ -322,14 +389,12 @@
         }).then(res => {
           if (res.status === 'true') {
             // 微信支付状态更新成功后，关闭支付功能则无需更新支付信息
-            // 开启支付功能则根据微信支付id判断客户是否已开通支付功能
-            // 若开通过，则更新支付信息
-            // 若没开通过，则新开通支付功能
-            if (this.dataForm.isOpenPayment === 1) {
-              let promise = this.dataForm.spaceWeixinPayId ? updateWeixinPay(payObj) : bindWeixinPay(payObj)
-              promise.then(resp => {
+            // 开启支付功能并且支付信息有更改，则更新支付信息
+            if (this.dataForm.isOpenPayment === 1 && this.hasChangePay) {
+              updateWeixinPay(payObj).then(resp => {
                 if (resp.status === 'true') {
                   this.hasUpdatePay = true
+                  if (this.hasUpdateComplete) this.handleUpdateComplete()
                 } else {
                   this.hasUpdatePay = false
                   this.updateLoading = false
@@ -338,6 +403,7 @@
               })
             } else {
               this.hasUpdatePay = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
             }
           } else {
             // 更新支付状态失败
@@ -346,6 +412,13 @@
             this.$message.error(res.msg)
           }
         })
+      },
+
+      // 更新完成1s后自动跳转回列表页
+      handleUpdateComplete() {
+        setTimeout(() => {
+          this.$router.replace('/client/list')
+        }, 1000)
       },
 
       // 返回按钮事件
