@@ -24,7 +24,7 @@ export default {
     };
     return {
       formData: {
-        username: Cookies.get('telphone') || '',
+        username: Cookies.get('sospTelphone') || '',
         password: ''
       },
       formRules: {

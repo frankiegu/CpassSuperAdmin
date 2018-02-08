@@ -24,7 +24,7 @@ const app = {
           if (res.status === 'true') {
             const data = res.info
 
-            Cookies.set('telphone', userInfo.username)
+            Cookies.set('sospTelphone', userInfo.username)
             sessionStorage.setItem('token', data)
             commit('SET_TOKEN', data)
 
