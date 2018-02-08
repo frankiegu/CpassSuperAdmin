@@ -53,9 +53,11 @@
       box-sizing: border-box;
     }
     .label-con {
-      line-height: 36px;
+      line-height: 22px;
       font-size: 14px;
       color: $theme-gray;
+      padding-top: 7px;
+      text-align: left;
     }
   }
 </style>
