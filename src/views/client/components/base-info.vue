@@ -102,7 +102,7 @@
         callback()
       }
       return {
-        isCreateAccount: this.isCreate,
+        isCreateAccount: false,
         checkTel: [
           { required: true, validator: checkTel, trigger: 'blur, change' }
         ],
@@ -117,8 +117,7 @@
     props: {
       modelForm: [Object], // 表单数据
       infoType: [String], // 信息类型（未定义则默认为输入类型，'detail'为详情类型）
-      hasAccount: [Boolean], // 是否存在账号
-      isCreate: [Boolean] // TODO 是否创建账号 未传入
+      hasAccount: [Boolean] // 是否存在账号
     },
     components: {},
     mounted() {

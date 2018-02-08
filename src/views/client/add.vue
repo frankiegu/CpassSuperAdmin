@@ -38,16 +38,18 @@
               </el-form-item>
             </el-form-item>
 
-            <el-form-item label="管理后台登录账户" prop="account" ref="account"
-              :rules="dataRules.account" :required="isCreateAccount">
+            <el-form-item label="管理后台登录账户" prop="adminUsername" ref="adminUsername"
+              :error="errorField === 'adminUsername' ? errorMsg : ''"
+              :rules="dataRules.adminUsername" :required="isCreateAccount">
               <el-input
-                v-model.trim="dataForm.account"
+                v-model.trim="dataForm.adminUsername"
                 class="width300px"
                 placeholder="输入管理后台登录账户（手机格式）"
                 :maxlength="11"></el-input>
             </el-form-item>
 
             <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
+              :error="errorField === 'appId' ? errorMsg : ''"
               :rules="dataRules.appId" :required="isCreateAccount">
               <el-input
                 v-model.trim="dataForm.appId"
@@ -202,9 +204,12 @@
       return {
         pageTitle: this.$route.query.id ? '' : '新增客户',
         dialogType: '',
+        errorField: '',
+        errorMsg: '',
         createLoading: false,
         isCreateSuccess: false,
-        isOpenSuccess: false
+        isOpenSuccess: false,
+        hasChangeInfo: false
       }
     },
     props: {},
@@ -222,7 +227,7 @@
         let itemArr = [
           'productId',
           'validity',
-          'account',
+          'adminUsername',
           'appId',
           'appSecret',
           'jsFile',
@@ -260,11 +265,24 @@
               }
             }
           } else {
-            return false
+            let arr = this.$refs['dataForm'].fields
+            arr.some((item) => {
+              if (item.validateState === 'error') {
+                // 验证所有的fields的结构是否一致
+                // console.log(this.$refs['productId'].$children[0].$refs.reference.$refs.input)
+                // console.log(this.$refs['validity'].$children[0].$refs.reference.$refs.input)
+                // console.log(item.$children[0])
+                item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
+                  : item.$children[0].$refs.reference.$refs.input.focus()
+                return true
+              } else {
+                return false
+              }
+            })
           }
         })
       },
-      // 创建或更新客户资料 FIXME 编辑时开通账户会无差别调用更新基础信息的接口
+      // 创建或更新客户资料
       createClient() {
         let clientObj = {
           id: this.clientId,
@@ -278,27 +296,33 @@
           saleManager: this.dataForm.saleManager
         }
         this.createLoading = true
-        let promise = this.clientId ? updateClientInfo(clientObj) : addClient(clientObj)
-        promise.then(res => {
-          if (res.status === 'true') {
-            this.isCreateSuccess = true
-            // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
-            if (!this.isCreateAccount) {
-              this.createLoading = false
-              setTimeout(() => {
-                this.dialogVisible = false
-                this.$router.replace('/client/list')
-              }, 1000)
+        // 编辑时有更改基础信息才调用更新基础信息的接口
+        if (this.hasChangeInfo && !this.isCreateSuccess) {
+          let promise = this.clientId ? updateClientInfo(clientObj) : addClient(clientObj)
+          promise.then(res => {
+            if (res.status === 'true') {
+              this.isCreateSuccess = true
+              // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
+              if (!this.isCreateAccount) {
+                this.createLoading = false
+                setTimeout(() => {
+                  this.dialogVisible = false
+                  this.$router.replace('/client/list')
+                }, 1000)
+              } else {
+                if (res.info) this.clientId = res.info.id
+                this.openAccount()
+              }
             } else {
-              if (res.info) this.clientId = res.info.id
-              this.openAccount()
+              this.$message.error(res.msg)
+              this.isCreateSuccess = false
+              this.dialogVisible = false
+              this.createLoading = false
             }
-          } else {
-            this.$message.error(res.msg)
-            this.dialogVisible = false
-            this.createLoading = false
-          }
-        })
+          })
+        } else if (this.isCreateAccount) {
+          this.openAccount()
+        }
       },
       // 开通账户
       openAccount() {
@@ -308,7 +332,7 @@
           // productStartDate: this.dataForm.validity[0],
           productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent,
-          adminUsername: this.dataForm.account,
+          adminUsername: this.dataForm.adminUsername,
           appId: this.dataForm.appId,
           appSecret: this.dataForm.appSecret,
           jsFile: this.dataForm.jsFile
@@ -323,9 +347,15 @@
               this.openPayment()
             }
           } else {
-            // TODO 该错误字段的错误高亮
-            this.$message.error(res.msg)
+            this.isOpenSuccess = false
             this.createLoading = false
+            this.dialogVisible = false
+            this.$message.error(res.msg)
+            if (res.info) {
+              this.errorField = res.info
+              this.errorMsg = res.msg
+              this.$refs[res.info].$children[0].$refs.input.focus()
+            }
           }
         })
       },

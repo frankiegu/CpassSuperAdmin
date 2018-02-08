@@ -132,7 +132,7 @@ export default {
         productId: '',
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
-        account: '',
+        adminUsername: '',
         appId: '',
         appSecret: '',
         jsFile: '', // JS接口文件
@@ -148,7 +148,7 @@ export default {
       dataRules: {
         productId: [{ validator: checkProduct, trigger: 'blur, change' }],
         validity: [{ validator: checkValidity, trigger: 'blur, change' }],
-        account: [{ validator: checkTel, trigger: 'blur, change' }],
+        adminUsername: [{ validator: checkTel, trigger: 'blur, change' }],
         appId: [{ validator: checkAppId, trigger: 'blur, change' }],
         appSecret: [{ validator: checkAppSecret, trigger: 'blur, change' }],
         jsFile: [{ validator: checkInFile, trigger: 'blur, change' }],
@@ -164,12 +164,22 @@ export default {
     if (this.clientId) this.handleGetDetail()
     if (!this.clientId) {
       const initialForm = this.dataFormStr
+      const initInfo = this.infoStr
       this.$watch('dataFormStr', {
         handler: function (newVal, oldVal) {
           if (!newVal || newVal === initialForm) {
             this.hasChangeForm = false
           } else if (newVal !== initialForm) {
             this.hasChangeForm = true
+          }
+        }
+      })
+      this.$watch('infoStr', {
+        handler: function (newVal) {
+          if (!newVal || newVal === initInfo) {
+            this.hasChangeInfo = false
+          } else if (newVal !== initInfo) {
+            this.hasChangeInfo = true
           }
         }
       })
@@ -331,7 +341,7 @@ export default {
           this.dataForm.productId = dataSource.productId
           this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
-          this.dataForm.account = ''
+          this.dataForm.adminUsername = ''
           this.dataForm.productStatus = dataSource.productStatus
           this.dataForm.appId = dataSource.appId
           this.dataForm.appSecret = dataSource.appSecret

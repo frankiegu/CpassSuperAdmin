@@ -247,15 +247,18 @@
             }
           } else {
             let arr = this.$refs['dataForm'].fields
-            arr.forEach((item) => {
-              // FIXME 需要验证所有的fields的数据结构是否一致
-              item.$children[0].$refs.input.focus()
-              console.log(item.$children[0].$refs.input)
-              // if (item.validateState === 'error') {
-              //   return true
-              // } else {
-              //   return false
-              // }
+            arr.some((item) => {
+              if (item.validateState === 'error') {
+                // 验证所有的fields的结构是否一致
+                // console.log(this.$refs['productId'].$children[0].$refs.reference.$refs.input)
+                // console.log(this.$refs['validity'].$children[0].$refs.reference.$refs.input)
+                // console.log(item.$children[0])
+                item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
+                  : item.$children[0].$refs.reference.$refs.input.focus()
+                return true
+              } else {
+                return false
+              }
             })
           }
         })
