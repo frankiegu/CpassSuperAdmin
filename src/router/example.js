@@ -11,7 +11,7 @@ export default [{
   component: layout,
   hidden: true,
   children: [
-    { name: 'counter', path: '/counter', component: _import('examples/counter') },
-    { name: '图标', path: '/svgs', component: _import('examples/svg-icons/index') }
+    { name: 'counter', path: 'counter', component: _import('examples/counter') },
+    { name: '图标', path: 'svgs', component: _import('examples/svg-icons/index') }
   ]
 }];

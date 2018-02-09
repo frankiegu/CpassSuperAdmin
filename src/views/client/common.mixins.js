@@ -1,5 +1,5 @@
 import { PHONEREG, API_PATH } from '@/config/env'
-import { loadConstant, clientDetail } from '@/service'
+import { loadConstant, clientDetail, checkExistAccount } from '@/service'
 
 export default {
   data () {
@@ -10,11 +10,17 @@ export default {
           return callback(new Error('登录账号不能为空！'))
         }
         if (!PHONEREG.test(value)) {
-          callback(new Error('账号格式错误（正确的手机号码）！'))
+          return callback(new Error('账号格式错误（正确的手机号码）！'))
+        } else {
+          checkExistAccount({ mobile: value }).then(res => {
+            if (res.code !== '200') {
+              return callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
         }
-        callback()
       }
-      callback()
     }
     const checkProduct = (rule, value, callback) => {
       if (this.isCreateAccount) {

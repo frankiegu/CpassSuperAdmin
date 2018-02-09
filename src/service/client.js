@@ -13,6 +13,9 @@ export * from './client/account'
 // 新增客户基础信息
 export const addClient = (obj) => fetch(API_PATH + '/supervisor/client/add', obj, 'POST')
 
+// 检查账户是否存在
+export const checkExistAccount = (obj) => fetch(API_PATH + '/supervisor/client/checkExistAccount', obj, 'POST')
+
 // 编辑客户基础信息
 export const updateClientInfo = (obj) => fetch(API_PATH + '/supervisor/client/updateClientInfo', obj, 'POST')
 
