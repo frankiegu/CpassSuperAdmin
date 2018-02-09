@@ -102,7 +102,7 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not ie <= 8"
+    "not ie <= 9"
   ],
   "main": ".eslintrc.js",
   "license": "Copyright © 2018 广州雷猴软件开发有限公司"
