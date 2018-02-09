@@ -373,9 +373,13 @@
           if (res.status === 'true') {
             this.createLoading = false
             this.dialogVisible = true
+            setTimeout(() => {
+              this.$router.replace('/client/detail?id=' + this.clientId)
+            }, 1000)
           } else {
-            this.$message.error(res.msg)
             this.createLoading = false
+            this.dialogVisible = false
+            this.$message.error(res.msg)
           }
         })
       },
