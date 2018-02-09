@@ -1,6 +1,11 @@
 <template>
   <div class="main-content client-detail">
-    <lh-title :title="dataForm.name" :level2="false"></lh-title>
+    <lh-title :title="dataForm.name" :level2="false">
+      <el-button size="mini" plain class="mr10 fr">
+        <router-link v-if="isCreateAccount" :to="'/client/modify?id=' + clientId">编辑</router-link>
+        <router-link :to="'/client/add?id=' + clientId" v-else>编辑</router-link>
+      </el-button>
+    </lh-title>
 
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm">
@@ -24,7 +29,7 @@
           </el-form-item>
 
           <el-form-item label="支付功能">
-            <p class="theme-red">{{dataForm.spaceWeixinPayId ? '已开通' : '关闭'}}</p>
+            <p class="theme-red">{{dataForm.spaceWeixinPayStatus ? '已开通' : '关闭'}}</p>
           </el-form-item>
 
           <!-- 客户微信服务号资料 -->
@@ -70,6 +75,7 @@
           appSecret: '',
 
           // 开通微信支付功能
+          spaceWeixinPayStatus: 0,
           spaceWeixinPayId: '',
           mchId: '', // 客户服务号mch_ID
           mchKey: '' // 客户服务号key

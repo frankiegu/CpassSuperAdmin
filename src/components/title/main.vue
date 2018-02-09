@@ -19,6 +19,7 @@
         icon="el-icon-download"
         size="mini">下载PDF</el-button>
     </el-tooltip>
+    <slot></slot>
   </div>
 </template>
 
@@ -49,7 +50,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import 'src/styles/config.scss';
 
   .page-title {
@@ -75,7 +76,7 @@
       vertical-align: middle;
       cursor: pointer;
     }
-    .download-pdf {
+    .el-button{
       margin-top: 5.5px;
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="main-content client-modify">
-    <lh-title :title="pageTitle" :level2="true" @goBack="handleBackList"></lh-title>
+    <lh-title :title="dataForm.name" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <!-- 基础信息 -->
@@ -193,7 +193,6 @@
     mixins: [commonMixins],
     data() {
       return {
-        pageTitle: '',
         isCreateAccount: true,
         dialogType: '',
         updateLoading: false,

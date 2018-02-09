@@ -1,6 +1,6 @@
 <template>
   <div class="main-content client-data">
-    <lh-title :title="pageTitle" :level2="true" @goBack="handleBackList"></lh-title>
+    <lh-title :title="$route.query.id ? dataForm.name : '新增客户'" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <h3 class="grid-title">基础信息</h3>
@@ -166,13 +166,13 @@
         <span class="text-center" v-if="dialogType === 'save'">
           <p v-if="!clientId && !isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
           <p v-if="clientId && !isCreateSuccess && !isOpenSuccess">确认保存修改内容？</p>
-          <span v-if="isCreateSuccess && !isOpenSuccess" class="el-icon-success"></span>
+          <span v-if="isCreateSuccess || isOpenSuccess" class="el-icon-success"></span>
           <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '创建成功！'}}</p>
           <p v-if="isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '开通成功！'}}</p>
-          <p v-if="isOpenSuccess">
-            <router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>
-            或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看
-          </p>
+          <!--<p v-if="isOpenSuccess">-->
+            <!--<router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>-->
+            <!--或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看-->
+          <!--</p>-->
         </span>
         <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess && dialogType === 'save'">
           <el-button type="primary" class="width120px" @click="createClient" :loading="createLoading">
@@ -202,7 +202,6 @@
     mixins: [commonMixins],
     data() {
       return {
-        pageTitle: this.$route.query.id ? '' : '新增客户',
         dialogType: '',
         errorField: '',
         errorMsg: '',
@@ -216,8 +215,7 @@
     components: {
       baseInfo
     },
-    mounted() {
-    },
+    mounted() {},
     watch: {},
     computed: {},
     filters: {},
@@ -344,6 +342,9 @@
             if (!this.dataForm.isOpenPayment) {
               this.dialogVisible = true
               this.createLoading = false
+              setTimeout(() => {
+                this.$router.replace('/client/detail?id=' + this.clientId)
+              }, 1000)
             } else {
               this.openPayment()
             }

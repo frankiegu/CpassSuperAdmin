@@ -20,6 +20,8 @@ export default {
             }
           })
         }
+      } else {
+        callback()
       }
     }
     const checkProduct = (rule, value, callback) => {
