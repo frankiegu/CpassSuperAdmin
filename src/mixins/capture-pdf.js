@@ -1,7 +1,7 @@
 /**
  * 下载pdf的方法 mixins
  */
-import jspdf from 'jspdf'
+import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 export default {
   methods: {
@@ -26,7 +26,7 @@ export default {
 
         var pageData = canvas.toDataURL('image/jpeg', 1.0)
 
-        var pdf = new jspdf('', 'pt', 'a4')
+        var pdf = new jsPDF('', 'pt', 'a4')
         // 有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
         // 当内容未超过pdf一页显示的范围，无需分页
         if (leftHeight < pageHeight) {
