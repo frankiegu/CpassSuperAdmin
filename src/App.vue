@@ -10,6 +10,6 @@
  @import "./styles/config";
  @import "./styles/reset";
  @import "./styles/reset-ele";
- @import "./styles/common";
  @import "./styles/public";
+ @import "./styles/common";
 </style>

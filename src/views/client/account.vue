@@ -4,8 +4,8 @@
       :title="pagaData.name + '账户信息'"
       @downloadPdf="downloadPdf"></lh-title>
 
-    <div class="detail-box" id="captureDom">
-      <div class="detail-head">
+    <div class="content-body card-body" id="captureDom">
+      <div class="basics-title">
         基础信息
         <!-- <el-button
           @click="sendMsg"
@@ -15,46 +15,44 @@
           size="mini">短信通知</el-button> -->
       </div>
 
-      <div class="detail-content">
-        <lh-item label="访问地址" label-width="180px" align="right">
-          {{ pagaData.manageUrl }}
-        </lh-item>
-        <lh-item label="登录账户" label-width="180px" con-width="280px" align="right">
-          <span>{{ pagaData.username }}</span>
-          <el-button @click="showDialog('account')" class="fr mt-4" type="primary" size="mini">重置账户</el-button>
-        </lh-item>
-        <lh-item label="登录密码" label-width="180px" con-width="280px" align="right">
-          <span>***********</span>
-          <el-button @click="showDialog('pwd')" class="fr mt-4" type="primary" size="mini">重置密码</el-button>
-        </lh-item>
-      </div>
+      <lh-item label="访问地址：" label-width="auto">
+        {{ pagaData.manageUrl }}
+      </lh-item>
+      <lh-item label="登录账户：" label-width="auto" con-width="350px">
+        <span>{{ pagaData.username }}</span>
+        <el-button @click="showDialog('account')" class="fr mt-3" type="primary" size="mini">重置账户</el-button>
+      </lh-item>
+      <lh-item label="登录密码：" label-width="auto" con-width="350px">
+        <span class="dib pt3">***********</span>
+        <el-button @click="showDialog('pwd')" class="fr mt-3" type="primary" size="mini">重置密码</el-button>
+      </lh-item>
+
+      <div class="lh-divider-horizontal mb32"></div>
 
       <div class="detail-box">
-        <div class="detail-head"> 客户微信公众号 </div>
+        <div class="basics-title"> 客户微信公众号 </div>
 
-        <div class="detail-content">
-          <lh-item label="微信部署地址" label-width="180px" align="right">
-            {{ pagaData.wxUrl }}
-          </lh-item>
-          <lh-item label="二维码" label-width="180px" label-height="171px" align="right">
-            <qr-code
-              :text="pagaData.wxUrl || ''"
-              :size="120"
-              class="pt10 qr-code"
-              id="qrCode"
-              error-level="L"></qr-code>
+        <lh-item label="微信部署地址：" label-width="auto">
+          {{ pagaData.wxUrl }}
+        </lh-item>
+        <lh-item label="二维码：" label-width="auto" label-height="171px">
+          <qr-code
+            :text="pagaData.wxUrl || ''"
+            :size="120"
+            class="qr-code"
+            id="qrCode"
+            error-level="L"></qr-code>
 
-            <a @click="downQrImg" href="javascript:;" id="downloadQr">
-              <el-button
-                icon="el-icon-download"
-                class="mt10 download-qr"
-                type="success"
-                size="mini"
-                width="120"
-                height="28">下载二维码</el-button>
-            </a>
-          </lh-item>
-        </div>
+          <a @click="downQrImg" href="javascript:;" id="downloadQr">
+            <el-button
+              icon="el-icon-download"
+              class="mt10 download-qr"
+              type="success"
+              size="mini"
+              width="120"
+              height="28">下载二维码</el-button>
+          </a>
+        </lh-item>
       </div>
     </div>
 

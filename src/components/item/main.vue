@@ -26,7 +26,7 @@
       },
       conStyle() {
         return {
-          'margin-left': this.labelWidth,
+          'margin-left': (this.labelWidth === 'auto') ? '0' : this.labelWidth,
           'width': this.conWidth
         }
       }
@@ -45,18 +45,17 @@
     box-sizing: border-box;
 
     .label {
-      vertical-align: middle;
       float: left;
+      vertical-align: middle;
       font-size: 14px;
-      line-height: 1;
-      padding: 11px 16px 11px 16px;
+      line-height: 22px;
+      padding: 0 0 16px 0;
       box-sizing: border-box;
     }
     .label-con {
       line-height: 22px;
       font-size: 14px;
       color: $theme-gray;
-      padding-top: 7px;
       text-align: left;
     }
   }
