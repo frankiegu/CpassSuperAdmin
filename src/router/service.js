@@ -9,7 +9,7 @@ export default [{
   path: '/service',
   redirect: '/service/list',
   component: layout,
-  icon: 'icon-viip',
+  icon: 'icon-service',
   children: [{
     name: '服务列表',
     path: 'list',

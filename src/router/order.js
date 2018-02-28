@@ -9,7 +9,7 @@ export default [{
   path: '/order',
   redirect: '/order/space',
   component: layout,
-  icon: 'icon-viip',
+  icon: 'icon-order',
   children: [{
     name: '场地订单',
     path: 'space',

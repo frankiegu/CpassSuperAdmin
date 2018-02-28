@@ -10,7 +10,7 @@ export default [{
   redirect: '/client/list',
   component: layout,
   noDropdown: true,
-  icon: 'icon-viip',
+  icon: 'icon-kehu',
   children: [{
     name: '客户列表',
     path: 'list',

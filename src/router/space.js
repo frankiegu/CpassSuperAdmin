@@ -9,7 +9,7 @@ export default [{
   path: '/space',
   redirect: '/space/list',
   component: layout,
-  icon: 'icon-viip',
+  icon: 'icon-Site',
   children: [{
     name: '场地列表',
     path: 'list',
