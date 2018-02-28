@@ -1,11 +1,14 @@
 <template>
   <el-breadcrumb class="app-levelbar" separator="/">
     <transition-group name="breadcrumb">
-      <el-breadcrumb-item
-        v-for="(item,index) in levelList"
-        :key="index">
-        <router-link v-if="item.name" :to="item.redirect || item.path">{{item.name}}</router-link>
+      <el-breadcrumb-item v-for="(item, index) in levelList" :key="index">
+
+        <span v-if="item.name">
+          <router-link v-if="index < (levelList.length -1) " :to="item.redirect || item.path">{{item.name}}</router-link>
+          <span v-else>{{item.name}}</span>
+        </span>
         <span v-else>{{navCrumb}}</span>
+
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
