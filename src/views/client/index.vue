@@ -52,6 +52,7 @@
           </el-select>
         </el-form-item>
 
+        <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
           <el-date-picker
             v-model="formData.reg_date"
