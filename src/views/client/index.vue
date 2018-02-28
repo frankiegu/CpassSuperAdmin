@@ -189,8 +189,8 @@
           // validaty: formData.validaty,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
-          createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
-          createEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
+          productStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
+          productEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
         }
 
         clientList(paramsObj).then(res => {
