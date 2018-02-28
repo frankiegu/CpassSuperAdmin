@@ -30,7 +30,7 @@
         empty: '',
         isNoFound: (this.$route.path === '/not-found'),
         classObject: {
-          // 'mt84': (this.$route.path !== '/not-found'),
+          'mt84': (this.$route.path !== '/not-found'),
           'store-setting': (this.$route.path !== '/not-found'),
           'content-body': (this.$route.path !== '/not-found'),
           'bgcfff': (this.$route.path !== '/not-found')

@@ -66,8 +66,11 @@
     },
     watch: {
       $route() {
-        this.hideRouters = this.hideRouters.includes(this.$route.path)
+        this.hideRouter = this.hideRouters.includes(this.$route.path)
       }
+    },
+    mounted() {
+      this.hideRouter = this.hideRouters.includes(this.$route.path)
     }
   }
 </script>

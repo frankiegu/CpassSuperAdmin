@@ -5,9 +5,8 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
         <router-link
-          to="/client/add"
-          class="btn-link fl "
-          tag="a">
+          class="btn-link fl el-icon-circle-plus"
+          to="/client/add" tag="a">
           &nbsp;新增客户
         </router-link>
 
@@ -78,7 +77,7 @@
         </el-form-item>
 
         <el-form-item class="fr">
-          <el-button @click="exportExcel" class="btn-green fr">导出表格</el-button>
+          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green fr">导出表格</el-button>
         </el-form-item>
       </el-form>
 

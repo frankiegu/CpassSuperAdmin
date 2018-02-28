@@ -2,12 +2,10 @@
   <el-menu class="navbar" mode="horizontal">
     <router-link
       :class="{'sidebar-close': !sidebar.opened}"
-      class="logo-box db"
-      tag="a"
-      to="/">
+      class="logo-box db" to="/" tag="a">
 
       <img src="/static/images/login-logo.png">
-      <span>酷雷托智能空间总管理后台</span>
+      <span>酷雷托总后台</span>
     </router-link>
 
     <lh-svg
@@ -58,6 +56,7 @@
     line-height: 60px;
     border-radius: 0px !important;
     background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
     .hover-effect {
       padding: 10px 8px;
