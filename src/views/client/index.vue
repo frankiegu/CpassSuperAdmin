@@ -26,7 +26,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item>
+        <!-- <el-form-item>
           <el-select
             v-model="formData.validaty"
             @change="getPageData"
@@ -39,7 +39,7 @@
               :value="i.id"
               :key="i.id"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item>
           <el-select
@@ -186,7 +186,7 @@
           pageSize: this.pageSize,
           pageNum: this.currentPage,
           name: formData.name,
-          validaty: formData.validaty,
+          // validaty: formData.validaty,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
           createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
@@ -217,7 +217,7 @@
         const formData = this.formData
         const downParams = {
           name: formData.name,
-          validaty: formData.validaty,
+          // validaty: formData.validaty,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
           createStartDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
