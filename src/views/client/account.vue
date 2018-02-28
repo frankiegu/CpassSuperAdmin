@@ -21,11 +21,11 @@
         </lh-item>
         <lh-item label="登录账户" label-width="180px" con-width="280px" align="right">
           <span>{{ pagaData.username }}</span>
-          <el-button @click="showDialog('account')" class="fr mt4" type="primary" size="mini">重置账户</el-button>
+          <el-button @click="showDialog('account')" class="fr mt-4" type="primary" size="mini">重置账户</el-button>
         </lh-item>
         <lh-item label="登录密码" label-width="180px" con-width="280px" align="right">
           <span>***********</span>
-          <el-button @click="showDialog('pwd')" class="fr mt4" type="primary" size="mini">重置密码</el-button>
+          <el-button @click="showDialog('pwd')" class="fr mt-4" type="primary" size="mini">重置密码</el-button>
         </lh-item>
       </div>
 

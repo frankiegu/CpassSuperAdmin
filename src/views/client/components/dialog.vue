@@ -143,6 +143,8 @@
                   if (res.status === 'true') {
                     this.loadingStatus = false
                     this.dialogType = 'resetAccount'
+
+                    this.$emit('toggleAcc', this.dialogForm.account)
                   } else {
                     this.loadingStatus = false
                     this.setMsg('error', res.msg)
@@ -156,7 +158,6 @@
               username: this.dialogForm.account
             }).then(res => {
               if (res.status === 'true') {
-                this.$emit('toggleAcc', this.dialogForm.account)
                 this.dialogType = 'sendAccSuc'
               } else {
                 this.setMsg('error', res.msg)
