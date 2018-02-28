@@ -30,7 +30,7 @@
         empty: '',
         isNoFound: (this.$route.path === '/not-found'),
         classObject: {
-          'mt84': (this.$route.path !== '/not-found'),
+          // 'mt84': (this.$route.path !== '/not-found'),
           'store-setting': (this.$route.path !== '/not-found'),
           'content-body': (this.$route.path !== '/not-found'),
           'bgcfff': (this.$route.path !== '/not-found')
@@ -56,7 +56,7 @@
             // 如果输入错误的路哟与，就会跳转到当前404页面，
             // 这时，如果手动切换正确路由，就停止倒计时
             if (this.$route.path === this.route) {
-              // this.settime()
+              this.settime()
             }
           }, 1000)
         }
@@ -84,7 +84,7 @@
     }
     .zoom {
       width: 700px;
-      margin: 0 auto;
+      margin: 24px auto 0;
       font-size: 16px;
 
       @media screen and (max-width: 1366px) {
