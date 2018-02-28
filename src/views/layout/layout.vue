@@ -10,7 +10,7 @@
       </div>
 
       <section class="app-main mt60">
-        <levelbar v-if="!hideRouters"></levelbar>
+        <levelbar v-if="!hideRouter"></levelbar>
         <transition name="fade" mode="out-in">
           <router-view class="app-in" :key="key"></router-view>
         </transition>
@@ -42,7 +42,7 @@
     components: { navbar, levelbar, sidebar, scroolTop },
     data () {
       return {
-        hideRouters: false,
+        hideRouter: false,
         hideRouters: ['/500', '/not-permission', '/not-found'],
         myBackToTopStyle: {
           right: '50px',
@@ -68,15 +68,12 @@
       $route() {
         this.hideRouters = this.hideRouters.includes(this.$route.path)
       }
-    },
-    mounted() {
-      console.log('test', this.$route.path);
     }
   }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "../../../src/styles/config";
+  @import "src/styles/config";
   .app-wrapper {
     position: relative;
     min-height: 100vh;

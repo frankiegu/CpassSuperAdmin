@@ -15,27 +15,19 @@
       :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
       class="hamburger hamburger-container outline-none"></lh-svg>
 
-    <!-- @#TODO 加一个退出的功能，如果后期不需要就隐藏起来 -->
-    <el-tooltip
-      content="点击退出登录"
-      placement="bottom"
-      effect="light">
-      <lh-svg
-        @click.native="logout"
-        iconClass="icon-logout"
-        class="logout-style fr cursor-pointer outline-none"></lh-svg>
-    </el-tooltip>
+    <navbar-menu class="fr reset-menu mr30 el-menu-demo"></navbar-menu>
 
-    <screenfull class="fr cursor-pointer"></screenfull>
+    <screenfull class="fr cursor-pointer hover-effect"></screenfull>
   </el-menu>
 </template>
 
 <script>
+  import navbarMenu from './menu'
   import screenfull from './screenfull'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: { screenfull },
+    components: { screenfull, navbarMenu },
     data () {
       return {}
     },
@@ -47,17 +39,7 @@
     methods: {
       ...mapActions({
         toggleSideBarWay: 'toggleSideBar'
-      }),
-      logout () {
-        this.$store.dispatch('logout').then(res => {
-          this.$router.push({
-            path: '/login',
-            query: {
-              redirect: this.$route.path
-            }
-          })
-        })
-      }
+      })
     }
   }
 </script>
@@ -77,6 +59,14 @@
     border-radius: 0px !important;
     background-color: #ffffff;
 
+    .hover-effect {
+      padding: 10px 8px;
+      border-radius: 2px;
+
+      &:hover {
+        background-color: #F3F3F9;
+      }
+    }
     .logout-style {
       width: 20px;
       height: 20px;

@@ -9,6 +9,24 @@ $--color-primary: #5E80E5;
   background-color: #fafafa !important;
 }
 
+// 因为hover展示的列表是动态DOM，写在页面内无效
+.el-submenu .el-submenu__title:hover,
+.el-menu--horizontal .el-menu-item:hover,
+.el-menu--horizontal .el-menu-item:focus,
+.el-menu--horizontal .el-menu-item:not(.is-disabled):hover,
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus {
+  background-color: #F3F3F9 !important;
+  border-radius: 2px;
+}
+.el-submenu .el-submenu__title,
+.el-menu--horizontal {
+  border-bottom: 0 !important;
+}
+.el-menu--horizontal .el-menu-item a {
+  display: block;
+  width: 100%;
+}
+
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '../../node_modules/element-ui/lib/theme-chalk/fonts';
 
