@@ -46,7 +46,7 @@
             v-model="formData.productStatus"
             @change="getPageData"
             placeholder="状态"
-            class="width100px"
+            class="width150px"
             clearable>
             <lh-option :statusList="statusList"></lh-option>
           </el-select>
@@ -71,7 +71,7 @@
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
             placeholder="请输入客户名称"
-            class="width150px">
+            class="width220px">
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
@@ -126,7 +126,7 @@
           <template slot-scope="scope">
             <router-link
               :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
-              class="table-link margin-lr6">
+              class="table-link mr5">
               编辑
             </router-link>
 
@@ -189,8 +189,8 @@
           // validaty: formData.validaty,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
-          createStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
-          createEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
+          productStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
+          productEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
         }
 
         clientList(paramsObj).then(res => {
