@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-body card-body">
     <h2>Clicked: {{ $store.state.counter.count }} times, count is {{ evenOrOdd }}.</h2>
     <br>
     <div @click="increment">+</div>

@@ -1,7 +1,5 @@
 <template>
-  <div class="icons-container">
-    <div class="page-title mt30"><h1>图标</h1></div>
-
+  <div class="icons-container content-body card-body">
     <div class="icons-wrapper">
       <div
         v-for="item of iconsMap"
@@ -51,8 +49,6 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .icons-container {
-  margin: 10px 0 0;
-  overflow: hidden;
   .icons-wrapper {
     margin: 0 auto;
   }

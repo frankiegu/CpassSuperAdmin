@@ -30,9 +30,10 @@
         empty: '',
         isNoFound: (this.$route.path === '/not-found'),
         classObject: {
-          'mt90': (this.$route.path !== '/not-found'),
+          'mt84': (this.$route.path !== '/not-found'),
           'store-setting': (this.$route.path !== '/not-found'),
-          'card-padding': (this.$route.path !== '/not-found')
+          'content-body': (this.$route.path !== '/not-found'),
+          'bgcfff': (this.$route.path !== '/not-found')
         },
         countdown: 10,
         pagaData: null
@@ -55,7 +56,7 @@
             // 如果输入错误的路哟与，就会跳转到当前404页面，
             // 这时，如果手动切换正确路由，就停止倒计时
             if (this.$route.path === this.route) {
-              this.settime()
+              // this.settime()
             }
           }, 1000)
         }
@@ -83,7 +84,7 @@
     }
     .zoom {
       width: 700px;
-      margin: 60px auto 0;
+      margin: 0 auto;
       font-size: 16px;
 
       @media screen and (max-width: 1366px) {
