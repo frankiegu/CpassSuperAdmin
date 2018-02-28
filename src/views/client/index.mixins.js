@@ -9,10 +9,12 @@ export default {
         productStatus: ''
       },
       channels: [
+        { id: ' ', channel: '全部' },
         { id: 1, channel: '后台创建' },
         { id: 2, channel: '客户自助注册' }
       ],
       timeValidity: [
+        { id: ' ', validity: '全部' },
         { id: 1, validity: '永久' },
         { id: 2, validity: '一周内到期' },
         { id: 3, validity: '一月内到期' }
