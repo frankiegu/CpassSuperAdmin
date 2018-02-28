@@ -8,7 +8,7 @@
     </lh-title>
 
     <div class="card-padding card-padding-vertical">
-      <el-form label-width="180px" :model="dataForm">
+      <el-form label-width="160px" :model="dataForm" label-position="left">
         <!-- 基础信息 -->
         <h3 class="grid-title">基础信息</h3>
         <base-info :model-form="dataForm" info-type="detail"></base-info>
