@@ -56,10 +56,10 @@
   .page-title {
     height: 40px;
     line-height: 40px;
-    padding: 0 12px 0 20px;
+    padding: 0 12px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    background-color: $theme-blue;
+    background-color: #fff;
     color: #fff;
     overflow: hidden;
 
@@ -67,7 +67,7 @@
       float: left;
       font-size: 16px;
       font-weight: 700;
-      color: #fff;
+      color: $theme-black;
     }
     .el-icon-close {
       padding: 6px;

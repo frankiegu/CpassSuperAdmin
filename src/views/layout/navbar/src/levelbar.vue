@@ -49,10 +49,11 @@
 
 <style lang="scss" scoped>
   .app-levelbar.el-breadcrumb {
-    display: inline-block;
+    display: block;
     font-size: 14px;
     line-height: 50px;
-    margin-left: 10px;
+    padding-left: 24px;
     outline: none;
+    background-color: #fff;
   }
 </style>

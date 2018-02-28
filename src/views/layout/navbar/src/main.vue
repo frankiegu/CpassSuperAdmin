@@ -26,19 +26,16 @@
         class="logout-style fr cursor-pointer outline-none"></lh-svg>
     </el-tooltip>
 
-    <levelbar></levelbar>
-
     <screenfull class="fr cursor-pointer"></screenfull>
   </el-menu>
 </template>
 
 <script>
-  import levelbar from './levelbar'
   import screenfull from './screenfull'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: { levelbar, screenfull },
+    components: { screenfull },
     data () {
       return {}
     },
@@ -100,10 +97,11 @@
     }
     .logo-box {
       position: relative;
+      border-right: 1px $theme-light-gray solid;
       width: 180px;
       height: 60px;
       float: left;
-      margin-right: 17px;
+      margin-right: 13px;
       transition: width .28s;
       outline: none;
       overflow: hidden;

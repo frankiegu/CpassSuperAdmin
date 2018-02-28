@@ -301,7 +301,7 @@
 }
 // 页面主内容容器样式
 .main-content {
-  padding-top: 30px;
+  //padding-top: 30px;
 }
 // 富文本编辑器
 .quill-editor-box {
@@ -331,6 +331,7 @@
 // 卡片padding
 .card-padding {
   position: relative;
+  margin: 24px 24px 0;
   padding: 30px 20px;
   background-color: #fff;
   border-bottom-left-radius: 4px;

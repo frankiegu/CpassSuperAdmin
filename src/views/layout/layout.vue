@@ -10,6 +10,7 @@
       </div>
 
       <section class="app-main mt60">
+        <levelbar></levelbar>
         <transition name="fade" mode="out-in">
           <router-view class="app-in" :key="key"></router-view>
         </transition>
@@ -33,11 +34,12 @@
 <script>
   import { mapGetters } from 'vuex'
   import navbar from './navbar'
+  import levelbar from './navbar/src/levelbar'
   import sidebar from './sidebar'
   import scroolTop from '@/components/scrool-top'
 
   export default {
-    components: { navbar, sidebar, scroolTop },
+    components: { navbar, levelbar, sidebar, scroolTop },
     data () {
       return {
         myBackToTopStyle: {
@@ -64,6 +66,7 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+  @import "../../../src/styles/config";
   .app-wrapper {
     position: relative;
     min-height: 100vh;
@@ -98,7 +101,8 @@
     .sidebar-wrapper {
       width: 180px;
       position: fixed;
-      top: 90px;
+      border-right: 1px $theme-light-gray solid;
+      top: 61px;
       bottom: 0;
       left: 0;
       z-index: 1001;
@@ -111,7 +115,7 @@
       }
     }
     .main-container {
-      padding: 0 30px;
+      /*padding: 0 30px;*/
       min-height: 100%;
       margin-left: 180px;
     }
