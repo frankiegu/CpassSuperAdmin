@@ -3,7 +3,11 @@ import layout from '@/views/layout/layout'         // 顶层路由，对应index
 import register from '@/router/register'           // 注册、找回密码
 import example from '@/router/example'             // 一些示例页面
 import error from '@/router/error'                 // 错误页面，如404
-import client from '@/router/client'               // 客户管理模块
+import client from '@/router/client'               // 客户管理
+import service from '@/router/service'             // 服务管理
+import space from '@/router/space'                 // 场地管理
+import member from '@/router/member'               // 会员管理
+import order from '@/router/order'                 // 订单管理
 
 export const constantRouterMap = [
   {
@@ -20,10 +24,14 @@ export const constantRouterMap = [
       }
     ]
   },
-  ...example,
+  ...client,
+  ...service,
+  ...space,
+  ...member,
+  ...order,
   ...register,
-  ...error,
-  ...client
+  ...example,
+  ...error
 ]
 
 export const asyncRouterMap = [
