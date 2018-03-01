@@ -10,7 +10,7 @@ const tagsView = {
 
   mutations: {
     ADD_VISITED_VIEWS: (state, view) => {
-      if (state.visitedViews.some(v => v.path === view.path)) return
+      if (state.visitedViews.some(v => v.path === view.path || view.meta.isError)) return
       state.visitedViews.push({
         name: view.name || common.state.navCrumb,
         path: view.path,

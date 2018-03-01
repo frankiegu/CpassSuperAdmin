@@ -52,10 +52,10 @@
 
 <style lang="scss" scoped>
   .app-levelbar.el-breadcrumb {
-    display: block;
+    display: inline-block;
     font-size: 14px;
     line-height: 50px;
-    padding-left: 24px;
+    margin-left: 10px;
     outline: none;
     background-color: #fff;
     .nactive-bread {

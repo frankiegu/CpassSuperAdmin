@@ -10,8 +10,7 @@
       </div>
 
       <section class="app-main mt60">
-        <tags-view></tags-view>
-        <levelbar v-if="!hideRouter"></levelbar>
+        <tags-view v-if="!hideRouter"></tags-view>
         <transition name="fade" mode="out-in">
           <router-view class="app-in" :key="key"></router-view>
         </transition>

@@ -135,9 +135,11 @@ export default {
         margin-left: 24px;
       }
       &.active {
-        /*background-color: #42b983;*/
         color: $theme-blue;
         border-bottom: 1px solid $theme-blue;
+      }
+      &:hover {
+        color: $theme-blue;
       }
     }
   }

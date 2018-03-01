@@ -15,17 +15,20 @@
 
     <navbar-menu class="fr reset-menu mr30 el-menu-demo"></navbar-menu>
 
+    <levelbar></levelbar>
+
     <screenfull class="fr cursor-pointer hover-effect"></screenfull>
   </el-menu>
 </template>
 
 <script>
+  import levelbar from './levelbar'
   import navbarMenu from './menu'
   import screenfull from './screenfull'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: { screenfull, navbarMenu },
+    components: { levelbar, screenfull, navbarMenu },
     data () {
       return {}
     },
