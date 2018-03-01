@@ -44,7 +44,7 @@
         <el-form-item>
           <el-select
             v-model="formData.productStatus"
-            @change="getPageData"
+            @change="changeStatus"
             placeholder="状态"
             class="width150px"
             clearable>
@@ -177,6 +177,13 @@
       this.getPageData()
     },
     methods: {
+      changeStatus() {
+        if (this.formData.reg_date && this.formData.productStatus === 2) {
+          this.formData.reg_date = null
+        }
+
+        this.getPageData()
+      },
       formatTime(time) {
         return !time ? '' : time.replace(/:\d{2}$/, '')
       },
