@@ -4,7 +4,8 @@
       <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''" v-for="tag in Array.from(visitedViews)"
         :to="tag.id ? tag.path + '?id=' + tag.id : tag.path" :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
         {{tag.name}}
-        <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'></span>
+        <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'
+          v-if="tag.path !== visitedViews[0].path"></span>
       </router-link>
     </scroll-pane>
     <ul class='contextmenu' v-show="visible" :style="{left:left+'px',top:top+'px'}">
@@ -51,7 +52,7 @@ export default {
   },
   methods: {
     generateRoute() {
-      if (this.$route.name) {
+      if (this.$route.path) {
         return this.$route
       }
       return false
@@ -100,10 +101,12 @@ export default {
       this.$router.push('/')
     },
     openMenu(tag, e) {
-      this.visible = true
-      this.selectedTag = tag
-      this.left = e.clientX
-      this.top = e.clientY
+      if (this.visitedViews.length > 1) {
+        this.visible = true
+        this.selectedTag = tag
+        this.left = e.clientX
+        this.top = e.clientY
+      }
     },
     closeMenu() {
       this.visible = false
@@ -113,41 +116,28 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+@import "../../../styles/config";
 .tags-view-container {
   .tags-view-wrapper {
     background: #fff;
-    height: 34px;
-    border-bottom: 1px solid #d8dce5;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+    height: 52px;
+    border-bottom: 1px solid $theme-light-gray;
     .tags-view-item {
       display: inline-block;
       position: relative;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
       color: #495060;
       background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
+      padding: 12px 16px 8px;
+      font-size: 14px;
       margin-left: 5px;
       margin-top: 4px;
       &:first-of-type {
-        margin-left: 15px;
+        margin-left: 24px;
       }
       &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
-        }
+        /*background-color: #42b983;*/
+        color: $theme-blue;
+        border-bottom: 1px solid $theme-blue;
       }
     }
   }
@@ -177,24 +167,34 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 //reset element css of el-icon-close
+@import "../../../styles/config";
 .tags-view-wrapper {
   .tags-view-item {
     .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 2px;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      margin-top: -7px;
+      margin-left: 4px;
+      width: 14px;
+      height: 14px;
+      opacity: 0;
       border-radius: 50%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
       &:before {
-        transform: scale(.6);
         display: inline-block;
-        vertical-align: -3px;
+        vertical-align: -1px;
       }
       &:hover {
-        background-color: #b4bccc;
+        background-color: $theme-light-blue;
         color: #fff;
+      }
+    }
+    &:hover {
+      .el-icon-close {
+        opacity: 1;
       }
     }
   }

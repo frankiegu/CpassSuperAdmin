@@ -3,10 +3,10 @@
     <h1>{{ title }}</h1>
 
     <!-- 如果非一级页面，显示返回上一页按钮 -->
-    <i
-      v-if="$route.meta.level2"
-      @click="goBack"
-      class="el-icon-close fr"></i>
+    <!--<i-->
+      <!--v-if="$route.meta.level2"-->
+      <!--@click="goBack"-->
+      <!--class="el-icon-close fr"></i>-->
 
     <el-tooltip
       v-if="$route.meta.pdf"
@@ -15,6 +15,7 @@
       effect="light">
       <el-button
         @click="downloadPdf"
+        type="primary"
         class="mr10 fr download-pdf"
         icon="el-icon-download"
         size="mini">下载PDF</el-button>
@@ -54,8 +55,6 @@
   @import 'src/styles/config.scss';
 
   .page-title {
-    height: 40px;
-    line-height: 40px;
     padding: 0 12px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -64,9 +63,9 @@
     overflow: hidden;
 
     h1 {
+      padding-bottom: 16px;
       float: left;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 20px;
       color: $theme-black;
     }
     .el-icon-close {
@@ -76,8 +75,10 @@
       vertical-align: middle;
       cursor: pointer;
     }
-    .el-button{
-      margin-top: 5.5px;
+    .el-button {
+      a {
+        color: #fff;
+      }
     }
   }
 </style>

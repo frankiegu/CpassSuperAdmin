@@ -4,10 +4,10 @@
       <el-breadcrumb-item v-for="(item, index) in levelList" :key="index">
 
         <span v-if="item.name">
-          <router-link v-if="index < (levelList.length -1) " :to="item.redirect || item.path">{{item.name}}</router-link>
-          <span v-else>{{item.name}}</span>
+          <router-link class="nactive-bread" v-if="index < (levelList.length -1) " :to="item.redirect || item.path">{{item.name}}</router-link>
+          <span class="active-bread" v-else>{{item.name}}</span>
         </span>
-        <span v-else>{{navCrumb}}</span>
+        <span class="active-bread" v-else>{{navCrumb}}</span>
 
       </el-breadcrumb-item>
     </transition-group>
@@ -58,5 +58,11 @@
     padding-left: 24px;
     outline: none;
     background-color: #fff;
+    .nactive-bread {
+      color: rgba(0,0,0,.45);
+    }
+    .active-bread {
+      color: rgba(0,0,0,.65);
+    }
   }
 </style>

@@ -33,5 +33,13 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
-  ...App
+  ...App,
+  mounted() {
+    this.setOpenedList()
+  },
+  methods: {
+    setOpenedList() {
+      this.$store.dispatch('setOpenedList')
+    }
+  }
 }).$mount('#app')

@@ -1,7 +1,7 @@
 <template>
   <div class="main-content client-detail">
     <lh-title :title="dataForm.name" :level2="false">
-      <el-button size="mini" plain class="mr10 fr">
+      <el-button size="mini" class="mr10 fr" type="primary">
         <router-link v-if="isCreateAccount" :to="'/client/modify?id=' + clientId">编辑</router-link>
         <router-link :to="'/client/add?id=' + clientId" v-else>编辑</router-link>
       </el-button>

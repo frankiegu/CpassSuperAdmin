@@ -1,21 +1,22 @@
+import common from './common'
 const tagsView = {
   state: {
-    visitedViews: [],
+    visitedViews: []
   },
 
   getters: {
-    visitedViews: state => state.visitedViews,
+    visitedViews: state => state.visitedViews
   },
 
   mutations: {
     ADD_VISITED_VIEWS: (state, view) => {
       if (state.visitedViews.some(v => v.path === view.path)) return
       state.visitedViews.push({
-        name: view.name,
+        name: view.name || common.state.navCrumb,
         path: view.path,
-        title: view.meta.title || 'no-name',
         id: view.query.id || ''
       })
+      localStorage.visitedViews = JSON.stringify(state.visitedViews)
     },
     DEL_VISITED_VIEWS: (state, view) => {
       for (const [i, v] of state.visitedViews.entries()) {
@@ -24,6 +25,7 @@ const tagsView = {
           break
         }
       }
+      localStorage.visitedViews = JSON.stringify(state.visitedViews)
     },
     DEL_OTHERS_VIEWS: (state, view) => {
       for (const [i, v] of state.visitedViews.entries()) {
@@ -32,9 +34,14 @@ const tagsView = {
           break
         }
       }
+      localStorage.visitedViews = JSON.stringify(state.visitedViews)
     },
     DEL_ALL_VIEWS: (state) => {
       state.visitedViews = []
+      localStorage.visitedViews = JSON.stringify(state.visitedViews)
+    },
+    SET_OPENED_LIST (state, view) {
+      state.visitedViews = localStorage.visitedViews ? JSON.parse(localStorage.visitedViews) : [];
     }
   },
 
@@ -59,6 +66,9 @@ const tagsView = {
         commit('DEL_ALL_VIEWS')
         resolve([...state.visitedViews])
       })
+    },
+    setOpenedList({ commit }, view) {
+      commit('SET_OPENED_LIST', view)
     }
   }
 }
