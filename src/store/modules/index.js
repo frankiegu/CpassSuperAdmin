@@ -1,4 +1,5 @@
 export { default as app } from './app'
 export { default as permission } from './permission'
 export { default as common } from './common'
+export { default as tagsView } from './tagsView'
 export { default as counter } from './counter'

@@ -10,6 +10,7 @@
       </div>
 
       <section class="app-main mt60">
+        <tags-view></tags-view>
         <levelbar v-if="!hideRouter"></levelbar>
         <transition name="fade" mode="out-in">
           <router-view class="app-in" :key="key"></router-view>
@@ -34,12 +35,13 @@
 <script>
   import { mapGetters } from 'vuex'
   import navbar from './navbar'
+  import tagsView from './components/tags-view'
   import levelbar from './navbar/src/levelbar'
   import sidebar from './sidebar'
   import scroolTop from '@/components/scrool-top'
 
   export default {
-    components: { navbar, levelbar, sidebar, scroolTop },
+    components: { navbar, tagsView, levelbar, sidebar, scroolTop },
     data () {
       return {
         hideRouter: false,

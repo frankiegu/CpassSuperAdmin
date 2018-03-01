@@ -15,7 +15,10 @@ export default [{
     name: '客户列表',
     path: 'list',
     component: _import('client/index'),
-    hidden: true
+    hidden: true,
+    meta: {
+      noCache: true
+    }
   }, {
     name: '',
     path: 'add',
