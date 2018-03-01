@@ -34,11 +34,11 @@
 
           <!-- 客户微信服务号资料 -->
           <h3 class="grid-title">客户微信服务号资料</h3>
-          <el-form-item label="客户服务号AppID"><p>{{dataForm.appId}}</p></el-form-item>
-          <el-form-item label="客户服务号AppSecret"><p>{{dataForm.appSecret}}</p></el-form-item>
+          <el-form-item label="客户服务号AppID"><p class="label-content">{{dataForm.appId}}</p></el-form-item>
+          <el-form-item label="客户服务号AppSecret"><p class="label-content">{{dataForm.appSecret}}</p></el-form-item>
           <!-- 如没有开通支付，则无mch_id和key信息 -->
-          <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId"><p>{{dataForm.mchId}}</p></el-form-item>
-          <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId"><p>{{dataForm.mchKey}}</p></el-form-item>
+          <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId"><p class="label-content">{{dataForm.mchId}}</p></el-form-item>
+          <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId"><p class="label-content">{{dataForm.mchKey}}</p></el-form-item>
         </div>
       </el-form>
     </div>
@@ -113,4 +113,10 @@
   }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+  .client-detail {
+    .label-content{
+      word-break: break-all;
+    }
+  }
+</style>
