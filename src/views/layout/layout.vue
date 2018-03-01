@@ -91,14 +91,10 @@
     }
     &.hideSidebar {
       .sidebar-wrapper {
-        left: -10px;
-        width: 50px;
+        width: 60px;
       }
       .main-container {
-        margin-left: 40px;
-      }
-      .sidebar-wrapper {
-        width: 50px;
+        margin-left: 60px;
       }
     }
     .navbar-wrapper {
@@ -111,11 +107,11 @@
     .sidebar-wrapper {
       width: 180px;
       position: fixed;
-      border-right: 1px $theme-light-gray solid;
-      top: 61px;
+      top: 60px;
       bottom: 0;
       left: 0;
-      z-index: 1001;
+      z-index: 1000;
+      box-shadow: 1px 0 4px rgba(0,21,41,.08);
       overflow: hidden;
 
       .sidebar-container {

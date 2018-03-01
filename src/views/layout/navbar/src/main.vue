@@ -86,7 +86,6 @@
     }
     .logo-box {
       position: relative;
-      border-right: 1px $theme-light-gray solid;
       width: 180px;
       height: 60px;
       float: left;
@@ -131,7 +130,7 @@
         float: left;
         width: 40px;
         height: 40px;
-        margin: 10px 7px 0 13px;
+        margin: 10px 10px 0 10px;
         vertical-align: middle;
         border-radius: 50%;
         animation: .5s rainbow2;
