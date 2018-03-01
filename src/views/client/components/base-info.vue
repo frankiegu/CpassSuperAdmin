@@ -3,20 +3,20 @@
     <el-form-item label="客户名称" prop="name" ref="name"
       :required="infoType !== 'detail'"
       :rules="[{ message: '客户名称不能为空！', trigger: 'blur, change' }]">
-      <p v-if="infoType === 'detail'">{{modelForm.name}}</p>
+      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.name}}</p>
       <el-input v-model.trim="modelForm.name" class="width300px" placeholder="填写完整客户名称" :maxlength="200" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="联系人" prop="contact" ref="contact"
       :required="infoType !== 'detail'"
       :rules="[{ message: '联系人不能为空！', trigger: 'blur, change' }]">
-      <p v-if="infoType === 'detail'">{{modelForm.contact}}</p>
+      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.contact}}</p>
       <el-input v-model.trim="modelForm.contact" class="width300px" placeholder="填写联系人名称" :maxlength="100" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="联系电话" prop="phone"
       :required="infoType !== 'detail'" :rules="checkTel" ref="phone">
-      <p v-if="infoType === 'detail'">{{modelForm.phone}}</p>
+      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.phone}}</p>
       <el-input v-model.trim="modelForm.phone" class="width300px" placeholder="填写联系人电话号码" :maxlength="100" v-else></el-input>
     </el-form-item>
 
