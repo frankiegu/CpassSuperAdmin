@@ -10,6 +10,7 @@ const tagsView = {
 
   mutations: {
     ADD_VISITED_VIEWS: (state, view) => {
+      // TODO 查询参数更新
       if (state.visitedViews.some(v => v.path === view.path || view.meta.isError)) return
       state.visitedViews.push({
         name: view.name || common.state.navCrumb,
@@ -17,6 +18,13 @@ const tagsView = {
         id: view.query.id || ''
       })
       localStorage.visitedViews = JSON.stringify(state.visitedViews)
+    },
+    PAGE_OPENED_UPDATE: (state, get) => {
+      let openedPage = state.visitedViews[get.index]
+      if (get.query) {
+        openedPage.id = get.query.id
+      }
+      state.visitedViews.splice(get.index, 1, openedPage);
     },
     DEL_VISITED_VIEWS: (state, view) => {
       for (const [i, v] of state.visitedViews.entries()) {
