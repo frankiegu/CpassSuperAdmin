@@ -1,22 +1,21 @@
 <template>
   <div class="base-info">
     <el-form-item label="客户名称" prop="name" ref="name"
-      :rules="[
-        { required: true, message: '客户名称不能为空！', trigger: 'blur, change' }
-      ]">
+      :error="errorField === 'name' ? errorMsg : ''"
+      :required="infoType !== 'detail'"
+      :rules="[{ message: '客户名称不能为空！', trigger: 'blur, change' }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.name}}</p>
       <el-input v-model.trim="modelForm.name" class="width300px" placeholder="填写完整客户名称" :maxlength="200" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="联系人" prop="contact" ref="contact"
-      :rules="[
-        { required: true, message: '联系人不能为空！', trigger: 'blur, change' }
-      ]">
+      :required="infoType !== 'detail'"
+      :rules="[{ message: '联系人不能为空！', trigger: 'blur, change' }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.contact}}</p>
       <el-input v-model.trim="modelForm.contact" class="width300px" placeholder="填写联系人名称" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="联系电话" prop="phone" :rules="checkTel" ref="phone">
+    <el-form-item label="联系电话" prop="phone" :rules="checkTel" ref="phone" :required="infoType !== 'detail'">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.phone}}</p>
       <el-input v-model.trim="modelForm.phone" class="width300px" placeholder="填写联系人电话号码" :maxlength="100" v-else></el-input>
     </el-form-item>
@@ -34,6 +33,7 @@
     </el-form-item>
 
     <el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin"
+      :error="errorField === 'weixin' ? errorMsg : ''"
       v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.weixin}}</p>
       <el-input v-model.trim="modelForm.weixin" class="width300px" placeholder="填写微信服务号" v-else></el-input>
@@ -104,7 +104,7 @@
       return {
         isCreateAccount: false,
         checkTel: [
-          { required: true, validator: checkTel, trigger: 'blur, change' }
+          { validator: checkTel, trigger: 'blur, change' }
         ],
         checkEmail: [
           { validator: checkEmail, trigger: 'blur, change' }
@@ -117,7 +117,9 @@
     props: {
       modelForm: [Object], // 表单数据
       infoType: [String], // 信息类型（未定义则默认为输入类型，'detail'为详情类型）
-      hasAccount: [Boolean] // 是否存在账号
+      hasAccount: [Boolean], // 是否存在账号
+      errorField: [String],
+      errorMsg: [String]
     },
     components: {},
     mounted() {
