@@ -5,7 +5,9 @@
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <!-- 基础信息 -->
         <h3 class="grid-title">基础信息</h3>
-        <base-info ref="baseInfo" :model-form="dataForm" :has-account="true" @changeCreateStatus="changeCreateStatus"/>
+        <base-info ref="baseInfo" :model-form="dataForm"
+          :error-field="errorField" :error-msg="errorMsg"
+          :has-account="true" @changeCreateStatus="changeCreateStatus"/>
 
         <!-- 状态管理 -->
         <h3 class="grid-title">状态管理</h3>
@@ -204,7 +206,10 @@
         hasChangeAccount: false,
         hasChangeAccountStatus: false,
         hasChangePay: false,
-        hasChangePayStatus: false
+        hasChangePayStatus: false,
+
+        errorField: '',
+        errorMsg: ''
       }
     },
     props: {},
@@ -298,6 +303,13 @@
             } else {
               this.hasUpdateInfo = false
               this.$message.error(res.msg)
+              this.dialogVisible = false
+              this.updateLoading = false
+              if (res.info) {
+                this.errorField = res.info
+                this.errorMsg = res.msg
+                this.$refs['baseInfo'].$refs[res.info].$children[0].$refs.input.focus()
+              }
             }
           })
           // 或账户信息发生了修改
@@ -359,6 +371,8 @@
             // 更新账户使用状态失败
             this.hasUpdateAccount = false
             this.$message.error(res.msg)
+            this.dialogVisible = false
+            this.updateLoading = false
           }
         })
       },
@@ -410,8 +424,9 @@
           } else {
             // 更新支付状态失败
             this.hasUpdatePay = false
-            this.updateLoading = false
             this.$message.error(res.msg)
+            this.dialogVisible = false
+            this.updateLoading = false
           }
         })
       },
