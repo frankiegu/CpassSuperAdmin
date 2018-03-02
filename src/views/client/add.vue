@@ -202,6 +202,7 @@
     mixins: [commonMixins],
     data() {
       return {
+        title: this.$route.query.id ? '修改客户基础信息' : '新增客户',
         dialogType: '',
         errorField: '',
         errorMsg: '',
@@ -215,7 +216,14 @@
     components: {
       baseInfo
     },
-    mounted() {},
+    mounted() {
+      document.title = this.title
+      this.$store.commit('NAV_CRUMB', this.title)
+      this.$route.meta.title = this.title
+      if (!this.$route.name) {
+        this.$store.dispatch('addVisitedViews', this.$route)
+      }
+    },
     watch: {},
     computed: {},
     filters: {},

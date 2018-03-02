@@ -22,6 +22,7 @@ export default [{
     component: _import('client/add'),
     hidden: true,
     meta: {
+      title: '',
       level2: true
     }
   }, {

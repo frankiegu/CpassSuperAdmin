@@ -1,4 +1,3 @@
-import common from './common'
 const tagsView = {
   state: {
     visitedViews: []
@@ -12,7 +11,7 @@ const tagsView = {
     ADD_VISITED_VIEWS: (state, view) => {
       if (state.visitedViews.some(v => v.path === view.path || view.meta.isError)) return
       state.visitedViews.push({
-        name: view.name || common.state.navCrumb,
+        name: view.name.length ? view.name : view.meta.title,
         path: view.path,
         id: view.query.id || ''
       })
@@ -23,7 +22,11 @@ const tagsView = {
       if (get.query) {
         openedPage.id = get.query.id
       }
+      if (get.name) {
+        openedPage.name = get.name
+      }
       state.visitedViews.splice(get.index, 1, openedPage)
+      sessionStorage.visitedViews = JSON.stringify(state.visitedViews)
     },
     DEL_VISITED_VIEWS: (state, view) => {
       for (const [i, v] of state.visitedViews.entries()) {
@@ -59,9 +62,10 @@ const tagsView = {
       let i = 0
       let tagHasOpened = false
       while (i < openedPageLen) {
-        if (view.name === pageOpenedList[i].name) { // 页面已经打开
+        if (view.path === pageOpenedList[i].path) { // 页面已经打开
           commit('PAGE_OPENED_UPDATE', {
             index: i,
+            name: view.name.length ? view.name : view.meta.title,
             query: view.query
           })
           tagHasOpened = true

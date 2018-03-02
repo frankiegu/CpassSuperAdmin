@@ -105,7 +105,6 @@ export default {
       callback()
     }
     return {
-      title: this.$route.query.id ? '客户详情' : '新增客户',
       clientId: this.$route.query.id,
       hasChangeForm: false,
       pickerOptions: {
@@ -167,8 +166,6 @@ export default {
     }
   },
   mounted() {
-    document.title = this.title
-    this.$store.commit('NAV_CRUMB', this.title)
     if (this.clientId) this.handleGetDetail()
     if (!this.clientId) {
       const initialForm = this.dataFormStr
