@@ -45,7 +45,6 @@
         <el-table-column label="状态" fixed="right" align="left">
           <template slot-scope="scope">
             <el-tooltip
-              v-if="handleHasPermissions('/manage/user/updateStatus')"
               :content="scope.row.status === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
               placement="top"
               effect="light"

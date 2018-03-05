@@ -55,7 +55,7 @@
   @import 'src/styles/config.scss';
 
   .page-title {
-    padding: 16px 12px 0 24px;
+    padding: 16px 24px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     background-color: #fff;

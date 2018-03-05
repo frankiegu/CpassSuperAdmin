@@ -59,6 +59,8 @@
       font-size: 14px;
       color: $theme-gray;
       text-align: left;
+      padding-bottom: 16px;
+      overflow: hidden;
     }
   }
 </style>
