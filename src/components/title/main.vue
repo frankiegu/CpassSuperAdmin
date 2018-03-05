@@ -1,6 +1,6 @@
 <template>
   <div class="page-title">
-    <h1>{{ title }}</h1>
+    <h1>{{ $route.name || title }}</h1>
 
     <!-- 如果非一级页面，显示返回上一页按钮 -->
     <!--<i-->
