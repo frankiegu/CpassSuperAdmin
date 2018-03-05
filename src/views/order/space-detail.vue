@@ -43,10 +43,8 @@
     </div>
 
     <div class="content-body">
-      <div class="senior-title">基础信息</div>
-
       <div class="card-body">
-        <div class="basics-title mt8">场地信息</div>
+        <div class="basics-title">场地信息</div>
         <el-row :gutter="20">
           <el-col :span="8">
             <lh-item label="空间名称：" label-width="auto">壹空间</lh-item>
