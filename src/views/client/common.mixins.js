@@ -37,6 +37,13 @@ export default {
       if (this.isCreateAccount && !this.dataForm.isPermanent) {
         if (!value || value.length < 2) {
           return callback(new Error('请选择有效期限或永久有效'))
+        } else {
+          let time = new Date(value)
+          let today = new Date()
+          if (time < today) {
+            return callback(new Error(('有效期限需大于今天')))
+          }
+          callback()
         }
         callback()
       }

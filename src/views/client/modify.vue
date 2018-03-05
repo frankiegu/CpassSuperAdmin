@@ -341,7 +341,9 @@
         }
         setAccountStatus({
           clientId: this.clientId,
-          status: this.dataForm.productStatus
+          status: this.dataForm.productStatus,
+          productEndDate: this.dataForm.validity,
+          isPermanent: this.dataForm.isPermanent
         }).then(res => {
           if (res.status === 'true') {
             // 1.更新账户使用状态成功后，关闭使用则无需更新产品信息
