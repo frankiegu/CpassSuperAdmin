@@ -60,7 +60,7 @@
       color: $theme-gray;
       text-align: left;
       padding-bottom: 16px;
-      overflow: hidden;
+      /*overflow: hidden;*/
     }
   }
 </style>
