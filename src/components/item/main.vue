@@ -1,6 +1,8 @@
 <template>
   <div class="detail-item">
     <div class="label" :style="labelStyle">{{ label }}</div>
+
+    <!-- 文字多的情况，单独设置宽度labelWidth，就可以了 -->
     <div class="label-con" :style="conStyle">
       <!-- 再写兼容详情的样式 -->
       <slot></slot>
@@ -57,6 +59,8 @@
       font-size: 14px;
       color: $theme-gray;
       text-align: left;
+      padding-bottom: 16px;
+      overflow: hidden;
     }
   }
 </style>

@@ -14,5 +14,10 @@ export default [{
     name: '场地列表',
     path: 'list',
     component: _import('space/list')
+  }, {
+    name: '场地详情',
+    path: 'detail',
+    hidden: true,
+    component: _import('space/detail')
   }]
 }]

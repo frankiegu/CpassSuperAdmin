@@ -15,6 +15,11 @@ export default [{
     path: 'space',
     component: _import('order/space')
   }, {
+    name: '场地订单详情',
+    path: 'space/detail',
+    hidden: true,
+    component: _import('order/space-detail')
+  }, {
     name: '服务订单',
     path: 'service',
     component: _import('order/service')

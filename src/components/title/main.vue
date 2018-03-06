@@ -1,6 +1,6 @@
 <template>
   <div class="page-title">
-    <h1>{{ $route.name || title }}</h1>
+    <h1>{{ title || $route.name }}</h1>
 
     <!-- 如果非一级页面，显示返回上一页按钮 -->
     <!--<i-->
@@ -55,7 +55,7 @@
   @import 'src/styles/config.scss';
 
   .page-title {
-    padding: 16px 12px 0 24px;
+    padding: 16px 24px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     background-color: #fff;
@@ -66,6 +66,7 @@
       padding-bottom: 16px;
       float: left;
       font-size: 20px;
+      font-weight: 500;
       color: $theme-black;
     }
     .el-icon-close {

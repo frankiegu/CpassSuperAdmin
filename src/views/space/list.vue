@@ -1,86 +1,22 @@
 <template>
-  <div class="client-list main-content">
-    <lh-title title="客户列表"></lh-title>
+  <div class="space-list">
+    <lh-title></lh-title>
 
-    <div class="card-padding">
+    <div class="content-body card-body">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <router-link
-          to="/client/add"
-          class="btn-link fl "
-          tag="a">
-          &nbsp;新增客户
-        </router-link>
-
-        <el-form-item>
-          <el-select
-            v-model="formData.registerWay"
-            @change="getPageData"
-            placeholder="请选择生成渠道"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="i in channels"
-              :label="i.channel"
-              :value="i.id"
-              :key="i.id"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-select
-            v-model="formData.validaty"
-            @change="getPageData"
-            placeholder="请选择有效期"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="i in timeValidity"
-              :label="i.validity"
-              :value="i.id"
-              :key="i.id"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-select
-            v-model="formData.productStatus"
-            @change="getPageData"
-            placeholder="状态"
-            class="width100px"
-            clearable>
-            <lh-option :statusList="statusList"></lh-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-date-picker
-            v-model="formData.reg_date"
-            @change="getPageData"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            placeholder="选择下单日期"
-            :picker-options="pickerOptions"></el-date-picker>
-        </el-form-item>
-
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
-            placeholder="请输入客户名称"
-            class="width150px">
+            placeholder="请输入场地名称"
+            class="width220px">
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
-
-        <el-form-item class="fr">
-          <el-button @click="exportExcel" class="btn-green fr">导出表格</el-button>
-        </el-form-item>
       </el-form>
 
+      <!-- @#TODO 测试排序 排序规则：根据添加时间倒序显示，最近设置为对外开放的场地显示在最上方 -->
       <el-table
         :data="tableData"
         :empty-text="tableEmpty"
@@ -88,55 +24,41 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="客户名称" fixed="left" align="left">
+        <el-table-column label="场地名称" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/client/detail', query: {id: scope.row.id}}"
+              :to="{path: '/space/detail', query: {id: scope.row.id}}"
               class="table-link">
               {{ scope.row.name }}
             </router-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
-        <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
-        <el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>
-        <el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>
-        <el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>
-        <el-table-column label="产品" prop="productName" align="left"></el-table-column>
-        <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
+        <el-table-column label="场地所属" prop="contact" align="left"></el-table-column>
+        <el-table-column label="所在地区" prop="phone" align="left"></el-table-column>
+        <el-table-column label="场地类型" prop="email" align="left"></el-table-column>
+        <el-table-column label="历史预定数" prop="createDate" align="left" sortable></el-table-column>
+        <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
+        <el-table-column label="联系人" prop="productName" align="left"></el-table-column>
+        <el-table-column label="联系方式" prop="validaty" align="left" width="110"></el-table-column>
 
-        <!-- 小宽度可以不写死 -->
-        <el-table-column label="状态" align="left">
+        <el-table-column label="状态" fixed="right" align="left">
           <template slot-scope="scope">
-            <div class="label-con">
-              <el-tag v-if="scope.row.productStatus===1" type="success">正常</el-tag>
-              <el-tag v-else-if="scope.row.productStatus===0" type="danger">停用</el-tag>
-              <el-tag v-else>未开通</el-tag>
-            </div>
-          </template>
-        </el-table-column>
+            <el-tooltip
+              :content="scope.row.status === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
+              placement="top"
+              effect="light"
+              class="margin-lr6">
 
-        <el-table-column
-          fixed="right"
-          align="left"
-          label="操作"
-          width="110">
-          <template slot-scope="scope">
-            <router-link
-              :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
-              class="table-link margin-lr6">
-              编辑
-            </router-link>
-
-            <router-link
-              v-if="scope.row.adminUserId"
-              :to="{path: '/client/account', query: {id: scope.row.id}}"
-              class="table-link">
-              账户
-            </router-link>
-
-            <span class="theme-gray" v-else>无账户</span>
+              <el-switch
+                v-model="scope.row.status"
+                :active-value="1"
+                :inactive-value="0"
+                :active-color="switchActiveColor"
+                active-text=""
+                inactive-text=""
+                @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -155,17 +77,72 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-  @import "src/styles/config";
-  .client-list {
-    .svg-icon {
-      color: $theme-blue;
-      margin: 0 7px;
+<script>
+  import tableMixins from '@/mixins/table'
+  import listMixins from './list.mixins'
+  import { clientList } from '@/service/client'
+
+  export default {
+    mixins: [listMixins, tableMixins],
+    components: {},
+    data () {
+      return {
+        formData: {
+          name: ''
+        }
+      }
+    },
+    mounted () {
+      this.getPageData()
+    },
+    methods: {
+      formatterPrice(row, column) {
+        return (row.dateHourPrice ? row.dateHourPrice : row.hourPrice) + (this.fieldType === '3' ? '元/天' : '元/小时')
+      },
+      getPageData() {
+        const paramsObj = {
+          pageSize: this.pageSize,
+          pageNum: this.currentPage,
+          name: this.formData.name
+        }
+
+        clientList(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.pageTotal = data.total
+              this.tableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 更新会员状态
+      handleUpdateStatus(id, status) {
+        // const statusParams = {
+        //   userId: id,
+        //   status: status
+        // }
+        // userUpdateStatus(statusParams).then(res => {
+        //   if (res.status === 'true') {
+        //     this.$message.success('修改成功！')
+        //   } else {
+        //     this.$message.error(res.msg)
+        //   }
+        // })
+      }
     }
   }
-</style>
-
-<script>
-  import spaceList from './list.mixins'
-  export default spaceList
 </script>
+
+<style lang="scss" scoped>
+  @import "src/styles/config";
+  .space-list {
+  }
+</style>
