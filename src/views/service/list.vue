@@ -1,86 +1,56 @@
 <template>
-  <div class="client-list main-content">
-    <lh-title title="客户列表"></lh-title>
+  <div class="service-list main-content">
+    <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <!--<el-form-item>-->
-          <!--<el-select v-model="formData.registerWay" @change="getPageData" placeholder="请选择生成渠道"-->
-            <!--class="width150px" clearable>-->
-            <!--<el-option v-for="i in channels" :label="i.channel" :value="i.id" :key="i.id"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-
-        <!--<el-form-item>-->
-          <!--<el-select v-model="formData.validaty" @change="getPageData" placeholder="请选择有效期"-->
-            <!--class="width150px" clearable>-->
-            <!--<el-option v-for="i in timeValidity" :label="i.validity" :value="i.id" :key="i.id"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-
-        <!--<el-form-item>-->
-          <!--<el-select v-model="formData.productStatus" @change="getPageData" placeholder="状态"-->
-            <!--class="width100px" clearable>-->
-            <!--<lh-option :statusList="statusList"></lh-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-
-        <!--<el-form-item>-->
-          <!--<el-date-picker v-model="formData.reg_date" @change="getPageData" type="daterange" align="right" clearable-->
-            <!--start-placeholder="开始日期" end-placeholder="结束日期" placeholder="选择下单日期"-->
-            <!--:picker-options="pickerOptions"></el-date-picker>-->
-        <!--</el-form-item>-->
-
-        <el-form-item>
-          <el-input v-model.trim="formData.name" @keyup.native.enter="getPageData"
-            placeholder="按照服务商名称搜索" class="width220px">
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-      </el-form>
-
-      <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading"
-        class="width100" border>
-        <el-table-column label="服务供应商" fixed="left" align="left">
+      <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+        style="width: 100%">
+        <el-table-column label="主图">
           <template slot-scope="scope">
-            <router-link :to="{path: '/client/detail', query: {id: scope.row.id}}" class="table-link">
-              {{ scope.row.name }}
-            </router-link>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="服务数量" prop="contact" align="left"></el-table-column>
-        <el-table-column label="供应商来源" prop="phone" width="110" align="left"></el-table-column>
-        <el-table-column label="服务类型" prop="email" align="left"></el-table-column>
-        <el-table-column label="历史成交数" prop="createDate" align="left" width="155"></el-table-column>
-        <el-table-column label="上一次成交" prop="registerWay" align="left"></el-table-column>
-        <!--<el-table-column label="状态" prop="productName" align="left"></el-table-column>-->
-        <!--<el-table-column label="有效期" prop="validaty" align="left"></el-table-column>-->
-
-        <!-- 小宽度可以不写死 -->
-        <el-table-column label="状态" align="left">
-          <template slot-scope="scope">
-            <div class="label-con">
-              <el-tag v-if="scope.row.productStatus===1" type="success">正常</el-tag>
-              <el-tag v-else-if="scope.row.productStatus===0" type="danger">停用</el-tag>
-              <el-tag v-else>未开通</el-tag>
+            <div class="table-img">
+              <img :src="scope.row.picPath + zoomImgSize()" alt="">
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" align="left" label="操作" width="110">
+        <el-table-column label="服务名称" prop="name"></el-table-column>
+        <el-table-column label="价格" prop="price"></el-table-column>
+        <el-table-column label="供应商名称" prop="supplierName"></el-table-column>
+
+        <el-table-column label="服务类型">
           <template slot-scope="scope">
-            <router-link :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
-              class="table-link margin-lr6">
-              编辑
-            </router-link>
+            <span v-if="scope.row.type === 1">工商注册</span>
+            <span v-if="scope.row.type === 2">财税服务</span>
+            <span v-if="scope.row.type === 3">法律服务</span>
+            <span v-if="scope.row.type === 4">网站建设</span>
+            <span v-if="scope.row.type === 5">人资社保</span>
+            <span v-if="scope.row.type === 6">市场媒体</span>
+            <span v-if="scope.row.type === 7">其他</span>
+          </template>
+        </el-table-column>
 
-            <router-link v-if="scope.row.adminUserId" :to="{path: '/client/account', query: {id: scope.row.id}}"
-              class="table-link">
-              账户
-            </router-link>
+        <el-table-column label="开放状态">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.statusCode === 1" type="success">开启</el-tag>
+            <el-tag v-else type="danger">关闭</el-tag>
+          </template>
+        </el-table-column>
 
-            <span class="theme-gray" v-else>无账户</span>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="handleService('edit', scope.row.id)" v-if="scope.row.id !==tableData[0].id"
+              class="operate-btn">置顶</el-button>
+            <el-tooltip :content="scope.row.statusCode === 1 ? '关闭将不在小程序服务列表展示' : '开启将展示在小程序服务列表'"
+              placement="top" effect="light" style="margin-top: -5px">
+              <el-switch
+                v-model="scope.row.statusCode"
+                :active-value="1"
+                :inactive-value="2"
+                :active-color="switchActiveColor"
+                active-text=""
+                inactive-text=""
+                @change="handleUpdateStatus(scope.row.statusCode, scope.row.id)"></el-switch>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -99,17 +69,16 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-  @import "../../../src/styles/config";
-  .client-list {
-    .svg-icon {
-      color: $theme-blue;
-      margin: 0 7px;
-    }
-  }
-</style>
-
 <script>
   import serviceList from './list.mixins'
   export default serviceList
 </script>
+
+<style lang="scss" scoped>
+  @import "../../../src/styles/config";
+  .service-list {
+    .operate-btn {
+      padding: 6px;
+    }
+  }
+</style>
