@@ -13,9 +13,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="服务名称" prop="name"></el-table-column>
+        <el-table-column label="服务名称" prop="name" align="left"></el-table-column>
         <el-table-column label="价格" prop="price"></el-table-column>
-        <el-table-column label="供应商名称" prop="supplierName"></el-table-column>
+        <el-table-column label="供应商名称" prop="supplierName" align="left" ></el-table-column>
 
         <el-table-column label="服务类型">
           <template slot-scope="scope">
@@ -38,7 +38,7 @@
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleService('edit', scope.row.id)" v-if="scope.row.id !==tableData[0].id"
+            <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="scope.row.id !==tableData[0].id"
               class="operate-btn">置顶</el-button>
             <el-tooltip :content="scope.row.statusCode === 1 ? '关闭将不在小程序服务列表展示' : '开启将展示在小程序服务列表'"
               placement="top" effect="light" style="margin-top: -5px">
@@ -71,7 +71,17 @@
 
 <script>
   import serviceList from './list.mixins'
-  export default serviceList
+  export default {
+    mixins: [serviceList],
+    data() {
+      return {}
+    },
+    methods: {
+      handleSetTop(id) {
+        console.log(id)
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
