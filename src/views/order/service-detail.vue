@@ -1,6 +1,41 @@
 <template>
-  <div class="main-content">
-    Component: service-detail
+  <div class="service-detail main-content">
+    <lh-title></lh-title>
+    <div class="card-padding card-padding-vertical">
+      <h3 class="grid-title">基础信息</h3>
+      <!-- TODO 数据对接 字段根据接口调整 -->
+      <el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <lh-item label="订单号：" label-width="auto" class="custom-label">{{orderData.orderNum}}</lh-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <lh-item label="联系人：" label-width="auto">{{orderData.contact}}</lh-item>
+            <lh-item label="生成时间：" label-width="auto">{{orderData.createDate}}</lh-item>
+            <lh-item label="意向内容：" label-width="auto">{{orderData.intentionCon}}</lh-item>
+          </el-col>
+          <el-col :span="8">
+            <lh-item label="联系方式：" label-width="auto">{{orderData.phone}}</lh-item>
+          </el-col>
+        </el-row>
+      </el-row>
+
+      <h3 class="grid-title">服务信息</h3>
+      <el-row>
+        <el-col :span="10">
+          <lh-item label="服务名称：" label-width="auto">{{orderData.name}}</lh-item>
+          <lh-item label="服务商：" label-width="auto">{{orderData.supplier}}</lh-item>
+          <lh-item label="服务联系人：" label-width="auto">{{orderData.supplierContact}}</lh-item>
+        </el-col>
+        <el-col :span="8">
+          <lh-item label="服务类型：" label-width="auto">{{orderData.serviceType}}</lh-item>
+          <lh-item label="关联空间：" label-width="auto">{{orderData.relativeSpace}}</lh-item>
+          <lh-item label="联系方式：" label-width="auto">{{orderData.supplierPhone}}</lh-item>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -8,14 +43,26 @@
   export default {
     name: 'service-detail',
     data() {
-      return {}
+      return {
+        serviceId: this.$route.query.id,
+        orderData: {
+          orderNum: 'CS5859303344',
+          contact: '邓先生',
+          createDate: '2018-03-06 15:09:35',
+          intentionCon: '这里是客户的意向内容这里是客户的意向内容',
+          phone: '13760886805',
+          name: '小微企业待办服务',
+          supplier: '广东金冠财税会计事务所',
+          supplierContact: '邓先生',
+          serviceType: '企业财税',
+          relativeSpace: '矢量空间',
+          supplierPhone: '13566666666'
+        }
+      }
     },
     props: {},
     components: {},
-    mounted() {
-      this.$nextTick(() => {
-      })
-    },
+    mounted() {},
     watch: {},
     computed: {},
     filters: {},
@@ -23,4 +70,12 @@
   }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+  .service-detail {
+    .custom-label.detail-item {
+      .label, .label-con {
+        font-size: 18px;
+      }
+    }
+  }
+</style>
