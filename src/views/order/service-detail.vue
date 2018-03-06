@@ -7,7 +7,10 @@
       <el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <lh-item label="订单号：" label-width="auto" class="custom-label">{{orderData.orderNum}}</lh-item>
+            <lh-item label="订单号：" label-width="auto" class="custom-label">{{orderData.orderNum}}
+              <el-tag v-if="orderData.orderStatus===0" type="primary" style="vertical-align: middle">待接单</el-tag>
+              <el-tag v-else type="success" style="vertical-align: middle">已接单</el-tag>
+            </lh-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -47,6 +50,7 @@
         serviceId: this.$route.query.id,
         orderData: {
           orderNum: 'CS5859303344',
+          orderStatus: 0,
           contact: '邓先生',
           createDate: '2018-03-06 15:09:35',
           intentionCon: '这里是客户的意向内容这里是客户的意向内容',
@@ -75,6 +79,7 @@
     .custom-label.detail-item {
       .label, .label-con {
         font-size: 18px;
+        line-height: 28px;
       }
     }
   }
