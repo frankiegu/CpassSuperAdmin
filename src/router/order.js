@@ -1,5 +1,5 @@
 /**
- * 场地管理
+ * 订单管理
  */
 import { _import } from '../config/env'
 import layout from '@/views/layout/layout.vue'
@@ -23,5 +23,10 @@ export default [{
     name: '服务订单',
     path: 'service',
     component: _import('order/service')
+  }, {
+    name: '服务订单详情',
+    path: 'service/detail',
+    hidden: true,
+    component: _import('order/service-detail')
   }]
 }]
