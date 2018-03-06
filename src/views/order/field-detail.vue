@@ -1,5 +1,5 @@
 <template>
-  <div class="order-space-detail">
+  <div class="order-field-detail">
     <lh-title :title="'单号：011802271609286'"></lh-title>
 
     <div class="page-title-info">
@@ -107,10 +107,10 @@
 
 <script>
   import { accountInfo } from '@/service/client'
-  import spaceDetailMixins from './space-detail.mixins'
+  import fieldDetailMixins from './field-detail.mixins'
 
   export default {
-    mixins: [spaceDetailMixins],
+    mixins: [fieldDetailMixins],
     components: {},
     data () {
       return {
@@ -155,6 +155,6 @@
 
 <style lang="scss" scoped>
   @import "src/styles/config";
-  .order-space-detail {
+  .order-field-detail {
   }
 </style>

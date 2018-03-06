@@ -7,18 +7,18 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '订单管理',
   path: '/order',
-  redirect: '/order/space',
+  redirect: '/order/field',
   component: layout,
   icon: 'icon-order',
   children: [{
     name: '场地订单',
-    path: 'space',
-    component: _import('order/space')
+    path: 'field',
+    component: _import('order/field')
   }, {
     name: '场地订单详情',
-    path: 'space/detail',
+    path: 'field/detail',
     hidden: true,
-    component: _import('order/space-detail')
+    component: _import('order/field-detail')
   }, {
     name: '服务订单',
     path: 'service',

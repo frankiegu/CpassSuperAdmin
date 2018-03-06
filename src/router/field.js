@@ -6,18 +6,18 @@ import layout from '@/views/layout/layout.vue'
 
 export default [{
   name: '场地管理',
-  path: '/space',
-  redirect: '/space/list',
+  path: '/field',
+  redirect: '/field/list',
   component: layout,
   icon: 'icon-Site',
   children: [{
     name: '场地列表',
     path: 'list',
-    component: _import('space/list')
+    component: _import('field/list')
   }, {
     name: '场地详情',
     path: 'detail',
     hidden: true,
-    component: _import('space/detail')
+    component: _import('field/detail')
   }]
 }]

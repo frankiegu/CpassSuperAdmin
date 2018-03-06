@@ -13,7 +13,7 @@ export * from './client'
 export * from './service'
 
 // 场地管理
-export * from './space'
+export * from './field'
 
 // 会员管理
 export * from './member'

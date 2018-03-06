@@ -1,5 +1,5 @@
 <template>
-  <div class="space-list">
+  <div class="field-list">
     <lh-title></lh-title>
 
     <div class="content-body card-body">
@@ -27,7 +27,7 @@
         <el-table-column label="场地名称" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/space/detail', query: {id: scope.row.id}}"
+              :to="{path: '/field/detail', query: {id: scope.row.id}}"
               class="table-link">
               {{ scope.row.name }}
             </router-link>
@@ -143,6 +143,6 @@
 
 <style lang="scss" scoped>
   @import "src/styles/config";
-  .space-list {
+  .field-list {
   }
 </style>

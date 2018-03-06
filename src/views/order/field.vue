@@ -1,5 +1,5 @@
 <template>
-  <div class="order-space">
+  <div class="order-field">
     <lh-title></lh-title>
 
     <div class="content-body card-body">
@@ -26,7 +26,7 @@
         <el-table-column label="订单编号" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/order/space/detail', query: {id: scope.row.id}}"
+              :to="{path: '/order/field/detail', query: {id: scope.row.id}}"
               class="table-link">
               {{ scope.row.name }}
             </router-link>
@@ -82,7 +82,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import spaceMixins from './space.mixins'
+  import spaceMixins from './field.mixins'
   import { clientList } from '@/service/client'
 
   export default {
@@ -136,6 +136,6 @@
 
 <style lang="scss" scoped>
   @import "src/styles/config";
-  .order-space {
+  .order-field {
   }
 </style>
