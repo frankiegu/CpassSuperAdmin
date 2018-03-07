@@ -8,6 +8,7 @@ import service from '@/router/service'             // 服务管理
 import field from '@/router/field'                 // 场地管理
 import member from '@/router/member'               // 会员管理
 import order from '@/router/order'                 // 订单管理
+import refund from '@/router/refund'                 // 订单管理
 
 export const constantRouterMap = [
   {
@@ -29,6 +30,7 @@ export const constantRouterMap = [
   ...field,
   ...member,
   ...order,
+  ...refund,
   ...register,
   ...example,
   ...error
