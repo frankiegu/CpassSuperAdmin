@@ -98,7 +98,7 @@
           <el-table-column label="操作人" prop="date1"></el-table-column>
           <el-table-column label="操作时间" prop="date2"></el-table-column>
           <el-table-column label="内容备注" prop="date3"></el-table-column>
-          </el-table-column>
+          <!--</el-table-column>-->
         </el-table>
       </div>
     </div>
