@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { clientList } from '@/service/client'
+import { serviceOrderList } from '@/service/order'
 
 export default {
   mixins: [tableMixins],
@@ -23,17 +23,16 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        name: formData.name
+        orderNum: formData.name
       }
 
-      clientList(paramsObj).then(res => {
+      serviceOrderList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
             this.pageTotal = data.total
             this.tableData = data.result
           }
-
           this.tableLoading = false
           if (this.tableData.length === 0) {
             this.tableEmpty = '暂时无数据'
