@@ -13,7 +13,8 @@ export default {
   },
   props: {},
   components: {},
-  mounted() {},
+  mounted() {
+  },
   watch: {},
   computed: {},
   methods: {}
