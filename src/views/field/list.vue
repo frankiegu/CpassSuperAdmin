@@ -27,37 +27,37 @@
         <el-table-column label="场地名称" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/field/detail', query: {id: scope.row.id}}"
+              :to="{path: '/field/detail', query: {id: scope.row.fieldId}}"
               class="table-link">
-              {{ scope.row.name }}
+              {{ scope.row.fieldName }}
             </router-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="场地所属" prop="contact" align="left"></el-table-column>
-        <el-table-column label="所在地区" prop="phone" align="left"></el-table-column>
-        <el-table-column label="场地类型" prop="email" align="left"></el-table-column>
-        <el-table-column label="历史预定数" prop="createDate" align="left" sortable></el-table-column>
+        <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
+        <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
+        <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
+        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable></el-table-column>
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
-        <el-table-column label="联系人" prop="productName" align="left"></el-table-column>
-        <el-table-column label="联系方式" prop="validaty" align="left" width="110"></el-table-column>
+        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
+        <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>
 
         <el-table-column label="状态" fixed="right" align="left">
           <template slot-scope="scope">
             <el-tooltip
-              :content="scope.row.status === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
+              :content="scope.row.isOpen === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
               placement="top"
               effect="light"
               class="margin-lr6">
 
               <el-switch
-                v-model="scope.row.status"
+                v-model="scope.row.isOpen"
                 :active-value="1"
                 :inactive-value="0"
                 :active-color="switchActiveColor"
                 active-text=""
                 inactive-text=""
-                @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
+                @change="handleUpdateStatus(scope.row.fieldId, scope.row.isOpen)"></el-switch>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -80,7 +80,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import listMixins from './list.mixins'
-  import { clientList } from '@/service/client'
+  import { fieldList, setFieldStatus } from '@/service/field'
 
   export default {
     mixins: [listMixins, tableMixins],
@@ -89,7 +89,8 @@
       return {
         formData: {
           name: ''
-        }
+        },
+        pageSize: 10
       }
     },
     mounted () {
@@ -97,21 +98,28 @@
     },
     methods: {
       formatterPrice(row, column) {
-        return (row.dateHourPrice ? row.dateHourPrice : row.hourPrice) + (this.fieldType === '3' ? '元/天' : '元/小时')
+        return (row.fieldType === 3 ?  row.price + '元/天' : row.price + '元/小时')
       },
       getPageData() {
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
-          name: this.formData.name
+          fieldName: this.formData.name
         }
-
-        clientList(paramsObj).then(res => {
+        fieldList(paramsObj).then(res => {
           if (res.status === 'true') {
+            console.log('res', res)
             let data = res.info
             if (data) {
               this.pageTotal = data.total
               this.tableData = data.result
+              this.tableData.forEach(v => {
+                if (v.fieldType === 1) {
+                  v.fieldTypeText = '会议室'
+                } else if (v.fieldType === 3) {
+                  v.fieldTypeText = '工位'
+                }
+              })
             }
 
             this.tableLoading = false
@@ -125,6 +133,11 @@
       },
       // 更新会员状态
       handleUpdateStatus(id, status) {
+        setFieldStatus({ fieldId: id, isOpen: status }).then(res => {
+          if (res.status === 'true') {
+            console.log('res', res)
+          }
+        })
         // const statusParams = {
         //   userId: id,
         //   status: status

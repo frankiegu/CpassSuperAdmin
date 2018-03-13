@@ -21,22 +21,22 @@
             <router-link
               :to="{path: '/order/service/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.name }}
+              {{ scope.row.orderNum }}
             </router-link>
           </template>
         </el-table-column>
 
         <el-table-column label="生成时间" prop="createDate" width="155"></el-table-column>
-        <el-table-column label="服务供应商" prop="registerWay"></el-table-column>
-        <el-table-column label="所属空间" prop="productName"></el-table-column>
+        <el-table-column label="服务供应商" prop="providerName"></el-table-column>
+        <el-table-column label="所属空间" prop="spaceName"></el-table-column>
         <el-table-column label="联系人" prop="contact"></el-table-column>
         <el-table-column label="联系方式" prop="phone" width="110"></el-table-column>
-        <el-table-column label="服务类型" prop="validaty"></el-table-column>
+        <el-table-column label="服务类型" prop="typeName"></el-table-column>
 
         <el-table-column label="订单状态">
           <template slot-scope="scope">
             <div class="label-con">
-              <el-tag v-if="scope.row.productStatus===1" type="primary">待接单</el-tag>
+              <el-tag v-if="scope.row.orderStatus===1" type="primary">待接单</el-tag>
               <el-tag v-else type="success">已接单</el-tag>
             </div>
           </template>
@@ -44,7 +44,7 @@
 
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
-            <el-button type="primary" v-if="scope.row.productStatus===1"
+            <el-button type="primary" v-if="scope.row.orderStatus===1"
               @click="handleClickOrders(scope.row.id)" size="mini">接单</el-button>
           </template>
         </el-table-column>
@@ -66,6 +66,7 @@
 
 <script>
   import serviceOrder from './service.mixins'
+  import { serviceAcceptOrder } from '@/service/order'
   export default {
     mixins: [serviceOrder],
     data() {
@@ -78,21 +79,20 @@
           cancelButtonText: '取消',
           lockScroll: false
         }).then(() => {
-          console.log(id)
-          // RECIEVE_ORDER(JSON).then(res => {
-          //   if (res.status === 'true') {
-          //     this.getServiceBookingList()
-          //     this.$message({
-          //       type: 'success',
-          //       message: '接单成功!'
-          //     })
-          //   } else {
-          //     this.$message({
-          //       type: 'error',
-          //       message: res.msg
-          //     })
-          //   }
-          // })
+          serviceAcceptOrder({ orderId: id }).then(res => {
+            if (res.status === 'true') {
+              this.getPageData()
+              this.$message({
+                type: 'success',
+                message: '接单成功!'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
