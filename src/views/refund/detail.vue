@@ -1,50 +1,8 @@
 <template>
   <div class="order-field-detail">
-    <!--<lh-title :title="'单号：011802271609286'"></lh-title>-->
-
-    <!--<div class="page-title-info">-->
-      <!--<el-row>-->
-        <!--<el-col :span="16">-->
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="8">-->
-              <!--<lh-item label="生成时间：" label-width="auto">2018-02-01 09:04:09</lh-item>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
-
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="8">-->
-              <!--<lh-item label="预定人：" label-width="auto">邓先生</lh-item>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
-
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="8">-->
-              <!--<lh-item label="联系方式：" label-width="auto">13760886805</lh-item>-->
-            <!--</el-col>-->
-
-            <!--<el-col :span="8">-->
-              <!--<lh-item label="预约号：" label-width="auto">699311</lh-item>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
-        <!--</el-col>-->
-
-        <!--<div class="page-title-right">-->
-          <!--<div class="p-item">-->
-            <!--<div class="theme-gray">状态</div>-->
-            <!--<div class="p-con">已完成</div>-->
-          <!--</div>-->
-
-          <!--<div class="p-item">-->
-            <!--<p class="theme-gray">订单金额</p>-->
-            <!--<p class="p-con">￥500.00</p>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</el-row >-->
-    <!--</div>-->
-
     <div class="content-body">
+      <div class="senior-title">订单信息</div>
       <div class="card-body">
-        <div class="basics-title">订单信息</div>
         <el-row :gutter="20">
           <el-col :span="6">
             <lh-item label="订单号：" label-width="auto">壹空间</lh-item>
@@ -86,8 +44,12 @@
             <lh-item label="所属门店：" label-width="auto">super门店</lh-item>
           </el-col>
         </el-row>
+      </div>
+    </div>
 
-        <div class="basics-title mt8">退款申请</div>
+    <div class="content-body">
+      <div class="senior-title">退款申请</div>
+      <div class="card-body">
         <el-row :gutter="20">
           <el-col :span="24">
             <lh-item label="申请金额：" label-width="auto">￥120</lh-item>
@@ -103,15 +65,18 @@
             <lh-item label="设施与服务：" label-width="84px">深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V撒发生地方的所发生的深V</lh-item>
           </el-col>
         </el-row>
+      </div>
+    </div>
 
-        <div class="basics-title">退款操作</div>
+    <div class="content-body">
+      <div class="senior-title">退款操作</div>
+      <div class="card-body">
         <el-row :gutter="20">
           <el-col :span="24">
             <lh-item label="申请状态：" label-width="auto">
               <el-tag type="primary">待审批</el-tag>
             </lh-item>
           </el-col>
-
 
           <el-col :span="24">
             <lh-item label="" label-width="auto">
@@ -121,9 +86,7 @@
 
         </el-row>
       </div>
-
     </div>
-
 
     <!--审批Dialog-->
     <el-dialog title="退款审批" :visible.sync="dialogStatus">
