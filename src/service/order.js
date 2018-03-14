@@ -13,7 +13,7 @@ export const serviceOrderDetail = (obj) => fetch(API_PATH + '/supervisor/platfor
 export const fieldOrderList = (obj) => fetch(API_PATH + '/supervisor/order/list', obj, 'POST')
 
 // 获取场地订单详情
-export const fieldOrderDetail = (obj) => fetch(API_PATH + '/supervisor/platformServiceOrder/detail', obj, 'POST')
+export const fieldOrderDetail = (obj) => fetch(API_PATH + '/supervisor/order/detail', obj, 'POST')
 
 // 获取场地订单详情
 export const serviceAcceptOrder = (obj) => fetch(API_PATH + '/supervisor/platformServiceOrder/acceptOrder', obj, 'POST')

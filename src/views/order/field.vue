@@ -33,7 +33,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>
+        <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
+        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
 
         <el-table-column label="场地类型" align="left">
           <template slot-scope="scope">
@@ -45,7 +46,7 @@
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
         <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable></el-table-column>
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
-        <el-table-column label="订单总金额"  :formatter="formatPrice" align="left" sortable></el-table-column>
+        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">
@@ -121,6 +122,7 @@
               this.tableData = data.result
               // 支付状态payStatus, 10=未支付, 20=已支付, 30=已经退款
               this.tableData.forEach(v => {
+                v.formatPrice = '￥ ' + v.orderAmount
                 if (v.type === 1) {
                   v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
                 } else {

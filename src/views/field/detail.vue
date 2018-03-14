@@ -4,7 +4,7 @@
       <el-tag size="mini" class="ml20 fl">{{typeText}}</el-tag>
       <template slot-scope="scope">
         <el-tooltip
-          :content="isOpen === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
+          :content="isOpen === 1 ? '点击停用会员' : '点击启用会员'"
           placement="top"
           effect="light"
           class="margin-lr6">
@@ -164,7 +164,7 @@
       handleUpdateStatus(id, status) {
         setFieldStatus({ fieldId: id, isOpen: status }).then(res => {
           if (res.status === 'true') {
-            console.log('res', res)
+            this.$message.success('修改成功！')
           } else {
             this.$message({
               showClose: true,

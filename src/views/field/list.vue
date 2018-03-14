@@ -37,7 +37,7 @@
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
         <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
-        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable></el-table-column>
+        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable sort-by="bookNum"></el-table-column>
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>
@@ -45,7 +45,7 @@
         <el-table-column label="状态" fixed="right" align="left">
           <template slot-scope="scope">
             <el-tooltip
-              :content="scope.row.isOpen === 1 ? '点击关闭该会员的前端使用权限' : '点击开启该会员的前端使用权限'"
+              :content="scope.row.isOpen === 1 ? '点击停用会员' : '点击启用会员'"
               placement="top"
               effect="light"
               class="margin-lr6">
@@ -135,7 +135,9 @@
       handleUpdateStatus(id, status) {
         setFieldStatus({ fieldId: id, isOpen: status }).then(res => {
           if (res.status === 'true') {
-            console.log('res', res)
+            this.$message.success('修改成功！')
+          } else {
+            this.$message.error(res.msg)
           }
         })
         // const statusParams = {
@@ -143,11 +145,11 @@
         //   status: status
         // }
         // userUpdateStatus(statusParams).then(res => {
-        //   if (res.status === 'true') {
-        //     this.$message.success('修改成功！')
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
+        //  if (res.status === 'true') {
+        //    this.$message.success('修改成功！')
+        //  } else {
+        //    this.$message.error(res.msg)
+        //  }
         // })
       }
     }
