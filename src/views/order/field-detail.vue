@@ -53,7 +53,7 @@
         <div class="basics-title">场地信息</div>
         <el-row :gutter="20">
           <el-col :span="8">
-            <lh-item label="空间名称：" label-width="auto">壹空间</lh-item>
+            <lh-item label="空间名称：" label-width="auto">{{space.spaceName}}</lh-item>
           </el-col>
           <el-col :span="8">
             <lh-item label="场地名称：" label-width="auto">{{fieldInfo.fieldName}}</lh-item>
@@ -83,7 +83,7 @@
 
         <div class="basics-title mt8">支付信息</div>
         <el-table :data="tableData" class="width100">
-          <el-table-column label="支付金额" prop="payAmount"></el-table-column>
+          <el-table-column label="支付金额" :formatter="formatPrice"></el-table-column>
           <el-table-column label="支付时间" prop="payDate"></el-table-column>
           <el-table-column label="交易号" prop="transactionId"></el-table-column>
           <el-table-column label="支付方式" prop="payType"></el-table-column>
@@ -130,13 +130,7 @@
         store: {}, // 门店信息
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
-        pagaData: {
-          username: '1231111111111',
-          spaceId: '',
-          name: '',
-          manageUrl: '',
-          wxUrl: ''
-        }
+        space: {} // 空间信息
       }
     },
     props: {},
@@ -146,10 +140,12 @@
       this.getPageData()
     },
     methods: {
+      formatPrice(row, column) {
+        return '￥ ' + row.payAmount
+      },
       getPageData() {
         fieldOrderDetail({ id: this.orderId }).then(res => {
           if (res.status === 'true') {
-            let data = res.info
             this.order = res.info.order
             this.orderContact = res.info.orderContact
             this.orderPay = res.info.orderPay
@@ -157,6 +153,7 @@
             this.store = res.info.store
             this.orderLogs = res.info.orderLogs
             this.fieldAddress = res.info.store.cityName + res.info.store.districtName + res.info.store.address
+            this.space = res.info.space
             if (!res.info.orderPay.payDate) {
               res.info.orderPay.payDate = '-'
             }
@@ -173,13 +170,6 @@
               this.fieldInfo.typeName = '路演厅'
             } else if (this.fieldInfo.type === 3) {
               this.fieldInfo.typeName = '工位'
-            }
-            this.pagaData = {
-              username: data.username,
-              spaceId: data.spaceId,
-              name: data.name,
-              manageUrl: data.manageUrl,
-              wxUrl: data.wxUrl
             }
           } else {
             this.setMsg('error', res.msg)
