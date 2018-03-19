@@ -36,10 +36,10 @@
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
         <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
 
-        <el-table-column label="场地类型" align="left">
+        <el-table-column label="场地类型" align="center">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type === '3'" type="primary">工位</el-tag>
-            <el-tag v-else type="success">会议室</el-tag>
+            <el-tag v-else type="primary">会议室</el-tag>
           </template>
         </el-table-column>
 

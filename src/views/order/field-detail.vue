@@ -146,24 +146,24 @@
       getPageData() {
         fieldOrderDetail({ id: this.orderId }).then(res => {
           if (res.status === 'true') {
-            this.order = res.info.order
-            this.orderContact = res.info.orderContact
-            this.orderPay = res.info.orderPay
+            this.order = res.info.platformOrder
+            this.orderContact = res.info.platformOrderContact
+            this.orderPay = res.info.platformOrderPay
             this.fieldInfo = res.info.fieldSnapshot
             this.store = res.info.store
             this.orderLogs = res.info.orderLogs
             this.fieldAddress = res.info.store.cityName + res.info.store.districtName + res.info.store.address
             this.space = res.info.space
-            if (!res.info.orderPay.payDate) {
-              res.info.orderPay.payDate = '-'
+            if (!res.info.platformOrderPay.payDate) {
+              res.info.platformOrderPay.payDate = '-'
             }
-            if (!res.info.orderPay.transactionId) {
-              res.info.orderPay.transactionId = '-'
+            if (!res.info.platformOrderPay.transactionId) {
+              res.info.platformOrderPay.transactionId = '-'
             }
-            if (!res.info.orderPay.payType) {
-              res.info.orderPay.payType = '-'
+            if (!res.info.platformOrderPay.payType) {
+              res.info.platformOrderPay.payType = '-'
             }
-            this.tableData.push(res.info.orderPay)
+            this.tableData.push(res.info.platformOrderPay)
             if (this.fieldInfo.type === 1) {
               this.fieldInfo.typeName = '会议室'
             } else if (this.fieldInfo.type === 2) {

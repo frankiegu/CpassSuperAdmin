@@ -72,14 +72,14 @@
 
       <div class="card-body">
         <el-row :gutter="20">
-          <el-col :span="8">
-            <lh-item label="可预约时段：" label-width="auto">{{appointment.startTime}}～{{appointment.endTime}}</lh-item>
-          </el-col>
+        <el-col :span="8">
+          <lh-item label="可预约时段：" label-width="auto">{{appointment.startTime}}～{{appointment.endTime}}</lh-item>
+        </el-col>
 
-          <el-col :span="8">
-            <lh-item label="取消设置：" label-width="auto">提前{{field.cancelSetting}}</lh-item>
-          </el-col>
-        </el-row>
+        <el-col :span="8">
+          <lh-item label="取消设置：" label-width="auto">提前{{field.cancelSetting}}</lh-item>
+        </el-col>
+      </el-row>
 
         <el-row :gutter="20">
           <el-col :span="8">
@@ -205,6 +205,7 @@
             } else if (res.info.fieldDetail.field.type === 3) {
               this.typeText = '工位'
             }
+            console.log('this.typeText', this.typeText)
             if (res.info.fieldDetail.field.cancelBeforeUnit === 'H') {
               this.field.cancelSetting = res.info.fieldDetail.field.cancelBeforeTime + '小时'
             } else {
