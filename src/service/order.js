@@ -10,10 +10,10 @@ export const serviceOrderList = (obj) => fetch(API_PATH + '/supervisor/platformS
 export const serviceOrderDetail = (obj) => fetch(API_PATH + '/supervisor/platformServiceOrder/detail', obj, 'POST')
 
 // 获取场地订单列表
-export const fieldOrderList = (obj) => fetch(API_PATH + '/supervisor/order/list', obj, 'POST')
+export const fieldOrderList = (obj) => fetch(API_PATH + '/supervisor/platformOrder/list', obj, 'POST')
 
 // 获取场地订单详情
-export const fieldOrderDetail = (obj) => fetch(API_PATH + '/supervisor/order/detail', obj, 'POST')
+export const fieldOrderDetail = (obj) => fetch(API_PATH + '/supervisor/platformOrder/detail', obj, 'POST')
 
-// 获取场地订单详情
+// 服务订单接单
 export const serviceAcceptOrder = (obj) => fetch(API_PATH + '/supervisor/platformServiceOrder/acceptOrder', obj, 'POST')

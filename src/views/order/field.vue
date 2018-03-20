@@ -44,7 +44,7 @@
         </el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
-        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable></el-table-column>
+        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable sort-by="bookStartTime"></el-table-column>
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount"></el-table-column>
 
