@@ -18,6 +18,7 @@ export default [{
     }, {
       name: '退款详情',
       path: 'detail',
+      hidden: true,
       component: _import('refund/detail')
     }
   ]
