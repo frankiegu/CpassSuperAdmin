@@ -64,12 +64,12 @@
         </el-row>
         <el-row>
           <el-col>
-            <lh-item label="退款原因：" label-width="86px">{{ customerRemark }}</lh-item>
+            <lh-item label="退款原因：" label-width="86px">{{ customerRemark || '无' }}</lh-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <lh-item label="退款备注：" label-width="86px">{{ reason }}</lh-item>
+            <lh-item label="退款备注：" label-width="86px">{{ reason || '无' }}</lh-item>
           </el-col>
         </el-row>
       </div>
@@ -88,6 +88,9 @@
                 <el-tag type="error" v-if="item.type === 30">已驳回</el-tag>
               </lh-item>
             </el-col>
+            <el-col :span="6">
+              <lh-item label="退款金额：" label-width="86px" v-if="item.type === 20">{{ '￥' + actualRefundAmount }}</lh-item>
+            </el-col>
           </el-row>
 
           <el-row :gutter="20">
@@ -101,7 +104,7 @@
 
           <el-row>
             <el-col>
-              <lh-item label="审批回复：" label-width="86px">{{ customerRemark }}</lh-item>
+              <lh-item label="审批回复：" label-width="86px">{{ customerRemark || '无' }}</lh-item>
             </el-col>
           </el-row>
 
@@ -127,13 +130,14 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <lh-item label="申请状态：" label-width="auto">
+                {{  }}
                 <el-tag type="primary" v-if="refundPayType === 10">待审批</el-tag>
-                <el-tag type="primary" v-if="refundPayType === 20">待审批</el-tag>
-                <el-tag type="primary" v-if="refundPayType === 30">待审批</el-tag>
+                <el-tag type="primary" v-if="refundPayType === 20">已通过</el-tag>
+                <el-tag type="primary" v-if="refundPayType === 30">已驳回</el-tag>
               </lh-item>
             </el-col>
 
-            <el-col :span="24" v-if="refundPayType === 30">
+            <el-col :span="24" v-if="refundPayType === 10">
               <lh-item label="" label-width="auto">
                 <el-button type="primary" @click="dialogStatus = true">审批</el-button>
               </lh-item>
@@ -264,11 +268,11 @@
                 self.refundAmount = data.platformOrderRefund.refundAmount || '0'
                 self.customerRemark = data.platformOrderRefund.customerRemark || ''
                 self.reason = data.platformOrderRefund.reason || ''
-                self.actualRefundAmount = data.platformOrderRefund.actualRefundAmount || ''
+                self.actualRefundAmount = data.platformOrderRefund.actualRefundAmount || '0'
               }
               self.platformOrderRefundLogVoList = data.platformOrderRefundLogVoList || ''
               self.rejectTimes = data.rejectTimes || 0
-              self.refundPayType = data.platformOrderRefund.refundPayType || ''
+              self.refundPayType = data.platformOrderRefund.type || ''
             }
           } else {
             this.setMsg('error', res.msg)
@@ -302,6 +306,7 @@
         refundApprove(paramsObj).then(res => {
           if (res.status === 'true') {
             this.setMsg('success', '操作成功')
+            this.dialogStatus = false
             this.getPageData()
           } else {
             this.setMsg('error', 'res.msg')
