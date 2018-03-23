@@ -77,7 +77,7 @@
         </el-col>
 
         <el-col :span="8">
-          <lh-item label="取消设置：" label-width="auto">提前{{field.cancelSetting}}</lh-item>
+          <lh-item label="取消设置：" label-width="auto" v-if="field.cancelSetting">提前{{field.cancelSetting}}</lh-item>
         </el-col>
       </el-row>
 
@@ -93,7 +93,7 @@
 
         <el-row :gutter="20">
           <el-col>
-            <lh-item label="设备：" label-width="auto">
+            <lh-item label="设备：" label-width="auto" v-if="equipments.length > 0">
               <span v-for="(item, index) in equipments" :key="index">{{index === (equipments.length - 1) ? item.name : item.name + '、'}}</span>
             </lh-item>
           </el-col>
@@ -110,7 +110,7 @@
 
         <el-row>
           <el-col>
-            <lh-item label="设施与服务：" label-width="84px">
+            <lh-item label="设施与服务：" label-width="84px" v-if="field.facilitiesAndServices">
               <div v-html="field.facilitiesAndServices"></div>
             </lh-item>
           </el-col>
@@ -118,7 +118,7 @@
 
         <el-row>
           <el-col>
-            <lh-item label="使用须知：" label-width="70px">
+            <lh-item label="使用须知：" label-width="70px" v-if="field.instructionsForUse">
               <div v-html="field.instructionsForUse"></div>
             </lh-item>
           </el-col>
@@ -206,11 +206,14 @@
               this.typeText = '工位'
             }
             console.log('this.typeText', this.typeText)
-            if (res.info.fieldDetail.field.cancelBeforeUnit === 'H') {
-              this.field.cancelSetting = res.info.fieldDetail.field.cancelBeforeTime + '小时'
-            } else {
-              this.field.cancelSetting = res.info.fieldDetail.field.cancelBeforeTime + '天'
+            if (res.info.fieldDetail.field.cancelBeforeUnit) {
+              if (res.info.fieldDetail.field.cancelBeforeUnit === 'H') {
+                this.field.cancelSetting = res.info.fieldDetail.field.cancelBeforeTime + '小时'
+              } else {
+                this.field.cancelSetting = res.info.fieldDetail.field.cancelBeforeTime + '天'
+              }
             }
+            console.log('cancel', res.info.fieldDetail.field.cancelBeforeTime)
           } else {
             this.setMsg('error', res.msg)
           }
