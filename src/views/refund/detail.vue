@@ -305,11 +305,13 @@
         }
         refundApprove(paramsObj).then(res => {
           if (res.status === 'true') {
-            this.setMsg('success', '操作成功')
-            this.dialogStatus = false
-            this.getPageData()
+            self.setMsg('success', '操作成功')
+            self.dialogStatus = false
+            self.adminUserRemark = ''
+            self.adminRefund = ''
+            self.getPageData()
           } else {
-            this.setMsg('error', 'res.msg')
+            self.setMsg('error', 'res.msg')
           }
         })
       },
@@ -344,11 +346,13 @@
         }
         refundApprove(paramsObj).then(res => {
           if (res.status === 'true') {
-            this.setMsg('success', '操作成功')
-            this.dialogStatus = false
-            this.getPageData()
+            self.setMsg('success', '操作成功')
+            self.dialogStatus = false
+            self.adminUserRemark = ''
+            self.adminRefund = ''
+            self.getPageData()
           } else {
-            this.setMsg('error', 'res.msg')
+            self.setMsg('error', 'res.msg')
           }
         })
       }
