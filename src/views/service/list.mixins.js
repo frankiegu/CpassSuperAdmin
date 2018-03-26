@@ -5,8 +5,6 @@ export default {
   mixins: [tableMixins],
   data () {
     return {
-      pageNum: 1,
-      pageSize: 10,
       id: '',
       isPermitOpen: '',
       isOpen: ''

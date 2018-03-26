@@ -84,8 +84,8 @@
             <el-col :span="6">
               <lh-item label="申请状态：" label-width="86px">
                 <el-tag type="primary" v-if="item.type === 10">待审批</el-tag>
-                <el-tag type="primary" v-if="item.type === 20">已审批</el-tag>
-                <el-tag type="error" v-if="item.type === 30">已驳回</el-tag>
+                <el-tag type="success" v-if="item.type === 20">已审批</el-tag>
+                <el-tag type="danger" v-if="item.type === 30">已驳回</el-tag>
               </lh-item>
             </el-col>
             <el-col :span="6">
@@ -104,23 +104,23 @@
 
           <el-row>
             <el-col>
-              <lh-item label="审批回复：" label-width="86px">{{ customerRemark || '无' }}</lh-item>
+              <lh-item label="审批回复：" label-width="86px">{{ item.remark || '无' }}</lh-item>
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
-            <el-col :span="24" v-if="item.type === 10 || item.type === 30">
-              <lh-item label="" label-width="86px">
-                <el-button type="primary" @click="dialogStatus = true">审批</el-button>
-              </lh-item>
-            </el-col>
-          </el-row>
+          <!--<el-row :gutter="20">-->
+            <!--<el-col :span="24" v-if="item.type === 10 || item.type === 30">-->
+              <!--<lh-item label="" label-width="86px">-->
+                <!--<el-button type="primary" @click="dialogStatus = true">审批</el-button>-->
+              <!--</lh-item>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
 
           <!--审批的按钮出现的条件： 最后一条数据 并且是待审批 已驳回并且驳回次数小于2次时显示-->
           <el-row v-if="(index === platformOrderRefundLogVoList.length - 1) && (item.type === 10 || item.type === 30)">
             <el-col :span="24" class="margin-mid" v-if="(rejectTimes < 2 && rejectTimes >= 0)">
               <div class="detail-info">
-                <el-button type="primary" @click="dialogFormVisible = true">审批</el-button>
+                <el-button type="primary" @click="dialogStatus = true">审批</el-button>
               </div>
             </el-col>
           </el-row>
@@ -132,8 +132,8 @@
               <lh-item label="申请状态：" label-width="auto">
                 {{  }}
                 <el-tag type="primary" v-if="refundPayType === 10">待审批</el-tag>
-                <el-tag type="primary" v-if="refundPayType === 20">已通过</el-tag>
-                <el-tag type="primary" v-if="refundPayType === 30">已驳回</el-tag>
+                <el-tag type="success" v-if="refundPayType === 20">已通过</el-tag>
+                <el-tag type="danger" v-if="refundPayType === 30">已驳回</el-tag>
               </lh-item>
             </el-col>
 
@@ -315,6 +315,27 @@
       },
       rejectApprove () {
         const self = this
+
+        if (self.adminRefund === '') {
+          this.setMsg('error', '请输入退款金额!')
+          return
+        }
+
+        if (self.adminRefund > self.refundAmount) {
+          this.setMsg('error', '退款金额不能大于申请金额!')
+          return
+        }
+
+        if (self.adminRefund < 0) {
+          this.setMsg('error', '退款金额不合法')
+          return
+        }
+
+        if (!self.adminUserRemark) {
+          this.setMsg('error', '审批回复不能为空！')
+          return
+        }
+
         const paramsObj = {
           platformOrderRefundId: self.platformOrderRefundId,
           actualRefundAmount: self.adminRefund,
@@ -324,6 +345,7 @@
         refundApprove(paramsObj).then(res => {
           if (res.status === 'true') {
             this.setMsg('success', '操作成功')
+            this.dialogStatus = false
             this.getPageData()
           } else {
             this.setMsg('error', 'res.msg')
