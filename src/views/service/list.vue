@@ -8,14 +8,14 @@
         <el-table-column label="主图">
           <template slot-scope="scope">
             <div class="table-img">
-              <img :src="scope.row.picPath + zoomImgSize()" alt="">
+              <img :src="scope.row.imgPath + zoomImgSize()" alt="">
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="服务名称" prop="name" align="left"></el-table-column>
         <el-table-column label="价格" prop="price"></el-table-column>
-        <el-table-column label="供应商名称" prop="supplierName" align="left" ></el-table-column>
+        <el-table-column label="供应商名称" prop="providerName" align="left" ></el-table-column>
 
         <el-table-column label="服务类型">
           <template slot-scope="scope">
@@ -31,25 +31,23 @@
 
         <el-table-column label="开放状态">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.statusCode === 1" type="success">开启</el-tag>
+            <el-tag v-if="scope.row.isPermitOpen === 1" type="success">开启</el-tag>
             <el-tag v-else type="danger">关闭</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="scope.row.id !==tableData[0].id"
+            <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="scope.row.statusCode === 1"
               class="operate-btn">置顶</el-button>
-            <el-tooltip :content="scope.row.statusCode === 1 ? '关闭将不在小程序服务列表展示' : '开启将展示在小程序服务列表'"
+            <el-tooltip :content="scope.row.isPermitOpen === 1 ? '关闭将不在小程序服务列表展示' : '开启将展示在小程序服务列表'"
               placement="top" effect="light" style="margin-top: -5px">
               <el-switch
-                v-model="scope.row.statusCode"
+                v-model="scope.row.isPermitOpen"
                 :active-value="1"
-                :inactive-value="2"
+                :inactive-value="0"
                 :active-color="switchActiveColor"
-                active-text=""
-                inactive-text=""
-                @change="handleUpdateStatus(scope.row.statusCode, scope.row.id)"></el-switch>
+                @change="handleUpdateStatus(scope.row.id, scope.row.isPermitOpen)"></el-switch>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -74,12 +72,10 @@
   export default {
     mixins: [serviceList],
     data() {
-      return {}
+      return {
+      }
     },
     methods: {
-      handleSetTop(id) {
-        console.log(id)
-      }
     }
   }
 </script>

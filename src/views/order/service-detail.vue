@@ -8,7 +8,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <lh-item label="订单号：" label-width="auto" class="custom-label">{{orderData.orderNum}}
-              <el-tag v-if="orderData.orderStatus===0" type="primary" style="vertical-align: middle">待接单</el-tag>
+              <el-tag v-if="orderData.orderStatus===1" type="primary" style="vertical-align: middle">待接单</el-tag>
               <el-tag v-else type="success" style="vertical-align: middle">已接单</el-tag>
             </lh-item>
           </el-col>
@@ -17,7 +17,7 @@
           <el-col :span="10">
             <lh-item label="联系人：" label-width="auto">{{orderData.contact}}</lh-item>
             <lh-item label="生成时间：" label-width="auto">{{orderData.createDate}}</lh-item>
-            <lh-item label="意向内容：" label-width="auto">{{orderData.intentionCon}}</lh-item>
+            <lh-item label="意向内容：" label-width="auto" v-if="orderData.content">{{orderData.content}}</lh-item>
           </el-col>
           <el-col :span="8">
             <lh-item label="联系方式：" label-width="auto">{{orderData.phone}}</lh-item>
@@ -28,14 +28,14 @@
       <h3 class="grid-title">服务信息</h3>
       <el-row>
         <el-col :span="10">
-          <lh-item label="服务名称：" label-width="auto">{{orderData.name}}</lh-item>
-          <lh-item label="服务商：" label-width="auto">{{orderData.supplier}}</lh-item>
-          <lh-item label="服务联系人：" label-width="auto">{{orderData.supplierContact}}</lh-item>
+          <lh-item label="服务名称：" label-width="auto">{{orderData.serviceName}}</lh-item>
+          <lh-item label="服务商：" label-width="auto">{{orderData.providerName}}</lh-item>
+          <lh-item label="服务联系人：" label-width="auto">{{orderData.providerContact}}</lh-item>
         </el-col>
         <el-col :span="8">
-          <lh-item label="服务类型：" label-width="auto">{{orderData.serviceType}}</lh-item>
-          <lh-item label="关联空间：" label-width="auto">{{orderData.relativeSpace}}</lh-item>
-          <lh-item label="联系方式：" label-width="auto">{{orderData.supplierPhone}}</lh-item>
+          <lh-item label="服务类型：" label-width="auto">{{orderData.typeName}}</lh-item>
+          <lh-item label="关联空间：" label-width="auto">{{orderData.spaceName}}</lh-item>
+          <lh-item label="联系方式：" label-width="auto">{{orderData.providerPhone}}</lh-item>
         </el-col>
       </el-row>
     </div>
@@ -43,11 +43,12 @@
 </template>
 
 <script>
+  import { serviceOrderDetail } from '@/service/order'
   export default {
     name: 'service-detail',
     data() {
       return {
-        serviceId: this.$route.query.id,
+        orderId: this.$route.query.id,
         orderData: {
           orderNum: 'CS5859303344',
           orderStatus: 0,
@@ -70,7 +71,18 @@
     watch: {},
     computed: {},
     filters: {},
-    methods: {}
+    methods: {
+      getOrderDetail () {
+        serviceOrderDetail({ orderId: this.orderId }).then(res => {
+          if (res.status === 'true') {
+            this.orderData = res.info
+          }
+        })
+      }
+    },
+    created () {
+      this.getOrderDetail()
+    }
   }
 </script>
 

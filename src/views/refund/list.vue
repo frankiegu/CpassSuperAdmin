@@ -3,18 +3,18 @@
     <lh-title></lh-title>
 
     <div class="content-body card-body">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
-            placeholder="请输入订单编号"
-            class="width220px">
+      <!--<el-form :model="formData" :inline="true" class="text-right mr-10">-->
+        <!--<el-form-item>-->
+          <!--<el-input-->
+            <!--v-model.trim="formData.name"-->
+            <!--@keyup.native.enter="getPageData"-->
+            <!--placeholder="请输入订单编号"-->
+            <!--class="width220px">-->
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-      </el-form>
+            <!--<i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>-->
+          <!--</el-input>-->
+        <!--</el-form-item>-->
+      <!--</el-form>-->
 
       <el-table
         :data="tableData"
@@ -28,41 +28,51 @@
             <router-link
               :to="{path: '/refund/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.name }}
+              {{ scope.row.referenceNum }}
             </router-link>
           </template>
         </el-table-column>
 
         <el-table-column label="申请时间" :formatter="formatTime" align="left" width="155">
-          <template slot-scope="scope">
-            <span>2018-02-12 21:20</span>
-          </template>
         </el-table-column>
 
         <el-table-column label="联系人" align="left">
           <template slot-scope="scope">
-            <span>邓先生</span>
+            <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="联系方式" align="left"></el-table-column>
-        <el-table-column label="订单类型" align="left"></el-table-column>
-        <el-table-column label="所属空间" align="left"></el-table-column>
-        <el-table-column label="所属门店" align="left"></el-table-column>
-        <el-table-column label="退款金额"  :formatter="formatPrice" align="left">
+        <el-table-column label="联系方式" align="left">
           <template slot-scope="scope">
-            <span>￥112</span>
+            <span>{{ scope.row.telephone }}</span>
           </template>
         </el-table-column>
-
+        <el-table-column label="订单类型" align="left">
+          <template slot-scope="scope">
+            <span>场地订单</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属空间" align="left">
+          <template slot-scope="scope">
+            <span>{{ scope.row.spaceName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属门店" align="left">
+          <template slot-scope="scope">
+            <span>{{ scope.row.storeName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="退款金额"  :formatter="formatPrice" align="left">
+        </el-table-column>
         <el-table-column label="退款状态" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.email === 10">待审批</span>
-            <span v-else-if="scope.row.email === 20">已处理</span>
+            <span v-if="scope.row.status === 10">待审批</span>
+            <span v-else-if="scope.row.status === 20">已通过</span>
+            <span v-else-if="scope.row.status === 30">已驳回</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="left">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="scope.row.status != 20 && scope.row.rejectTimes < 2">
             <router-link
               :to="{path: '/refund/detail', query: {id: scope.row.id}}"
               class="table-link">
@@ -89,7 +99,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import refundMixins from './list.mixins'
-  import { clientList } from '@/service/client'
+  import { refundList } from '@/service/refund'
 
   export default {
     mixins: [refundMixins, tableMixins],
@@ -106,25 +116,26 @@
     },
     methods: {
       formatPrice(row, column) {
-        return '￥ ' + row.email
+        return '￥ ' + row.refundAmount
       },
       formatTime(row, column) {
-        return row.email
+        return row.applyDate.substr(0, 16)
         // return row.email.replace(/:\d{2}$/, '')
       },
       getPageData() {
+        const self = this
         const paramsObj = {
-          pageSize: this.pageSize,
-          pageNum: this.currentPage,
-          name: this.formData.name
+          pageSize: self.pageSize,
+          pageNum: self.currentPage,
         }
-
-        clientList(paramsObj).then(res => {
+        refundList(paramsObj).then(res => {
           if (res.status === 'true') {
             let data = res.info
             if (data) {
-              this.pageTotal = data.total
-              this.tableData = data.result
+              if (data.page) {
+                this.pageTotal = data.page.total
+                this.tableData = data.page.result
+              }
             }
 
             this.tableLoading = false

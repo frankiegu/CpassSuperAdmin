@@ -28,30 +28,31 @@
             <router-link
               :to="{path: '/order/field/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.name }}
+              {{ scope.row.orderNum }}
             </router-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>
+        <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
+        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
 
-        <el-table-column label="场地类型" align="left">
+        <el-table-column label="场地类型" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.email === '3'" type="primary">工位</el-tag>
-            <el-tag v-else type="success">会议室</el-tag>
+            <el-tag v-if="scope.row.type === '3'" type="primary">工位</el-tag>
+            <el-tag v-else type="primary">会议室</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="预约日期" prop="email" align="left"></el-table-column>
-        <el-table-column label="预约时段" prop="email" align="left" sortable></el-table-column>
-        <el-table-column label="场地所属" prop="email" align="left"></el-table-column>
-        <el-table-column label="订单总金额"  :formatter="formatPrice" align="left" sortable></el-table-column>
+        <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
+        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable sort-by="bookStartTime"></el-table-column>
+        <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
+        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.email === 10">待支付</span>
-            <span v-else-if="scope.row.email === 20">已支付</span>
-            <span v-else-if="scope.row.email === 10">已退款</span>
+            <span v-if="scope.row.payStatus === 10">待支付</span>
+            <span v-else-if="scope.row.payStatus === 20">已支付</span>
+            <span v-else-if="scope.row.payStatus === 10">已退款</span>
             <span v-else>待退款</span>
           </template>
         </el-table-column>
@@ -59,7 +60,7 @@
           <template slot-scope="scope">
             <span
               v-for="(item, index) in statusList" :key="index"
-              v-if="scope.row.email === item.val">
+              v-if="scope.row.status === item.val">
               {{ item.text }}
             </span>
           </template>
@@ -83,7 +84,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import spaceMixins from './field.mixins'
-  import { clientList } from '@/service/client'
+  import { fieldOrderList } from '@/service/order'
 
   export default {
     mixins: [spaceMixins, tableMixins],
@@ -95,30 +96,39 @@
         }
       }
     },
-    mounted () {
+    created () {
       this.getPageData()
     },
     methods: {
       formatPrice(row, column) {
-        return '￥ ' + row.email
+        return '￥ ' + row.orderAmount
       },
       formatTime(row, column) {
-        return row.email
+        return row.created
         // return row.email.replace(/:\d{2}$/, '')
       },
       getPageData() {
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
-          name: this.formData.name
+          orderNum: this.formData.name
         }
-
-        clientList(paramsObj).then(res => {
+        fieldOrderList(paramsObj).then(res => {
           if (res.status === 'true') {
+            console.log('res', res)
             let data = res.info
             if (data) {
               this.pageTotal = data.total
               this.tableData = data.result
+              // 支付状态payStatus, 10=未支付, 20=已支付, 30=已经退款
+              this.tableData.forEach(v => {
+                v.formatPrice = '￥ ' + v.orderAmount
+                if (v.type === 1) {
+                  v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
+                } else {
+                  v.bookingPeriod = '-'
+                }
+              })
             }
 
             this.tableLoading = false
