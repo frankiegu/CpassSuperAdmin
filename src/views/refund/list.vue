@@ -3,18 +3,18 @@
     <lh-title></lh-title>
 
     <div class="content-body card-body">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
-            placeholder="请输入订单编号"
-            class="width220px">
+      <!--<el-form :model="formData" :inline="true" class="text-right mr-10">-->
+        <!--<el-form-item>-->
+          <!--<el-input-->
+            <!--v-model.trim="formData.name"-->
+            <!--@keyup.native.enter="getPageData"-->
+            <!--placeholder="请输入订单编号"-->
+            <!--class="width220px">-->
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-      </el-form>
+            <!--<i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>-->
+          <!--</el-input>-->
+        <!--</el-form-item>-->
+      <!--</el-form>-->
 
       <el-table
         :data="tableData"
@@ -72,7 +72,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" align="left">
-          <template slot-scope="scope" v-if="scope.row.status != 20">
+          <template slot-scope="scope" v-if="scope.row.status != 20 && scope.row.rejectTimes < 2">
             <router-link
               :to="{path: '/refund/detail', query: {id: scope.row.id}}"
               class="table-link">
@@ -106,8 +106,6 @@
     components: {},
     data () {
       return {
-        pageNum: 1,
-        pageSize: 10,
         formData: {
           name: ''
         }
@@ -125,9 +123,10 @@
         // return row.email.replace(/:\d{2}$/, '')
       },
       getPageData() {
+        const self = this
         const paramsObj = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNum
+          pageSize: self.pageSize,
+          pageNum: self.currentPage,
         }
         refundList(paramsObj).then(res => {
           if (res.status === 'true') {

@@ -30,10 +30,22 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="联系电话" prop="mobile" align="center"></el-table-column>
-        <el-table-column label="注册渠道" prop="channelName" align="center"></el-table-column>
-        <el-table-column label="注册日期" prop="create" align="center"></el-table-column>
-        <el-table-column label="累计场地订单" prop="fieldOrderCount" align="center"></el-table-column>
+        <el-table-column label="联系电话" prop="mobile" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.mobile ? scope.row.mobile : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="注册渠道" prop="registerName" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.registerName ? scope.row.registerName : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="注册日期" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="累计场地订单" prop="fieldOrderCount" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fieldOrderCount ? scope.row.fieldOrderCount : 0 }}
+          </template>
+        </el-table-column>
         <el-table-column label="上一次登录" prop="lastLogin" align="center"></el-table-column>
 
       </el-table>
