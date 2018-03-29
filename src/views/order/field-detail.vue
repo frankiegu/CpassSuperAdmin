@@ -1,43 +1,58 @@
 <template>
   <div class="order-field-detail">
-    <lh-title :title="'单号：'+order.orderNum"></lh-title>
+    <lh-title :title="'单号：'+order.orderNum">
+      <el-tag type="success" style="vertical-align: middle" class="order-status" v-if="order.status === 10">待使用</el-tag>
+      <el-tag type="danger" style="vertical-align: middle" class="order-status" v-if="order.status === 5">未支付</el-tag>
+      <el-tag type="primary" style="vertical-align: middle" class="order-status" v-if="order.status === 20">已使用</el-tag>
+      <el-tag type="info" style="vertical-align: middle" class="order-status" v-if="order.status === 30">已取消</el-tag>
+      <el-tag type="danger" style="vertical-align: middle" class="order-status" v-if="order.status === 40">待退款</el-tag>
+      <el-tag type="info" style="vertical-align: middle" class="order-status" v-if="order.status === 50">已退款</el-tag>
+    </lh-title>
 
     <div class="page-title-info">
       <el-row>
         <el-col :span="16">
           <el-row :gutter="20">
             <el-col :span="8">
-              <lh-item label="生成时间：" label-width="auto">{{order.created}}</lh-item>
+              <lh-item label="预约场地：" label-width="auto">{{fieldInfo.fieldName}}</lh-item>
+            </el-col>
+            <el-col :span="8">
+              <lh-item label="预约日期：" label-width="auto">{{platformOrderField.reservationDate}}</lh-item>
+            </el-col>
+            <el-col :span="8">
+              <lh-item label="预约时段：" label-width="auto" v-if="fieldInfo.type === 1">
+                {{platformOrderField.bookStartTime}}～{{platformOrderField.bookEndTime}}</lh-item>
+              <lh-item label="预约数量：" label-width="auto" v-if="fieldInfo.type === 3">{{platformOrderField.quantity}}</lh-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <lh-item label="预定人：" label-width="auto">{{orderContact.name}}</lh-item>
+              <lh-item label="生成时间：" label-width="auto">{{order.created}}</lh-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
+            <el-col :span="8">
+              <lh-item label="客户：" label-width="auto">{{orderContact.name}}</lh-item>
+            </el-col>
             <el-col :span="8">
               <lh-item label="联系方式：" label-width="auto">{{orderContact.telephone}}</lh-item>
             </el-col>
-
-            <el-col :span="8">
-              <lh-item label="预约号：" label-width="auto" v-if="order.checkInNum">{{order.checkInNum}}</lh-item>
-            </el-col>
           </el-row>
+
+          <!--<el-row :gutter="20">-->
+            <!--<el-col :span="8">-->
+              <!--<lh-item label="联系方式：" label-width="auto">{{orderContact.telephone}}</lh-item>-->
+            <!--</el-col>-->
+
+            <!--<el-col :span="8">-->
+              <!--<lh-item label="预约号：" label-width="auto" v-if="order.checkInNum">{{order.checkInNum}}</lh-item>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
         </el-col>
 
         <div class="page-title-right">
           <div class="p-item">
-            <div class="theme-gray">状态</div>
-            <!--5=待支付,10=待使用, 20=已使用, 30=已取消, 40=待退款, 50=已退款-->
-            <div class="p-con" v-if="order.status === 5">待支付</div>
-            <div class="p-con" v-if="order.status === 10">待使用</div>
-            <div class="p-con" v-if="order.status === 20">已使用</div>
-            <div class="p-con" v-if="order.status === 30">已取消</div>
-            <div class="p-con" v-if="order.status === 40">待退款</div>
-            <div class="p-con" v-if="order.status === 50">已退款</div>
+            <div class="theme-gray">验证码</div>
+            <div class="p-con">{{order.checkInNum || '----'}}</div>
           </div>
 
           <div class="p-item">
@@ -130,7 +145,8 @@
         store: {}, // 门店信息
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
-        space: {} // 空间信息
+        space: {}, // 空间信息
+        platformOrderField: {} // 预定日期
       }
     },
     props: {},
@@ -171,10 +187,16 @@
             this.tableData.push(res.info.platformOrderPay)
             if (this.fieldInfo.type === 1) {
               this.fieldInfo.typeName = '会议室'
+              res.info.platformOrderField.reservationDate = res.info.platformOrderField.bookDate
+              this.platformOrderField = res.info.platformOrderField
             } else if (this.fieldInfo.type === 2) {
               this.fieldInfo.typeName = '路演厅'
+              res.info.platformOrderField.reservationDate = res.info.platformOrderField.bookDate
+              this.platformOrderField = res.info.platformOrderField
             } else if (this.fieldInfo.type === 3) {
               this.fieldInfo.typeName = '工位'
+              res.info.platformOrderStation.reservationDate = res.info.platformOrderStation.bookStartDate + '～' + res.info.platformOrderStation.bookEndDate
+              this.platformOrderField = res.info.platformOrderStation
             }
           } else {
             this.setMsg('error', res.msg)
@@ -188,5 +210,8 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .order-field-detail {
+    .order-status {
+      margin-left: 10px;
+    }
   }
 </style>
