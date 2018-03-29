@@ -86,7 +86,7 @@
           <el-table-column label="支付金额" :formatter="formatPrice"></el-table-column>
           <el-table-column label="支付时间" prop="payDate"></el-table-column>
           <el-table-column label="交易号" prop="transactionId"></el-table-column>
-          <el-table-column label="支付方式" prop="payType"></el-table-column>
+          <el-table-column label="支付方式" prop="payTypeText"></el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
               <!--5=待支付,10=待使用, 20=已使用, 30=已取消, 40=待退款, 50=已退款-->
@@ -162,6 +162,11 @@
             }
             if (!res.info.platformOrderPay.payType) {
               res.info.platformOrderPay.payType = '-'
+            }
+            if (res.info.platformOrderPay.payType === 10) {
+              res.info.platformOrderPay.payTypeText = '现金支付'
+            } else if (res.info.platformOrderPay.payType === 20) {
+              res.info.platformOrderPay.payTypeText = '微信支付'
             }
             this.tableData.push(res.info.platformOrderPay)
             if (this.fieldInfo.type === 1) {
