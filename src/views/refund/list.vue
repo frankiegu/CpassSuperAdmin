@@ -126,7 +126,7 @@
         const self = this
         const paramsObj = {
           pageSize: self.pageSize,
-          pageNum: self.currentPage,
+          pageNum: self.currentPage
         }
         refundList(paramsObj).then(res => {
           if (res.status === 'true') {
