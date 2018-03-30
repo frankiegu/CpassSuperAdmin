@@ -65,12 +65,12 @@
         </el-row>
         <el-row>
           <el-col>
-            <lh-item label="退款原因：" label-width="86px">{{ customerRemark || '无' }}</lh-item>
+            <lh-item label="退款原因：" label-width="86px">{{ reason || '无' }}</lh-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <lh-item label="退款备注：" label-width="86px">{{ reason || '无' }}</lh-item>
+            <lh-item label="退款备注：" label-width="86px">{{ customerRemark || '无' }}</lh-item>
           </el-col>
         </el-row>
       </div>
