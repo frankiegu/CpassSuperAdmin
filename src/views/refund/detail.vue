@@ -39,7 +39,8 @@
             <lh-item label="场地名称：" label-width="auto">{{ fieldName }}</lh-item>
           </el-col>
           <el-col :span="12">
-            <lh-item label="预约时段：" label-width="auto">{{ bookDate }} {{ bookStartTime + '-' }}{{ bookEndTime }}</lh-item>
+            <lh-item v-if="type === 1" label="预约时段：" label-width="auto">{{ bookDate }} {{ bookStartTime + '-' }}{{ bookEndTime }}</lh-item>
+            <lh-item v-if="type === 3" label="预约时段：" label-width="auto">{{ bookStartDate + '-' }}{{ bookEndDate }}</lh-item>
           </el-col>
         </el-row>
 
@@ -201,6 +202,7 @@
         bookDate: '', // 预定的日期（场地）
         bookStartTime: '', // 预定的开始时间（场地）
         bookEndTime: '', // 预定的结束日期（场地）
+        gwbookDate: '', // 预定的日期（工位）
         bookStartDate: '', // 预定的开始日期（工位）
         bookEndDate: '', // 预定的结束日期（工位）
         spaceName: '', // 所属空间
@@ -255,8 +257,10 @@
                 self.bookDate = data.platformOrderField.bookDate || ''
                 self.bookStartTime = data.platformOrderField.bookStartTime || ''
                 self.bookEndTime = data.platformOrderField.bookEndTime || ''
-                self.bookStartDate = data.platformOrderField.bookStartDate || ''
-                self.bookEndDate = data.platformOrderField.bookEndDate || ''
+              }
+              if (data.platformOrderStation) {
+                self.bookStartDate = data.platformOrderStation.bookStartDate || ''
+                self.bookEndDate = data.platformOrderStation.bookEndDate || ''
               }
               if (data.space) {
                 self.spaceName = data.space.spaceName || ''
