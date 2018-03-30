@@ -38,7 +38,7 @@
 
         <el-table-column label="场地类型" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.type === '3'" type="primary">工位</el-tag>
+            <el-tag v-if="scope.row.type === 3" type="primary">工位</el-tag>
             <el-tag v-else type="primary">会议室</el-tag>
           </template>
         </el-table-column>
@@ -131,6 +131,7 @@
                   v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
                 } else {
                   v.bookingPeriod = '-'
+                  v.bookDate = v.bookStartDate +  '～' + v.bookEndDate
                 }
               })
             }

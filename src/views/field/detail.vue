@@ -77,7 +77,8 @@
         </el-col>
 
         <el-col :span="8">
-          <lh-item label="取消设置：" label-width="auto" v-if="field.cancelSetting">提前{{field.cancelSetting}}</lh-item>
+          <lh-item label="取消设置：" label-width="auto" v-if="field.cancel === 1">提前{{field.cancelSetting}}</lh-item>
+          <lh-item label="取消设置：" label-width="auto" v-if="field.cancel === 0">不可取消预约</lh-item>
         </el-col>
       </el-row>
 
