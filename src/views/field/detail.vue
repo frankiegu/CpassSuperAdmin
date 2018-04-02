@@ -53,15 +53,16 @@
           </el-row>
         </el-col>
 
-        <div class="page-title-right" v-if="field.type === 3">
-          <div class="p-item">
+        <div class="page-title-right">
+          <div class="p-item" v-if="field.type === 3">
             <div class="theme-gray">工位数量</div>
             <div class="p-con">{{field.stationNum}}</div>
           </div>
 
-          <div class="p-item">
+          <div class="p-item right-item">
             <p class="theme-gray">收费标准</p>
-            <p class="p-con">{{field.hourPrice}}元/天</p>
+            <p class="p-con" v-if="field.type === 1">{{field.hourPrice}}元/小时</p>
+            <p class="p-con" v-if="field.type === 3">{{field.hourPrice}}元/天</p>
           </div>
         </div>
       </el-row >
@@ -225,7 +226,12 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "src/styles/config";
+  @import "../../styles/config";
   .order-space-detail {
+    .page-title-right {
+      .right-item {
+        float: right;
+      }
+    }
   }
 </style>
