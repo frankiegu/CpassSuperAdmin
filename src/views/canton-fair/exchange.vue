@@ -23,51 +23,58 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="店铺名称" fixed="left" align="left">
+        <el-table-column label="交易号" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.shopName }}
           </template>
         </el-table-column>
 
-        <el-table-column label="核销员" align="left" width="155">
+        <el-table-column label="领取时间" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.shopName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="领取人" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.shopName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="手机号码" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.shopName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="卡券名称" align="left">
           <template slot-scope="scope">
             {{ scope.row.name }}
           </template>
         </el-table-column>
 
-        <el-table-column label="绑定时间" align="left">
+        <el-table-column label="状态" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.bindingTime }}</span>
+            <el-tag v-if="scope.row.status === 0">待兑换</el-tag>
+            <el-tag type="success" v-if="scope.row.status === 1">已兑换</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="手机号码" align="left">
+        <el-table-column label="关联店铺" align="left">
           <template slot-scope="scope">
             <span>{{ scope.row.telephone }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="核销数" align="left">
+
+        <el-table-column label="核销员" align="left">
           <template slot-scope="scope">
             <span>{{ scope.row.checkNum }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" fixed="right" align="left">
-          <template slot-scope="scope">
-            <el-tooltip
-              :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
-              placement="top"
-              effect="light"
-              class="margin-lr6">
 
-              <el-switch
-                v-model="scope.row.status"
-                :active-value="1"
-                :inactive-value="0"
-                :active-color="switchActiveColor"
-                active-text=""
-                inactive-text=""
-                @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
-            </el-tooltip>
+        <el-table-column label="核销时间" align="left">
+          <template slot-scope="scope">
+            <span>{{ scope.row.checkNum }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -89,7 +96,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import writeOffMixins from './write-off.mixins'
-  import { cantonFairList, cantonFairChecker } from '@/service/canton-fair'
+  import { cantonFairList, cantonfairCoupon } from '@/service/canton-fair'
 
   export default {
     mixins: [writeOffMixins, tableMixins],
@@ -131,20 +138,6 @@
             }
           } else {
             this.setMsg('error', res.msg)
-          }
-        })
-      },
-      handleUpdateStatus (id, status) {
-        const self = this
-        const paramsObj = {
-          cantonfairCheckerId: id,
-          status: status
-        }
-        cantonFairChecker(paramsObj).then(res => {
-          if (res.status === 'true') {
-            this.$message.success('修改成功！')
-          } else {
-            this.$message.error(res.msg)
           }
         })
       }
