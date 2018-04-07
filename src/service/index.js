@@ -23,3 +23,6 @@ export * from './order'
 
 // 财务管理
 export * from './refund'
+
+// 广交会活动
+export * from './canton-fair'
