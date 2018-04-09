@@ -31,7 +31,7 @@
 
         <el-table-column label="领取时间" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.redemptionDate }}
+            {{ scope.row.createDate }}
           </template>
         </el-table-column>
 
