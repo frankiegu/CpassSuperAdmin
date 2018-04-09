@@ -25,56 +25,57 @@
 
         <el-table-column label="交易号" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.shopName }}
+            {{ scope.row.orderNum }}
           </template>
         </el-table-column>
 
         <el-table-column label="领取时间" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.shopName }}
+            {{ scope.row.redemptionDate }}
           </template>
         </el-table-column>
 
         <el-table-column label="领取人" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.shopName }}
+            {{ scope.row.customerName }}
           </template>
         </el-table-column>
 
         <el-table-column label="手机号码" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.shopName }}
+            {{ scope.row.phone }}
           </template>
         </el-table-column>
 
         <el-table-column label="卡券名称" align="left">
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.couponName }}
           </template>
         </el-table-column>
 
         <el-table-column label="状态" align="left">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0">待兑换</el-tag>
-            <el-tag type="success" v-if="scope.row.status === 1">已兑换</el-tag>
+            <el-tag v-if="scope.row.redemptionStatus === 10">未使用</el-tag>
+            <el-tag type="success" v-if="scope.row.redemptionStatus === 20">已兑换</el-tag>
+            <el-tag type="danger" v-if="scope.row.redemptionStatus === 30">已失效</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="关联店铺" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.telephone }}</span>
+            <span>{{ scope.row.shopName }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="核销员" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.checkNum }}</span>
+            <span>{{ scope.row.cantonfairCheckerName }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="核销时间" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.checkNum }}</span>
+            <span>{{ scope.row.redemptionDate	 }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -96,16 +97,13 @@
 <script>
   import tableMixins from '@/mixins/table'
   import writeOffMixins from './write-off.mixins'
-  import { cantonFairList, cantonfairCoupon } from '@/service/canton-fair'
+  import { cantonfairCoupon } from '@/service/canton-fair'
 
   export default {
     mixins: [writeOffMixins, tableMixins],
     components: {},
     data () {
       return {
-        formData: {
-          name: ''
-        }
       }
     },
     mounted () {
@@ -118,7 +116,7 @@
           pageSize: self.pageSize,
           pageNum: self.currentPage
         }
-        cantonFairList(paramsObj).then(res => {
+        cantonfairCoupon(paramsObj).then(res => {
           if (res.status === 'true') {
             if (res.info) {
               let data = res.info

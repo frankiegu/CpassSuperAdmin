@@ -135,7 +135,6 @@
         })
       },
       handleUpdateStatus (id, status) {
-        const self = this
         const paramsObj = {
           cantonfairCheckerId: id,
           status: status
