@@ -10,6 +10,7 @@ import member from '@/router/member'               // 会员管理
 import order from '@/router/order'                 // 订单管理
 import refund from '@/router/refund'               // 退款
 import cantonFair from '@/router/canton-fair'      // 广交会活动
+import feedback from '@/router/feedback'           // 广交会活动
 
 export const constantRouterMap = [
   {
@@ -33,6 +34,7 @@ export const constantRouterMap = [
   ...order,
   ...refund,
   ...cantonFair,
+  ...feedback,
   ...register,
   ...example,
   ...error
