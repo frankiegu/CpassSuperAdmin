@@ -116,9 +116,11 @@
       <div class="senior-title mt24">订单日志</div>
       <div class="card-body">
         <el-table :data="orderLogs" class="width100">
-          <el-table-column label="操作人" prop="customerName"></el-table-column>
+          <el-table-column label="操作人" prop="customerName" v-if="customerName"></el-table-column>
+          <el-table-column label="操作人" prop="supervisorName" v-if="supervisorName"></el-table-column>
+          <el-table-column label="操作人" prop="supervisorName" v-if="!supervisorName && !customerName"></el-table-column>
           <el-table-column label="操作时间" prop="created"></el-table-column>
-          <el-table-column label="内容备注" prop="action"></el-table-column>
+          <el-table-column label="内容备注" prop="remark"></el-table-column>
           <!--</el-table-column>-->
         </el-table>
       </div>
@@ -167,7 +169,7 @@
             this.orderPay = res.info.platformOrderPay
             this.fieldInfo = res.info.fieldSnapshot
             this.store = res.info.store
-            this.orderLogs = res.info.orderLogs
+            this.orderLogs = res.info.platformOrderLogList
             this.fieldAddress = res.info.store.cityName + res.info.store.districtName + res.info.store.address
             this.space = res.info.space
             if (!res.info.platformOrderPay.payDate) {
