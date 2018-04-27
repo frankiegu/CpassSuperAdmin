@@ -1,0 +1,45 @@
+@import '../config';
+
+/**
+ * 添加、编辑页面的纯文本标题，默认必填
+ * 标题文字不要换行，因为会多一个空格，就不对齐了
+ */
+@mixin text-title {
+  clear: both;
+  font-size: 18px;
+  line-height: 28px;
+  margin: 0 0 13px; // margin 有合并的情况，更适用
+  background-color: #fff;
+  overflow: hidden;
+}
+/* 必填输入框标示 */
+.required:before {
+  content: '*';
+  color: $theme-red;
+  margin-right: 4px;
+}
+.text-title {
+  @include text-title;
+  margin-top: 64px;
+
+  &:before {
+    content: '*';
+    color: $theme-red;
+    margin-right: 4px;
+  }
+  // 非必填，添加此样式
+  &.no-required:before {
+    content: '';
+    margin-right: 0;
+  }
+  &.fz16 {
+    color: $theme-gray;
+    height: 24px;
+    line-height: 24px;
+  }
+}
+// 常用情况，看日期、对外开放设置等
+.lh-title-top {
+  padding-top: 16px;
+  @include text-title;
+}

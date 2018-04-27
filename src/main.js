@@ -11,7 +11,7 @@ import vuePermissions from './directive/permissions/index'  // 如果参数为tr
 import App from './App'
 import comMixins from '@/mixins'                            // 全局的方法
 import './interceptors'                                     // 路由拦截
-import { title, item } from '@/components'
+import { title, item, cardEmpty } from '@/components'
 import './icons'
 
 Vue.use(ElementUI, { size: 'medium' })
@@ -20,8 +20,7 @@ Vue.mixin(comMixins)
 
 // 全局注册组件
 const components = [
-  title,
-  item
+  title, item, cardEmpty
 ]
 components.map(component => {
   Vue.component(component.name, component)

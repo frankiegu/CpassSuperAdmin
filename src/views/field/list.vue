@@ -98,7 +98,7 @@
     },
     methods: {
       formatterPrice(row, column) {
-        return (row.fieldType === 3 ?  row.price + '元/天' : row.price + '元/小时')
+        return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
       getPageData() {
         const paramsObj = {
@@ -108,7 +108,6 @@
         }
         fieldList(paramsObj).then(res => {
           if (res.status === 'true') {
-            console.log('res', res)
             let data = res.info
             if (data) {
               this.pageTotal = data.total
