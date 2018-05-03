@@ -71,7 +71,7 @@
         <el-table-column label="订单编号" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/order/field/detail', query: {id: scope.row.id}}"
+              :to="{path: '/order/field/detail', query: {id: scope.row.platformOrderId}}"
               class="table-link">
               {{ scope.row.orderNum }}
             </router-link>
@@ -99,19 +99,20 @@
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.payStatus === 10">待支付</span>
-            <span v-else-if="scope.row.payStatus === 20">已支付</span>
-            <span v-else-if="scope.row.payStatus === 10">已退款</span>
-            <span v-else>待退款</span>
+            <el-tag v-if="scope.row.payStatus === 10">待支付</el-tag>
+            <el-tag v-else-if="scope.row.payStatus === 20" type="success">已支付</el-tag>
+            <el-tag v-else-if="scope.row.payStatus === 30" type="warning">已退款</el-tag>
+            <el-tag v-else >待退款</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="订单状态" align="left">
           <template slot-scope="scope">
-            <span
-              v-for="(item, index) in statusList" :key="index"
-              v-if="scope.row.status === item.val">
-              {{ item.text }}
-            </span>
+            <el-tag v-if="scope.row.status === 5" type="warning">未支付</el-tag>
+            <el-tag v-else-if="scope.row.status === 10" type="success">未使用</el-tag>
+            <el-tag v-else-if="scope.row.status === 20" type="success">已使用</el-tag>
+            <el-tag v-else-if="scope.row.status === 30" type="warning">已取消</el-tag>
+            <el-tag v-else-if="scope.row.status === 40">待退款</el-tag>
+            <el-tag v-else-if="scope.row.status === 50" type="success">已退款</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -135,10 +136,12 @@
   import fieldMixins from './field.mixins'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
+  import ElTag from "../../../node_modules/element-ui/packages/tag/src/tag.vue";
 
   export default {
     mixins: [fieldMixins, tableMixins, pickerOptions],
     components: {
+      ElTag,
       [option.name]: option
     },
     data () {

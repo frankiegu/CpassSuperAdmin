@@ -52,7 +52,8 @@
         <div class="page-title-right">
           <div class="p-item">
             <div class="theme-gray">验证码</div>
-            <div class="p-con">{{order.checkInNum || '----'}}</div>
+            <div class="p-con" v-if="platformOrderField.setupLock === 1 && platformOrderField.setupPassword === 1">{{platformOrderField.staffCode}}-{{platformOrderField.password}}</div>
+            <div class="p-con" v-else>{{order.checkInNum || '----'}}</div>
           </div>
 
           <div class="p-item">
@@ -104,7 +105,6 @@
           <el-table-column label="支付方式" prop="payTypeText"></el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
-              <!--5=待支付,10=待使用, 20=已使用, 30=已取消, 40=待退款, 50=已退款-->
               <span v-if="scope.row.status === 10">未支付</span>
               <span v-else-if="scope.row.status === 20">已支付</span>
               <span v-else>已退款</span>
@@ -116,12 +116,23 @@
       <div class="senior-title mt24">订单日志</div>
       <div class="card-body">
         <el-table :data="orderLogs" class="width100">
-          <el-table-column label="操作人" prop="customerName" v-if="customerName"></el-table-column>
-          <el-table-column label="操作人" prop="supervisorName" v-if="supervisorName"></el-table-column>
-          <el-table-column label="操作人" prop="supervisorName" v-if="!supervisorName && !customerName"></el-table-column>
-          <el-table-column label="操作时间" prop="created"></el-table-column>
-          <el-table-column label="内容备注" prop="remark"></el-table-column>
-          <!--</el-table-column>-->
+          <el-table-column label="操作人">
+            <template slot-scope="scope">
+              <span v-if="scope.row.customerName">{{ scope.row.customerName }}</span>
+              <span v-if="scope.row.supervisorName">{{ scope.row.supervisorName }}</span>
+              <span v-if="!scope.row.supervisorName && !scope.row.customerName">-</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作时间">
+            <template slot-scope="scope">
+              <span>{{ scope.row.created }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="内容备注">
+            <template slot-scope="scope">
+              <span>{{ scope.row.remark }}</span>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </div>
@@ -141,6 +152,7 @@
         dialogStatus: false,
         type: '',
         order: {}, // 订单基本信息
+        station: {}, // 工位基本信息
         orderContact: {}, // 订单联系人信息
         orderPay: {}, // 订单支付信息
         fieldInfo: {}, // 场地信息
@@ -164,41 +176,41 @@
       getPageData() {
         fieldOrderDetail({ id: this.orderId }).then(res => {
           if (res.status === 'true') {
-            this.order = res.info.platformOrder
-            this.orderContact = res.info.platformOrderContact
-            this.orderPay = res.info.platformOrderPay
-            this.fieldInfo = res.info.fieldSnapshot
-            this.store = res.info.store
+            this.order = res.info.platformOrderDetail.platformOrder
+            this.platformOrderField = res.info.platformOrderDetail.platformOrderField
+            this.orderContact = res.info.platformOrderDetail.platformOrderContact
+            this.orderPay = res.info.platformOrderDetail.platformOrderPay
+            this.fieldInfo = res.info.platformOrderDetail.fieldSnapshot
+            this.store = res.info.platformOrderDetail.store
             this.orderLogs = res.info.platformOrderLogList
-            this.fieldAddress = res.info.store.cityName + res.info.store.districtName + res.info.store.address
-            this.space = res.info.space
-            if (!res.info.platformOrderPay.payDate) {
-              res.info.platformOrderPay.payDate = '-'
+            this.fieldAddress = res.info.platformOrderDetail.store.cityName + res.info.platformOrderDetail.store.districtName + res.info.platformOrderDetail.store.address
+            this.space = res.info.platformOrderDetail.space
+            if (!res.info.platformOrderDetail.platformOrderPay.payDate) {
+              res.info.platformOrderDetail.platformOrderPay.payDate = '-'
             }
-            if (!res.info.platformOrderPay.transactionId) {
-              res.info.platformOrderPay.transactionId = '-'
+            if (!res.info.platformOrderDetail.platformOrderPay.transactionId) {
+              res.info.platformOrderDetail.platformOrderPay.transactionId = '-'
             }
-            if (!res.info.platformOrderPay.payType) {
-              res.info.platformOrderPay.payType = '-'
+            if (!res.info.platformOrderDetail.platformOrderPay.payType) {
+              res.info.platformOrderDetail.platformOrderPay.payType = '-'
             }
-            if (res.info.platformOrderPay.payType === 10) {
-              res.info.platformOrderPay.payTypeText = '现金支付'
-            } else if (res.info.platformOrderPay.payType === 20) {
-              res.info.platformOrderPay.payTypeText = '微信支付'
+            if (res.info.platformOrderDetail.platformOrderPay.payType === 10) {
+              res.info.platformOrderDetail.platformOrderPay.payTypeText = '现金支付'
+            } else if (res.info.platformOrderDetail.platformOrderPay.payType === 20) {
+              res.info.platformOrderDetail.platformOrderPay.payTypeText = '微信支付'
             }
-            this.tableData.push(res.info.platformOrderPay)
+            this.tableData.push(res.info.platformOrderDetail.platformOrderPay)
             if (this.fieldInfo.type === 1) {
               this.fieldInfo.typeName = '会议室'
-              res.info.platformOrderField.reservationDate = res.info.platformOrderField.bookDate
-              this.platformOrderField = res.info.platformOrderField
+              res.info.platformOrderDetail.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
             } else if (this.fieldInfo.type === 2) {
               this.fieldInfo.typeName = '路演厅'
-              res.info.platformOrderField.reservationDate = res.info.platformOrderField.bookDate
-              this.platformOrderField = res.info.platformOrderField
+              res.info.platformOrderDetail.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderField
             } else if (this.fieldInfo.type === 3) {
               this.fieldInfo.typeName = '工位'
-              res.info.platformOrderStation.reservationDate = res.info.platformOrderStation.bookStartDate + '～' + res.info.platformOrderStation.bookEndDate
-              this.platformOrderField = res.info.platformOrderStation
+              res.info.platformOrderDetail.platformOrderStation.reservationDate = res.info.platformOrderDetail.platformOrderStation.bookStartDate + '～' + res.info.platformOrderDetail.platformOrderStation.bookEndDate
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderStation
             }
           } else {
             this.setMsg('error', res.msg)
