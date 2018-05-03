@@ -5,14 +5,59 @@
     <div class="content-body card-body">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
         <el-form-item>
+          <el-select
+            v-model="formData.status"
+            @change="getPageData"
+            placeholder="请选择订单状态"
+            class="width150px"
+            clearable>
+            <el-option
+              v-for="item in statusList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.orderDate"
+            @change="getPageData"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="生成开始日期"
+            end-placeholder="生成结束日期"
+            placeholder="选择生成日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.bookDate"
+            @change="getPageData"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="预定开始日期"
+            end-placeholder="预定结束日期"
+            placeholder="选择预定日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+
+        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData"
             placeholder="请输入订单编号"
-            class="width220px">
+            class="width210px">
 
             <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
           </el-input>
+        </el-form-item>
+
+        <el-form-item class="fr">
+          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green fr">导出表格</el-button>
         </el-form-item>
       </el-form>
 
@@ -36,10 +81,10 @@
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
         <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
 
-        <el-table-column label="场地类型" align="center">
+        <el-table-column label="场地类型" align="left">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.type === 3" type="primary">工位</el-tag>
-            <el-tag v-else type="primary">会议室</el-tag>
+            <span v-if="scope.row.type === 3">工位</span>
+            <span v-else>会议室</span>
           </template>
         </el-table-column>
 
@@ -87,64 +132,22 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import spaceMixins from './field.mixins'
-  import { fieldOrderList } from '@/service/order'
+  import fieldMixins from './field.mixins'
+  import option from '@/components/option'
+  import pickerOptions from '@/mixins/pickerOptions'
 
   export default {
-    mixins: [spaceMixins, tableMixins],
-    components: {},
+    mixins: [fieldMixins, tableMixins, pickerOptions],
+    components: {
+      [option.name]: option
+    },
     data () {
       return {
-        formData: {
-          name: ''
-        }
       }
     },
     created () {
-      this.getPageData()
     },
     methods: {
-      formatPrice(row, column) {
-        return '￥ ' + row.orderAmount
-      },
-      formatTime(row, column) {
-        return row.created
-        // return row.email.replace(/:\d{2}$/, '')
-      },
-      getPageData() {
-        const paramsObj = {
-          pageSize: this.pageSize,
-          pageNum: this.currentPage,
-          orderNum: this.formData.name
-        }
-        fieldOrderList(paramsObj).then(res => {
-          if (res.status === 'true') {
-            console.log('res', res)
-            let data = res.info
-            if (data) {
-              this.pageTotal = data.total
-              this.tableData = data.result
-              // 支付状态payStatus, 10=未支付, 20=已支付, 30=已经退款
-              this.tableData.forEach(v => {
-                v.formatPrice = '￥ ' + v.orderAmount
-                if (v.type === 1) {
-                  v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
-                } else {
-                  v.bookingPeriod = '-'
-                  v.bookDate = v.bookStartDate +  '～' + v.bookEndDate
-                }
-              })
-            }
-
-            this.tableLoading = false
-            if (this.tableData.length === 0) {
-              this.tableEmpty = '暂时无数据'
-            }
-          } else {
-            this.setMsg('error', res.msg)
-          }
-        })
-      }
     }
   }
 </script>
