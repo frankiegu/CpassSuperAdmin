@@ -1,6 +1,6 @@
 <template>
   <div class="order-field-detail">
-    <lh-title :title="'单号：'+order.orderNum">
+    <lh-title :title="'单号：'+order.orderNum" :bb="0">
       <el-tag type="success" style="vertical-align: middle" class="order-status" v-if="order.status === 10">待使用</el-tag>
       <el-tag type="danger" style="vertical-align: middle" class="order-status" v-if="order.status === 5">未支付</el-tag>
       <el-tag type="primary" style="vertical-align: middle" class="order-status" v-if="order.status === 20">已使用</el-tag>
@@ -98,7 +98,7 @@
         </el-row>
 
         <div class="basics-title mt8">支付信息</div>
-        <el-table :data="tableData" class="width100">
+        <el-table border :data="tableData" class="width100">
           <el-table-column label="支付金额" :formatter="formatPrice"></el-table-column>
           <el-table-column label="支付时间" prop="payDate"></el-table-column>
           <el-table-column label="交易号" prop="transactionId"></el-table-column>
@@ -115,7 +115,7 @@
 
       <div class="senior-title mt24">订单日志</div>
       <div class="card-body">
-        <el-table :data="orderLogs" class="width100">
+        <el-table border :data="orderLogs" class="width100">
           <el-table-column label="操作人">
             <template slot-scope="scope">
               <span v-if="scope.row.customerName">{{ scope.row.customerName }}</span>

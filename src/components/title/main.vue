@@ -51,16 +51,19 @@
 </script>
 
 <style lang="scss">
-  @import 'src/styles/config.scss';
-
+  @import 'src/styles/common/var';
   .page-title {
     padding: 16px 24px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     background-color: #fff;
     color: #fff;
+    // border-bottom: 1px solid $border-light-gray;
     overflow: hidden;
 
+    .bb0 {
+      border-bottom: 0;
+    }
     h1 {
       padding-bottom: 16px;
       float: left;

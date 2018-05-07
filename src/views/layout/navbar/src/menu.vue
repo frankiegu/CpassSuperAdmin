@@ -173,5 +173,8 @@ export default {
       border-radius: 50%;
     }
   }
+  .lh-svg {
+    fill: $theme-gray;
+  }
 }
 </style>

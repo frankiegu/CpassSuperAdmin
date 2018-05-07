@@ -33,10 +33,10 @@
 
 <style lang="scss" scoped>
   @import 'src/styles/config';
-
   .screenfull-style {
     width: 20px;
     height: 20px;
     opacity: 0.65;
+    fill: $theme-gray;
   }
 </style>

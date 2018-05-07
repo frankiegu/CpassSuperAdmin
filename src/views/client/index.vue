@@ -3,9 +3,9 @@
     <lh-title title="客户列表"></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
+      <el-form :model="formData" :inline="true" class="lh-card-head">
         <router-link
-          class="btn-link fl el-icon-circle-plus"
+          class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">
           &nbsp;新增客户
         </router-link>
@@ -76,8 +76,8 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
-          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green fr">导出表格</el-button>
+        <el-form-item>
+          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green">导出表格</el-button>
         </el-form-item>
       </el-form>
 

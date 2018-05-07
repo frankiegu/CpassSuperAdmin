@@ -2,8 +2,8 @@
   <div class="order-field">
     <lh-title></lh-title>
 
-    <div class="content-body card-body">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
+    <div class="card-padding">
+      <el-form :model="formData" :inline="true" class="lh-card-head">
         <el-form-item>
           <el-select
             v-model="formData.status"

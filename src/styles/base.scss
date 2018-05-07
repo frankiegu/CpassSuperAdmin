@@ -39,23 +39,6 @@
   font-size: 50px;
 }
 
-/* 背景色
--------------------------- */
-.to-bottom-right {
-  display: inline-block;
-  color: #fff;
-  /* 英文比中文上下少两个像素，高度少4个像素，这种情况设置高度和行高兼容 */
-  padding: 9px 15px;
-  border-radius: 4px;
-  @include to-bottom-right;
-
-  /* 英文 */
-  &.pv7 {
-    padding-top: 7px;
-    padding-bottom: 7px;
-  }
-}
-
 /* 主题背景色
 -------------------------- */
 .bgcfff {

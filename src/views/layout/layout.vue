@@ -5,20 +5,22 @@
     <div class="lh-content">
       <div class="lh-sidebar"> <sidebar class="lh-sidebar-box" /> </div>
       <section class="lh-main">
+        <tags-view v-if="!hideRouter"></tags-view>
+
         <transition name="fade" mode="out-in">
           <router-view class="lh-main-box" :key="key"></router-view>
         </transition>
 
         <p class="lh-footer theme-light-gray">
-          <!-- 链接没有下划线和颜色高亮 -->
-          Copyright © 2018 <a class="theme-light-gray" href="http://www.gzleihou.cn/#/home" target="_blank">广州雷猴软件开发有限公司<br />
+          <!-- 链接没有下划线和颜色高亮  -->
+          Copyright © {{ year }} <a class="theme-light-gray" href="http://www.gzleihou.cn/#/home" target="_blank">广州雷猴软件开发有限公司<br />
           www.gzleihou.cn</a>
         </p>
       </section>
 
       <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
       <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
-      <el-tooltip placement="top" content="置顶" effect="light">
+      <el-tooltip placement="top" content="置顶">
         <scrool-top
           transitionName="fade"
           :customStyle="myBackToTopStyle"
@@ -34,12 +36,14 @@ import { mapGetters } from 'vuex'
 import navbar from './navbar'
 import sidebar from './sidebar'
 import { scroolTop } from '@/components'
+import tagsView from './components/tags-view'
 
 export default {
-  components: { navbar, sidebar, scroolTop },
+  components: { navbar, sidebar, scroolTop, tagsView },
   data () {
     return {
-      year: (new Date()).getFullYear(),
+      hideRouter: false,
+      hideRouters: ['/500', '/not-permission', '/not-found'],
       myBackToTopStyle: {
         right: '50px',
         bottom: '50px',
@@ -48,7 +52,8 @@ export default {
         'border-radius': '4px',
         'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
         background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
-      }
+      },
+      year: (new Date()).getFullYear()
     }
   },
   computed: {
@@ -58,6 +63,14 @@ export default {
     ...mapGetters([
       'sidebar'
     ])
+  },
+  watch: {
+    $route() {
+      this.hideRouter = this.hideRouters.includes(this.$route.path)
+    }
+  },
+  mounted() {
+    this.hideRouter = this.hideRouters.includes(this.$route.path)
   }
 }
 </script>

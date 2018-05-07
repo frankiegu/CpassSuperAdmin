@@ -23,7 +23,7 @@
               v-model.trim="formData.username"
               @keyup.native.enter="handleLogin('formData')"
               placeholder="请输入账号">
-              <lh-svg slot="prefix" icon-class="icon-user" class="svg-icon" />
+              <lh-svg slot="prefix" icon-class="icon-mine1" class="svg-icon" />
             </el-input>
           </el-form-item>
 
@@ -40,11 +40,11 @@
             </el-input>
           </el-form-item>
 
+          <!-- <span @click.native.prevent="handleLogin('formData')" class="login-btn width100 to-bottom-right">登录</span> -->
           <el-button
             @click.native.prevent="handleLogin('formData')"
             :loading="loading"
-            class="login-btn width100"
-            size="small"
+            class="login-btn to-bottom-right"
             type="primary">登录</el-button>
         </div>
       </div>
@@ -119,7 +119,7 @@
       margin: 0 5px;
       fill: $theme-blue;
       text-align: center;
-      transition: all .3s;
+      // transition: all .3s;
     }
     .logo-box {
       color: $theme-blue;
@@ -140,8 +140,8 @@
       left: 50%;
       margin-left: -150px;
       width: 300px;
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
+      // -webkit-transform: translateY(-50%);
+      // transform: translateY(-50%);
       background: #fff;
       border-radius: 4px;
 
@@ -154,14 +154,22 @@
       .login-box-in {
         position: relative;
         padding: 0 16px;
-        transition: all 0.2s ease-in-out;
 
         .login-btn {
+          width: 100%;
+          height: 32px;
+          line-height: 32px;
+          padding: 0;
+          text-align: center;
           color: #fff;
-          letter-spacing: 2;
-          margin: 2px 0 36px;
-          background: $theme-blue;
-          border-radius: 4px;
+          letter-spacing: 2px;
+          margin: 0 0 36px;
+
+          &:hover {
+            height: 32px;
+            line-height: 32px;
+            border: 0;
+          }
         }
       }
     }

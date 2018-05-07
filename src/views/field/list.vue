@@ -2,7 +2,7 @@
   <div class="field-list">
     <lh-title></lh-title>
 
-    <div class="content-body card-body">
+    <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
         <el-form-item>
           <el-input

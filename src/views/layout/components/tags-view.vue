@@ -121,7 +121,8 @@ export default {
   .tags-view-wrapper {
     background: #fff;
     height: 52px;
-    border-bottom: 1px solid $theme-light-gray;
+    border-bottom: 1px solid #E1E1E6;
+
     .tags-view-item {
       display: inline-block;
       position: relative;

@@ -75,7 +75,7 @@ export default {
   }
   .el-menu-item:hover, .el-menu-item:focus {
     color: $theme-blue;
-    background-color: #F5F7FD;
+    background-color: $theme-sidebar;
   }
   .el-submenu__icon-arrow {
     right: 20px;
@@ -107,10 +107,12 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+@import "src/styles/config";
 .components-sidebar-wrapper {
   .icon {
     width: 18px;
     height: 18px;
+    fill: $theme-gray;
     margin-right: 12px;
     vertical-align: -0.3em;
   }

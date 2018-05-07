@@ -1,5 +1,58 @@
 /* 设计稿盒子
 -------------------------- */
+/* 兼容旧版样式布局 */
+.lh-card-head {
+  text-align: right;
+  margin-right: -10px;
+
+  .el-select, .el-input {
+    vertical-align: top;
+  }
+  .el-range-editor.el-input__inner {
+    vertical-align: middle;
+  }
+  .el-form-item {
+    height: 32px;
+  }
+}
+.card-padding {
+  position: relative;
+  margin: 24px 24px 0;
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+
+  // .el-form--inline .el-form-item {
+  //   margin-right: 0 !important;
+  // }
+
+  &.card-padding-vertical {
+    border-top: 1px solid #fff;
+    padding-top: 0;
+  }
+}
+.content-body {
+  margin: 24px 24px 0;
+  border-radius: 6px;
+  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+  overflow: hidden;
+}
+.card-body {
+  position: relative;
+  padding: 24px 24px;
+  background-color: #fff;
+  overflow: hidden;
+
+  &.card-padding-top0 {
+    padding-top: 0;
+  }
+  &.card-padding-bottom0 {
+    padding-bottom: 0;
+  }
+}
+
+
 // 小盒子，一般有图片、标签、按钮等
 .box2 {
   border-radius: $radius-mini;
@@ -41,37 +94,37 @@
 
 /* 卡片padding 请勿删，需要兼容旧样式
 -------------------------- */
-.card-padding {
-  position: relative;
-  padding: 24px 24px;
-  margin: 24px 24px 0;
-  background-color: #fff;
-  border-radius: $radius-medium;
-  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+// .card-padding {
+//   position: relative;
+//   padding: 24px 24px;
+//   margin: 24px 24px 0;
+//   background-color: #fff;
+//   border-radius: $radius-medium;
+//   box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
 
-  // .el-form--inline .el-form-item {
-  //   margin-right: 0 !important;
-  // }
+//   // .el-form--inline .el-form-item {
+//   //   margin-right: 0 !important;
+//   // }
 
-  &.card-padding-vertical {
-    border-top: 1px solid #fff;
-    padding-top: 0;
-  }
-}
+//   &.card-padding-vertical {
+//     border-top: 1px solid #fff;
+//     padding-top: 0;
+//   }
+// }
 // 页面盒子
-.card-body {
-  padding: 16px 16px;
-  border-radius: $radius-small;
-  overflow: hidden;
+// .card-body {
+//   padding: 16px 16px;
+//   border-radius: $radius-small;
+//   overflow: hidden;
 
-  &.card-ph0 {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  &.card-pt0 {
-    padding-top: 0;
-  }
-  &.card-pb0 {
-    padding-bottom: 0;
-  }
-}
+//   &.card-ph0 {
+//     padding-left: 0;
+//     padding-right: 0;
+//   }
+//   &.card-pt0 {
+//     padding-top: 0;
+//   }
+//   &.card-pb0 {
+//     padding-bottom: 0;
+//   }
+// }

@@ -45,10 +45,14 @@
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/config";
   .components-navbar {
     border-radius: 0px !important;
     background-color: #ffffff;
 
+    .lh-svg {
+      fill: $theme-gray;
+    }
     .hamburger {
       display: inline-block;
       cursor: pointer;
