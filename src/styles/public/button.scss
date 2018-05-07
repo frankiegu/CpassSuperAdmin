@@ -1,0 +1,80 @@
+@import "../common/var";
+
+/* reset ele
+ * 全局设置主题按钮
+-------------------------- */
+/* 按钮最小宽度80，正常高度32，特殊高度需要设置 */
+.el-button {
+  height: 32px;
+  padding: 8px 15px;
+  min-width: 80px;
+
+  &.el-button--mini {
+    padding: 7px 15px;
+  }
+}
+
+.el-button--primary {
+  border: none;
+  @include to-bottom-right;
+}
+/* popover_button */
+.popover-button {
+  padding: 0;
+  border: none;
+
+  &:hover, &:focus {
+    background-color: transparent;
+  }
+}
+
+/* 按钮链接
+-------------------------- */
+.btn-link {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: $theme-blue;
+  //border: 1px solid $theme-blue;
+  color: #ffffff;
+  // margin: 0;
+  font-size: 14px;
+  padding: 9px 15px;
+  border-radius: $radius-small;
+
+  & + .btn-link {
+    margin-left: 10px;
+  }
+  &:hover {
+    background: rgb(126, 153, 234);
+    border-color: rgb(126, 153, 234);
+    color: #fff;
+  }
+}
+.btn-green, .btn-link.btn-green {
+  background-color: $theme-green;
+  border-color: $theme-green;
+  color: #ffffff;
+
+  &:hover, &:focus {
+    background-color: lighten($theme-green, 8%);
+    border-color: lighten($theme-green, 8%);
+    color: #ffffff;
+  }
+}
+/* 公共新增、编辑按钮，居中显示
+-------------------------- */
+.button-row {
+  margin-left: -100px;
+  margin-bottom: 0;
+  margin-top: 30px; // 有item的情况下，以后遇到就要改成48的
+  text-align: center;
+
+  button {
+    min-width: 80px;
+  }
+  p {
+    margin-top: 10px;
+  }
+}

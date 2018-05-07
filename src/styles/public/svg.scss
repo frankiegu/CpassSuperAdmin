@@ -1,0 +1,55 @@
+@import "../common/var";
+
+/* svg颜色
+-------------------------- */
+.fill-black {
+  fill: $theme-black !important;
+  opacity: 1;
+}
+.fill-gray {
+  fill: $theme-gray !important;
+  opacity: 1;
+}
+.fill-grayish {
+  fill: $theme-grayish !important;
+  opacity: 1;
+}
+.fill-light-gray {
+  fill: $theme-light-gray !important;
+  opacity: 1;
+
+  &:hover {
+    fill: $theme-blue !important;
+  }
+}
+.svgfff {
+  fill: #fff !important;
+  opacity: 1;
+}
+.svg14 {
+  width: 14px;
+  height: 14px;
+}
+.svg20 {
+  width: 20px;
+  height: 20px;
+}
+// @#注意：有些svg透明度0.65，hover:1
+.opacity65 {
+  opacity: 0.65p;
+}
+
+/* table内的icon，透明度默认0.45，特殊再做处理吧
+-------------------------- */
+table {
+  svg {
+    fill: $theme-light-gray !important;
+  }
+}
+.el-button {
+  &:hover, &:focus {
+    svg {
+      fill: $theme-blue; // 其他颜色，做覆盖处理
+    }
+  }
+}

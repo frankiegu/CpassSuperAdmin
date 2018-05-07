@@ -1,0 +1,52 @@
+/**
+ * 变量、mixin、主题颜色
+ * 注意：修改之后要reset ele的对应主题色，查看请全局搜索 element-variables.scss
+ *      避免Sass @import重复问题，拆分function variable mixins
+ * --------------------------
+ */
+/* 主题字体颜色 */
+$theme-black:       rgba(0, 0, 0, 0.85); // 黑
+$theme-gray:        rgba(0, 0, 0, 0.65); // 灰
+$theme-light-gray:  rgba(0, 0, 0, 0.45); // 浅灰
+$theme-grayish:     rgba(0, 0, 0, 0.25); // 淡灰
+$theme-blue:        #5A72F6; // 蓝
+$theme-light-blue:  #20A0FF; // 浅蓝、辅助蓝色
+$theme-red:         #FF4949; // 红
+$theme-orange:      #EE9F1D; // 橙
+$theme-green:       #36C626; // 绿
+
+/* 字体  */
+$font-bold: PingFangSC-Medium; // 中文，粗体，设计稿内字体浏览器不支持
+$--font-size-small: 12px !default;
+$--font-size-base: 14px !default;
+$--font-size-medium: 16px !default;
+$--font-size-large: 18px !default;
+$--font-size-larger: 20px !default;
+
+/* 主题背景色 */
+$bgc:               #F3F8F9; // 最底层背景灰
+$bgc-gray:          #E9E9E9; // 灰
+$bgc-light-gray:    #F5F5F5; // 浅灰
+$bgc-red:           #FF4949; // 红
+$bgc-orange:        #FF7A3A; // 橙
+$bgc-green:         #13CE66; // 绿
+$bgc-light-green:   rgba(19,206,102,0.20); // 浅绿
+$bgc-table:         #fafafa; // table-head
+
+/* 主题边框色 */
+$border-gray:       #E9E9E9; // 灰
+$border-light-gray: #f2f2f8; // 浅灰
+$border-grayish: #F1F1F5; // 淡灰
+
+/* other */
+$theme-sidebar:     #eff1fe; // 主题sidebar色
+$bgc-table-gray:       #E5E9F2; // 表格背景灰
+$bgc-table-light-gray: #F9FAFC; // 表格斑马纹
+
+/* 标签颜色 */
+$tag-gray:          #475669; // 标签灰色
+
+/* 圆角，没有奇数 */
+$radius-mini:       2px;
+$radius-small:      4px;
+$radius-medium:     6px;

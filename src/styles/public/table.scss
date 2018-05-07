@@ -1,0 +1,185 @@
+@import "../common/var";
+
+/* ele reset
+-------------------------- */
+.el-month-table {
+  font-size: 14px !important;
+}
+/* 去掉原生border */
+// .el-table--group,
+// .el-table--border {
+//   border: none;
+// }
+.el-table th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #fafafa !important;
+}
+
+.el-table--small {
+  font-size: 14px;
+}
+.el-table--small td {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+/* 设置thead 的颜色 */
+@mixin table-head {
+  font-family: PingFangSC-Regular;
+  font-weight: normal;
+}
+.el-table th {
+  // color: $tag-gray;
+  background-color: $bgc-table !important;
+  @include table-head;
+}
+/**
+ * table 斑马纹，tr偶数 有背景色
+ * 全局样式替换更好
+ */
+.lh-table-zebra-stripe,
+.el-table__row:nth-child(2n) {
+  background-color: $bgc-table-light-gray !important;
+}
+
+/* 设置pagination 距离顶部的尺寸 */
+.pagination-container {
+  margin-top: 22px !important;
+}
+/* 中间不用有垂直的分割线，四周有边框 */
+.el-table {
+  tr {
+    // box-shadow: inset -1px 0 0 0 rgba(224,230,237,0.50), inset 1px 0 0 0 #E0E6ED, inset 0 -1px 0 0 #E0E6ED !important;
+  }
+}
+// 空态的时候，四周也要有边框
+.el-table__empty-block {
+  // box-shadow: inset -1px 0 0 0 rgba(224,230,237,0.50), inset 1px 0 0 0 #E0E6ED, inset 0 -1px 0 0 #E0E6ED !important;
+}
+
+/* 排序前3名高亮
+-------------------------- */
+.table-sort {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  margin: 0 auto;
+  background-color: $theme-blue;
+  border-radius: 20px;
+}
+.table-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  margin: 5px 0;
+  text-align: center;
+  overflow: hidden;
+
+  img {
+    min-width: 50px;
+  }
+}
+
+/* 日历
+-------------------------- */
+.el-range-editor.el-input__inner {
+  width: 265px;
+}
+.el-date-editor .el-range__close-icon {
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  opacity: 1;
+  display: block;
+}
+.el-table th, .el-table td {
+  text-align: center;
+}
+.margin-lr6 {
+  margin: 0 6px;
+}
+.table-search-selected {
+  width: 193px;
+}
+.filter-container {
+  padding-bottom: 20px;
+}
+
+/* 表格里面的链接样式 */
+.table-link {
+  cursor: pointer;
+  vertical-align: middle;
+  color: $theme-blue;
+  &.theme-gray {
+    color: $theme-gray;
+  }
+}
+
+/* 分页 */
+.pagination-container {
+  text-align: center;
+  margin: 24px auto;
+}
+
+/* table 表格内的时间格式化 */
+.format-time {
+  display: inline-block;
+  width: 84px;
+  height: 24px;
+  overflow: hidden;
+}
+
+/* 自定义table样式 */
+.lh-table {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+
+  @mixin table-com {
+    width: 100%;
+    display: table;
+    table-layout: fixed; // 设置表格单元格等宽
+    box-sizing: border-box;
+  }
+  .lh-table-head {
+    @include table-head;
+    @include table-com;
+
+    &.bg {
+      background-color: $bgc-table-gray !important;
+    }
+  }
+  .lh-table-row {
+    color: $theme-gray;
+    @include table-com;
+
+    // &.border {
+    //   box-shadow: inset -1px 0 0 0 rgba(224,230,237,0.50), inset 1px 0 0 0 #E0E6ED, inset 0 -1px 0 0 #E0E6ED !important;
+    // }
+  }
+  .lh-table-head {
+    color: $tag-gray;
+  }
+  .lh-table-row, .lh-table-head {
+    height: 50px;
+    line-height: 50px;
+  }
+  .lh-table-body {
+    .lh-table-row:nth-child(even) {
+      background-color: $bgc-table-light-gray !important;
+    }
+  }
+  .lh-table-column {
+    position: relative;
+    display: table-cell;
+    padding: 0 12px;
+    vertical-align: top;
+    box-sizing: border-box;
+  }
+}

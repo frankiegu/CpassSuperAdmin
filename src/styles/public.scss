@@ -1,9 +1,29 @@
 // 公用的样式
-@import './config';
+@import "./common/var";
 
 /* 设计内容太多，需分类 */
 @import './public/title';
+@import './public/navbar';
+@import './public/layout';
+@import './public/table';
+@import './public/searchbar';  // table以上区域
+@import './public/popup';      // 页面模态框
+@import './public/tag';        // 自定义标签 tags
+@import './public/pagination';
+@import './public/button';
+@import './public/dialog';
+@import './public/svg';
 @import './public/switch';
+@import './public/form';
+
+/* add
+-------------------------- */
+// .card-padding, .content-body {
+//   .el-input--suffix, .width220px {
+//     width: 180px;
+//     min-width: 180px;
+//   }
+// }
 
 /**
  * navbar

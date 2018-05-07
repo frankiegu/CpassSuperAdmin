@@ -2,25 +2,28 @@ import Vue from 'vue'
 import router from './router'
 import store from './store'
 
-import '../theme/index.css'
+/* 先引入样式 */
 import 'element-ui/lib/theme-chalk/index.css'
-import './styles/element-variables.scss'                    // 自定义主题
-import ElementUI from 'element-ui'
+import './styles/ele-var.scss' // 自定义主题
 
-import vuePermissions from './directive/permissions/index'  // 如果参数为true是，聚焦元素
+// 后引入组件
+import ElementUI from 'element-ui'
 import App from './App'
+
+// 后引入项目的 配置
 import comMixins from '@/mixins'                            // 全局的方法
-import './interceptors'                                     // 路由拦截
-import { title, item, cardEmpty } from '@/components'
+import './permission'                                       // 路由拦截
+import vuePermissions from './directive/permissions/index'  // 如果参数为true是，聚焦元素
+import { title, item, svg, card } from '@/components'
 import './icons'
 
-Vue.use(ElementUI, { size: 'medium' })
+Vue.use(ElementUI, { size: 'small' })
 Vue.use(vuePermissions)
 Vue.mixin(comMixins)
 
 // 全局注册组件
 const components = [
-  title, item, cardEmpty
+  title, item, svg, card
 ]
 components.map(component => {
   Vue.component(component.name, component)

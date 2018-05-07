@@ -1,0 +1,82 @@
+@import "../common/var";
+
+/* member-tree 会员树状选择器模态框
+-------------------------- */
+// 会员选择对话框
+.role-tree {
+  .filter-bar {
+    margin-bottom: 15px;
+  }
+  .el-tree {
+    border: 1px solid rgb(223, 225, 236);
+  }
+  .el-tree, .el-table {
+    box-sizing: border-box;
+    border-radius: $radius-small;
+    overflow: auto;
+    height: 360px;
+    /*.el-tree-node > .el-tree-node__children {*/
+    /*overflow: auto;*/
+    /*}*/
+  }
+  .summary, .btn-reset {
+    margin-top: 15px;
+  }
+  .selectedNum {
+    color: $theme-blue;
+  }
+  .btn-reset {
+    cursor: pointer;
+    color: $theme-blue;
+    text-decoration: underline;
+  }
+  .btn-delete {
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    vertical-align: text-bottom;
+    line-height: 1;
+  }
+  .dialog-footer {
+    text-align: center;
+  }
+}
+.el-tree-node > .el-tree-node__children {
+  overflow: visible;
+  .el-tree-node__label {
+    margin-right: 6px;
+  }
+}
+.role-dialog {
+  .el-table__row:hover .btn-delete {
+    visibility: visible!important;
+  }
+}
+@media screen and (max-height: 768px) {
+  .role-dialog {
+    margin-top: 2%!important;
+    margin-bottom: 0;
+    width: 60%;
+  }
+}
+
+.el-message-box__title {
+  color: $theme-black;
+}
+
+/* el-dialog弹窗icon
+--------------------------*/
+// 删除确认弹窗统一有警告icon 在提示信息前添加<i class="el-icon-warning dialog-warning-icon"></i>
+.dialog-warning-icon {
+  margin-right: 12px;
+  font-size: 24px;
+  color: $theme-orange;
+  vertical-align: middle;
+}
+
+/* reset-ele
+-------------------------- */
+/* 因为弹出框也有颜色的层级问题，所以弹出框的标题黑色比较合理 */
+.el-dialog__title {
+  color: $theme-black;
+}

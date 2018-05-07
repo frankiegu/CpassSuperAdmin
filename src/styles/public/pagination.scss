@@ -1,0 +1,15 @@
+@import "../common/var";
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  border: none; // 充斥容器，包含border: 1px
+  @include to-bottom-right;
+  border-radius: $radius-small;
+}
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .el-pager li {
+  font-weight: 500;
+  background-color: transparent;
+  border: 1px solid #D9D9D9;
+  border-radius: $radius-small;
+}

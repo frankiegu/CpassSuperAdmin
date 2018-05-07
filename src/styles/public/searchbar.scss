@@ -1,0 +1,175 @@
+@import "../common/var";
+/* form
+-------------------------- */
+.lh-form-box {
+  min-height: 76px;
+  padding: 22px 24px 0;
+  margin: 24px;
+  text-align: right;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0,21,41,0.12);
+  border-radius: $radius-medium;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .form-bar {
+    margin-right: -10px;
+  }
+  .el-form-item__content {
+    line-height: 29px;
+  }
+  .el-input--small {
+    width: 180px;
+    min-width: 180px;
+  }
+  .el-select {
+    width: 180px;
+    min-width: 180px;
+  }
+  /* 注意：如果select是接口返回的数据，要加上可搜索 filterable，如门店 */
+}
+
+/* 在子页面有用到 */
+.sort-form-bar {
+  text-align: right;
+  margin-right: -10px;
+  font-size: 0;
+}
+
+.lh-form-table-head {
+  position: relative;
+  height: 56px;
+  z-index: 1;
+  padding-top: 12px;
+  margin-bottom: -56px;
+  padding-right: 24px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.page-search {
+ float: right;
+ margin-bottom: 30px;
+}
+.search-left {
+  .el-form-item {
+   float: left !important;
+ }
+}
+.input-center input {
+  text-align: center;
+}
+.el-select-dropdown__item {
+  text-align: center !important;
+}
+.item-ml0 {
+  .el-form-item__content {
+    margin-left: 0 !important;
+  }
+}
+/* 页面搜索，右侧新增按钮 */
+.add-new {
+  float: right;
+  color: #fff;
+}
+
+/*
+ *
+ * 类似布局，左侧选择手机号码、固定电话，右侧输入框样式
+-------------------------- */
+.lh-input-group {
+  .left-select {
+    width: 100px;
+
+    .el-input {
+      height: 32px;
+      line-height: 30px;
+      overflow: hidden;
+      margin-top: 2px;
+
+      border: 1px solid #dcdfe6;
+      border-right: none;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      box-sizing: border-box;
+    }
+    .el-input__inner {
+      color: $theme-gray;
+      // background-color: #F9F9FC;
+      border: none;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      box-sizing: border-box;
+    }
+  }
+  .right-input {
+    width: 140px;
+
+    .el-input__inner {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+  .el-form-item.is-success .right-input .el-input__inner {
+  }
+}
+
+/* reset ele
+-------------------------- */
+.lh-form-tab {
+  .el-tabs__item {
+    font-weight: normal !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+
+    &.is-top:nth-child(2) {
+      padding-left: 0 !important;
+    }
+    &:hover {
+      color: $theme-blue;
+    }
+  }
+  .el-tag {
+    height: 24px;
+    line-height: 24px;
+  }
+  .el-tabs__nav {
+    margin-top: 2px;
+  }
+  .el-tabs__nav-wrap::after {
+    height: 1px;
+  }
+  .el-tabs__nav-scroll {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-left: 24px;
+  }
+  .is-active {
+    color: $theme-blue !important;
+  }
+  .el-tabs__active-bar {
+    bottom: -10px; // 不要下横线，隐藏
+  }
+  .el-tabs__nav-wrap::after {
+    height: 1px;
+  }
+}
+.lh-form-tab-mb0 {
+  // 方便布局
+  .el-tabs__header {
+    margin-bottom: 0 !important;
+  }
+}
+/* 模拟 组件el-form-item，的样式 */
+.form-item-style {
+  line-height: 36px;
+  margin-bottom: 22px;
+}
+/* 去掉最后一个 el-form-item 外边距 */
+.item-mb0 {
+  margin-bottom: 0 !important;
+}
+.el-form--label-top {
+  .el-form-item__label {
+    padding: 0;
+  }
+}

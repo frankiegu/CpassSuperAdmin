@@ -1,0 +1,203 @@
+@import "./common/var";
+@import "./mixins/mixins";
+
+.radius-mini {
+  border-radius: $radius-mini;
+}
+.radius-small {
+  border-radius: $radius-small;
+}
+.radius-medium {
+  border-radius: $radius-medium;
+}
+
+/* 字体
+-------------------------- */
+.font-bold {
+  font-family: $font-bold;
+}
+.fz20 {
+  font-size: 20px;
+  font-family: $font-bold;
+}
+.fz18 {
+  font-size: 18px;
+}
+.fz14 {
+  font-size: 14px;
+}
+.fz16, .font-size-16px {
+  font-size: 16px;
+}
+.fz12, .font-size-12px {
+  font-size: 12px;
+}
+.fz25, .font-size-25px {
+  font-size: 25px;
+}
+.fz50, .font-size-50px {
+  font-size: 50px;
+}
+
+/* 背景色
+-------------------------- */
+.to-bottom-right {
+  display: inline-block;
+  color: #fff;
+  /* 英文比中文上下少两个像素，高度少4个像素，这种情况设置高度和行高兼容 */
+  padding: 9px 15px;
+  border-radius: 4px;
+  @include to-bottom-right;
+
+  /* 英文 */
+  &.pv7 {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+}
+
+/* 主题背景色
+-------------------------- */
+.bgcfff {
+  background-color: #fff !important;
+}
+.bgc {
+  background-color: $bgc;
+}
+.bgc-gray {
+  background-color: $bgc-gray;
+}
+.bgc-light-gray {
+  background-color: $bgc-light-gray;
+}
+.bgc-red {
+  background-color: $bgc-red;
+}
+.bgc-orange {
+  background-color: $bgc-orange;
+}
+.bgc-green {
+  background-color: $bgc-green;
+}
+.bgc-light-green {
+  background-color: $bgc-light-green;
+}
+
+/* 边框的颜色
+-------------------------- */
+.border-blue {
+  color: $theme-blue;
+  border: 1px solid $theme-blue;
+}
+.border-red {
+  border: 1px solid $theme-red;
+}
+.border-gray {
+  border: 1px solid $border-gray;
+}
+
+/* 设计的按钮
+-------------------------- */
+.theme-btn-blue {
+  color: $theme-blue;
+  border: 1px solid $theme-blue;
+}
+.theme-btn-red {
+  color: $theme-red;
+  border: 1px solid $theme-red;
+
+  // 如果是链接，需要加上 :active等
+  &:hover, &:focus {
+    background-color: #fef0f0;
+  }
+}
+
+/* 标记，现只有两种
+-------------------------- */
+// 已上线
+.lh-badge-status-processing {
+  background-color: $bgc-green;
+  @include com-badge;
+
+  &:after {
+    border-color: $bgc-green;
+  }
+}
+// 关闭
+.lh-badge-status-close {
+  background-color: $bgc-red;
+  @include com-badge;
+
+  &:after {
+    border-color: $bgc-red;
+  }
+}
+
+/* 主题颜色
+-------------------------- */
+.theme-white {
+  color: #fff;
+}
+.theme-black-important {
+  color: $theme-black !important;
+}
+.theme-black {
+  color: $theme-black;
+}
+.theme-light-gray {
+  color: $theme-light-gray;
+}
+.theme-gray {
+  color: $theme-gray;
+}
+.theme-grayish {
+  color: $theme-grayish;
+}
+.theme-blue {
+  color: $theme-blue;
+}
+.theme-light-blue {
+  color: $theme-light-blue;
+}
+.theme-red {
+  color: $theme-red;
+}
+.theme-orange {
+  color: $theme-orange;
+}
+// 可做table 时间
+.theme-green {
+  color: $theme-green;
+}
+
+/* 可点击的文字按钮
+-------------------------- */
+// 可做编辑按钮
+.pointer-theme-light-blue {
+  color: $theme-light-blue;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pointer-theme-light-gray {
+  color: $theme-light-gray;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pointer-theme-red {
+  color: $theme-red;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pointer-theme-blue {
+  color: $theme-blue;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pointer-theme-gray {
+  color: $theme-gray;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.cp {
+  cursor: pointer;
+}

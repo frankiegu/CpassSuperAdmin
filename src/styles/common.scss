@@ -1,28 +1,171 @@
-@import './config.scss';
+@import "./common/var";
 
-/**
- * line-height
- * -----------
- */
-.line-height40 {
+.test {
+  vertical-align: middle;
+  margin-top: 37px;
+}
+
+/* line-height
+-------------------------- */
+.lh40, .line-height40 {
   line-height: 40px;
 }
-.line-height36 {
+.lh36, .line-height36 {
   line-height: 36px;
 }
-.line-height22 {
+.lh32 {
+  line-height: 36px;
+}
+.lh22, .line-height22 {
   line-height: 22px;
 }
-
+.lh24 {
+  line-height: 24px;
+}
+.lh1 {
+  line-height: 1;
+}
+.h100 {
+  height: 100%;
+}
 /**
- * width
- * -----------
+ * 文本显示一行，超过显示省略号
+ * 不支持-webkit-box-orient: vertical 估计是webpack编译出现了问题，要使用，需要在style加上
+ * --------------------------
  */
+.a-line {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+.line1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+/* svg 宽高
+-------------------------- */
+.svg-width14 {
+  width: 14px !important;
+  height: 14px !important;
+  margin-right: 4px;
+  vertical-align: bottom;
+}
+.svg-width14-middle {
+  width: 14px !important;
+  height: 14px !important;
+  vertical-align: middle;
+}
+/* svg fill颜色填充 */
+.svgfff {
+  fill: #fff;
+}
+
+/* display
+-------------------------- */
+.dib {
+  display: inline-block;
+}
+.db {
+  display: block;
+}
+.dn {
+  display: none;
+}
+
+
+/* other
+-------------------------- */
+.fz12, .font-size-12px {
+  font-size: 12px;
+}
+.fz16, .font-size-16px {
+  font-size: 16px;
+}
+.fz18 {
+  font-size: 18px;
+}
+.fz25, .font-size-25px {
+  font-size: 25px;
+}
+.fz30, .font-size-30px {
+  font-size: 30px;
+}
+.fz50, .font-size-50px {
+  font-size: 50px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+.outline-none {
+  outline: none;
+}
+.oh {
+  overflow: hidden;
+}
+.align-left, .tl {
+  text-align: left;
+}
+.text-right, .tr {
+  text-align: right;
+}
+.align-center, .text-center .tc {
+  text-align: center;
+}
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: "";
+  clear: both;
+  height: 0;
+}
+.clearfix {
+  *zoom: 1;
+  clear: both;
+}
+.fl, .a-left, .area-left {
+  float: left;
+}
+.fr, .a-right, .area-right {
+  float: right;
+}
+.nowrap {
+  white-space: nowrap;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.vertical-middle {
+  vertical-align: middle;
+}
+/* 层级
+-------------------------- */
+.floor1 {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* width
+-------------------------- */
 .width420px {
   width: 420px;
 }
+.width340px {
+  width: 340px;
+}
 .width300px {
   width: 300px;
+}
+.width285px {
+  width: 285px;
+}
+.width270px {
+  width: 270px;
 }
 .width265px {
   width: 265px;
@@ -36,66 +179,249 @@
 .width210px {
   width: 210px;
 }
+.width200px {
+  width: 200px;
+}
+/* 统一form内输入框的宽度 */
+.lh-form-input-bigger {
+  width: 220px !important;
+}
+.lh-form-input-big {
+  width: 200px !important;
+}
+.lh-form-input, .width180px {
+  width: 180px;
+}
 .width170px {
   width: 170px;
+}
+.width160px {
+  width: 160px;
 }
 .width150px {
   width: 150px;
 }
 .width140px {
-  width: 140px;
+  width: 140px !important;
+}
+.width130px {
+  width: 130px !important;
+}
+.width126px {
+  width: 128px;
 }
 .width120px {
   width: 120px;
 }
+/* 针对.button-row，写的配套样式
+-------------------------- */
+.width120 {
+  width: 120px;
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+.width105px {
+  width: 105px !important;
+}
 .width100px {
-  width: 100px;
+  width: 100px !important;
 }
 .width80px {
-  width: 80px;
+  min-width: 80px;
+}
+.width75px {
+  width: 75px;
+}
+.width70px {
+  width: 70px;
+}
+.width65px {
+  width: 65px;
+}
+.width60px {
+  width: 60px;
+}
+.width54px {
+  width: 54px;
+}
+.width50px {
+  width: 50px;
+}
+.width42px {
+  width: 42px;
+}
+.width30 {
+  display: inline-block;
+  width: 30px;
+  height: 1px;
+}
+.width25px {
+  width: 25px;
 }
 .width100 {
-  width: 100%;
+  width: 100% !important;
+}
+.width50 {
+  width: 50%;
 }
 
-/**
- * display
- * -----------
- */
-.dib {
-  display: inline-block;
+/* height
+-------------------------- */
+.height60px {
+  height: 60px;
 }
-.db {
-  display: block;
-}
-.dn {
-  display: none;
+.height30px {
+  height: 30px;
 }
 
-// padding
+/* padding
+-------------------------- */
+.ph32 {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.ph24 {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.ph22 {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+.ph16 {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.ph14 {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+.ph12 {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.pr11 {
+  padding-right: 11px;
+}
+.pv32 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.pl0 {
+  padding-left: 0 !important;
+}
+.pv16 {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.pv24 {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.pv11 {
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+.pb24 {
+  padding-bottom: 24px;
+}
+.pb22 {
+  padding-bottom: 22px;
+}
+.pb16 {
+  padding-bottom: 16px;
+}
+.pb32 {
+  padding-bottom: 32px;
+}
+.pb2 {
+  padding-bottom: 2px;
+}
+.pb0 {
+  padding-bottom: 0 !important; // 设置为0的样式，可以设置成权重最高
+}
+.pt24 {
+  padding-top: 24px;
+}
+.pt20 {
+  padding-top: 20px;
+}
+.pt16 {
+  padding-top: 16px;
+}
+.pt12 {
+  padding-top: 12px;
+}
 .pt10 {
   padding-top: 10px;
 }
 .pt7 {
   padding-top: 7px;
 }
-.pt3 {
-  padding-top: 3px;
+.pt0 {
+  padding-top: 0px;
 }
 .pl70 {
   padding-left: 70px;
 }
+.pl24 {
+  padding-left: 24px;
+}
+.pl32 {
+  padding-left: 32px !important;
+}
+.pb16 {
+  padding-bottom: 16px;
+}
+.pb12 {
+  padding-bottom: 12px;
+}
+.pd0 {
+  padding: 0;
+}
 
-/**
- * margin
- * -----------
- */
-// margin-bottom
+/* margin
+-------------------------- */
+.mh24 {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+.mh12 {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+.mb30 {
+  margin-bottom: 30px;
+}
+.mb48 {
+  margin-bottom: 48px !important;
+}
 .mb32 {
   margin-bottom: 32px;
 }
+.mb40 {
+  margin-bottom: 40px;
+}
+.mb38 {
+  margin-bottom: 38px;
+}
+.mb26 {
+  margin-bottom: 26px;
+}
 .mb24 {
   margin-bottom: 24px;
+}
+.mb22 {
+  margin-bottom: 22px;
+}
+.mb19 {
+  margin-bottom: 19px;
+}
+.mb18 {
+  margin-bottom: 18px;
+}
+.mb15 {
+  margin-bottom: 15px;
 }
 .mb16 {
   margin-bottom: 16px;
@@ -106,22 +432,56 @@
 .mb6 {
   margin-bottom: 6px;
 }
+.mb5 {
+  margin-bottom: 5px;
+}
+.mb4 {
+  margin-bottom: 4px;
+}
+.mb0 {
+  margin-bottom: 0 !important;
+}
+.mb-18 {
+  margin-bottom: -18px;
+}
 
-// margin-left
+/* margin-left
+-------------------------- */
+.ml280 {
+  margin-left: 280px;
+}
+.ml140 {
+  margin-left: 140px;
+}
 .ml70 {
   margin-left: 70px;
 }
 .ml50 {
   margin-left: 50px;
 }
+.ml48 {
+  margin-left: 48px;
+}
 .ml30 {
   margin-left: 30px;
+}
+.ml25 {
+  margin-left: 25px;
 }
 .ml20 {
   margin-left: 20px;
 }
+.ml16 {
+  margin-left: 16px !important;
+}
+.ml14 {
+  margin-left: 14px;
+}
 .ml15 {
   margin-left: 15px;
+}
+.ml12 {
+  margin-left: 12px;
 }
 .ml10 {
   margin-left: 10px;
@@ -129,8 +489,17 @@
 .ml8 {
   margin-left: 8px;
 }
+.ml6 {
+  margin-left: 6px;
+}
 .ml5 {
   margin-left: 5px;
+}
+.ml4 {
+  margin-left: 4px;
+}
+.ml3 {
+  margin-left: 3px;
 }
 .ml2 {
   margin-left: 2px;
@@ -138,27 +507,61 @@
 .ml0 {
   margin-left: 0 !important;
 }
+.ml-10 {
+  margin-left: -10px;
+}
 
-// margin-right
+/* margin-right
+-------------------------- */
 .mr70 {
   margin-right: 70px;
+}
+.mr60 {
+  margin-right: 60px !important;
+}
+.mr50 {
+  margin-right: 50px;
+}
+.mr40 {
+  margin-right: 40px;
+}
+.mr32 {
+  margin-right: 32px;
 }
 .mr30 {
   margin-right: 30px;
 }
+// 在有右边距的时候，用26刚好距离右侧30
+.mr26 {
+  margin-right: 26px;
+}
+.mr24 {
+  margin-right: 24px;
+}
 .mr20 {
   margin-right: 20px;
+}
+.mr16 {
+  display: inline-block;
+  margin-right: 16px;
 }
 .mr15 {
   display: inline-block;
   margin-right: 15px;
 }
+.mr14 {
+  margin-right: 14px;
+}
 .mr12 {
+  display: inline-block;
   margin-right: 12px;
 }
 .mr10 {
   display: inline-block;
   margin-right: 10px;
+}
+.mr8 {
+  margin-right: 8px;
 }
 .mr5 {
   margin-right: 5px;
@@ -166,19 +569,23 @@
 .mr0 {
   margin-right: 0px !important;
 }
+.mr-20 {
+  margin-right: -20px;
+}
 .mr-10 {
   margin-right: -10px;
 }
 
-// margin-top
+/* margin-top
+-------------------------- */
 .mt90 {
   margin-top: 90px;
 }
-.mt84 {
-  margin-top: 84px;
-}
 .mt80 {
   margin-top: 80px;
+}
+.mt64 {
+  margin-top: 64px;
 }
 .mt60 {
   margin-top: 60px;
@@ -186,23 +593,42 @@
 .mt50 {
   margin-top: 50px;
 }
+/**
+ * 添加编辑页面，保存按钮距离顶部，设计为48px
+ * 如果有顶部有mb18，就用mt30 代替
+ */
+.mt57 {
+  margin-top: 57px;
+}
+.mt55 {
+  margin-top: 55px;
+}
+.mt48 {
+  margin-top: 48px;
+}
+.mt43 {
+  margin-top: 43px;
+}
+.mt40 {
+  margin-top: 40px;
+}
+.mt36 {
+  margin-top: 36px;
+}
 .mt30 {
   margin-top: 30px;
+}
+.mt27 {
+  margin-top: 27px;
 }
 .mt24 {
   margin-top: 24px;
 }
-.mt20 {
-  margin-top: 20px;
-}
 .mt22 {
   margin-top: 22px;
 }
-.mt30 {
-  margin-top: 30px;
-}
-.mt40 {
-  margin-top: 40px;
+.mt20 {
+  margin-top: 20px;
 }
 .mt16 {
   margin-top: 16px;
@@ -210,64 +636,41 @@
 .mt15 {
   margin-top: 15px;
 }
+.mt12 {
+  margin-top: 12px;
+}
 .mt10 {
   margin-top: 10px;
 }
 .mt8 {
   margin-top: 8px;
 }
+.mt6 {
+  margin-top: 6px !important;
+}
 .mt5 {
-  margin-top: 5px;
+  margin-top: 5px !important;
 }
 .mt4 {
   margin-top: 4px;
 }
+.mt2 {
+  margin-top: 2px;
+}
 .mt0 {
   margin-top: 0 !important;
 }
-.mt-3 {
-  margin-top: -3px;
+.mt-8 {
+  margin-top: -8px;
+}
+.mt-4 {
+  margin-top: -4px;
+}
+.mt-5 {
+  margin-top: -5px;
+}
+.mt-1 {
+  margin-top: -1px;
 }
 
-/**
- * other
- * -----------
- */
-.text-center {
-  text-align: center;
-}
-.text-right {
-  text-align: right;
-}
-.text-left {
-  text-align: left;
-}
-.width30 {
-  display: inline-block;
-  width: 30px;
-  height: 1px;
-}
-.font-size-12px {
-  font-size: 12px;
-}
-.font-size-16px {
-  font-size: 16px;
-}
-.font-size-25px {
-  font-size: 25px;
-}
-.item-mb0 {
-  margin-bottom: 0;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-.outline-none {
-  outline: none;
-}
-.overflow-hidden {
-  overflow: hidden;
-}
-.bgcfff {
-  background-color: #fff;
-}
+

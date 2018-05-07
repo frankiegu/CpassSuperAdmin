@@ -1,5 +1,27 @@
-@import '../config';
+@import "../common/var";
+// @import "../mixins/mixins";
 
+/* demo列表标题 */
+.lh-list-title {
+  font-size: $--font-size-larger;
+  font-family: $font-bold;
+}
+
+/* 通用标题 */
+.desc-title {
+  position: relative;
+  font-size: 16px;
+  font-family: $font-bold;
+  height: 56px;
+  line-height: 56px;
+  padding-left: 28px;
+  vertical-align: middle;
+  background-color: #fff;
+  border-left: 4px solid $theme-blue;
+  border-bottom: 1px solid $border-gray;
+  box-sizing: border-box;
+  overflow: hidden;
+}
 /**
  * 添加、编辑页面的纯文本标题，默认必填
  * 标题文字不要换行，因为会多一个空格，就不对齐了
@@ -42,4 +64,44 @@
 .lh-title-top {
   padding-top: 16px;
   @include text-title;
+}
+
+/* old兼容 - 页面标题样式 */
+.page-title {
+  min-height: 20px;
+  padding: 30px 20px 0 24px;
+  clear: both;
+  overflow: hidden;
+
+  h1 {
+    float: left;
+    font-size: 18px;
+    font-weight: $font-bold;
+    color: $theme-black;
+    line-height: 20px;
+ }
+}
+.grid-title{
+  clear: both;
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid $theme-light-gray;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: $font-bold;
+  line-height: 1;
+  vertical-align: middle;
+  box-sizing: border-box;
+  //background-color: #eeeef6;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    width: 4px;
+    height: 20px;
+    vertical-align: text-bottom;
+    background-color: $theme-blue;
+ }
 }

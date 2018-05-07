@@ -1,0 +1,77 @@
+/* 设计稿盒子
+-------------------------- */
+// 小盒子，一般有图片、标签、按钮等
+.box2 {
+  border-radius: $radius-mini;
+  overflow: hidden;
+}
+// 中等盒子
+.box4 {
+  box-shadow: 0 1px $radius-small 0 rgba(0,21,41,0.12);
+  border-radius: $radius-small;
+  overflow: hidden;
+}
+// 大盒子，占一行
+.box6 {
+  box-shadow: 0 1px 6px 0 rgba(0,21,41,0.12);
+  border-radius: $radius-medium;
+  overflow: hidden;
+}
+// 组合样式，列表table 左右内边距统一 24
+.lh-card-box {
+  margin: 24px 24px auto;
+  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+  border-radius: $radius-medium;
+  overflow: hidden;
+}
+.lh-card-body {
+  position: relative;
+  padding: 32px;
+  overflow: hidden;
+  background-color: #fff;
+}
+.lh-card-main {
+  position: relative;
+  margin: 24px 24px 0;
+  background-color: #fff;
+  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+  border-radius: $radius-medium;
+  overflow: hidden;
+}
+
+/* 卡片padding 请勿删，需要兼容旧样式
+-------------------------- */
+.card-padding {
+  position: relative;
+  padding: 24px 24px;
+  margin: 24px 24px 0;
+  background-color: #fff;
+  border-radius: $radius-medium;
+  box-shadow: 0 1px $radius-medium 0 rgba(0,21,41,0.12);
+
+  // .el-form--inline .el-form-item {
+  //   margin-right: 0 !important;
+  // }
+
+  &.card-padding-vertical {
+    border-top: 1px solid #fff;
+    padding-top: 0;
+  }
+}
+// 页面盒子
+.card-body {
+  padding: 16px 16px;
+  border-radius: $radius-small;
+  overflow: hidden;
+
+  &.card-ph0 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  &.card-pt0 {
+    padding-top: 0;
+  }
+  &.card-pb0 {
+    padding-bottom: 0;
+  }
+}

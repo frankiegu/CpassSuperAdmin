@@ -54,7 +54,7 @@
   .app-levelbar.el-breadcrumb {
     display: inline-block;
     font-size: 14px;
-    line-height: 50px;
+    line-height: 64px;
     margin-left: 10px;
     outline: none;
     background-color: #fff;

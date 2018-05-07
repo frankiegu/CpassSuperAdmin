@@ -1,34 +1,33 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
+  <el-menu class="components-navbar" mode="horizontal">
     <router-link
       :class="{'sidebar-close': !sidebar.opened}"
       class="logo-box db" to="/" tag="a">
-
-      <img src="/static/images/login-logo.png">
+      <img src="/static/images/default-logo.png">
       <span>酷雷托总后台</span>
     </router-link>
 
-    <lh-svg
-      @click.native="toggleSideBarWay"
-      :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
-      class="hamburger hamburger-container outline-none"></lh-svg>
+    <!-- 给变化加上transition，效果好上很多 -->
+    <transition name="fade" mode="out-in">
+      <lh-svg
+        @click.native="toggleSideBarWay"
+        :iconClass="(sidebar.opened ? 'icon-menufold' : 'icon-menuunfold')"
+        class="svg-icon hamburger hamburger-container" />
+    </transition>
+
+    <levelbar class="fl"></levelbar>
 
     <navbar-menu class="fr reset-menu mr30 el-menu-demo"></navbar-menu>
-
-    <levelbar></levelbar>
-
-    <screenfull class="fr cursor-pointer hover-effect"></screenfull>
   </el-menu>
 </template>
 
 <script>
   import levelbar from './levelbar'
   import navbarMenu from './menu'
-  import screenfull from './screenfull'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    components: { levelbar, screenfull, navbarMenu },
+    components: { levelbar, navbarMenu },
     data () {
       return {}
     },
@@ -45,36 +44,11 @@
   }
 </script>
 
-<style lang="scss">
-  .navbar {
-    .app-levelbar.el-breadcrumb {
-      line-height: 60px !important;
-    }
-  }
-</style>
 <style lang="scss" scoped>
-  @import 'src/styles/config';
-  .navbar {
-    height: 60px;
-    line-height: 60px;
+  .components-navbar {
     border-radius: 0px !important;
     background-color: #ffffff;
-    box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
-    .hover-effect {
-      padding: 10px 8px;
-      border-radius: 2px;
-
-      &:hover {
-        background-color: $theme-sidebar !important;;
-      }
-    }
-    .logout-style {
-      width: 20px;
-      height: 20px;
-      margin: 20px 35px 0 10px;
-      color: $theme-gray;
-    }
     .hamburger {
       display: inline-block;
       cursor: pointer;
@@ -89,10 +63,11 @@
     }
     .logo-box {
       position: relative;
-      width: 180px;
-      height: 60px;
+      width: 200px;
+      height: 64px;
+      line-height: 64px;
       float: left;
-      margin-right: 13px;
+      margin-right: 17px;
       transition: width .28s;
       outline: none;
       overflow: hidden;
@@ -133,16 +108,16 @@
         float: left;
         width: 40px;
         height: 40px;
-        margin: 10px 10px 0 10px;
+        margin: 12px 15px 0 18px;
         vertical-align: middle;
         border-radius: 50%;
-        animation: .5s rainbow2;
+        // animation: .5s rainbow2;
         transition: all ease .25s;
       }
       span {
         position: absolute;
-        left: 60px;
-        width: 120px;
+        left: 70px;
+        width: 110px;
         height: 42px;
         display: -webkit-box;
         -webkit-line-clamp: 1;
@@ -155,25 +130,29 @@
         letter-spacing: 0;
       }
     }
+    .hamburger-container {
+      line-height: 58px;
+      width: 23px;
+      height: 21px;
+      float: left;
+      margin-left: 6px;
+      margin-top: 21.5px;
+      transition: margin-left .28s ease-out;
+      opacity: 0.65;
+    }
     .sidebar-close {
-      width: 60px;
+      width: 64px;
       margin-right: 0;
 
       img {
-        // width: 30px;
-        // height: 30px;
-        // margin: 15px 7px 15px 15px;
-        animation: .5s rainbow;
+        width: 30px;
+        height: 30px;
+        margin: 15px 7px;
+        // animation: .5s rainbow;
       }
     }
-    .hamburger-container {
-      line-height: 58px;
-      width: 25px;
-      height: 21px;
-      float: left;
-      margin-left: 9px;
-      margin-top: 19px;
-      transition: margin-left .28s ease-out;
+    .hamburger-close {
+      margin-left: 4px;
     }
   }
 </style>

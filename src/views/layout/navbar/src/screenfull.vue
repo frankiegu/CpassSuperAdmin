@@ -1,12 +1,12 @@
 <template>
-  <el-tooltip
+  <!-- <el-tooltip
     :content="(isFullscreen ? '点击展开全屏' : '点击收起全屏')"
-    placement="bottom">
+    placement="bottom"> -->
     <lh-svg
       @click.native="toggleScreen"
       :iconClass="(isFullscreen ? 'icon-shipinquanping' : 'icon-tuichuquanping')"
       class="screenfull-style"></lh-svg>
-  </el-tooltip>
+  <!-- </el-tooltip> -->
 </template>
 
 <script>
@@ -37,7 +37,6 @@
   .screenfull-style {
     width: 20px;
     height: 20px;
-    margin: 10px 0 0 0;
-    color: $theme-gray;
+    opacity: 0.65;
   }
 </style>

@@ -1,0 +1,44 @@
+@import "../common/var";
+
+/* 自定义标签，其它的在qr实例页
+-------------------------- */
+.el-tag {
+  min-width: 48px;
+  text-align: center;
+}
+.tag-gray {
+  color: #fff;
+  background-color: #8492A6;
+  border: 1px solid #8492A6;
+  @include tag;
+}
+.tag-blue {
+  color: $theme-light-blue;
+  background-color: rgba(32,160,255,0.10);
+  border: 1px solid rgba(32,160,255,0.20);
+  @include tag;
+}
+// 首次预订
+.tag-first {
+  color: $theme-blue ;
+  background-color: rgba(255,73,73,0.10);
+  border: 1px solid $theme-blue;
+  @include tag;
+}
+
+/* reset ele
+-------------------------- */
+.el-tag {
+  padding: 0 5px;
+  height: 24px;
+  line-height: 24px;
+}
+.el-tag--primary {
+  color: $theme-light-blue;
+  background-color: rgba(32,160,255,0.10);
+  border: 1px solid rgba(32,160,255,0.20);
+}
+.el-tag--info {
+  background-color: #E5E9F2 !important;
+  border: 1px solid #E5E9F2 !important;
+}

@@ -88,6 +88,7 @@
 
 <style lang="scss" scoped>
   @import 'src/styles/common.scss';
+  @import 'src/styles/mixins/mixins';
   .login-container {
     @include relative;
     min-height: 100vh;

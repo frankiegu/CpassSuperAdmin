@@ -28,7 +28,7 @@
         <el-col :span="16">
           <el-row :gutter="20">
             <el-col :span="8">
-              <lh-item label="场地联系人：" label-width="86px">{{ field.contactName }}</lh-item>
+              <lh-item label="场地联系人：" label-width="87px">{{ field.contactName }}</lh-item>
             </el-col>
             <el-col :span="8">
               <lh-item label="联系电话：" label-width="auto">{{ field.contactTel }}</lh-item>
@@ -37,7 +37,7 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <lh-item label="所属空间：" label-width="86px">{{ space.spaceName }}</lh-item>
+              <lh-item label="所属空间：" label-width="87px">{{ space.spaceName }}</lh-item>
             </el-col>
             <el-col :span="8">
               <lh-item label="所属门店：" label-width="auto">{{ store.storeName }}</lh-item>
@@ -46,7 +46,7 @@
 
           <el-row :gutter="20">
             <el-col>
-              <lh-item label="门店地址：" label-width="86px">{{store.provinceName}}{{store.cityName}}{{store.districtName}}{{store.address}}</lh-item>
+              <lh-item label="门店地址：" label-width="87px">{{store.provinceName}}{{store.cityName}}{{store.districtName}}{{store.address}}</lh-item>
             </el-col>
           </el-row>
         </el-col>
@@ -65,7 +65,7 @@
     </div>
 
     <!-- 预约设置 -->
-    <lh-card-empty
+    <lh-card
       :cardTitle="fieldType === '1' || fieldType === '4' ? '预约设置' : '开放时段'">
       <h3 class="text-title fz16 mb6 mt0 no-required">基本价格</h3>
 
@@ -182,25 +182,25 @@
           '不允许取消'
         }}
       </lh-item>
-    </lh-card-empty>
+    </lh-card>
 
     <!-- 硬件设施 -->
-    <lh-card-empty cardTitle="硬件设施" :isEmpty="!equipments.length">
+    <lh-card cardTitle="硬件设施" :isEmpty="!equipments.length">
       <div v-for="(item, idx) in equipments" :key="idx" class="equipmentList-box">
         <span class="theme-gray">{{ item.name }}</span>
         <img :src="item.icon + zoomImgSize(24)">
       </div>
-    </lh-card-empty>
+    </lh-card>
 
     <!-- 展示图 -->
-    <lh-card-empty cardTitle="展示图" :isEmpty="!fieldImgs.length" class="diagram">
+    <lh-card cardTitle="展示图" :isEmpty="!fieldImgs.length" class="diagram">
       <img v-for="(item, idx) in fieldImgs" :key="idx" :src="item.url">
-    </lh-card-empty>
+    </lh-card>
 
     <!-- 场地描述 -->
-    <lh-card-empty cardTitle="场地描述" :isEmpty="!field.facilitiesAndServices">
+    <lh-card cardTitle="场地描述" :isEmpty="!field.facilitiesAndServices">
       <div v-html="field.facilitiesAndServices"></div>
-    </lh-card-empty>
+    </lh-card>
   </div>
 </template>
 

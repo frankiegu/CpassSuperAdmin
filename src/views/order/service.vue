@@ -44,8 +44,8 @@
 
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
-            <el-button type="primary" v-if="scope.row.orderStatus===1"
-              @click="handleClickOrders(scope.row.id)" size="mini">接单</el-button>
+            <el-button type="text" v-if="scope.row.orderStatus===1"
+              @click="handleClickOrders(scope.row.id)">接单</el-button>
           </template>
         </el-table-column>
       </el-table>

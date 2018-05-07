@@ -1,0 +1,27 @@
+/* reset 字体颜色、字体大小 */
+@import "./common/var";
+
+/* 改变主题色变量
+-------------------------- */
+$--color-primary: $theme-blue;
+$--color-black: $theme-black;
+
+$--color-text-primary: $theme-gray;
+$--color-text-regular: $theme-gray;
+// $--color-text-secondary: $theme-gray;
+// $--color-text-placeholder: $theme-gray;
+
+$--color-success: $theme-green;
+$--color-warning: $theme-orange;
+$--color-danger: $theme-red;
+$--color-info: $tag-gray;
+
+/* ele reset
+-------------------------- */
+$--select-group-font-size: 14px;
+$--button-small-font-size: 14px;
+$--tooltip-font-size: 14px;
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '../../node_modules/element-ui/lib/theme-chalk/fonts';
+@import "../../node_modules/element-ui/packages/theme-chalk/src/index";
