@@ -56,7 +56,6 @@
             <el-tooltip
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
-              effect="light"
               class="margin-lr6">
 
               <el-switch

@@ -47,7 +47,6 @@
             <el-tooltip
               :content="scope.row.isOpen === 1 ? '点击停用会员' : '点击启用会员'"
               placement="top"
-              effect="light"
               class="margin-lr6">
 
               <el-switch

@@ -9,7 +9,6 @@
       <el-tooltip
         :content="field.status === 10 ? '点击停用会员' : '点击开放会员'"
         placement="top"
-        effect="light"
         class="margin-lr6">
         <el-switch
           v-model="field.status"

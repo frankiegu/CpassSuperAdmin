@@ -11,8 +11,7 @@
     <el-tooltip
       v-if="$route.meta.pdf"
       content="下载账户信息的主要内容为pdf格式"
-      placement="bottom"
-      effect="light">
+      placement="bottom">
       <el-button
         @click="downloadPdf"
         type="primary"

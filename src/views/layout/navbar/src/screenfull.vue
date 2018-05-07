@@ -1,8 +1,7 @@
 <template>
   <el-tooltip
     :content="(isFullscreen ? '点击展开全屏' : '点击收起全屏')"
-    placement="bottom"
-    effect="light">
+    placement="bottom">
     <lh-svg
       @click.native="toggleScreen"
       :iconClass="(isFullscreen ? 'icon-shipinquanping' : 'icon-tuichuquanping')"
