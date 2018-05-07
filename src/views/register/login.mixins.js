@@ -28,8 +28,8 @@ export default {
         password: ''
       },
       formRules: {
-        username: [{ required: true, trigger: 'blur,change', validator: validateUserName }],
-        password: [{ required: true, trigger: 'blur,change', validator: validatePass }]
+        username: [{ required: true, trigger: ['blur', 'change'], validator: validateUserName }],
+        password: [{ required: true, trigger: ['blur', 'change'], validator: validatePass }]
       }
     }
   }

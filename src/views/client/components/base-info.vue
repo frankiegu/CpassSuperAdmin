@@ -2,13 +2,13 @@
   <div class="base-info">
     <el-form-item label="客户名称" prop="name" ref="name"
       :error="errorField === 'name' ? errorMsg : ''"
-      :rules="[{ required: true, message: '客户名称不能为空！', trigger: 'blur, change' }]">
+      :rules="[{ required: true, message: '客户名称不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.name}}</p>
       <el-input v-model.trim="modelForm.name" class="width300px" placeholder="填写完整客户名称" :maxlength="200" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="联系人" prop="contact" ref="contact"
-      :rules="[{ required: true, message: '联系人不能为空！', trigger: 'blur, change' }]">
+      :rules="[{ required: true, message: '联系人不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.contact}}</p>
       <el-input v-model.trim="modelForm.contact" class="width300px" placeholder="填写联系人名称" :maxlength="100" v-else></el-input>
     </el-form-item>
@@ -102,13 +102,13 @@
       return {
         isCreateAccount: false,
         checkTel: [
-          { required: true, validator: checkTel, trigger: 'blur, change' }
+          { required: true, validator: checkTel, trigger: ['blur', 'change'] }
         ],
         checkEmail: [
-          { validator: checkEmail, trigger: 'blur, change' }
+          { validator: checkEmail, trigger: ['blur', 'change'] }
         ],
         checkWeixin: [
-          { validator: checkWeixin, trigger: 'blur, change' }
+          { validator: checkWeixin, trigger: ['blur', 'change'] }
         ]
       }
     },

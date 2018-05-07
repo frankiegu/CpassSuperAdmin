@@ -93,7 +93,7 @@
           account: ''
         },
         rules: {
-          account: [{ required: true, trigger: 'blur,change', validator: validateTel }]
+          account: [{ required: true, trigger: ['blur', 'change'], validator: validateTel }]
         }
       }
     },

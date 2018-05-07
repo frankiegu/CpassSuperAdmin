@@ -53,13 +53,14 @@
 <style lang="scss">
   @import 'src/styles/common/var';
   .page-title {
+    min-height: 60px;
     padding: 16px 24px 0 24px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     background-color: #fff;
     color: #fff;
     // border-bottom: 1px solid $border-light-gray;
-    overflow: hidden;
+    box-sizing: border-box;
 
     .bb0 {
       border-bottom: 0;
