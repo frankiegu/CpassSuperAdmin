@@ -15,6 +15,10 @@ export default {
       equipments: {},
       fieldImgs: {},
 
+      // 该场地，对外开放设置的状态
+      // 跟场地的开放状态不同
+      openSettingStatus: false,
+
       typeList: [
         { key: '0', label: '全部' },
         { key: '1', label: '会议室' },
@@ -30,30 +34,36 @@ export default {
       // 整周
       openWeek: [{
         type: 1,
-        status: 1,
-        workState: 1,
-        restState: 1,
+        status: 0,
         startTime: '',
         endTime: '',
-        price: '' // 收费标准
+        price: '', // 收费标准
+        workState: 1,
+        restState: 1,
+        longTime: 0,
+        itmeType: 1
       }],
       // 基本价格，工作日、非工作日
       openPeriod: [{
         type: 1,
-        status: 1,
+        status: 0,
         startTime: '',
         endTime: '',
         price: '', // 收费标准
         workState: 1,
-        restState: 1
+        restState: 1,
+        longTime: 0,
+        itmeType: 1
       }, {
         type: 2,
-        status: 1,
+        status: 0, // 休息的情况下，接口返回为空，默认休息更合理
         startTime: '',
         endTime: '',
         price: '', // 收费标准
         workState: 1,
-        restState: 1
+        restState: 1,
+        longTime: 0,
+        itmeType: 1
       }],
       openOffice: [], // 办公室
 
@@ -64,8 +74,11 @@ export default {
         itmeType: '', // 0 免费时段 1普通时段 2特殊时段
         startTime: '',
         endTime: '',
-        longTime: '',
+        longTime: 0,
+        workState: 1,
+        restState: 1,
         price: '',
+        clientType: '',
         appointmentTimeType: '' // 是否区分工作日 1:不区分 2:区分
       }
     }
