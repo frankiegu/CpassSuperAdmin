@@ -137,6 +137,7 @@
         vertical-align: middle;
         border-radius: 50%;
         animation: .5s rainbow2;
+        transition: all ease .25s;
       }
       span {
         position: absolute;
@@ -159,7 +160,9 @@
       margin-right: 0;
 
       img {
-        margin-left: 10px;
+        // width: 30px;
+        // height: 30px;
+        // margin: 15px 7px 15px 15px;
         animation: .5s rainbow;
       }
     }
