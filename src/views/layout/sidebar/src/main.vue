@@ -59,11 +59,40 @@
 </script>
 
 <style lang="scss">
+  @import "src/styles/config";
   .sidebar-box {
     &.hideSidebar {
       .el-submenu__icon-arrow {
         visibility: hidden !important;
       }
+    }
+    .el-menu-item {
+      height: 50px;
+      line-height: 50px;
+
+      &.is-active {
+        .icon {
+          fill: $theme-blue;
+        }
+      }
+    }
+    .el-menu-item, .el-submenu__title {
+      transition: all ease .25s;
+
+      &:hover {
+        color: $theme-blue;
+
+        i {
+          color: $theme-blue;
+        }
+        .icon {
+          fill: $theme-blue;
+        }
+      }
+    }
+    .el-menu-item:hover, .el-menu-item:focus {
+      color: $theme-blue;
+      background-color: $theme-sidebar !important;;
     }
   }
 </style>

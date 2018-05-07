@@ -37,7 +37,7 @@
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
         <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
-        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable sort-by="bookNum"></el-table-column>
+        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable sort-by="bookNum" width="115"></el-table-column>
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>

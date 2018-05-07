@@ -66,7 +66,7 @@
       border-radius: 2px;
 
       &:hover {
-        background-color: #F3F3F9;
+        background-color: $theme-sidebar !important;;
       }
     }
     .logout-style {

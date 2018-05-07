@@ -1,5 +1,5 @@
 /**
- * 财务
+ * 反馈
  */
 import { _import } from '../config/env'
 import layout from '@/views/layout/layout.vue'
@@ -9,7 +9,7 @@ export default [{
   path: '/feedback',
   redirect: '/feedback/list',
   component: layout,
-  icon: 'icon-menuunfold',
+  icon: 'icon-peer_surface',
   children: [
     {
       name: '管理后台反馈',

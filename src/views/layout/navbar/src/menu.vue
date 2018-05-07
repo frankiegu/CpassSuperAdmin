@@ -52,8 +52,16 @@
   }
 </script>
 <style lang="scss">
+  @import "src/styles/config";
   // 动态DOM的样式，ele自定义主题的方式实现，文件：styles/element-variables.scss
   .navbar-menu-box {
+    .el-submenu__title:hover {
+      background-color: $theme-sidebar !important;
+
+      .svg-style {
+        fill: $theme-black;
+      }
+    }
     .user-name {
       height: 40px;
       line-height: 40px;

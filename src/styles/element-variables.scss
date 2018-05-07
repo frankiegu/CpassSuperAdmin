@@ -2,6 +2,7 @@
  * 自定义主题
  */
 
+@import "./config";
 /* 改变主题色变量 */
 $--color-primary: #5E80E5;
 
@@ -9,15 +10,23 @@ $--color-primary: #5E80E5;
   background-color: #fafafa !important;
 }
 
-// 因为hover展示的列表是动态DOM，写在页面内无效
-.el-submenu .el-submenu__title:hover,
+.el-menu--horizontal .el-menu-item:hover,
 .el-menu--horizontal .el-menu-item:hover,
 .el-menu--horizontal .el-menu-item:focus,
+.components-sidebar-wrapper .el-menu-item:hover,
+.components-sidebar-wrapper .el-menu-item:focus,
 .el-menu--horizontal .el-menu-item:not(.is-disabled):hover,
-.el-menu--horizontal .el-menu-item:not(.is-disabled):focus {
-  background-color: #F3F3F9 !important;
-  border-radius: 2px;
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal .el-menu-item:not(.notice-item):hover,
+.el-menu--horizontal .el-menu-item:not(.notice-item):focus {
+  color: $theme-blue;
+  background-color: transparent;// $theme-sidebar !important;
+
+  .el-menu-item, a, .a-link {
+    color: $theme-blue;
+  }
 }
+
 .el-submenu .el-submenu__title,
 .el-menu--horizontal {
   border-bottom: 0 !important;
