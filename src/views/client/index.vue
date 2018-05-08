@@ -70,7 +70,7 @@
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入客户名称"
-            class="width220px">
+            class="lh-form-input">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>

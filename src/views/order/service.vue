@@ -16,7 +16,7 @@
 
       <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading"
         class="width100" border>
-        <el-table-column label="订单编号">
+        <el-table-column label="订单编号" width="140">
           <template slot-scope="scope">
             <router-link
               :to="{path: '/order/service/detail', query: {id: scope.row.id}}"

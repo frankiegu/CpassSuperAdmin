@@ -68,7 +68,7 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="订单编号" fixed="left" align="left">
+        <el-table-column label="订单编号" fixed="left" align="left" width="140">
           <template slot-scope="scope">
             <router-link
               :to="{path: '/order/field/detail', query: {id: scope.row.platformOrderId}}"
@@ -95,7 +95,7 @@
             <span>{{ scope.row.spaceName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount"></el-table-column>
+        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount" width="116"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">

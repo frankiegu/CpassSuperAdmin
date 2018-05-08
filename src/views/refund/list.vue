@@ -23,7 +23,7 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="订单编号" fixed="left" align="left">
+        <el-table-column label="订单编号" fixed="left" align="left" width="140">
           <template slot-scope="scope">
             <router-link
               :to="{path: '/refund/detail', query: {id: scope.row.id}}"
