@@ -1,151 +1,61 @@
 <template>
-  <div :class="classObject" class="error-style">
-    <div :class="{'zoom': !isNoFound, 'no-found': this.isNoFound}">
-      <img src="/static/images/no-found.png">
+  <div class="page-error">
+    <!-- @#TODO明天替换图片 -->
+    <img v-if="errorTitle === '403'" src="/static/images/403.png">
+    <img v-else src="/static/images/404.png">
 
-      <div :class="['con-box', {'com-style': isNoFound, '/not-found': !isNoFound}]">
-        <div class="cont-title">{{ conTitle }}</div>
-
-        <div class="third-party-login">
-          <span :class="{'bgcfff': !isNoFound, 'bgc-gray': isNoFound}">{{ conDec }}</span>
-          <div class="hr"></div>
-        </div>
-
-        <div class="count-time">
-          <span class="theme-red">{{ countdown }}</span>&nbsp;s&nbsp;后自动返回首页
-        </div>
-
-        <router-link class="btn-link" to="/">返回首页</router-link>
-      </div>
+    <div class="width240px">
+      <h1>
+        <span>{{ errorTitle }}</span>
+      </h1>
+      <p class="theme-light-gray">{{ errorDec }}</p>
+      <router-link to="/" class="to-bottom-right">返回首页</router-link>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'LhError',
-    props: ['route', 'conTitle', 'conDec'],
-    data () {
-      return {
-        empty: '',
-        isNoFound: (this.$route.path === '/not-found'),
-        classObject: {
-          'mt84': (this.$route.path !== '/not-found'),
-          'store-setting': (this.$route.path !== '/not-found'),
-          'content-body': (this.$route.path !== '/not-found'),
-          'bgcfff': (this.$route.path !== '/not-found')
-        },
-        countdown: 10,
-        pagaData: null
-      }
-    },
-    mounted () {
-      if (this.$route.path === this.route) {
-        this.settime()
-      }
-    },
-    methods: {
-      settime () {
-        if (this.countdown === 0) {
-          this.$router.replace({ path: '/' })
-
-          this.countdown = 10
-        } else {
-          this.countdown--
-          setTimeout(() => {
-            // 如果输入错误的路哟与，就会跳转到当前404页面，
-            // 这时，如果手动切换正确路由，就停止倒计时
-            if (this.$route.path === this.route) {
-              this.settime()
-            }
-          }, 1000)
-        }
-      }
-    }
-  }
+export default {
+  name: 'LhError',
+  props: ['errorTitle', 'errorDec']
+}
 </script>
 
 <style lang="scss" scoped>
-  @import "src/styles/config";
-  .error-style {
-    text-align: center;
-    overflow: hidden;
+@import "src/styles/common/var";
+.page-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15%;
 
-    .no-found {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      font-size: 16px;
-      margin: -300px 0 0 -350px;
+  .width240px {
+    width: 240px;
+  }
+  img {
+    float: right;
+    width: 443px;
+    padding-right: 12.8%;
+  }
+  h1 {
+    height: 73px;
 
-      @media screen and (max-width: 1366px) {
-        transform: scale(0.77);
-      }
-    }
-    .zoom {
-      width: 700px;
-      margin: 24px auto 0;
-      font-size: 16px;
-
-      @media screen and (max-width: 1366px) {
-        transform: scale(0.77);
-        transform-origin: 50% 0;
-      }
-    }
-    .com-style {
-      @media screen and (min-width: 1366px) {
-        padding-bottom: 110px;
-      }
-    }
-    .con-box {
-      .btn-link {
-        width: 140px;
-      }
-      .count-time {
-        margin: 40px 0 80px;
-
-        span {
-          vertical-align: text-bottom;
-        }
-      }
-      .cont-title {
-        color: $theme-blue;
-        font-size: 25px;
-        font-weight: 700;
-        margin: 25px 0 70px;
-      }
-    }
-    .third-party-login {
-      position: relative;
-      width: 700px;
-      height: 20px;
-      margin: 0 auto;
-
-      span {
-        position: absolute;
-        left: 50%;
-        z-index: 2;
-        display: block;
-        width: 340px;;
-        margin-left: -170px;
-        color: $theme-black;
-        font-size: 16px;
-        text-align: center;
-      }
-      .bgcfff {
-        background-color: #fff;
-      }
-      .bgc-gray {
-        background-color: #f0f2f7;
-      }
-      .hr {
-        position: absolute;
-        top: 50%;
-        z-index: 0;
-        width: 100%;
-        height: 1px;
-        background-color: #d1d1d1;
-      }
+    span {
+      display: inline-block;
+      font-size: 100px;
+      font-weight: 600;
+      height: 73px;
+      line-height: 73px;
+      color: #494C5C;
+      margin-top: -2px;
     }
   }
+  p {
+    font-size: 20px;
+    height: 28px;
+    line-height: 28px;
+    padding: 22px 0;
+    overflow: hidden;
+  }
+}
 </style>

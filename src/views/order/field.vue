@@ -136,12 +136,9 @@
   import fieldMixins from './field.mixins'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
-  import ElTag from "../../../node_modules/element-ui/packages/tag/src/tag.vue";
-
   export default {
     mixins: [fieldMixins, tableMixins, pickerOptions],
     components: {
-      ElTag,
       [option.name]: option
     },
     data () {

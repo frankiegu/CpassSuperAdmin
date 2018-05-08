@@ -27,7 +27,7 @@ axios.interceptors.response.use(response => {
       case '200':
         break
       case '401':
-        router.replace({ path: '/not-permission' })
+        router.replace({ path: '/401' })
         break
       case '500':
         router.replace({ path: '/500' })
@@ -48,7 +48,7 @@ axios.interceptors.response.use(response => {
   if (error.response) {
     switch (error.response.data.code) {
       case '401':
-        router.replace({ path: '/not-permission' })
+        router.replace({ path: '/401' })
         break
       case '500':
         router.replace({ path: '/500' })

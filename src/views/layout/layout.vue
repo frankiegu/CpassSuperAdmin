@@ -5,7 +5,8 @@
     <div class="lh-content">
       <div class="lh-sidebar"> <sidebar class="lh-sidebar-box" /> </div>
       <section class="lh-main">
-        <tags-view v-if="!hideRouter"></tags-view>
+        <!-- <tags-view v-if="!hideRouter"></tags-view> -->
+        <tags-view></tags-view>
 
         <transition name="fade" mode="out-in">
           <router-view class="lh-main-box" :key="key"></router-view>
@@ -42,8 +43,8 @@ export default {
   components: { navbar, sidebar, scroolTop, tagsView },
   data () {
     return {
-      hideRouter: false,
-      hideRouters: ['/500', '/not-permission', '/not-found'],
+      // hideRouter: false,
+      // hideRouters: ['/500', '/401', '/404'],
       myBackToTopStyle: {
         right: '50px',
         bottom: '50px',
@@ -66,11 +67,11 @@ export default {
   },
   watch: {
     $route() {
-      this.hideRouter = this.hideRouters.includes(this.$route.path)
+      // this.hideRouter = this.hideRouters.includes(this.$route.path)
     }
   },
   mounted() {
-    this.hideRouter = this.hideRouters.includes(this.$route.path)
+    // this.hideRouter = this.hideRouters.includes(this.$route.path)
   }
 }
 </script>

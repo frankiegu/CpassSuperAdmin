@@ -24,9 +24,11 @@ export const constantRouterMap = [
         path: 'home',
         component: _import('home'),
         hidden: true
-      }
+      },
+      ...error
     ]
   },
+  ...example,
   ...client,
   ...service,
   ...field,
@@ -36,8 +38,13 @@ export const constantRouterMap = [
   ...cantonFair,
   ...feedback,
   ...register,
-  ...example,
-  ...error
+  /* 必须保证404页面在最后引入，有坑 */
+  {
+    name: '没有发现 ',
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 export const asyncRouterMap = [
