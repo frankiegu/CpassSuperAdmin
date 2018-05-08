@@ -9,7 +9,7 @@ export default [{
   path: '/refund',
   redirect: '/refund/list',
   component: layout,
-  icon: 'icon-viip',
+  icon: 'icon-finance',
   children: [
     {
       name: '退款审批',

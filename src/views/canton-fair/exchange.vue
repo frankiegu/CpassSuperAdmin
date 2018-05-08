@@ -82,13 +82,13 @@
 
       <el-pagination
         :total="pageTotal"
+        :layout="layoutArr"
         :page-size="pageSize"
+        :page-sizes="pageSizeArr"
         :current-page="currentPage"
+        class="pagination-container"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[10, 20, 30, 40]"
-        class="pagination-container"
         background></el-pagination>
     </div>
   </div>
