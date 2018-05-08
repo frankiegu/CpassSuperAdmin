@@ -3,7 +3,7 @@
     <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
+      <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
           <el-date-picker

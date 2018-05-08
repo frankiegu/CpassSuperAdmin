@@ -3,7 +3,7 @@
     <lh-title title="客户列表"></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="lh-card-head">
+      <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">

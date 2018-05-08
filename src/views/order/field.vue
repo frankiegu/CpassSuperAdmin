@@ -3,7 +3,7 @@
     <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="lh-card-head">
+      <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
         <el-form-item>
           <el-select
             v-model="formData.status"
