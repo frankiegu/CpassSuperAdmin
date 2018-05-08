@@ -18,7 +18,8 @@ export default {
     formatTime(time) {
       return !time ? '' : time.replace(/:\d{2}$/, '')
     },
-    getPageData() {
+    getPageData(page) {
+      this.currentPage = page || this.currentPage
       const formData = this.formData
       const paramsObj = {
         pageSize: this.pageSize,

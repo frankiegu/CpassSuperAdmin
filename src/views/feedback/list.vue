@@ -8,7 +8,7 @@
         <el-form-item>
           <el-date-picker
             v-model="formData.reg_date"
-            @change="getPageData"
+            @change="getPageData(1)"
             type="daterange"
             align="right"
             clearable
@@ -21,11 +21,11 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.content"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入内容"
             class="width220px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 

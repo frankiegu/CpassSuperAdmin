@@ -9,7 +9,7 @@ export default [{
   path: '/canton-fair',
   redirect: '/canton-fair/exchange',
   component: layout,
-  icon: 'icon-Site',
+  icon: 'icon-activity',
   children: [
     {
       name: '兑换列表',

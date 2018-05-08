@@ -7,7 +7,7 @@
         <el-form-item>
           <el-select
             v-model="formData.status"
-            @change="getPageData"
+            @change="getPageData(1)"
             placeholder="请选择订单状态"
             class="width150px"
             clearable>
@@ -22,7 +22,7 @@
         <el-form-item>
           <el-date-picker
             v-model="formData.orderDate"
-            @change="getPageData"
+            @change="getPageData(1)"
             type="daterange"
             align="right"
             clearable
@@ -35,7 +35,7 @@
         <el-form-item>
           <el-date-picker
             v-model="formData.bookDate"
-            @change="getPageData"
+            @change="getPageData(1)"
             type="daterange"
             align="right"
             clearable
@@ -48,11 +48,11 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入订单编号"
             class="width210px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 

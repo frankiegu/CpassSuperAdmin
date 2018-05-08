@@ -13,7 +13,7 @@
         <el-form-item>
           <el-select
             v-model="formData.registerWay"
-            @change="getPageData"
+            @change="getPageData(1)"
             placeholder="请选择生成渠道"
             class="width150px"
             clearable>
@@ -43,7 +43,7 @@
         <el-form-item>
           <el-select
             v-model="formData.productStatus"
-            @change="changeStatus"
+            @change="changeStatus(1)"
             placeholder="状态"
             class="width150px"
             clearable>
@@ -55,7 +55,7 @@
         <el-form-item>
           <el-date-picker
             v-model="formData.reg_date"
-            @change="getPageData"
+            @change="getPageData(1)"
             type="daterange"
             align="right"
             clearable
@@ -68,11 +68,11 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入客户名称"
             class="width220px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
@@ -176,17 +176,18 @@
       this.getPageData()
     },
     methods: {
-      changeStatus() {
+      changeStatus(page) {
         if (this.formData.reg_date && this.formData.productStatus === 2) {
           this.formData.reg_date = null
         }
 
-        this.getPageData()
+        this.getPageData(page)
       },
       formatTime(time) {
         return !time ? '' : time.replace(/:\d{2}$/, '')
       },
-      getPageData() {
+      getPageData(page) {
+        this.currentPage = page || this.currentPage
         const formData = this.formData
         const paramsObj = {
           pageSize: this.pageSize,

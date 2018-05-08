@@ -14,7 +14,8 @@ export default {
     this.getPageData()
   },
   methods: {
-    getPageData() {
+    getPageData(page) {
+      this.currentPage = page || this.currentPage
       const formData = this.formData
       const paramsObj = {
         pageSize: this.pageSize,

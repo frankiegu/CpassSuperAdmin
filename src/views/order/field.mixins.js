@@ -35,7 +35,8 @@ export default {
       return row.created
       // return row.email.replace(/:\d{2}$/, '')
     },
-    getPageData() {
+    getPageData(page) {
+      this.currentPage = page || this.currentPage
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,

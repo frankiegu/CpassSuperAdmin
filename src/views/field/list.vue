@@ -7,11 +7,11 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入场地名称"
             class="width220px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
       </el-form>
@@ -98,7 +98,8 @@
       formatterPrice(row, column) {
         return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
-      getPageData() {
+      getPageData(page) {
+        this.currentPage = page || this.currentPage
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
