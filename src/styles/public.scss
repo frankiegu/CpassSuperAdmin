@@ -15,6 +15,80 @@
 @import './public/svg';
 @import './public/switch';
 @import './public/form';
+/* 链接
+-------------------------- */
+/* 文本链接 */
+.text-link {
+  color: $theme-blue;
+  cursor: pointer;
+}
+
+.lh-process {
+  display: inline-block;
+  width: 200px;
+  height: 12px;
+  border-radius: 10px;
+  border: 1px solid $border-light-gray;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  span {
+    display: inline-block;
+    height: 10px;
+    vertical-align: top;
+  }
+  .blue-step {
+    background-color: $theme-blue;
+    opacity: 1;
+  }
+  .light-blue-step {
+    opacity: 0.5;
+  }
+}
+
+/* 未分类
+-------------------------- */
+.lh-edit-img {
+  color: $theme-grayish;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border-bottom: 1px solid #E8E8E8;
+  box-sizing: border-box;
+
+  &.no-border {
+    border-bottom: 0;
+  }
+  .fill-grayish {
+    width: 30px;
+    height: 30px;
+    margin-right: 9px;
+  }
+}
+.el-step__description {
+  font-size: 14px;
+}
+.el-checkbox__inner {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+.el-checkbox__inner::after {
+  width: 4px;
+  height: 8px;
+}
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+  // background: #FBFBFD;
+  border: 1px solid $border-grayish;
+}
+.el-loading-mask {
+  z-index: 999;
+}
+.el-tabs__nav-wrap::after {
+  height: 1px;
+}
 
 /**
  * navbar

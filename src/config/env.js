@@ -15,7 +15,7 @@ const _import = require('@/router/src/_import_' + process.env.NODE_ENV)
 // 手机号码正则
 const PHONEREG = /^(0|86|17951)?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/
 // 固定电话正则
-const FIXPHONEREG = /^(0\d{2,3}-|\s)?\d{7,8}$/
+const FIXPHONEREG = /^\d{3}-\d{7,8}|\d{4}-\d{7,8}$/
 // email正则
 const EMAILREG = /^\w+([-+.´]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
 // 检验正整数

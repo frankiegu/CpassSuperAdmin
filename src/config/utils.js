@@ -2,6 +2,49 @@ import store from '@/store'
 import router from '@/router'
 import { PHONEREG } from './env'
 
+// 对象深拷贝
+export function deepCopyObj(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+// 返回开始时间-结束时间之间的时长
+export function calcLongTime(startTime, endTime) {
+  let handleStartTime = startTime.split(/:/)
+  let handleEndTime = endTime.split(/:/)
+  let hour = handleEndTime[0] - handleStartTime[0]
+  let point = handleEndTime[1] - handleStartTime[1]
+
+  return ((point === 30) ? hour + '.5' : hour)
+}
+
+// 选择起始结束时间组合，返回结束时间的开始时间点
+export function getEndStartTime(time) {
+  let handle
+  handle = time.split(/:/)
+
+  let a = handle[0]
+  let b = handle[1]
+  let c = '00'
+  let d
+
+  if (b === '00') {
+    c = '30'
+    d = a
+  } else {
+    c = '00'
+    if (a <= 8) {
+      a++
+      d = '0' + a
+    } else {
+      a++
+      d = a
+      // 超过23:30的，就显示为空
+    }
+  }
+
+  return (d + ':' + c)
+}
+
 // logout no token
 export function logoutNoToken() {
   store.commit('SET_TOKEN', '')
