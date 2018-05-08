@@ -495,11 +495,11 @@ export default {
           this.fieldImgs = []
           for (let item of resInfo.fieldImgs) {
             // @#注意：主图不重复展示在列表中
-            if (item.mainImg === 1) {
-              this.mainImg = item.img
-            } else {
-              this.fieldImgs.push({ url: item.img })
-            }
+            // if (item.mainImg === 1) {
+            //   this.mainImg = item.img
+            // } else {
+            this.fieldImgs.push({ url: item.img })
+            // }
           }
 
           switch (this.fieldType) {
