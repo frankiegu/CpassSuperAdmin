@@ -7,9 +7,10 @@
   color: #fff;
   /* 英文比中文上下少两个像素，高度少4个像素，这种情况设置高度和行高兼容 */
   padding: 9px 15px;
+  height: 32px;
   border-radius: 4px;
-  @include to-bottom-right;
   box-sizing: border-box;
+  @include to-bottom-right;
 
   /* 英文 */
   &.pv7 {
@@ -24,7 +25,7 @@
 /* 按钮最小宽度80，正常高度32，特殊高度需要设置 */
 .el-button {
   // height: 32px;
-  padding: 8px 15px;
+  // padding: 8px 15px;
   // min-width: 80px;
 
   &.el-button--mini {

@@ -40,8 +40,10 @@
           <template slot-scope="scope">
             <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="scope.row.statusCode === 1"
               class="operate-btn">置顶</el-button>
-            <el-tooltip :content="scope.row.isPermitOpen === 1 ? '关闭将不在小程序服务列表展示' : '开启将展示在小程序服务列表'"
+            <el-tooltip
+              :content="scope.row.isPermitOpen === 1 ? '关闭将不在小程序服务列表展示' : '服务已被关闭,不能设置状态'"
               placement="top" style="margin-top: -5px">
+              <!-- :disabled="!scope.row.isPermitOpen" -->
               <el-switch
                 v-model="scope.row.isPermitOpen"
                 :active-value="1"
