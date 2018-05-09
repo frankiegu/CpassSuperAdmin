@@ -24,12 +24,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/common/var";
 .lh-svg {
   width: 22px;
   height: 22px;
   vertical-align: middle;
   /* svg默认灰色 */
-  fill: #000;
+  color: $theme-gray;
+  fill: $theme-gray;
   overflow: hidden;
 }
 </style>

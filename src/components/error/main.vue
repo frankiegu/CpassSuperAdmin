@@ -1,7 +1,9 @@
+<!--
+  @#注意：修改这里的命名，需要全局修改，fetch、路由拦截（permission）、router等
+-->
 <template>
   <div class="page-error">
-    <!-- @#TODO明天替换图片 -->
-    <img v-if="errorTitle === '403'" src="/static/images/403.png">
+    <img v-if="errorTitle === '401'" src="/static/images/401.png">
     <img v-else src="/static/images/404.png">
 
     <div class="width240px">
