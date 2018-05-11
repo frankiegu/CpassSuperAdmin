@@ -19,7 +19,7 @@
         <el-table-column label="订单编号" width="140">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/order/service/detail', query: {id: scope.row.id}}"
+              :to="{path: '/service/order/detail', query: {id: scope.row.id}}"
               class="table-link">
               {{ scope.row.orderNum }}
             </router-link>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import serviceOrder from './service.mixins'
+  import serviceOrder from './order.mixins'
   import { serviceAcceptOrder } from '@/service/order'
   export default {
     mixins: [serviceOrder],

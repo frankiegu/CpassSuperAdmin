@@ -71,7 +71,7 @@
         <el-table-column label="订单编号" fixed="left" align="left" width="140">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/order/field/detail', query: {id: scope.row.platformOrderId}}"
+              :to="{path: '/field/order/detail', query: {id: scope.row.platformOrderId}}"
               class="table-link">
               {{ scope.row.orderNum }}
             </router-link>
@@ -133,7 +133,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import fieldMixins from './field.mixins'
+  import fieldMixins from './order.mixins'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   export default {

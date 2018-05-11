@@ -141,7 +141,7 @@
 
 <script>
   import { fieldOrderDetail } from '@/service/order'
-  import fieldDetailMixins from './field-detail.mixins'
+  import fieldDetailMixins from './order-detail.mixins'
 
   export default {
     mixins: [fieldDetailMixins],
