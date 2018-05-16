@@ -1,5 +1,7 @@
 <template>
-  <section class="coupon-list-page"></section>
+  <section class="coupon-list-page">
+    <lh-title></lh-title>
+  </section>
 </template>
 <script>
 

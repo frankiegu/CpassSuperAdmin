@@ -13,11 +13,11 @@ export default [{
   children: [{
     name: '优惠券',
     path: 'coupon',
-    component: _import('market/coupon')
+    component: _import('market/coupon/coupon')
   }, {
     name: '优惠券详情',
     path: 'coupon-detail',
     hidden: true,
-    component: _import('market/coupon-detail')
+    component: _import('market/coupon/coupon-detail')
   }]
 }]
