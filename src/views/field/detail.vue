@@ -100,7 +100,7 @@
 
         <el-table-column label="收费标准">
           <template slot-scope="scope">
-            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === 1 ? '元/小时' : '元/天') : '-' }}
+            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === '1' ? '元/小时' : '元/天') : '-' }}
           </template>
         </el-table-column>
       </el-table>

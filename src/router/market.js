@@ -19,5 +19,10 @@ export default [{
     path: 'coupon-detail',
     hidden: true,
     component: _import('market/coupon/coupon-detail')
+  }, {
+    name: '添加优惠券',
+    path: '/coupon/add',
+    hidden: true,
+    component: _import('market/coupon/add')
   }]
 }]
