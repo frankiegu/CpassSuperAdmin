@@ -11,6 +11,7 @@ import member from '@/router/member'               // 会员管理
 import refund from '@/router/refund'               // 退款
 import cantonFair from '@/router/canton-fair'      // 广交会活动
 import feedback from '@/router/feedback'           // 广交会活动
+import market from '@/router/market'           // 营销管理
 
 export const constantRouterMap = [
   {
@@ -37,6 +38,7 @@ export const constantRouterMap = [
   ...refund,
   ...cantonFair,
   ...feedback,
+  ...market,
   ...register,
   /* 必须保证404页面在最后引入，有坑 */
   {
