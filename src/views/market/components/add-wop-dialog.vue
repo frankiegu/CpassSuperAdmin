@@ -3,7 +3,6 @@
   <el-dialog class="add-wop-dialog" title="添加核销点" :lock-scroll="false" :visible.sync="isVisible"
     :before-close="closeDialog" width="500px">
     <el-form :model="formData" label-width="100px" :rules="formRules" ref="addWop">
-      <!-- TODO 判断名称唯一 -->
       <el-form-item label="核销点名称" prop="name">
         <el-input v-model.trim="formData.name" placeholder="请输入核销点名称"></el-input>
       </el-form-item>
@@ -71,7 +70,7 @@
           addressDetail: ''
         },
         formRules: {
-          name: [
+          name: [ // TODO 判断名称唯一
             { required: true, message: '请输入核销点名称', trigger: ['blur', 'change'] },
             { max: 20, message: '最大允许输入20字', trigger: ['blur', 'change'] }
           ],
