@@ -76,8 +76,10 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
-          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green">导出表格</el-button>
+        <el-form-item class="fr">
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
         </el-form-item>
       </el-form>
 
