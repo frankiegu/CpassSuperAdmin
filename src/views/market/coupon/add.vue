@@ -36,7 +36,77 @@
       <!-- 卡券内容 -->
       <div class="content-body">
         <h3 class="senior-title">卡券内容</h3>
-        <div class="card-body"></div>
+        <div class="card-body">
+          <el-form-item label="卡券类型" required>
+            <el-radio-group v-model="couponForm.couponType">
+              <el-radio v-for="(value, key) in couponTypeList" :label="key" :key="key">{{value}}</el-radio>
+              <el-radio :label="1">小时券</el-radio>
+              <el-radio :label="3">礼品券</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <transition name="slide-fade" mode="out-in">
+            <!-- 小时券 -->
+            <div v-if="couponForm.couponType === 1" v-bind:key="1">
+              <el-form-item label="优惠内容" required>
+                减免场地订单
+                <el-select v-model="couponForm.subtractHour" class="width60px">
+                  <el-option v-for="i in 8" :key="i" :label="i" :value="i" />
+                </el-select>
+                小时的费用
+              </el-form-item>
+
+              <el-form-item label="指定项目" prop="fieldType">
+                <el-checkbox-group v-model="couponForm.fieldType">
+                  <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" :label="parseInt(key)">
+                    {{value}}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+
+              <!--<el-form-item label="使用范围" required>-->
+                <!--<el-radio-group v-model="couponForm.isAllStore">-->
+                  <!--<el-radio :label="1">全部门店</el-radio>-->
+                  <!--<el-radio :label="2">部分门店</el-radio>-->
+                <!--</el-radio-group>-->
+
+                <!--<transition name="slide-fade">-->
+                  <!--<el-form-item v-if="couponForm.isAllStore === 2" class="">-->
+                    <!--<el-tree></el-tree>-->
+                  <!--</el-form-item>-->
+                <!--</transition>-->
+              <!--</el-form-item>-->
+            </div>
+
+            <!-- 礼品券 -->
+            <div v-if="couponForm.couponType === 3" v-bind:key="2">
+              <el-form-item label="卡券权益" prop="couponRight">
+                <el-input v-model.trim="couponForm.couponRight" class="width300px"
+                  placeholder="请输入可享受的权益"></el-input>
+              </el-form-item>
+            </div>
+          </transition>
+
+          <el-form-item label="使用范围" required>
+            <el-radio-group v-model="couponForm.isAllStore">
+              <el-radio :label="1">{{couponForm.couponType === 1 ? '全部门店' : '全部核销点'}}</el-radio>
+              <el-radio :label="2">{{couponForm.couponType === 1 ? '部分门店' : '部分核销点'}}</el-radio>
+              <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
+                添加
+              </el-button>
+            </el-radio-group>
+
+            <transition name="slide-fade">
+              <el-form-item v-if="couponForm.isAllStore === 2" class="range-cont clearfix">
+                <div class="list-cont fl">
+                  <el-input v-model="filterText" placeholder="输入关键字进行过滤"></el-input>
+                  <el-tree></el-tree>
+                </div>
+                <div class="list-cont fl"></div>
+              </el-form-item>
+            </transition>
+          </el-form-item>
+        </div>
       </div>
 
       <!-- 领取方式 -->
@@ -46,22 +116,32 @@
           <el-form-item label="领取方式" prop="receiveWay">
             <el-checkbox-group v-model="couponForm.receiveWay">
               <el-checkbox :label="1">条件触发</el-checkbox>
-              <el-button v-if="couponForm.receiveWay.includes(1)" type="text" class="ml12">添加</el-button><br>
+              <el-button v-if="couponForm.receiveWay.includes(1)" @click="isWayVisible = true"
+                type="text" class="ml30">添加</el-button><br>
               <el-checkbox :label="2">支持手动领取</el-checkbox><br>
               <el-checkbox :label="3">支持手动下发</el-checkbox><br>
             </el-checkbox-group>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" class="width120px">创 建</el-button>
           </el-form-item>
         </div>
       </div>
     </el-form>
 
+    <!-- TODO 添加领取方式弹窗 -->
+    <el-dialog title="添加领取方式" :lock-scroll="false" :visible.sync="isWayVisible" width="500px"></el-dialog>
+
     <!-- 添加核销点弹窗 -->
-    <add-wop-dialog v-if="false" :is-visible="isWopVisible" @closeDialog="isWopVisible = false"></add-wop-dialog>
+    <add-wop-dialog v-if="couponForm.couponType === 3" :is-visible="isWopVisible" @closeDialog="isWopVisible = false"></add-wop-dialog>
   </div>
 </template>
 
 <script>
   import addWopDialog from '../components/add-wop-dialog'
+  import { loadConstant } from '@/service/common'
+
   export default {
     name: 'add',
     data() {
@@ -73,11 +153,31 @@
         callback()
       }
       return {
+        filterText: '',
+        // 指定项目列表
+        fieldTypeList: {
+          1: '会议室',
+          2: '路演厅',
+          3: '开放式卡座',
+          4: '其他场地'
+        },
+        // 卡券类型列表
+        couponTypeList: [],
         couponForm: {
           name: '',
           desc: '',
           amount: '',
           expireDate: [],
+          couponType: 1, // 卡券类型
+
+          // 小时券
+          subtractHour: 1, // 减免时长
+          fieldType: [],
+          isAllStore: 1, // 是否应用全部门店 1-全部门店，2-部分门店
+          range: [], // 部分门店的选中门店列表
+
+          // 礼品券
+          couponRight: '', // 卡券权益
           receiveWay: []
         },
         couponFormRules: {
@@ -95,6 +195,13 @@
           expireDate: [
             { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] }
           ],
+          fieldType: [
+            { required: true, message: '至少选择一个项目', trigger: ['blur', 'change'] }
+          ],
+          couponRight: [
+            { required: true, message: '请输入可享受的权益', trigger: ['blur', 'change'] },
+            { max: 50, message: '最大允许输入50字', trigger: ['blur', 'change'] }
+          ],
           receiveWay: [
             { required: true, message: '至少选择一种领取方式', trigger: ['blur', 'change'], type: 'array' }
           ]
@@ -104,16 +211,55 @@
             return time.getTime() < Date.now() - 3600 * 1000 * 24;
           }
         },
+        isWayVisible: false, // 添加领取方式弹窗
         isWopVisible: false // 添加核销点弹窗
       }
     },
     components: { addWopDialog },
     mounted() {
+      loadConstant('couponReceive.conditionType').then(res => {
+        if (res.status === 'true') {
+          console.log(res.info)
+        }
+      })
+      loadConstant('platformCoupon.couponType').then(res => {
+        if (res.status === 'true') {
+          this.couponTypeList = res.info
+        }
+      })
     },
     methods: {}
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  .add-coupon {
+    .el-form-item--small .el-form-item__content {
+      line-height: 32px;
+    }
+    .el-button--text {
+      padding: 8px 0;
+    }
 
+    .card-body {
+      transition: all ease .25s;
+    }
+  }
+</style>
+
+<style lang="scss" scoped>
+  @import "src/styles/config";
+  .add-coupon {
+    .range-cont {
+      margin-right: -12px;
+      .list-cont {
+        margin-right: 12px;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+        padding: 12px;
+        box-sizing: border-box;
+        width: calc(50% - 12px);
+      }
+    }
+  }
 </style>

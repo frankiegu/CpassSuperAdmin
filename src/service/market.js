@@ -9,7 +9,7 @@ import { API_PATH } from '../config/env'
 export const loadSpaceStoreTree = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/loadSpaceStoreTree', obj, 'POST')
 
 // 获取核销点列表(无分页)
-export const platformVerifyStation = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/page', obj, 'POST')
+export const loadStation = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/loadStation', obj, 'POST')
 
 // 检验卡券名称是否重复
 export const isUniqueCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/isUnique', obj, 'POST')

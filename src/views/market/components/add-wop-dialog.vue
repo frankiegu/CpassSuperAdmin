@@ -8,11 +8,12 @@
       </el-form-item>
 
       <el-form-item label="关联门店">
-        <el-cascader v-model="formData.storeId" :options="addressList"></el-cascader>
+        <el-cascader v-model="formData.storeId" :props="storeProp" :options="storeList"></el-cascader>
       </el-form-item>
 
-      <el-form-item label="地址" prop="address">
-        <el-cascader v-model="formData.address" placeholder="省/市/区" :options="addressList"></el-cascader>
+      <el-form-item label="地址" prop="addressCode">
+        <el-cascader v-model="formData.addressCode" placeholder="省/市/区" :props="addressProp"
+          :options="addressList"></el-cascader>
       </el-form-item>
 
       <el-form-item prop="addressDetail">
@@ -27,46 +28,29 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
+  import { addPlatformVerifyStation, stationStoreTree } from '@/service/market'
   export default {
     name: 'add-wop-dialog',
     data() {
       return {
-        // 地址列表
-        addressList: [{
-          value: 'zhinan',
-          label: '指南',
-          children: [{
-            value: 'shejiyuanze',
-            label: '设计原则',
-            children: [{
-              value: 'yizhi',
-              label: '一致'
-            }]
-          }]
-        }, {
-          value: 'zujian',
-          label: '组件',
-          children: [{
-            value: 'basic',
-            label: 'Basic',
-            children: [{
-              value: 'layout',
-              label: 'Layout 布局'
-            }]
-          }]
-        }, {
-          value: 'ziyuan',
-          label: '资源',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }]
-        }],
+        storeList: [], // 关联门店列表
+        storeProp: {
+          label: 'name',
+          value: 'storeId',
+          children: 'children'
+        },
+        addressProp: {
+          label: 'name',
+          value: 'code',
+          children: 'children',
+          disabled: 'disabled'
+        },
         // 表单数据
         formData: {
           name: '',
           storeId: [],
-          address: [],
+          addressCode: [],
           addressDetail: ''
         },
         formRules: {
@@ -74,7 +58,7 @@
             { required: true, message: '请输入核销点名称', trigger: ['blur', 'change'] },
             { max: 20, message: '最大允许输入20字', trigger: ['blur', 'change'] }
           ],
-          address: [
+          addressCode: [
             { required: true, message: '请选择省市区', trigger: ['blur', 'change'] }
           ],
           addressDetail: [
@@ -87,16 +71,54 @@
     props: {
       isVisible: [Boolean]
     },
+    computed: {
+      ...mapGetters({
+        addressList: 'regionList'
+      })
+    },
     mounted() {
+      // 获取省市区列表
+      this.getRegionList()
+      // 获取
+      this.handleGetStoreList()
     },
     methods: {
+      ...mapActions([
+        'getRegionList'
+      ]),
+      // 获取关联门店列表
+      handleGetStoreList() {
+        stationStoreTree().then(res => {
+          if (res.status === 'true') {
+            this.storeList = res.info
+          }
+        })
+      },
+      // 关闭对话框
       closeDialog() {
         this.$emit('closeDialog')
       },
+      // 提交表单
       submitForm() {
         this.$refs['addWop'].validate((valid) => {
           if (valid) {
-            this.$emit('closeDialog')
+            let formData = this.formData
+            let params = {
+              name: formData.name,
+              storeId: formData.storeId ? formData.storeId[1] : '',
+              provinceCode: formData.addressCode ? formData.addressCode[0] : '',
+              cityCode: formData.addressCode ? formData.addressCode[1] : '',
+              districtCode: formData.addressCode ? formData.addressCode[2] : '',
+              address: formData.addressDetail
+            }
+            addPlatformVerifyStation(params).then(res => {
+              if (res.status === 'true') {
+                this.$message.success('添加成功！')
+                this.$emit('closeDialog')
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
           }
         })
       }
