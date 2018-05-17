@@ -37,7 +37,7 @@
         storeList: [], // 关联门店列表
         storeProp: {
           label: 'name',
-          value: 'storeId',
+          value: 'code',
           children: 'children'
         },
         addressProp: {
