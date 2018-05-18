@@ -1,32 +1,31 @@
 <template>
   <section class="coupon-detail-page">
     <!--<lh-title></lh-title>-->
-    <lh-title :title="couponInfo.name">
+    <lh-title :title="couponBaseInfo.name">
       <span class="ml12">
         <!--小时券, 礼品券, 折扣券, 满减券-->
-        <el-tag class="mt2" type="success" size="mini" v-if="couponInfo.type === 0">小时券</el-tag>
-        <el-tag class="mt2" type="success" size="mini" v-if="couponInfo.type === 1">礼品券</el-tag>
-        <el-tag class="mt2" type="success" size="mini" v-if="couponInfo.type === 2">折扣券</el-tag>
-        <el-tag class="mt2" type="success" size="mini" v-if="couponInfo.type === 4">满减券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 1">小时券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 2">满减券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 3">礼品券</el-tag>
       </span>
       <span class="coupon-created ml25">创建日期</span>
-      <span class="coupon-created ml10">2018-5-7 17:09</span>
+      <span class="coupon-created ml10">{{couponBaseInfo.created}}</span>
 
       <div class="right-part fr">
         <!-- 完成第一次发放后不可删除，按钮隐藏v-permissions="'/manage/coupon/delete'"  -->
-        <span v-if="couponInfo.publishStatus === 0"
+        <span v-if="couponBaseInfo.canEdit === 1"
               @click="deleteCoupon(couponInfo.id)" class="delete-coupon coupon-created mr15">删除</span>
         <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         <el-tooltip
-          :content="couponInfo.publishStatus === 0 ? '点击冻结优惠券' : '点击解冻优惠券'"
+          :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
           <el-switch
             class=""
-            v-model="couponInfo.controlStatus"
+            v-model="couponBaseInfo.controlStatus"
             active-text=""
             inactive-text=""
-            @change="businessToggleAll(couponInfo.controlStatus, couponInfo.id)"
+            @change="businessToggleAll(couponBaseInfo.controlStatus, couponBaseInfo.id)"
             :active-color="switchActiveColor"></el-switch>
         </el-tooltip>
         <div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>
@@ -38,19 +37,21 @@
         <el-col :span="16">
           <el-row :gutter="20">
             <el-col>
-              <p>{{couponInfo.mark}}</p>
+              <p>{{couponBaseInfo.description}}</p>
             </el-col>
           </el-row>
 
           <el-row :gutter="20" class="mt20">
             <el-col>
-              <lh-item label="优惠内容：" label-width="87px">{{ couponInfo.discountContent }}</lh-item>
+              <lh-item label="优惠内容：" label-width="87px">
+                <span v-if="couponBaseInfo.type === 1">减免场地订单{{couponDiscountContent.subtractHour}}小时的费用</span>
+              </lh-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="6">
-              <lh-item label="总张数：" label-width="60px">{{couponInfo.total}}</lh-item>
+              <lh-item label="总张数：" label-width="60px">{{couponBaseInfo.quantity}}</lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="领取率：" label-width="60px">
@@ -214,12 +215,14 @@
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
+              v-if="couponInfo.type === 1 || couponInfo.type === 3"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
+              v-if="couponInfo.type === 1 || couponInfo.type === 3"
               prop="discountAmount"
               label="优惠金额"
               sortable
@@ -244,10 +247,12 @@
 <script>
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
+  import { couponDetail } from '@/service/market'
   export default {
     data () {
       return {
         activeTab: 'couponInformation',
+        couponId: this.$route.query.id, // 卡券id
         couponInfo: {
           keywords: '', // 领取人输入框
           publishStatus: 0,
@@ -300,6 +305,8 @@
             }
           ]
         },
+        couponBaseInfo: {}, // 优惠券基本信息
+        couponDiscountContent: {}, // 优惠内容
         multipleSelection: [],
 
         tableData: [],
@@ -381,7 +388,27 @@
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      getPageData () {},
+      getPageData () {
+        couponDetail({ id: this.couponId }).then(res => {
+          if (res.status === 'true') {
+            console.log(res)
+            this.couponBaseInfo = res.info.platformCoupon
+            if (this.couponBaseInfo.type === 1) {
+              this.couponDiscountContent = res.info.platformHourCoupon
+            }
+            if (res.info.platformCoupon.status === 1) {
+              this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
+              this.couponBaseInfo.controlStatus = true
+            } else if (res.info.platformCoupon.status === 3) {
+              this.couponBaseInfo.fizenStatusText = '点击解冻优惠券'
+              this.couponBaseInfo.controlStatus = false
+            } else if (res.info.platformCoupon.status === 2) {
+              this.couponBaseInfo.fizenStatusText = '优惠券已过期'
+              this.couponBaseInfo.controlStatus = false
+            }
+          }
+        })
+      },
       handleSizeChange(val) {
         this.pageSize = val
         this.getPageData()
@@ -431,6 +458,9 @@
           });
         });
       }
+    },
+    created () {
+      this.getPageData()
     }
   }
 </script>
