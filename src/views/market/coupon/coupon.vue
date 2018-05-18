@@ -23,7 +23,7 @@
           <el-button type="primary">手动发券</el-button>
         </router-link>
         <router-link
-          :to="'/market/coupon/add'"
+          :to="'/coupon/add'"
           class="fl">
           <el-button class="ml16">添加优惠券</el-button>
         </router-link>
@@ -53,10 +53,9 @@
           <el-table-column label="类型">
             <template slot-scope="scope">
             <!--小时券, 礼品券, 折扣券, 满减券-->
-            <span v-if="scope.row.type === 0">小时券</span>
-            <span v-if="scope.row.type === 1">礼品券</span>
-            <span v-if="scope.row.type === 2">折扣券</span>
-            <span v-if="scope.row.type === 3">满减券</span>
+            <span v-if="scope.row.type === 1">小时券</span>
+            <span v-if="scope.row.type === 2">满减券</span>
+            <span v-if="scope.row.type === 3">礼品券</span>
           </template>
           </el-table-column>
 
@@ -82,7 +81,7 @@
           <el-table-column label="状态">
             <template slot-scope="scope">
               <!--有效, 冻结, 过期-->
-              <span v-if="scope.row.status === 0">过期</span>
+              <span v-if="scope.row.status === 2">过期</span>
               <span v-else-if="scope.row.status === 1">有效</span>
               <span v-else>冻结</span>
             </template>
@@ -91,7 +90,10 @@
           <!-- 6 -->
           <el-table-column label="优惠内容">
             <template slot-scope="scope">
-              <span>{{ scope.row.content }}</span>
+              <!--小时券-->
+              <span v-if="scope.row.type === 1">{{ scope.row.subtractHour }}小时</span>
+              <!--礼品券-->
+              <span v-if="scope.row.type === 3">{{ scope.row.benefit }}</span>
             </template>
           </el-table-column>
 
@@ -99,20 +101,32 @@
           <el-table-column label="总数">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="已使用/已领取/总数" placement="top-start">
-                <span>{{ scope.row.useQuantity }}/{{ scope.row.receiveQuantity }}/{{ scope.row.totalQuantity }}</span>
+                <span>{{ scope.row.useQuantity || 0 }}/{{ scope.row.receiveQuantity || 0 }}/{{ scope.row.quantity }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
 
           <!-- 8 -->
-          <el-table-column label="使用范围" prop="useArea"></el-table-column>
+          <el-table-column label="使用范围">
+            <template slot-scope="scope">
+              <!--小时券-->
+              <!--storeType = 1 ==> 全部-->
+              <span v-if="scope.row.storeType === 1 && scope.row.type === 1">全部门店</span>
+              <!--storeType = 2 ==> 部分-->
+              <span v-if="scope.row.storeType === 2 && scope.row.type === 1">部分门店</span>
+              <!--礼品券-->
+              <span v-if="scope.row.verifyStationType === 1 && scope.row.type === 3">全部核销点</span>
+              <!--storeType = 2 ==> 部分-->
+              <span v-if="scope.row.verifyStationType === 2 && scope.row.type === 3">部分核销点</span>
+            </template>
+          </el-table-column>
 
           <!-- 9 -->
           <el-table-column
             label="添加日期" sortable>
 
             <template slot-scope="scope">
-              {{ scope.row.addDate }}
+              {{ scope.row.created }}
             </template>
           </el-table-column>
 
@@ -121,7 +135,9 @@
             label="条件触发">
 
             <template slot-scope="scope">
-              {{ scope.row.triggerConditions || '未设置' }}
+              <span v-if="scope.row.receiveConditionStatus === 0">未生效</span>
+              <span v-if="scope.row.receiveConditionStatus === 1">生效中</span>
+              <span v-if="!scope.row.receiveConditionStatus && scope.row.receiveConditionStatus !== 0">未设置</span>
             </template>
           </el-table-column>
         </el-table>
@@ -143,62 +159,50 @@
 </template>
 <script>
   import tableMixins from '@/mixins/table'
+  import { couponList } from '@/service/market'
   export default {
     mixins: [tableMixins],
     data () {
       return {
-        counponTable: [
-          {
-            name: '模拟数据',
-            type: 1,
-            startDate: '2018-05-16 12:00:00',
-            endDate: '2018-05-31 12:00:00',
-            status: 1,
-            content: '可兑换一杯咖啡',
-            useQuantity: 10,
-            receiveQuantity: 10,
-            totalQuantity: 20,
-            useArea: '全部核销点',
-            addDate: '2018-05-16 10:00:00',
-            pushStatus: 1,
-            triggerConditions: ''
-          }
-        ],
+        counponTable: [],
         couponSort: {
           keywords: ''
         }
       }
     },
     methods: {
-      getPageData(page) {
-        // this.currentPage = page || this.currentPage
-        // const self = this
-        // const paramsObj = {
-        //   pageNum: self.currentPage,
-        //   pageSize: self.pageSize,
-        //   publishStatus: self.couponSort.status,
-        //   keywords: self.couponSort.keywords
-        // }
-        // console.log('paramsObj: ', paramsObj);
-
-        // couponList(paramsObj).then(res => {
-        //   if (res.status === 'true') {
-        //     self.pageTotal = res.info.page.total
-        //     // self.counponTable = [] // res.info.page.result
-        //     self.counponTable = res.info.page.result
-        //     self.tableLoading = false
-        //     if (self.counponTable.length === 0) {
-        //       self.tableEmpty = '暂时无数据'
-        //     }
-        //   } else {
-        //     self.$message({
-        //       showClose: true,
-        //       message: res.msg,
-        //       type: 'error'
-        //     })
-        //   }
-        // })
+      getPageData (page) {
+        this.currentPage = page || this.currentPage
+        const self = this
+        const paramsObj = {
+          pageNum: self.currentPage,
+          pageSize: self.pageSize,
+          couponName: self.couponSort.keywords
+        }
+        couponList(paramsObj).then(res => {
+          if (res.status === 'true') {
+            self.pageTotal = res.info.total
+            res.info.result.forEach(v => {
+              v.useQuantity = v.statistics.used
+              v.receiveQuantity = v.statistics.received
+            })
+            self.counponTable = res.info.result
+            self.tableLoading = false
+            if (self.counponTable.length === 0) {
+              self.tableEmpty = '暂时无数据'
+            }
+          } else {
+            self.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'error'
+            })
+          }
+        })
       }
+    },
+    mounted () {
+      this.getPageData()
     }
   }
 </script>

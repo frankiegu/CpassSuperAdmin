@@ -14,6 +14,9 @@ export const loadStation = (obj) => fetch(API_PATH + '/supervisor/platformVerify
 // 检验卡券名称是否重复
 export const isUniqueCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/isUnique', obj, 'POST')
 
+// 优惠券列表查询
+export const couponList = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/list', obj, 'POST')
+
 /**
  * 核销管理
  */
