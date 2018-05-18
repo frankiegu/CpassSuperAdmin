@@ -17,6 +17,9 @@ export const isUniqueCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCou
 // 优惠券列表查询
 export const couponList = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/list', obj, 'POST')
 
+// 优惠券详情查询
+export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/detail', obj, 'POST')
+
 /**
  * 核销管理
  */
