@@ -75,7 +75,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import { cantonfairCoupon } from '@/service/canton-fair'
+  import { PlatformVerifyStationPage } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
@@ -94,7 +94,7 @@
           pageSize: self.pageSize,
           pageNum: self.currentPage
         }
-        cantonfairCoupon(paramsObj).then(res => {
+        PlatformVerifyStationPage(paramsObj).then(res => {
           if (res.status === 'true') {
             if (res.info) {
               let data = res.info
