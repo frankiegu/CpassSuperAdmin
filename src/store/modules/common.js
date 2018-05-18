@@ -37,9 +37,7 @@ const common = {
     toggleSideBar: ({ commit }) => commit('TOGGLE_SIDEBAR'),
     // 获取省市区列表
     getRegionList: ({ commit, state }) => {
-      console.log('1')
       if (!state.regionList.length) {
-        console.log('2')
         regionList().then(res => {
           if (res.status === 'true') {
             commit('GET_REGION_LIST', res.info.children)
