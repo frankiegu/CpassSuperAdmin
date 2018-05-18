@@ -24,6 +24,7 @@ export default {
   .tab-link {
     display: inline-block;
     line-height: 1;
+    color: #5A72F6;
     width: 100px;
     height: 35px;
     line-height: 35px;

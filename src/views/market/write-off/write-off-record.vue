@@ -1,18 +1,7 @@
 <template>
   <div class="order-field">
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
-            placeholder="请输入核销员名称"
-            class="width220px">
-
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-
+      <el-form :inline="true" class="text-right mr-10">
         <el-form-item class="fr">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
@@ -27,31 +16,25 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="提交时间" fixed="left" align="left">
-          <template slot-scope="scope">
-            {{ scope.row.createDate }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="核销员名称" fixed="left" align="left">
-          <template slot-scope="scope">
-            {{ scope.row.couponName }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="手机号码" fixed="left" align="left">
+        <el-table-column label="交易号" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.phone }}
           </template>
         </el-table-column>
 
-        <el-table-column label="核销点" fixed="left" align="left">
+        <el-table-column label="领取时间" fixed="left" align="left" :min-width="100">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.createDate }}
           </template>
         </el-table-column>
 
-        <el-table-column label="所属空间" align="left">
+        <el-table-column label="领取人" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.phone }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="卡券名称" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.couponName }}
           </template>
@@ -65,29 +48,21 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="核销数" align="left">
+        <el-table-column label="核销点" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.couponName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="核销员" align="left">
           <template slot-scope="scope">
             <span>{{ scope.row.shopName }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="left">
+        <el-table-column label="核销时间" align="left">
           <template slot-scope="scope">
-            <span>审核</span>
-            <el-tooltip
-              :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
-              placement="top"
-              class="margin-lr6">
-
-              <el-switch
-                v-model="scope.row.status"
-                :active-value="1"
-                :inactive-value="0"
-                :active-color="switchActiveColor"
-                active-text=""
-                inactive-text=""
-                @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
-            </el-tooltip>
+            <span>{{ scope.row.shopName }}</span>
           </template>
         </el-table-column>
 
@@ -104,10 +79,13 @@
         @current-change="handleCurrentChange"
         background></el-pagination>
     </div>
+
   </div>
 </template>
 
 <script>
+  import { API_PATH } from '@/config/env'
+  import { downloadFile } from '@/config/utils'
   import tableMixins from '@/mixins/table'
   import { cantonfairCoupon } from '@/service/canton-fair'
 
@@ -116,9 +94,6 @@
     components: {},
     data () {
       return {
-        formData: {
-          name: ''
-        }
       }
     },
     mounted () {
@@ -154,7 +129,13 @@
           }
         })
       },
-      exportExcel() {}
+      exportExcel() {
+        if (!this.tableData.length) {
+          return this.setMsg('暂无数据')
+        }
+        let url = API_PATH + '/supervisor/feedback/export'
+        downloadFile(url)
+      }
     }
   }
 </script>
@@ -162,5 +143,20 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .order-field {
+    .operate-btn {
+      padding: 6px;
+    }
+    .detail-info{
+      clear: both;
+      .label{
+        width: 80px;
+        float: left;
+      }
+      .label-con{
+        float: left;
+        width: calc(100% - 80px);
+        margin-bottom: 10px;
+      }
+    }
   }
 </style>

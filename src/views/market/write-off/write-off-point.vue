@@ -1,23 +1,8 @@
 <template>
   <div class="order-field">
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
-            placeholder="请输入核销员名称"
-            class="width220px">
-
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item class="fr">
-          <el-button @click="exportExcel" class="lh-btn-export">
-            <lh-svg icon-class="icon-download" />导出
-          </el-button>
-        </el-form-item>
+      <el-form :inline="true" class="text-right mr-10 lh-card-head info-top">
+        <div class="fl to-bottom-right add-point">添加</div>
       </el-form>
 
       <el-table
@@ -27,55 +12,34 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="提交时间" fixed="left" align="left">
+        <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.createDate }}
           </template>
         </el-table-column>
 
-        <el-table-column label="核销员名称" fixed="left" align="left">
+        <el-table-column label="关联门店" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.couponName }}
           </template>
         </el-table-column>
 
-        <el-table-column label="手机号码" fixed="left" align="left">
+        <el-table-column label="地址" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.phone }}
           </template>
         </el-table-column>
 
-        <el-table-column label="核销点" fixed="left" align="left">
+        <el-table-column label="状态" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.couponName }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="所属空间" align="left">
-          <template slot-scope="scope">
-            {{ scope.row.couponName }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="状态" align="left">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.redemptionStatus === 10">未使用</el-tag>
-            <el-tag type="success" v-if="scope.row.redemptionStatus === 20">已兑换</el-tag>
-            <el-tag type="danger" v-if="scope.row.redemptionStatus === 30">已失效</el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="核销数" align="left">
-          <template slot-scope="scope">
-            <span>{{ scope.row.shopName }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <span>审核</span>
             <el-tooltip
-              :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
+              :content="scope.row.status === 1 ? '点击停用' : '点击恢复'"
               placement="top"
               class="margin-lr6">
 
@@ -88,6 +52,8 @@
                 inactive-text=""
                 @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
             </el-tooltip>
+            <el-button type="text" @click="dialogVisible = true"
+                       class="operate-btn"><span>删除</span></el-button>
           </template>
         </el-table-column>
 
@@ -116,9 +82,6 @@
     components: {},
     data () {
       return {
-        formData: {
-          name: ''
-        }
       }
     },
     mounted () {
@@ -154,7 +117,7 @@
           }
         })
       },
-      exportExcel() {}
+      handleUpdateStatus() {}
     }
   }
 </script>
@@ -162,5 +125,14 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .order-field {
+    .info-top{
+      width: 100%;
+      height: 36px;
+      margin-bottom: 16px;
+      .add-point{
+        line-height: 16px;
+        padding: 9px 30px;
+      }
+    }
   }
 </style>

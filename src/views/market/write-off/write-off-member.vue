@@ -73,7 +73,8 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <span>审核</span>
+            <el-button type="text" @click="dialogVisible = true"
+                       class="operate-btn"><span>审核</span><span v-if="false">编辑</span></el-button>
             <el-tooltip
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
@@ -104,6 +105,52 @@
         @current-change="handleCurrentChange"
         background></el-pagination>
     </div>
+
+    <!--审核dialog-->
+    <el-dialog
+      title="核销员审核"
+      :visible.sync="dialogVisible"
+      width="35%">
+      <div class="detail-info">
+        <div class="label">名称</div>
+        <div class="label-con"><div class="intro-desc">就是名字</div></div>
+      </div>
+      <div class="detail-info">
+        <div class="label">手机号码</div>
+        <div class="label-con"><div class="intro-desc">15622222223</div></div>
+      </div>
+      <div class="detail-info">
+        <div class="label">所属商家</div>
+        <div class="label-con"><div class="intro-desc">广交会核销点A323</div></div>
+      </div>
+      <div class="detail-info">
+        <div class="label">所属社区</div>
+        <div class="label-con"><div class="intro-desc">雷猴空间</div></div>
+      </div>
+      <div class="detail-info">
+        <div class="label">绑定核销点</div>
+        <div class="label-con">
+          <div class="intro-desc">
+            <el-select
+              v-model="formData.status"
+              @change="getPageData(1)"
+              placeholder="请选择订单状态"
+              class="width150px"
+              clearable>
+              <el-option
+                v-for="item in statusList"
+                :label="item.text"
+                :value="item.val"
+                :key="item.val"></el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">通过审核</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -120,7 +167,16 @@
       return {
         formData: {
           name: ''
-        }
+        },
+        dialogVisible: false,
+        statusList: [
+          { val: 5, text: '待支付' },
+          { val: 10, text: '待使用' },
+          { val: 20, text: '已使用' },
+          { val: 30, text: '已取消' },
+          { val: 40, text: '待退款' },
+          { val: 50, text: '已退款' }
+        ]
       }
     },
     mounted () {
@@ -175,5 +231,20 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .order-field {
+    .operate-btn {
+      padding: 6px;
+    }
+    .detail-info{
+      clear: both;
+      .label{
+        width: 80px;
+        float: left;
+      }
+      .label-con{
+        float: left;
+        width: calc(100% - 80px);
+        margin-bottom: 10px;
+      }
+    }
   }
 </style>

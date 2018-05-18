@@ -30,6 +30,7 @@ export default [{
   {
     name: '核销管理',
     path: '/write-off',
+    redirect: '/write-off/member',
     component: _import('market/write-off/write-off'),
     children: [{
       name: '核销员',
