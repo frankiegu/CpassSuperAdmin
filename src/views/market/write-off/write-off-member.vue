@@ -132,9 +132,10 @@
         <div class="label-con">
           <div class="intro-desc">
             <el-select
-              v-model="formData.status"
+              v-model="writeOffPoint"
+              filterable
               @change="getPageData(1)"
-              placeholder="请选择订单状态"
+              placeholder="请选择"
               class="width150px"
               clearable>
               <el-option
@@ -147,7 +148,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="dialogVisible = false">通过审核</el-button>
       </span>
     </el-dialog>
@@ -169,6 +170,7 @@
           name: ''
         },
         dialogVisible: false,
+        writeOffPoint: '', // 选择的核销点
         statusList: [
           { val: 5, text: '待支付' },
           { val: 10, text: '待使用' },
@@ -237,12 +239,12 @@
     .detail-info{
       clear: both;
       .label{
-        width: 80px;
+        width: 100px;
         float: left;
       }
       .label-con{
         float: left;
-        width: calc(100% - 80px);
+        width: calc(100% - 100px);
         margin-bottom: 10px;
       }
     }
