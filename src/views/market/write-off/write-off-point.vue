@@ -14,7 +14,7 @@
 
         <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            <span class="table-link" @click="editPoint(scope.row.id, scope.row.name, scope.row.spaceName, scope.row.storeName, scope.row.provinceName, scope.row.cityName, scope.row.address )">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 
@@ -53,7 +53,7 @@
                 inactive-text=""
                 @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
             </el-tooltip>
-            <el-button type="text" @click="dialogVisible = true"
+            <el-button type="text" @click="delectPoint(scope.row.id)"
                        class="operate-btn"><span>删除</span></el-button>
           </template>
         </el-table-column>
@@ -76,7 +76,7 @@
     <el-dialog
       title="添加核销点"
       :visible.sync="dialogVisible"
-      width="30%">
+      width="500px">
       <div class="detail-info">
         <div class="label">核销点名称</div>
         <div class="label-con">
@@ -122,7 +122,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import { PlatformVerifyStationPage, loadSpaceStoreTree, PlatformVerifyStationChangeStatus } from '@/service/market'
+  import { PlatformVerifyStationPage, loadSpaceStoreTree, PlatformVerifyStationChangeStatus, PlatformVerifyStationDelete } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
@@ -182,18 +182,37 @@
         })
       },
       handleUpdateStatus(Id, Status) {
-        console.log(Status)
         const paramsObj = {
           id: Id,
           status: Status
         }
         PlatformVerifyStationChangeStatus(paramsObj).then(res => {
           if (res.status === 'true') {
-            this.setMsg('success', res.msg)
+            this.setMsg('success', '修改成功!')
           } else {
             this.setMsg('error', res.msg)
           }
         })
+      },
+      delectPoint(Id) {
+        const paramsObj = {
+          id: Id
+        }
+        this.$confirm('是否永久删除该核销点?删除核销点不影响核销记录', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          PlatformVerifyStationDelete(paramsObj).then(res => {
+            if (res.status === 'true') {
+              this.setMsg('success', '删除成功!')
+            } else {
+              this.setMsg('error', res.msg)
+            }
+          })
+        }).catch(() => {
+          this.setMsg('error', '已取消删除!')
+        });
       }
     }
   }
@@ -209,6 +228,7 @@
       .add-point{
         line-height: 16px;
         padding: 9px 30px;
+        cursor: pointer;
       }
     }
     .detail-info{

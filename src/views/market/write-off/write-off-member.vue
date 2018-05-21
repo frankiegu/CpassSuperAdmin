@@ -35,46 +35,48 @@
 
         <el-table-column label="核销员名称" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.name }}
           </template>
         </el-table-column>
 
         <el-table-column label="手机号码" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.telephone }}
           </template>
         </el-table-column>
 
         <el-table-column label="核销点" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.stationName }}
           </template>
         </el-table-column>
 
         <el-table-column label="所属空间" align="left">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.spaceName }}
           </template>
         </el-table-column>
 
         <el-table-column label="状态" align="left">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.redemptionStatus === 10">未使用</el-tag>
-            <el-tag type="success" v-if="scope.row.redemptionStatus === 20">已兑换</el-tag>
-            <el-tag type="danger" v-if="scope.row.redemptionStatus === 30">已失效</el-tag>
+            <el-tag v-if="scope.row.status === 2">待审核</el-tag>
+            <el-tag type="success" v-if="scope.row.status === 1">生效中</el-tag>
+            <el-tag type="danger" v-if="scope.row.status === 0">已停用</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="核销数" align="left" sortable sort-by="shopName">
           <template slot-scope="scope">
-            <span>{{ scope.row.shopName }}</span>
+            <span>{{ scope.row.verifyCount || 0 }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <el-button type="text" @click="dialogVisible = true"
-                       class="operate-btn"><span>审核</span><span v-if="false">编辑</span></el-button>
+            <el-button type="text" @click="operat(scope.row.id)" class="operate-btn">
+              <span v-if="scope.row.status === 2">审核</span>
+              <span v-if="scope.row.status === 1 || scope.row.status === 0">编辑</span>
+            </el-button>
             <el-tooltip
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
@@ -110,7 +112,7 @@
     <el-dialog
       title="核销员审核"
       :visible.sync="dialogVisible"
-      width="35%">
+      width="500px">
       <div class="detail-info">
         <div class="label">名称</div>
         <div class="label-con"><div class="intro-desc">就是名字</div></div>
@@ -134,22 +136,21 @@
             <el-select
               v-model="writeOffPoint"
               filterable
-              @change="getPageData(1)"
               placeholder="请选择"
               class="width150px"
               clearable>
               <el-option
-                v-for="item in statusList"
-                :label="item.text"
-                :value="item.val"
-                :key="item.val"></el-option>
+                v-for="item in pointList"
+                :label="item.name"
+                :value="item.id"
+                :key="item.id"></el-option>
             </el-select>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">通过审核</el-button>
+        <el-button type="primary" @click="submit">通过审核</el-button>
       </span>
     </el-dialog>
   </div>
@@ -159,7 +160,7 @@
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
   import tableMixins from '@/mixins/table'
-  import { cantonfairCoupon } from '@/service/canton-fair'
+  import { platformVerifierPage, PlatformVerifyStationLoadStation, platformVerifierChangeStatus, platformVerifierReview } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
@@ -171,27 +172,23 @@
         },
         dialogVisible: false,
         writeOffPoint: '', // 选择的核销点
-        statusList: [
-          { val: 5, text: '待支付' },
-          { val: 10, text: '待使用' },
-          { val: 20, text: '已使用' },
-          { val: 30, text: '已取消' },
-          { val: 40, text: '待退款' },
-          { val: 50, text: '已退款' }
-        ]
+        pointList: [],
+        id: ''
       }
     },
     mounted () {
       this.getPageData()
+      this.getPoint()
     },
     methods: {
       getPageData() {
         const self = this
         const paramsObj = {
           pageSize: self.pageSize,
-          pageNum: self.currentPage
+          pageNum: self.currentPage,
+          name: self.formData.name
         }
-        cantonfairCoupon(paramsObj).then(res => {
+        platformVerifierPage(paramsObj).then(res => {
           if (res.status === 'true') {
             if (res.info) {
               let data = res.info
@@ -214,16 +211,58 @@
           }
         })
       },
-      handleUpdateStatus(id, status) {},
+      // 获取核销点
+      getPoint() {
+        PlatformVerifyStationLoadStation().then(res => {
+          if (res.status === 'true') {
+            this.pointList = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 更改状态
+      handleUpdateStatus(Id, Status) {
+        const paramsObj = {
+          id: Id,
+          status: Status
+        }
+        platformVerifierChangeStatus(paramsObj).then(res => {
+          if (res.status === 'true') {
+            this.setMsg('success', '修改成功!')
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      operat(Id) {
+        this.id = Id
+        this.dialogVisible = true
+        this.writeOffPoint = ''
+      },
+      submit() {
+        const paramsObj = {
+          verifierId: this.id,
+          stationId: this.writeOffPoint
+        }
+        platformVerifierReview(paramsObj).then(res => {
+          if (res.status === 'true') {
+            this.setMsg('success', '修改成功!')
+            this.dialogVisible = false
+            this.getPageData()
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 导出数据
       exportExcel() {
         if (!this.tableData.length) {
           return this.setMsg('暂无数据')
         }
-        const formData = this.formData
         const downParams = {
-          content: formData.name
         }
-        let url = API_PATH + '/supervisor/feedback/export'
+        let url = API_PATH + '/supervisor/platformVerifier/export'
         downloadFile(url, downParams)
       }
     }
