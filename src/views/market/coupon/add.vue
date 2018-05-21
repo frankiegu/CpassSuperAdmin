@@ -8,26 +8,27 @@
         <h3 class="senior-title">基础信息</h3>
         <div class="card-body">
           <el-form-item label="卡券名称" prop="name">
-            <el-input v-model.trim="couponForm.name" class="width300px"></el-input>
+            <el-input v-model.trim="couponForm.name" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="卡券说明" prop="desc">
-            <el-input v-model.trim="couponForm.desc" type="textarea" class="width300px"></el-input>
+            <el-input v-model.trim="couponForm.desc" type="textarea" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="券数量" prop="amount">
-            <el-input v-model="couponForm.amount" class="width300px"></el-input>
+            <el-input v-model="couponForm.amount" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="使用期限" prop="expireDate">
             <el-date-picker
-              value-format="yyyy-MM-dd"
-              style="width: 300px"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 340px"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :picker-options="pickerOptions"
               v-model="couponForm.expireDate"
-              type="daterange">
+              type="datetimerange">
             </el-date-picker>
           </el-form-item>
         </div>
@@ -39,7 +40,7 @@
         <div class="card-body">
           <el-form-item label="卡券类型" required>
             <el-radio-group v-model="couponForm.couponType">
-              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key">
+              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
                 {{value}}
               </el-radio>
             </el-radio-group>
@@ -68,7 +69,7 @@
             <!-- 礼品券 -->
             <div v-if="couponForm.couponType === 3" v-bind:key="2">
               <el-form-item label="卡券权益" prop="couponRight">
-                <el-input v-model.trim="couponForm.couponRight" class="width300px"
+                <el-input v-model.trim="couponForm.couponRight" class="width340px"
                   placeholder="请输入可享受的权益"></el-input>
               </el-form-item>
             </div>
@@ -87,14 +88,22 @@
               <el-form-item v-if="couponForm.isAllStore === 2" class="range-cont clearfix">
                 <div class="list-cont fl">
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
-
                   <div class="tree-cont">
-                    <el-tree node-key="nodeKey" :data="treeData" :filter-node-method="filterNode" default-expand-all
-                      :props="treeProp" show-checkbox ref="rangeTree" class="range-tree"
+                    <!-- 部分门店的树形 -->
+                    <el-tree v-show="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
+                      show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
+                    </el-tree>
+
+                    <!-- 部分核销点的树形 -->
+                    <el-tree v-show="couponForm.couponType === 3" node-key="id" :data="stationList"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
+                      show-checkbox ref="rangeTree1" class="range-tree" @check-change="handleCheckChange">
                     </el-tree>
                   </div>
                 </div>
+
                 <div class="list-cont fl">
                   <p class="theme-gray clearfix fix-input">
                     {{couponForm.couponType === 1 ? '已选门店' : '已选核销点'}}
@@ -102,12 +111,28 @@
                     <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
                   </p>
 
-                  <el-table :data="selectedRange" height="360px">
+                  <!-- 选中的部分门店 -->
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1">
                     <el-table-column label="空间" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">
                         <span class="pointer-theme-gray" @click="removeSelected(scope.row.nodeKey)">删除</span>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+
+                  <!-- 选中的部分核销点 -->
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 3">
+                    <el-table-column label="核销点" prop="name"></el-table-column>
+                    <el-table-column label="地址">
+                      <template slot-scope="scope">
+                        {{scope.row.provinceName + scope.row.cityName + scope.row.districtName + scope.row.address}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                      <template slot-scope="scope">
+                        <span class="pointer-theme-gray" @click="removeSelected(scope.row.id)">删除</span>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -125,13 +150,13 @@
           <el-form-item label="领取方式" prop="receiveWay">
             <el-checkbox-group v-model="couponForm.receiveWay">
               <el-checkbox :label="1">条件触发</el-checkbox>
-              <el-button v-if="couponForm.receiveWay.includes(1)" @click="isWayVisible = true"
+              <el-button v-if="couponForm.receiveWay.includes(1)" @click="showReceiveDialog"
                 type="text" class="ml30">添加</el-button><br>
 
               <!-- 选中的触发条件 -->
               <ol class="condition-list" v-if="hasCondition">
-                <li v-for="(item, index) in couponForm.receiveConditionArray" :key="index">
-                  {{index + 1 + '. '}}{{item.dateTime[0]}}至{{item.dateTime[1]}}期间，{{conditionTypeList[item.type]}}
+                <li v-for="(item, index) in couponForm.receiveConditionArray" :key="index" v-if="!!item.startTime">
+                  {{index + 1 + '. '}}{{item.startTime}}至{{item.endTime}}期间，{{conditionTypeList[item.type]}}
                   <el-button type="text" icon="el-icon-close" class="ml20" @click="removeCondition(item)"></el-button>
                 </li>
               </ol>
@@ -142,7 +167,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" class="width120px">创 建</el-button>
+            <el-button type="primary" class="width120px" @click="submitForm">创 建</el-button>
           </el-form-item>
         </div>
       </div>
@@ -180,14 +205,15 @@
     </el-dialog>
 
     <!-- 添加核销点弹窗 -->
-    <add-wop-dialog v-if="couponForm.couponType === 3" :is-visible="isWopVisible" @closeDialog="isWopVisible = false"></add-wop-dialog>
+    <add-wop-dialog v-if="couponForm.couponType === 3" :is-visible="isWopVisible"
+      @closeDialog="isWopVisible = false" @refreshData="handleGetStation"></add-wop-dialog>
   </div>
 </template>
 
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { loadSpaceStoreTree } from '@/service/market'
+  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -198,6 +224,17 @@
           callback(new Error('请输入1-99999的正整数'))
         }
         callback()
+      }
+      const checkNameUnique = (rule, value, callback) => {
+        if (value) {
+          isUniqueCoupon({ name: value }).then(res => {
+            if (res.status === 'false') {
+              return callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
+        }
       }
       return {
         filterText: '',
@@ -213,6 +250,8 @@
         // 树形列表
         treeData: [],
         treeProp: { label: 'name' },
+        // 核销点列表
+        stationList: [],
         selectedRange: [],
         couponForm: {
           name: '',
@@ -233,9 +272,10 @@
           receiveConditionArray: [] // 自动发券触发条件
         },
         couponFormRules: {
-          name: [ // TODO 判断唯一
+          name: [
             { required: true, message: '请输入卡券名称', trigger: ['blur', 'change'] },
-            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] }
+            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] },
+            { validator: checkNameUnique, trigger: ['blur'] }
           ],
           desc: [
             { max: 100, message: '最大允许输入100字', trigger: ['blur', 'change'] }
@@ -266,7 +306,7 @@
         hasCondition: false, // 是否有选中触发条件
         receiveConditions: [],
         isWayVisible: false, // 添加领取方式弹窗
-        conditionTypeList: { 1: '新注册用户', 2: '分享后可领取' }, // 条件触发领取方式列表
+        conditionTypeList: {}, // 条件触发领取方式列表
         isWopVisible: false // 添加核销点弹窗
       }
     },
@@ -275,16 +315,20 @@
 
     watch: {
       filterText(val) {
-        this.$refs.rangeTree.filter(val);
+        if (this.couponForm.couponType === 1) this.$refs.rangeTree.filter(val)
+        if (this.couponForm.couponType === 3) this.$refs.rangeTree1.filter(val)
       }
     },
 
     mounted() {
       // 获取自动发券领取方式列表
+      // this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
+      // for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
+      //   this.receiveConditions.push({ type: 0, dateTime: [] })
+      // }
       loadConstant('couponReceive.conditionType').then(res => {
         if (res.status === 'true') {
           this.receiveConditions = []
-          // this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
           this.conditionTypeList = res.info
           for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
             this.receiveConditions.push({ type: 0, dateTime: [] })
@@ -302,6 +346,22 @@
     },
 
     methods: {
+      // 切换卡券类型
+      changeType(val) {
+        this.selectedRange = []
+        if (val === 3 && !this.stationList.length) {
+          this.handleGetStation()
+        }
+      },
+      // 获取核销点列表
+      handleGetStation() {
+        loadStation().then(res => {
+          if (res.status === 'true') {
+            this.stationList = res.info
+            this.isWopVisible = false
+          }
+        })
+      },
       // 获取树形数据
       handleGetTreeData() {
         loadSpaceStoreTree({ filterName: '' }).then(res => {
@@ -318,10 +378,16 @@
       // 获取选中的树节点，只返回门店节点
       getCheckedNodes() {
         const leafOnly = true
-        const checkedNodes = this.$refs.rangeTree.getCheckedNodes(leafOnly)
+        const checkedNodes = this.couponForm.couponType === 1
+          ? this.$refs.rangeTree.getCheckedNodes(leafOnly)
+          : this.$refs.rangeTree1.getCheckedNodes(leafOnly)
         const storeNodes = []
         for (let i = 0; i < checkedNodes.length; i++) {
-          if (checkedNodes[i].storeId && !checkedNodes[i].disabled) {
+          if (this.couponForm.couponType === 1) {
+            if (checkedNodes[i].storeId && !checkedNodes[i].disabled) {
+              storeNodes.push(checkedNodes[i])
+            }
+          } else {
             storeNodes.push(checkedNodes[i])
           }
         }
@@ -333,22 +399,44 @@
         this.selectedRange = this.getCheckedNodes()
         this.couponForm.range = []
         for (let i = 0; i < this.selectedRange.length; i++) {
-          this.couponForm.range.push(
-            { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
-          )
+          if (this.couponForm.couponType === 1) {
+            this.couponForm.range.push(
+              { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
+            )
+          }
+          if (this.couponForm.couponType === 3) {
+            this.couponForm.range.push(this.selectedRange[i].id)
+          }
         }
       },
       // 移除选中的节点
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
+        let treeName = this.couponForm.couponType === 1 ? 'rangeTree' : 'rangeTree1'
+        console.log(treeName, this.$refs[treeName])
         if (!nodeKey) {
-          this.$refs.rangeTree.setCheckedKeys([])
+          this.$refs[treeName].setCheckedKeys([])
         } else {
-          this.$refs.rangeTree.setChecked(nodeKey, false, true)
+          this.$refs[treeName].setChecked(nodeKey, false, true)
         }
       },
 
       // 添加领取方式
+      showReceiveDialog() {
+        let conditions = this.receiveConditions
+        conditions.forEach(item => {
+          item.type = 0
+          item.dateTime = []
+        })
+        if (this.couponForm.receiveConditionArray) {
+          this.couponForm.receiveConditionArray.forEach((item) => {
+            let conditionIndex = Object.keys(this.conditionTypeList).indexOf(item.type += '')
+            this.receiveConditions[conditionIndex].type = item.type
+            this.receiveConditions[conditionIndex].dateTime = [item.startTime, item.endTime]
+          })
+        }
+        this.isWayVisible = true
+      },
       receiveChange() {
         this.receiveConditions.forEach(item => {
           if (item.type === 0) {
@@ -361,7 +449,12 @@
         this.couponForm.receiveConditionArray = []
         conditions.forEach(item => {
           if (item.type !== 0) {
-            this.couponForm.receiveConditionArray.push(item)
+            let temp = Object.assign({}, {
+              type: item.type,
+              startTime: item.dateTime != null ? item.dateTime[0] : '',
+              endTime: item.dateTime != null ? item.dateTime[1] : ''
+            })
+            this.couponForm.receiveConditionArray.push(temp)
           }
         })
         let target = this.couponForm.receiveConditionArray
@@ -369,13 +462,13 @@
           this.$message.error('至少选中一个触发条件')
           return
         }
-        let valid
+        let valid = false
         target.forEach(item => {
-          if (!item.dateTime || !item.dateTime.length) {
+          if (item && item['startTime']) {
+            valid = true
+          } else {
             this.$message.error('请选择有效期限')
             valid = false
-          } else {
-            valid = true
           }
         })
         if (!valid) return
@@ -383,12 +476,6 @@
         this.isWayVisible = false
       },
       closeWayDialog() {
-        let conditions = this.receiveConditions
-        this.couponForm.receiveConditionArray = []
-        conditions.forEach(item => {
-          item.type = 0
-          item.dateTime = []
-        })
         this.isWayVisible = false
       },
       // 移除触发条件
@@ -396,7 +483,62 @@
         let target = this.couponForm.receiveConditionArray
         target.splice(target.findIndex(item => item.type === data.type), 1)
         this.receiveConditions.find(item => item.type === data.type).type = 0
-        this.receiveConditions.find(item => item.type === data.type).dateTime = []
+        // this.receiveConditions.find(item => item.type === data.type).dateTime = []
+      },
+
+      // 提交表单
+      submitForm() {
+        this.$refs['couponForm'].validate(valid => {
+          if (valid) {
+            let form = this.couponForm
+            let receiveCondition = form.receiveWay.includes(1) ? 1 : 0
+            let receiveManual = form.receiveWay.includes(2) ? 1 : 0
+            let receiveManpower = form.receiveWay.includes(3) ? 1 : 0
+            let params = {
+              name: form.name,
+              description: form.desc,
+              quantity: form.amount,
+              startDate: form.expireDate && form.expireDate[0] ? form.expireDate[0] : '',
+              endDate: form.expireDate && form.expireDate[1] ? form.expireDate[1] : '',
+              type: form.couponType,
+              receiveCondition: receiveCondition,
+              receiveManual: receiveManual,
+              receiveManpower: receiveManpower
+            }
+            if (form.couponType === 1) { // 小时券的特定参数
+              params.subtractHour = form.subtractHour
+              params.fieldType = form.fieldType
+              params.storeType = form.isAllStore
+              if (form.isAllStore === 2) {
+                params.storeArray = form.range
+              }
+            }
+            if (form.couponType === 3) { // 礼品券的特定参数
+              params.benefit = form.couponRight
+              params.verifyStationType = form.isAllStore
+              if (form.isAllStore === 2) {
+                params.verifyStationIds = form.range
+              }
+            }
+            if (receiveCondition === 1) { // 条件触发勾选时传参
+              if (form.receiveConditionArray.length === 0) {
+                this.$message.error('条件触发至少添加一个触发方式')
+                return
+              }
+              params.receiveConditionArray = form.receiveConditionArray
+            }
+            addCoupon(params).then(res => {
+              if (res.status === 'true') {
+                this.$message.success('创建成功！')
+                this.$router.replace('/market/coupon')
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          } else {
+            console.log('表单填写错误。')
+          }
+        })
       }
     }
   }

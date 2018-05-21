@@ -29,10 +29,21 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { addPlatformVerifyStation, stationStoreTree } from '@/service/market'
+  import { addPlatformVerifyStation, stationStoreTree, checkStationName } from '@/service/market'
   export default {
     name: 'add-wop-dialog',
     data() {
+      const checkUnique = (rule, value, callback) => {
+        if (value) {
+          checkStationName({ name: value }).then(res => {
+            if (res.status === 'false') {
+              return callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
+        }
+      }
       return {
         storeList: [], // 关联门店列表
         storeProp: {
@@ -54,9 +65,10 @@
           addressDetail: ''
         },
         formRules: {
-          name: [ // TODO 判断名称唯一
+          name: [
             { required: true, message: '请输入核销点名称', trigger: ['blur', 'change'] },
-            { max: 20, message: '最大允许输入20字', trigger: ['blur', 'change'] }
+            { max: 20, message: '最大允许输入20字', trigger: ['blur', 'change'] },
+            { validator: checkUnique, trigger: ['blur'] }
           ],
           addressCode: [
             { required: true, message: '请选择省市区', trigger: ['blur', 'change'] }
@@ -79,8 +91,8 @@
     mounted() {
       // 获取省市区列表
       this.getRegionList()
-      // 获取
-      this.handleGetStoreList()
+      // 获取关联门店列表
+      if (this.storeList.length === 0) this.handleGetStoreList()
     },
     methods: {
       ...mapActions([
@@ -114,7 +126,7 @@
             addPlatformVerifyStation(params).then(res => {
               if (res.status === 'true') {
                 this.$message.success('添加成功！')
-                this.$emit('closeDialog')
+                this.$emit('refreshData')
               } else {
                 this.$message.error(res.msg)
               }

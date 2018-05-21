@@ -20,6 +20,9 @@ export const couponList = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/
 // 优惠券详情查询
 export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/detail', obj, 'POST')
 
+// 添加优惠券
+export const addCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/add', obj, 'POST')
+
 /**
  * 核销管理
  */
