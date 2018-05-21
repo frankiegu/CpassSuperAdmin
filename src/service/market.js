@@ -20,6 +20,9 @@ export const couponList = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/
 // 优惠券详情查询
 export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/detail', obj, 'POST')
 
+// 添加优惠券
+export const addCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/add', obj, 'POST')
+
 /**
  * 核销管理
  */
@@ -39,8 +42,26 @@ export const PlatformVerifyStationDelete = (obj) => fetch(API_PATH + '/superviso
 // 分页查询核销点
 export const PlatformVerifyStationPage = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/page', obj, 'POST')
 
+// 查询核销点(不分页)
+export const PlatformVerifyStationLoadStation = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/loadStation', obj, 'POST')
+
 // 获取关联门店列表
 export const stationStoreTree = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/storeTree', obj, 'POST')
 
 // 校验核销点名称
 export const checkStationName = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/check', obj, 'POST')
+
+// 核销员详情
+export const platformVerifierDetail = (obj) => fetch(API_PATH + '/supervisor/platformVerifier/detail', obj, 'POST')
+
+// 审核核销员
+export const platformVerifierReview = (obj) => fetch(API_PATH + '/supervisor/platformVerifier/review', obj, 'POST')
+
+// 停用或启用核销员
+export const platformVerifierChangeStatus = (obj) => fetch(API_PATH + '/supervisor/platformVerifier/changeStatus', obj, 'POST')
+
+// 分页查询核销员
+export const platformVerifierPage = (obj) => fetch(API_PATH + '/supervisor/platformVerifier/page', obj, 'POST')
+
+// 分页查询核销记录
+export const platformVerifyRecordPage = (obj) => fetch(API_PATH + '/supervisor/platformVerifyRecord/page', obj, 'POST')
