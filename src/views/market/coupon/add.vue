@@ -40,7 +40,7 @@
         <div class="card-body">
           <el-form-item label="卡券类型" required>
             <el-radio-group v-model="couponForm.couponType">
-              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key">
+              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
                 {{value}}
               </el-radio>
             </el-radio-group>
@@ -88,14 +88,22 @@
               <el-form-item v-if="couponForm.isAllStore === 2" class="range-cont clearfix">
                 <div class="list-cont fl">
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
-
                   <div class="tree-cont">
-                    <el-tree node-key="nodeKey" :data="treeData" :filter-node-method="filterNode" default-expand-all
-                      :props="treeProp" show-checkbox ref="rangeTree" class="range-tree"
+                    <!-- 部分门店的树形 -->
+                    <el-tree v-show="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
+                      show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
+                    </el-tree>
+
+                    <!-- 部分核销点的树形 -->
+                    <el-tree v-show="couponForm.couponType === 3" node-key="id" :data="stationList"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
+                      show-checkbox ref="rangeTree1" class="range-tree" @check-change="handleCheckChange">
                     </el-tree>
                   </div>
                 </div>
+
                 <div class="list-cont fl">
                   <p class="theme-gray clearfix fix-input">
                     {{couponForm.couponType === 1 ? '已选门店' : '已选核销点'}}
@@ -103,12 +111,28 @@
                     <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
                   </p>
 
-                  <el-table :data="selectedRange" height="360px">
+                  <!-- 选中的部分门店 -->
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1">
                     <el-table-column label="空间" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">
                         <span class="pointer-theme-gray" @click="removeSelected(scope.row.nodeKey)">删除</span>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+
+                  <!-- 选中的部分核销点 -->
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 3">
+                    <el-table-column label="核销点" prop="name"></el-table-column>
+                    <el-table-column label="地址">
+                      <template slot-scope="scope">
+                        {{scope.row.provinceName + scope.row.cityName + scope.row.districtName + scope.row.address}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                      <template slot-scope="scope">
+                        <span class="pointer-theme-gray" @click="removeSelected(scope.row.id)">删除</span>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -181,14 +205,15 @@
     </el-dialog>
 
     <!-- 添加核销点弹窗 -->
-    <add-wop-dialog v-if="couponForm.couponType === 3" :is-visible="isWopVisible" @closeDialog="isWopVisible = false"></add-wop-dialog>
+    <add-wop-dialog v-if="couponForm.couponType === 3" :is-visible="isWopVisible"
+      @closeDialog="isWopVisible = false" @refreshData="handleGetStation"></add-wop-dialog>
   </div>
 </template>
 
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { isUniqueCoupon, loadSpaceStoreTree, addCoupon } from '@/service/market'
+  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -225,6 +250,8 @@
         // 树形列表
         treeData: [],
         treeProp: { label: 'name' },
+        // 核销点列表
+        stationList: [],
         selectedRange: [],
         couponForm: {
           name: '',
@@ -288,16 +315,17 @@
 
     watch: {
       filterText(val) {
-        this.$refs.rangeTree.filter(val);
+        if (this.couponForm.couponType === 1) this.$refs.rangeTree.filter(val)
+        if (this.couponForm.couponType === 3) this.$refs.rangeTree1.filter(val)
       }
     },
 
     mounted() {
       // 获取自动发券领取方式列表
-      this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
-      for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
-        this.receiveConditions.push({ type: 0, dateTime: [] })
-      }
+      // this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
+      // for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
+      //   this.receiveConditions.push({ type: 0, dateTime: [] })
+      // }
       loadConstant('couponReceive.conditionType').then(res => {
         if (res.status === 'true') {
           this.receiveConditions = []
@@ -318,6 +346,22 @@
     },
 
     methods: {
+      // 切换卡券类型
+      changeType(val) {
+        this.selectedRange = []
+        if (val === 3 && !this.stationList.length) {
+          this.handleGetStation()
+        }
+      },
+      // 获取核销点列表
+      handleGetStation() {
+        loadStation().then(res => {
+          if (res.status === 'true') {
+            this.stationList = res.info
+            this.isWopVisible = false
+          }
+        })
+      },
       // 获取树形数据
       handleGetTreeData() {
         loadSpaceStoreTree({ filterName: '' }).then(res => {
@@ -334,10 +378,16 @@
       // 获取选中的树节点，只返回门店节点
       getCheckedNodes() {
         const leafOnly = true
-        const checkedNodes = this.$refs.rangeTree.getCheckedNodes(leafOnly)
+        const checkedNodes = this.couponForm.couponType === 1
+          ? this.$refs.rangeTree.getCheckedNodes(leafOnly)
+          : this.$refs.rangeTree1.getCheckedNodes(leafOnly)
         const storeNodes = []
         for (let i = 0; i < checkedNodes.length; i++) {
-          if (checkedNodes[i].storeId && !checkedNodes[i].disabled) {
+          if (this.couponForm.couponType === 1) {
+            if (checkedNodes[i].storeId && !checkedNodes[i].disabled) {
+              storeNodes.push(checkedNodes[i])
+            }
+          } else {
             storeNodes.push(checkedNodes[i])
           }
         }
@@ -349,18 +399,25 @@
         this.selectedRange = this.getCheckedNodes()
         this.couponForm.range = []
         for (let i = 0; i < this.selectedRange.length; i++) {
-          this.couponForm.range.push(
-            { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
-          )
+          if (this.couponForm.couponType === 1) {
+            this.couponForm.range.push(
+              { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
+            )
+          }
+          if (this.couponForm.couponType === 3) {
+            this.couponForm.range.push(this.selectedRange[i].id)
+          }
         }
       },
       // 移除选中的节点
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
+        let treeName = this.couponForm.couponType === 1 ? 'rangeTree' : 'rangeTree1'
+        console.log(treeName, this.$refs[treeName])
         if (!nodeKey) {
-          this.$refs.rangeTree.setCheckedKeys([])
+          this.$refs[treeName].setCheckedKeys([])
         } else {
-          this.$refs.rangeTree.setChecked(nodeKey, false, true)
+          this.$refs[treeName].setChecked(nodeKey, false, true)
         }
       },
 
