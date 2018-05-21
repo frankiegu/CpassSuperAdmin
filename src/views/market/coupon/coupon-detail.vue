@@ -55,18 +55,18 @@
             </el-col>
             <el-col :span="6">
               <lh-item label="领取率：" label-width="60px">
-                <span>{{couponInfo.receiveQuantity}}</span>
-                <span>{{couponInfo.receiveQuantity}}/{{couponInfo.total}}</span>
+                <span>{{receiveStatistics.received || 0}}</span>
+                <span>{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="使用率：" label-width="60px">
-                <span>{{couponInfo.useQuantity}}</span>
-                <span>{{couponInfo.useQuantity}}/{{couponInfo.total}}</span>
+                <span>{{receiveStatistics.used || 0}}</span>
+                <span>{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6">
-              <lh-item label="用券总成交额：" label-width="100px">{{couponInfo.couponAmount}}</lh-item>
+              <lh-item label="用券总成交额：" label-width="100px">{{couponTotalAmount}}</lh-item>
             </el-col>
           </el-row>
         </el-col>
@@ -82,17 +82,17 @@
             <h3 class="coupon-tab-title mb22">卡券信息</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20">
-                  <el-col>
+                <el-row :gutter="20" v-for="(item, index) in conditionTrigger">
+                  <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
-                      <span class="mr15">{{ couponInfo.discountContent }}</span>
+                      <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
                       <el-tooltip
-                        :content="couponInfo.publishStatus === 0 ? '生效中' : '冻结'"
+                        :content="item.couponStatus ? '生效中' : '未生效'"
                         placement="top"
                         class="margin-lr6">
                         <el-switch
                           class=""
-                          v-model="couponInfo.controlStatus"
+                          v-model="item.couponStatus"
                           active-text=""
                           inactive-text=""
                           :disabled="true"
@@ -100,17 +100,13 @@
                       </el-tooltip>
                     </lh-item>
                   </el-col>
-                </el-row>
-
-                <el-row :gutter="20">
-                  <el-col>
-                    <lh-item label="支持手动领取" label-width="120px">有效期: {{ couponInfo.startDate }} 至 {{ couponInfo.endDate }}</lh-item>
+                  <el-col v-if="item.receiveType === 2">
+                    <!--<lh-item label="支持手动领取" label-width="120px"></lh-item>-->
+                    <p class="pb16">支持手动领取</p>
                   </el-col>
-                </el-row>
-
-                <el-row :gutter="20">
-                  <el-col>
-                    <lh-item label="支持手动下发" label-width="120px">{{couponInfo.total}}</lh-item>
+                  <el-col v-if="item.receiveType === 3">
+                    <!--<lh-item label="支持手动下发" label-width="120px"></lh-item>-->
+                    <p class="pb16">支持手动下发</p>
                   </el-col>
                 </el-row>
               </el-col>
@@ -124,7 +120,11 @@
                 <el-row :gutter="20">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <span class="mr15">{{ couponInfo.useRange }}</span>
+                      <p class="mr15 mr0" v-for="item in platformHourCouponFieldTypeList">
+                        <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
+                        <span v-if="item.type === 2">路演厅</span>
+                        <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                      </p>
                     </lh-item>
                   </el-col>
                 </el-row>
@@ -136,13 +136,15 @@
                         <!--小时券, 礼品券, 折扣券, 满减券-->
                         <!--<span v-if="scope.row.type === 0">小时券</span>-->
                         <el-table
-                          :data="couponInfo.useField"
+                          :data="storeList"
                           :empty-text="tableEmpty"
                           :slot="tableEmpty"
                           v-loading="tableLoading"
                           class="width50" border>
-                          <el-table-column label="空间" align="left" prop="spaceName"></el-table-column>
-                          <el-table-column label="门店" align="left" prop="storeName"></el-table-column>
+                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="礼品商" align="left" prop="spaceName" v-if="couponBaseInfo.type === 3"></el-table-column>
+                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>
                         </el-table>
                       </template>
                     </lh-item>
@@ -305,8 +307,13 @@
             }
           ]
         },
+        couponTotalAmount: 0, // 用券总成交额
         couponBaseInfo: {}, // 优惠券基本信息
+        receiveStatistics: {}, // 优惠券领用情况
         couponDiscountContent: {}, // 优惠内容
+        platformHourCouponFieldTypeList: [], // 制定项目
+        conditionTrigger: [], // 触发条件
+        storeList: [], // 卡券使用范围
         multipleSelection: [],
 
         tableData: [],
@@ -393,6 +400,24 @@
           if (res.status === 'true') {
             console.log(res)
             this.couponBaseInfo = res.info.platformCoupon
+            this.couponTotalAmount = res.info.couponTotalAmount
+            this.receiveStatistics = res.info.statistics
+            this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
+            this.storeList = res.info.storeList
+            if (this.couponBaseInfo.type === 3) {
+              this.storeList.forEach(v => {
+                v.useCouponAddress = v.cityName + v.districtName + v.address
+              })
+            }
+            res.info.couponReceiveDetailList.forEach(v => {
+              if (v.receiveConditionStatus === 1) {
+                v.couponStatus = true
+              } else {
+                v.couponStatus = false
+              }
+            })
+            this.conditionTrigger = res.info.couponReceiveDetailList
+            console.log('this.conditionTrigger', this.conditionTrigger)
             if (this.couponBaseInfo.type === 1) {
               this.couponDiscountContent = res.info.platformHourCoupon
             }
