@@ -8,26 +8,27 @@
         <h3 class="senior-title">基础信息</h3>
         <div class="card-body">
           <el-form-item label="卡券名称" prop="name">
-            <el-input v-model.trim="couponForm.name" class="width300px"></el-input>
+            <el-input v-model.trim="couponForm.name" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="卡券说明" prop="desc">
-            <el-input v-model.trim="couponForm.desc" type="textarea" class="width300px"></el-input>
+            <el-input v-model.trim="couponForm.desc" type="textarea" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="券数量" prop="amount">
-            <el-input v-model="couponForm.amount" class="width300px"></el-input>
+            <el-input v-model="couponForm.amount" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="使用期限" prop="expireDate">
             <el-date-picker
-              value-format="yyyy-MM-dd"
-              style="width: 300px"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 340px"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :picker-options="pickerOptions"
               v-model="couponForm.expireDate"
-              type="daterange">
+              type="datetimerange">
             </el-date-picker>
           </el-form-item>
         </div>
@@ -68,7 +69,7 @@
             <!-- 礼品券 -->
             <div v-if="couponForm.couponType === 3" v-bind:key="2">
               <el-form-item label="卡券权益" prop="couponRight">
-                <el-input v-model.trim="couponForm.couponRight" class="width300px"
+                <el-input v-model.trim="couponForm.couponRight" class="width340px"
                   placeholder="请输入可享受的权益"></el-input>
               </el-form-item>
             </div>
@@ -187,7 +188,7 @@
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { loadSpaceStoreTree, addCoupon } from '@/service/market'
+  import { isUniqueCoupon, loadSpaceStoreTree, addCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -198,6 +199,17 @@
           callback(new Error('请输入1-99999的正整数'))
         }
         callback()
+      }
+      const checkNameUnique = (rule, value, callback) => {
+        if (value) {
+          isUniqueCoupon({ name: value }).then(res => {
+            if (res.status === 'false') {
+              return callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
+        }
       }
       return {
         filterText: '',
@@ -233,9 +245,10 @@
           receiveConditionArray: [] // 自动发券触发条件
         },
         couponFormRules: {
-          name: [ // TODO 判断唯一
+          name: [
             { required: true, message: '请输入卡券名称', trigger: ['blur', 'change'] },
-            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] }
+            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] },
+            { validator: checkNameUnique, trigger: ['blur'] }
           ],
           desc: [
             { max: 100, message: '最大允许输入100字', trigger: ['blur', 'change'] }
@@ -413,7 +426,7 @@
         let target = this.couponForm.receiveConditionArray
         target.splice(target.findIndex(item => item.type === data.type), 1)
         this.receiveConditions.find(item => item.type === data.type).type = 0
-        this.receiveConditions.find(item => item.type === data.type).dateTime = []
+        // this.receiveConditions.find(item => item.type === data.type).dateTime = []
       },
 
       // 提交表单
@@ -421,11 +434,50 @@
         this.$refs['couponForm'].validate(valid => {
           if (valid) {
             let form = this.couponForm
+            let receiveCondition = form.receiveWay.includes(1) ? 1 : 0
+            let receiveManual = form.receiveWay.includes(2) ? 1 : 0
+            let receiveManpower = form.receiveWay.includes(3) ? 1 : 0
             let params = {
               name: form.name,
-              description: form.desc
+              description: form.desc,
+              quantity: form.amount,
+              startDate: form.expireDate && form.expireDate[0] ? form.expireDate[0] : '',
+              endDate: form.expireDate && form.expireDate[1] ? form.expireDate[1] : '',
+              type: form.couponType,
+              receiveCondition: receiveCondition,
+              receiveManual: receiveManual,
+              receiveManpower: receiveManpower
             }
-            addCoupon(params)
+            if (form.couponType === 1) { // 小时券的特定参数
+              params.subtractHour = form.subtractHour
+              params.fieldType = form.fieldType
+              params.storeType = form.isAllStore
+              if (form.isAllStore === 2) {
+                params.storeArray = form.range
+              }
+            }
+            if (form.couponType === 3) { // 礼品券的特定参数
+              params.benefit = form.couponRight
+              params.verifyStationType = form.isAllStore
+              if (form.isAllStore === 2) {
+                params.verifyStationIds = form.range
+              }
+            }
+            if (receiveCondition === 1) { // 条件触发勾选时传参
+              if (form.receiveConditionArray.length === 0) {
+                this.$message.error('条件触发至少添加一个触发方式')
+                return
+              }
+              params.receiveConditionArray = form.receiveConditionArray
+            }
+            addCoupon(params).then(res => {
+              if (res.status === 'true') {
+                this.$message.success('创建成功！')
+                this.$router.replace('/market/coupon')
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
           } else {
             console.log('表单填写错误。')
           }
