@@ -125,13 +125,13 @@
           <el-form-item label="领取方式" prop="receiveWay">
             <el-checkbox-group v-model="couponForm.receiveWay">
               <el-checkbox :label="1">条件触发</el-checkbox>
-              <el-button v-if="couponForm.receiveWay.includes(1)" @click="isWayVisible = true"
+              <el-button v-if="couponForm.receiveWay.includes(1)" @click="showReceiveDialog"
                 type="text" class="ml30">添加</el-button><br>
 
               <!-- 选中的触发条件 -->
               <ol class="condition-list" v-if="hasCondition">
-                <li v-for="(item, index) in couponForm.receiveConditionArray" :key="index">
-                  {{index + 1 + '. '}}{{item.dateTime[0]}}至{{item.dateTime[1]}}期间，{{conditionTypeList[item.type]}}
+                <li v-for="(item, index) in couponForm.receiveConditionArray" :key="index" v-if="!!item.startTime">
+                  {{index + 1 + '. '}}{{item.startTime}}至{{item.endTime}}期间，{{conditionTypeList[item.type]}}
                   <el-button type="text" icon="el-icon-close" class="ml20" @click="removeCondition(item)"></el-button>
                 </li>
               </ol>
@@ -142,7 +142,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" class="width120px">创 建</el-button>
+            <el-button type="primary" class="width120px" @click="submitForm">创 建</el-button>
           </el-form-item>
         </div>
       </div>
@@ -187,7 +187,7 @@
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { loadSpaceStoreTree } from '@/service/market'
+  import { loadSpaceStoreTree, addCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -266,7 +266,7 @@
         hasCondition: false, // 是否有选中触发条件
         receiveConditions: [],
         isWayVisible: false, // 添加领取方式弹窗
-        conditionTypeList: { 1: '新注册用户', 2: '分享后可领取' }, // 条件触发领取方式列表
+        conditionTypeList: {}, // 条件触发领取方式列表
         isWopVisible: false // 添加核销点弹窗
       }
     },
@@ -281,10 +281,13 @@
 
     mounted() {
       // 获取自动发券领取方式列表
+      this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
+      for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
+        this.receiveConditions.push({ type: 0, dateTime: [] })
+      }
       loadConstant('couponReceive.conditionType').then(res => {
         if (res.status === 'true') {
           this.receiveConditions = []
-          // this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
           this.conditionTypeList = res.info
           for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
             this.receiveConditions.push({ type: 0, dateTime: [] })
@@ -349,6 +352,21 @@
       },
 
       // 添加领取方式
+      showReceiveDialog() {
+        let conditions = this.receiveConditions
+        conditions.forEach(item => {
+          item.type = 0
+          item.dateTime = []
+        })
+        if (this.couponForm.receiveConditionArray) {
+          this.couponForm.receiveConditionArray.forEach((item) => {
+            let conditionIndex = Object.keys(this.conditionTypeList).indexOf(item.type += '')
+            this.receiveConditions[conditionIndex].type = item.type
+            this.receiveConditions[conditionIndex].dateTime = [item.startTime, item.endTime]
+          })
+        }
+        this.isWayVisible = true
+      },
       receiveChange() {
         this.receiveConditions.forEach(item => {
           if (item.type === 0) {
@@ -361,7 +379,12 @@
         this.couponForm.receiveConditionArray = []
         conditions.forEach(item => {
           if (item.type !== 0) {
-            this.couponForm.receiveConditionArray.push(item)
+            let temp = Object.assign({}, {
+              type: item.type,
+              startTime: item.dateTime != null ? item.dateTime[0] : '',
+              endTime: item.dateTime != null ? item.dateTime[1] : ''
+            })
+            this.couponForm.receiveConditionArray.push(temp)
           }
         })
         let target = this.couponForm.receiveConditionArray
@@ -369,13 +392,13 @@
           this.$message.error('至少选中一个触发条件')
           return
         }
-        let valid
+        let valid = false
         target.forEach(item => {
-          if (!item.dateTime || !item.dateTime.length) {
+          if (item && item['startTime']) {
+            valid = true
+          } else {
             this.$message.error('请选择有效期限')
             valid = false
-          } else {
-            valid = true
           }
         })
         if (!valid) return
@@ -383,12 +406,6 @@
         this.isWayVisible = false
       },
       closeWayDialog() {
-        let conditions = this.receiveConditions
-        this.couponForm.receiveConditionArray = []
-        conditions.forEach(item => {
-          item.type = 0
-          item.dateTime = []
-        })
         this.isWayVisible = false
       },
       // 移除触发条件
@@ -397,6 +414,22 @@
         target.splice(target.findIndex(item => item.type === data.type), 1)
         this.receiveConditions.find(item => item.type === data.type).type = 0
         this.receiveConditions.find(item => item.type === data.type).dateTime = []
+      },
+
+      // 提交表单
+      submitForm() {
+        this.$refs['couponForm'].validate(valid => {
+          if (valid) {
+            let form = this.couponForm
+            let params = {
+              name: form.name,
+              description: form.desc
+            }
+            addCoupon(params)
+          } else {
+            console.log('表单填写错误。')
+          }
+        })
       }
     }
   }
