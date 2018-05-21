@@ -24,6 +24,11 @@ export default [{
     path: '/coupon/add',
     hidden: true,
     component: _import('market/coupon/add')
+  }, {
+    name: '下发优惠券',
+    path: '/coupon/issue',
+    hidden: true,
+    component: _import('market/coupon/manual-issue')
   },
 
   // 核销管理
