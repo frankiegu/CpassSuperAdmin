@@ -86,15 +86,18 @@
         <el-table-column label="场地类型" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.type === 3">工位</span>
-            <span v-else>会议室</span>
+            <span v-else-if="scope.row.type === 1">会议室</span>
+            <span v-else-if="scope.row.type === 2">路演厅</span>
+            <span v-else-if="scope.row.type === 4">多功能场地</span>
+            <span v-else-if="scope.row.type === 5">办公室</span>
           </template>
         </el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
         <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable sort-by="bookStartTime"></el-table-column>
-        <el-table-column label="场地所属" prop="spaceName" align="left">
+        <el-table-column label="场地所属" prop="storeName" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.spaceName }}</span>
+            <span>{{ scope.row.storeName }}</span>
           </template>
         </el-table-column>
         <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount" width="116"></el-table-column>
