@@ -82,7 +82,7 @@
             <h3 class="coupon-tab-title mb22">卡券信息</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20" v-for="(item, index) in conditionTrigger">
+                <el-row :gutter="20" v-for="(item, index) in conditionTrigger" :key="index">
                   <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
                       <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
@@ -120,7 +120,7 @@
                 <el-row :gutter="20">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <p class="mr15 mr0" v-for="item in platformHourCouponFieldTypeList">
+                      <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
                         <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
                         <span v-if="item.type === 2">路演厅</span>
                         <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
