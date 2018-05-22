@@ -4,6 +4,7 @@ export default {
   mixins: [tableData],
   methods: {
     handleSizeChange(val) {
+      this.currentPage = 1
       this.pageSize = val
       this.getPageData()
     },
