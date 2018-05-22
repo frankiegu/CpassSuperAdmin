@@ -120,7 +120,7 @@
                 <el-row :gutter="20">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <p class="mr15 mr0" v-for="item in platformHourCouponFieldTypeList">
+                      <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
                         <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
                         <span v-if="item.type === 2">路演厅</span>
                         <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
