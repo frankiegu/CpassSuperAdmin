@@ -18,7 +18,7 @@
 
         <!--v-permissions="'/manage/coupon/add'"-->
         <router-link
-          :to="'/market/coupon/add'"
+          :to="'/coupon/issue'"
           class="fl">
           <el-button type="primary">手动发券</el-button>
         </router-link>
