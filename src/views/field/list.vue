@@ -116,6 +116,10 @@
                   v.fieldTypeText = '会议室'
                 } else if (v.fieldType === 3) {
                   v.fieldTypeText = '工位'
+                } else if (v.fieldType === 2) {
+                  v.fieldTypeText = '路演厅'
+                } else if (v.fieldType === 4) {
+                  v.fieldTypeText = '多功能路演厅'
                 }
               })
             }
