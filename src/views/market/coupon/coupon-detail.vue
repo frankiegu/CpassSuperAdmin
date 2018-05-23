@@ -21,14 +21,19 @@
           placement="top"
           class="margin-lr6">
           <el-switch
-            class=""
             v-model="couponBaseInfo.controlStatus"
             active-text=""
             inactive-text=""
             @change="businessToggleAll(couponBaseInfo.controlStatus, couponBaseInfo.id)"
             :active-color="switchActiveColor"></el-switch>
         </el-tooltip>
-        <div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>
+        <el-tooltip
+          :content="couponBaseInfo.fizenStatusText"
+          placement="top"
+          class="margin-lr6">
+          <div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>
+        </el-tooltip>
+        <!--<div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>-->
       </div>
 
     </lh-title>
@@ -66,7 +71,7 @@
                 <span>{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" v-if="couponBaseInfo.type === 1">
               <lh-item label="用券总成交额：" label-width="100px">{{couponTotalAmount}}</lh-item>
             </el-col>
           </el-row>
@@ -164,14 +169,14 @@
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
-              v-model.trim="couponInfo.keywords"
+              v-model.trim="searchName"
               placeholder="搜索领取人名称"
-              @keyup.native.enter="getPageData(1)"></el-input>
+              @keyup.native.enter="getReceiveList(1)"></el-input>
             <el-button class="lh-btn-export" icon="el-icon-download" @click="exportExcel">导出</el-button>
           </div>
           <el-table
             ref="multipleTable"
-            :data="couponInfo.receiveRecord"
+            :data="receiveList"
             tooltip-effect="dark"
             style="width: 100%"
             class="mt20"
@@ -187,12 +192,12 @@
               <template slot-scope="scope">{{ scope.row.id }}</template>
             </el-table-column>
             <el-table-column
-              prop="receiveName"
+              prop="customerName"
               label="领取人"
               width="120">
             </el-table-column>
             <el-table-column
-              prop="receiveMethod"
+              prop="couponReceiveName"
               label="领取方式"
               show-overflow-tooltip>
             </el-table-column>
@@ -203,15 +208,14 @@
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
-              prop="receiveTime"
               label="使用状态"
               sortable
-              show-overflow-tooltip>
-              <template slot-scope="scope">
-                <span v-if="scope.row.useStatus === 0">待使用</span>
-                <span v-if="scope.row.useStatus === -1">冻结</span>
-                <span v-if="scope.row.useStatus === 1">已使用</span>
-              </template>
+              show-overflow-tooltip prop="useStatusName">
+              <!--<template slot-scope="scope">-->
+                <!--<span v-if="scope.row.useStatus === 0">待使用</span>-->
+                <!--<span v-if="scope.row.useStatus === -1">冻结</span>-->
+                <!--<span v-if="scope.row.useStatus === 1">已使用</span>-->
+              <!--</template>-->
             </el-table-column>
             <el-table-column
               prop="useTime"
@@ -220,14 +224,14 @@
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
-              v-if="couponInfo.type === 1 || couponInfo.type === 3"
+              v-if="couponBaseInfo.type === 1"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
-              v-if="couponInfo.type === 1 || couponInfo.type === 3"
+              v-if="couponBaseInfo.type === 1"
               prop="discountAmount"
               label="优惠金额"
               sortable
@@ -252,12 +256,14 @@
 <script>
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
-  import { couponDetail } from '@/service/market'
+  import { couponDetail, couponReceiveList } from '@/service/market'
   export default {
     data () {
       return {
         activeTab: 'couponInformation',
         couponId: this.$route.query.id, // 卡券id
+        searchName: '', // 领取详情搜索姓名
+        receiveList: [], // 领取列表
         couponInfo: {
           keywords: '', // 领取人输入框
           publishStatus: 0,
@@ -402,6 +408,7 @@
         couponDetail({ id: this.couponId }).then(res => {
           if (res.status === 'true') {
             this.couponBaseInfo = res.info.platformCoupon
+            this.getReceiveList()
             this.couponTotalAmount = res.info.couponTotalAmount
             this.receiveStatistics = res.info.statistics
             this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
@@ -436,13 +443,29 @@
           }
         })
       },
+      getReceiveList (page) {
+        this.currentPage = page || this.currentPage
+        let params = {
+          couponId: this.couponId,
+          couponType: this.couponBaseInfo.type,
+          customerName: this.searchName,
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        }
+        couponReceiveList(params).then(res => {
+          if (res.status === 'true') {
+            this.receiveList = res.info.result
+            this.pageTotal = res.info.total
+          }
+        })
+      },
       handleSizeChange(val) {
         this.pageSize = val
-        this.getPageData()
+        this.getReceiveList()
       },
       handleCurrentChange(val) {
         this.currentPage = val
-        this.getPageData()
+        this.getReceiveList()
       },
       // 导出数据
       exportExcel() {
@@ -473,7 +496,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-          this.couponInfo.controlStatus = false
+          this.couponInfo.controlStatus = true
           this.$message({
             type: 'success',
             message: '开启成功!'
