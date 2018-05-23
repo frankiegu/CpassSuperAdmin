@@ -23,6 +23,15 @@ export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupo
 // 添加优惠券
 export const addCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/add', obj, 'POST')
 
+// 查询手动下发卡券列表
+export const findUsableCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/findUsableCoupon', obj, 'POST')
+
+// 查询渠道列表
+export const channelList = (obj) => fetch(API_PATH + '/supervisor/wxappRegisterWay/list', obj, 'POST')
+
+// 手动发券
+export const manualCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/manualCoupon', obj, 'POST')
+
 /**
  * 核销管理
  */

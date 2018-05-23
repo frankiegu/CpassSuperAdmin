@@ -2,19 +2,19 @@
   <div class="page-field-detail">
     <lh-title :title="titleName">
       <span class="mr12">
-        <el-tag v-if="field.status === 10" type="success" size="mini">开放中</el-tag>
-        <el-tag v-else="field.status === 20" type="danger" size="mini">未开放</el-tag>
+        <el-tag v-if="isOpen === 1" type="success" size="mini">开放中</el-tag>
+        <el-tag v-else="isOpen === 0" type="danger" size="mini">未开放</el-tag>
       </span>
 
       <el-tooltip
-        :content="field.status === 10 ? '点击停用会员' : '点击开放会员'"
+        :content="isOpen === 1 ? '点击停用场地' : '点击开放场地'"
         placement="top"
         class="margin-lr6">
         <el-switch
-          v-model="field.status"
+          v-model="isOpen"
           @change="handleUpdateStatus"
-          :active-value="10"
-          :inactive-value="20"
+          :active-value="1"
+          :inactive-value="0"
           class="fr"
           active-text=""
           inactive-text=""
@@ -479,6 +479,7 @@ export default {
           let resInfo = res.info
           this.field = resInfo.field
           this.space = resInfo.space
+          this.isOpen = resInfo.isOpen
 
           if (!this.fieldType) {
             this.fieldType = resInfo.field.type + ''
@@ -519,6 +520,14 @@ export default {
 
               // 对外价格，在基本价格之后整合
               // this.setBasePrice(resInfo.fieldMeeting)
+              break;
+            case '2':
+              this.stationNum = resInfo.fieldRoadshowHall.maxAdmissibleNum
+              this.turnOpenData(resInfo.fieldRoadshowHall)
+              this.setOpenPrice(resInfo.fieldPriceList)
+
+              this.getOpenStatus()
+              this.toggleWeek()
               break;
             case '4':
               this.stationNum = resInfo.fieldOther.maxAdmissibleNum
@@ -578,7 +587,7 @@ export default {
     handleUpdateStatus() {
       setFieldStatus({
         fieldId: this.fieldId,
-        isOpen: (this.field.status === 20) ? 1 : 0
+        isOpen: this.isOpen
       }).then(res => {
         if (res.status === 'true') {
           // @注意：感叹号只在需要表达强烈情感的情况下使用，弹出信息推荐不使用

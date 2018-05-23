@@ -90,16 +90,16 @@
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
                     <!-- 部分门店的树形 -->
-                    <el-tree v-show="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
-                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
+                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
                     </el-tree>
 
                     <!-- 部分核销点的树形 -->
-                    <el-tree v-show="couponForm.couponType === 3" node-key="id" :data="stationList"
-                      :filter-node-method="filterNode" default-expand-all :props="treeProp"
-                      show-checkbox ref="rangeTree1" class="range-tree" @check-change="handleCheckChange">
+                    <el-tree v-if="couponForm.couponType === 3" node-key="id" :data="stationList"
+                      :filter-node-method="filterNode" default-expand-all :props="treeProp" key="stationTree"
+                      show-checkbox ref="rangeTree" class="range-tree" @check-change="handleCheckChange">
                     </el-tree>
                   </div>
                 </div>
@@ -112,7 +112,7 @@
                   </p>
 
                   <!-- 选中的部分门店 -->
-                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1">
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1" key="storeTable">
                     <el-table-column label="空间" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
@@ -123,7 +123,7 @@
                   </el-table>
 
                   <!-- 选中的部分核销点 -->
-                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 3">
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 3" key="stationTable">
                     <el-table-column label="核销点" prop="name"></el-table-column>
                     <el-table-column label="地址">
                       <template slot-scope="scope">
@@ -315,17 +315,12 @@
 
     watch: {
       filterText(val) {
-        if (this.couponForm.couponType === 1) this.$refs.rangeTree.filter(val)
-        if (this.couponForm.couponType === 3) this.$refs.rangeTree1.filter(val)
+        this.$refs.rangeTree.filter(val)
       }
     },
 
     mounted() {
       // 获取自动发券领取方式列表
-      // this.conditionTypeList = { 1: '新注册用户', 2: '分享后可领取' }
-      // for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
-      //   this.receiveConditions.push({ type: 0, dateTime: [] })
-      // }
       loadConstant('couponReceive.conditionType').then(res => {
         if (res.status === 'true') {
           this.receiveConditions = []
@@ -371,16 +366,21 @@
         })
       },
       // 树形数据过滤
-      filterNode(value, data) {
+      filterNode(value, data, node) {
         if (!value) return true
-        return data.name && data.name.indexOf(value) !== -1
+        if (data.name && data.name.indexOf(value) !== -1) {
+          return true
+        } else if (node.parent.data.name && node.parent.data.name.indexOf(value) !== -1) {
+          return true
+        } else if (node.parent.parent && node.parent.parent.level > 0 &&
+          node.parent.parent.data.name.indexOf(value) !== -1) {
+          return true
+        }
       },
       // 获取选中的树节点，只返回门店节点
       getCheckedNodes() {
         const leafOnly = true
-        const checkedNodes = this.couponForm.couponType === 1
-          ? this.$refs.rangeTree.getCheckedNodes(leafOnly)
-          : this.$refs.rangeTree1.getCheckedNodes(leafOnly)
+        const checkedNodes = this.$refs.rangeTree.getCheckedNodes(leafOnly)
         const storeNodes = []
         for (let i = 0; i < checkedNodes.length; i++) {
           if (this.couponForm.couponType === 1) {
@@ -412,12 +412,10 @@
       // 移除选中的节点
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
-        let treeName = this.couponForm.couponType === 1 ? 'rangeTree' : 'rangeTree1'
-        console.log(treeName, this.$refs[treeName])
         if (!nodeKey) {
-          this.$refs[treeName].setCheckedKeys([])
+          this.$refs.rangeTree.setCheckedKeys([])
         } else {
-          this.$refs[treeName].setChecked(nodeKey, false, true)
+          this.$refs.rangeTree.setChecked(nodeKey, false, true)
         }
       },
 

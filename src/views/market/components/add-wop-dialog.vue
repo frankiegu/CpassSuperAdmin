@@ -8,12 +8,12 @@
       </el-form-item>
 
       <el-form-item label="关联门店">
-        <el-cascader v-model="formData.storeId" :props="storeProp" :options="storeList"></el-cascader>
+        <el-cascader v-model="formData.storeId" :props="storeProp" :options="storeList" clearable></el-cascader>
       </el-form-item>
 
       <el-form-item label="地址" prop="addressCode">
         <el-cascader v-model="formData.addressCode" placeholder="省/市/区" :props="addressProp"
-          :options="addressList"></el-cascader>
+          :options="addressList" clearable></el-cascader>
       </el-form-item>
 
       <el-form-item prop="addressDetail">
