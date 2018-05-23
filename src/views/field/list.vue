@@ -119,7 +119,9 @@
                 } else if (v.fieldType === 2) {
                   v.fieldTypeText = '路演厅'
                 } else if (v.fieldType === 4) {
-                  v.fieldTypeText = '多功能路演厅'
+                  v.fieldTypeText = '多功能路场地'
+                } else if (v.fieldType === 5) {
+                  v.fieldTypeText = '办公室'
                 }
               })
             }
