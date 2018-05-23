@@ -401,7 +401,6 @@
       getPageData () {
         couponDetail({ id: this.couponId }).then(res => {
           if (res.status === 'true') {
-            console.log(res)
             this.couponBaseInfo = res.info.platformCoupon
             this.couponTotalAmount = res.info.couponTotalAmount
             this.receiveStatistics = res.info.statistics
