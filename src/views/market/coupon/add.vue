@@ -169,7 +169,9 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" class="width120px" @click="submitForm">创 建</el-button>
+            <el-button type="primary" class="width120px" @click="submitForm">
+              {{$route.query.id ? '保 存' : '创 建'}}
+            </el-button>
           </el-form-item>
         </div>
       </div>
@@ -229,13 +231,25 @@
       }
       const checkNameUnique = (rule, value, callback) => {
         if (value) {
-          isUniqueCoupon({ name: value }).then(res => {
+          let params = {
+            name: value
+          }
+          if (this.$route.query.id) params.couponId = this.$route.query.id
+          isUniqueCoupon(params).then(res => {
             if (res.status === 'false') {
               return callback(new Error(res.msg))
             } else {
               callback()
             }
           })
+        }
+      }
+      const checkMinDate = (rule, value, callback) => {
+        if (value && value.length > 0) {
+          if (new Date(value[0]) < new Date()) {
+            return callback(new Error('起始时间需大于当前时间'))
+          }
+          callback()
         }
       }
       return {
@@ -288,7 +302,8 @@
             { validator: checkInt, trigger: ['blur', 'change'] }
           ],
           expireDate: [
-            { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] }
+            { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] },
+            { validator: checkMinDate, trigger: ['blur', 'change'] }
           ],
           fieldType: [
             { required: true, message: '至少选择一个项目', trigger: ['blur', 'change'] }
@@ -473,7 +488,12 @@
         let valid = false
         target.forEach(item => {
           if (item && item['startTime']) {
-            valid = true
+            if (new Date(item['startTime']) > new Date()) {
+              valid = true
+            } else {
+              this.$message.error('起始时间需大于当前时间')
+              valid = false
+            }
           } else {
             this.$message.error('请选择有效期限')
             valid = false
@@ -551,9 +571,11 @@
                 let verifyStationList = res.info.verifyStationList
                 couponForm.couponRight = platformGiftCoupon.benefit
                 couponForm.isAllStore = platformGiftCoupon.verifyStationType
-                this.$nextTick(() => {
-                  this.$refs.rangeTree.setCheckedNodes(verifyStationList)
-                })
+                if (verifyStationList.length > 0) {
+                  this.$nextTick(() => {
+                    this.$refs.rangeTree.setCheckedNodes(verifyStationList)
+                  })
+                }
                 break
               default:
                 break
@@ -598,9 +620,20 @@
               }
             }
             if (receiveCondition === 1) { // 条件触发勾选时传参
+              let dateValid = false
               if (form.receiveConditionArray.length === 0) {
                 this.$message.error('条件触发至少添加一个触发方式')
                 return
+              } else {
+                form.receiveConditionArray.forEach(item => {
+                  if (new Date(item.startTime) > new Date()) {
+                    dateValid = true
+                  } else {
+                    this.$message.error('条件触发的起始时间需大于当前时间')
+                    dateValid = false
+                  }
+                })
+                if (!dateValid) return
               }
               params.receiveConditionArray = form.receiveConditionArray
             }
