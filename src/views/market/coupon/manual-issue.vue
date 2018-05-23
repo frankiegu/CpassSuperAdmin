@@ -9,12 +9,12 @@
         <el-step title="发放结果"></el-step>
       </el-steps>
 
-      <!-- 选择卡券 -->
+      <!-- 1. 选择卡券 -->
       <div class="step-cont clearfix coupon-cont" v-if="active === 1">
         <div class="list-cont fl">
           <el-input v-model.trim="filterText" placeholder="请输入优惠券名称" class="fix-input"></el-input>
           <div class="tree-cont">
-            <el-tree node-key="nodeKey" :data="treeData"
+            <el-tree node-key="nodeKey" :data="treeData" v-loading="loadingTree"
               :filter-node-method="filterNode" default-expand-all :props="treeProp"
               show-checkbox ref="couponTree" class="coupon-tree"
               @check-change="handleCheckChange">
@@ -29,9 +29,13 @@
             <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
           </p>
           <el-table :data="selectedCoupons" height="360px" :key="1">
-            <el-table-column label="优惠券类型" prop="couponType"></el-table-column>
+            <el-table-column label="优惠券类型">
+              <template slot-scope="scope">
+                <span>{{couponType[scope.row.type]}}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="名称" prop="name"></el-table-column>
-            <el-table-column label="剩余数量" prop="amount"></el-table-column>
+            <el-table-column label="剩余数量" prop="quantity"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <span class="pointer-theme-gray" @click="removeSelected(scope.row.nodeKey)">删除</span>
@@ -41,18 +45,23 @@
         </div>
       </div>
 
-      <!-- 选择会员 -->
+      <!-- 2. 选择会员 -->
       <div class="step-cont" v-if="active === 2">
+        <!-- 优惠券列表 -->
         <lh-item label="已选优惠券" label-width="120px">
           <el-table :data="selectedCoupons">
-            <el-table-column label="优惠券类型" prop="couponType"></el-table-column>
+            <el-table-column label="优惠券类型">
+              <template slot-scope="scope">
+                <span>{{couponType[scope.row.type]}}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="名称" prop="name"></el-table-column>
-            <el-table-column label="剩余数量" prop="amount"></el-table-column>
+            <el-table-column label="剩余数量" prop="quantity"></el-table-column>
           </el-table>
         </lh-item>
 
-        <lh-item label="最大可选会员数" label-width="120px">{{'90'}}
-          <span class="ml20">已选 <span class="theme-blue ml20"> {{submitData.userIds.length}}</span></span>
+        <lh-item label="最大可选会员数" label-width="120px">{{maxSelection}}
+          <span class="ml20">已选 <span class="theme-blue ml20"> {{submitData.customerIds.length}}</span></span>
         </lh-item>
 
         <div class="member-cont">
@@ -81,7 +90,7 @@
           </el-form>
 
           <!-- 会员列表 -->
-          <el-table :data="memberList" row-key="id" @selection-change="handleSelectionChange" :key="2">
+          <el-table :data="memberList" row-key="id" @selection-change="handleSelectionChange" height="360px" :key="2">
             <el-table-column type="selection" width="55" reserve-selection></el-table-column>
             <el-table-column label="会员名称" prop="nickname"></el-table-column>
             <el-table-column label="注册渠道" prop="registerName">
@@ -111,7 +120,7 @@
         </div>
       </div>
 
-      <!-- 发放结果 -->
+      <!-- 3. 发放结果 -->
       <div class="step-cont" v-if="active === 3">
         <div class="success-cont">
           <i v-if="isSuccess" class="el-icon-success theme-green"></i>
@@ -130,8 +139,12 @@
 
       <div class="button-bar">
         <el-button v-if="active === 2" @click="prev">返回上一步</el-button>
-        <el-button v-if="active === 1" type="primary" @click="next">下一步</el-button>
-        <el-button v-if="active === 2" type="primary" @click="next">确 定</el-button>
+        <el-button v-if="active === 1" type="primary" @click="next" :disabled="selectedCoupons.length === 0">
+          下一步
+        </el-button>
+        <el-button v-if="active === 2" type="primary" @click="handleConfirmIssue"
+          :disabled="submitData.customerIds.length === 0">确 定
+        </el-button>
         <el-button v-if="active === 3" @click="next">返回列表</el-button>
       </div>
     </div>
@@ -141,14 +154,16 @@
 <script>
   import tableMixins from '@/mixins/table'
   import { CUSTOMER_LIST } from '@/service/member'
-  import { channelList } from '@/service/market'
+  import { channelList, findUsableCoupon, manualCoupon } from '@/service/market'
   export default {
     name: 'manual-issue',
     mixins: [tableMixins],
     data() {
       return {
         active: 1,
+        couponType: {},
         // 树形控件数据
+        loadingTree: true,
         filterText: '',
         treeData: [{
           name: '全部',
@@ -156,40 +171,17 @@
           children: [{
             name: '小时券',
             nodeKey: 2,
-            children: [{
-              name: '3小时场地券',
-              nodeKey: 3,
-              couponId: 1,
-              couponType: '小时券',
-              amount: 99
-            }, {
-              name: '6小时场地券',
-              nodeKey: 4,
-              couponId: 2,
-              couponType: '小时券',
-              amount: 99
-            }]
+            children: []
           }, {
             name: '礼品券',
             nodeKey: 5,
-            children: [{
-              name: '咖啡兑换券',
-              nodeKey: 6,
-              couponId: 3,
-              couponType: '礼品券',
-              amount: 70
-            }, {
-              name: '甜点兑换券',
-              nodeKey: 7,
-              couponId: 4,
-              couponType: '礼品券',
-              amount: 20
-            }]
+            children: []
           }]
         }],
         treeProp: { label: 'name' },
 
         selectedCoupons: [], // 选中的优惠券
+        maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
         memberSort: {
           registerWay: '',
@@ -200,8 +192,8 @@
 
         // 下发卡券参数
         submitData: {
-          userIds: [],
-          couponIds: []
+          customerIds: [],
+          platformCouponIds: []
         },
         isSuccess: true,
         errorList: [],
@@ -240,6 +232,13 @@
     watch: {
       filterText(val) {
         this.$refs.couponTree.filter(val)
+      },
+      selectedCoupons(val) {
+        let nums = []
+        val.forEach(item => {
+          nums.push(parseInt(item.quantity))
+        })
+        this.maxSelection = Math.min(...nums)
       }
     },
     mounted() {
@@ -248,8 +247,32 @@
           this.channels = res.info
         }
       })
+      this.handleGetTreeData()
     },
     methods: {
+      // step 1 获取树形数据
+      handleGetTreeData() {
+        findUsableCoupon().then(res => {
+          if (res.status === 'true' && res.info) {
+            this.couponType = res.info.couponType
+            let couponList = res.info.couponList
+            if (!couponList.length) {
+              this.treeData = []
+              this.loadingTree = false
+            } else {
+              couponList.forEach((item, index) => {
+                item.nodeKey = item.name + index
+                if (item.type === 1) {
+                  this.treeData[0].children[0]['children'].push(item)
+                } else if (item.type === 3) {
+                  this.treeData[0].children[1]['children'].push(item)
+                }
+              })
+              this.loadingTree = false
+            }
+          }
+        })
+      },
       // step 1 树形数据过滤
       filterNode(value, data, node) {
         if (!value) return true;
@@ -268,22 +291,22 @@
         const checkedNodes = this.$refs.couponTree.getCheckedNodes(leafOnly)
         const storeNodes = []
         for (let i = 0; i < checkedNodes.length; i++) {
-          if (checkedNodes[i].couponId && !checkedNodes[i].disabled) {
+          if (checkedNodes[i].id && !checkedNodes[i].disabled) {
             storeNodes.push(checkedNodes[i])
           }
         }
         return storeNodes
       },
-      // 复选框change时更新节点
+      // step 1 复选框change时更新节点
       handleCheckChange(data, checked, indeterminate) {
         // console.log(data, checked, indeterminate)
         this.selectedCoupons = this.getCheckedNodes()
-        this.submitData.couponIds = []
+        this.submitData.platformCouponIds = []
         for (let i = 0; i < this.selectedCoupons.length; i++) {
-          this.submitData.couponIds.push(this.selectedCoupons[i].id)
+          this.submitData.platformCouponIds.push(this.selectedCoupons[i].id)
         }
       },
-      // 移除选中的节点
+      // step 1 移除选中的节点
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
         let treeName = 'couponTree'
@@ -296,9 +319,12 @@
 
       // step 2 会员列表选择事件
       handleSelectionChange(val) {
-        this.submitData.userIds = val
+        this.submitData.customerIds = []
+        val.forEach(item => {
+          this.submitData.customerIds.push(item.id)
+        })
       },
-      // 获取会员列表
+      // step 2 获取会员列表
       getPageData(page) {
         this.currentPage = page || this.currentPage
         let [startDate, endDate] = this.memberSort.registerDate
@@ -317,10 +343,32 @@
           }
         })
       },
+      // step 2 确认下发
+      handleConfirmIssue() {
+        if (this.submitData.customerIds.length > this.maxSelection) {
+          this.$message.error('剩余券数量不足，请重新选择')
+          return false
+        }
+        manualCoupon(this.submitData).then(res => {
+          if (res.status === 'true') {
+            this.isSuccess = true
+            this.next()
+          } else {
+            this.isSuccess = false
+            this.next()
+          }
+        })
+      },
 
       // 切换步骤事件
       prev() {
         if (this.active-- < 1) this.active = 1
+        // 返回上一步回到第一步时，保持树形节点被选中的状态
+        if (this.active === 1) {
+          this.$nextTick(() => {
+            this.$refs.couponTree.setCheckedNodes(this.selectedCoupons)
+          })
+        }
       },
       next() {
         if (this.active++ > 2) this.active = 1
@@ -382,6 +430,9 @@
     }
     .button-bar {
       text-align: center;
+      button {
+        width: 120px;
+      }
     }
   }
 </style>

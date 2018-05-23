@@ -45,6 +45,7 @@
             <el-col>
               <lh-item label="优惠内容：" label-width="87px">
                 <span v-if="couponBaseInfo.type === 1">减免场地订单{{couponDiscountContent.subtractHour}}小时的费用</span>
+                <span v-if="couponBaseInfo.type === 3">{{couponDiscountContent.benefit}}</span>
               </lh-item>
             </el-col>
           </el-row>
@@ -79,7 +80,7 @@
         <el-tab-pane label="卡券信息" name="couponInformation" class="coupon-detail-info">
           <!--领取方式-->
           <div class="receive-methods mt12">
-            <h3 class="coupon-tab-title mb22">卡券信息</h3>
+            <h3 class="coupon-tab-title mb22">领取方式</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
                 <el-row :gutter="20" v-for="(item, index) in conditionTrigger" :key="index">
@@ -117,7 +118,7 @@
             <h3 class="coupon-tab-title mb22">使用限制</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20">
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
                       <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
@@ -136,6 +137,7 @@
                         <!--小时券, 礼品券, 折扣券, 满减券-->
                         <!--<span v-if="scope.row.type === 0">小时券</span>-->
                         <el-table
+                          v-if="storeList.length > 0"
                           :data="storeList"
                           :empty-text="tableEmpty"
                           :slot="tableEmpty"
@@ -146,6 +148,7 @@
                           <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1"></el-table-column>
                           <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>
                         </el-table>
+                        <span v-else>全部门店</span>
                       </template>
                     </lh-item>
                   </el-col>
@@ -271,7 +274,7 @@
           created: '2018-05-16 10:00:00',
           startDate: '2018-05-16 14:00:00',
           endDate: '2018-05-31 14:00:00',
-          controlStatus: true,
+          controlStatus: '',
           receiveRecord: [
             {
               id: '1220455522',
@@ -398,17 +401,10 @@
       getPageData () {
         couponDetail({ id: this.couponId }).then(res => {
           if (res.status === 'true') {
-            console.log(res)
             this.couponBaseInfo = res.info.platformCoupon
             this.couponTotalAmount = res.info.couponTotalAmount
             this.receiveStatistics = res.info.statistics
             this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
-            this.storeList = res.info.storeList
-            if (this.couponBaseInfo.type === 3) {
-              this.storeList.forEach(v => {
-                v.useCouponAddress = v.cityName + v.districtName + v.address
-              })
-            }
             res.info.couponReceiveDetailList.forEach(v => {
               if (v.receiveConditionStatus === 1) {
                 v.couponStatus = true
@@ -417,9 +413,15 @@
               }
             })
             this.conditionTrigger = res.info.couponReceiveDetailList
-            console.log('this.conditionTrigger', this.conditionTrigger)
             if (this.couponBaseInfo.type === 1) {
               this.couponDiscountContent = res.info.platformHourCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 3) {
+              this.couponDiscountContent = res.info.platformGiftCoupon
+              this.storeList = res.info.verifyStationList
+              this.storeList.forEach(v => {
+                v.useCouponAddress = v.cityName + v.districtName + v.address
+              })
             }
             if (res.info.platformCoupon.status === 1) {
               this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
