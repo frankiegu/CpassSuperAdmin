@@ -39,6 +39,9 @@ export const manualCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupo
 // 新增核销点
 export const addPlatformVerifyStation = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/add', obj, 'POST')
 
+// 编辑核销点
+export const addPlatformVerifyStationUpdate = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/update', obj, 'POST')
+
 // 核销点详情
 export const PlatformVerifyStationDetail = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/detail', obj, 'POST')
 

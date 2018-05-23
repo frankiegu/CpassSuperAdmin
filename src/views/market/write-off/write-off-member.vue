@@ -27,9 +27,9 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="提交时间" fixed="left" align="left" sortable sort-by="createDate">
+        <el-table-column label="提交时间" fixed="left" align="left" sortable sort-by="created">
           <template slot-scope="scope">
-            {{ scope.row.createDate }}
+            {{ scope.row.created }}
           </template>
         </el-table-column>
 

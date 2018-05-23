@@ -2,7 +2,13 @@
   <div class="order-field">
     <div class="card-padding">
       <el-form :inline="true" class="text-right mr-10 lh-card-head info-top">
-        <div class="fl to-bottom-right add-point" @click="dialogVisible = true">添加</div>
+        <div class="fl to-bottom-right add-point" @click="isWopVisible = true">添加</div>
+
+        <el-form-item class="fr">
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
       </el-form>
 
       <el-table
@@ -14,13 +20,15 @@
 
         <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
-            <span class="table-link" @click="editPoint(scope.row.id, scope.row.name, scope.row.spaceName, scope.row.storeName, scope.row.provinceName, scope.row.cityName, scope.row.address )">{{ scope.row.name }}</span>
+            <span class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="关联门店" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.spaceName + '-' }}{{ scope.row.storeName }}
+            <span v-if="scope.row.spaceName || scope.row.storeName">
+              {{ scope.row.spaceName + '-' }}{{ scope.row.storeName }}
+            </span>
           </template>
         </el-table-column>
 
@@ -72,76 +80,57 @@
         background></el-pagination>
     </div>
 
-    <!--添加dialog-->
-    <el-dialog
-      title="添加核销点"
-      :visible.sync="dialogVisible"
-      width="500px">
-      <div class="detail-info">
-        <div class="label">核销点名称</div>
-        <div class="label-con">
-          <el-input v-model="pointName" maxlength="20" placeholder="请输入核销点名称" :width="50"></el-input>
-        </div>
-      </div>
-      <div class="detail-info">
-        <div class="label">关联门店</div>
-        <div class="label-con">
-          <el-cascader
-            :options="options"
-            placeholder="请选择"
-            v-model="pointStore">
-          </el-cascader>
-        </div>
-      </div>
-      <div class="detail-info">
-        <div class="label">地址</div>
-        <div class="label-con">
-          <el-cascader
-            :options="options"
-            placeholder="省/市/区"
-            v-model="pointProvince">
-          </el-cascader>
-          <el-input
-            class="mt10 mb24"
-            maxlength="50"
-            type="textarea"
-            :rows="3"
-            placeholder="请输入核销点地址"
-            v-model="pointAddress">
-          </el-input>
-        </div>
-      </div>
+    <!-- 添加核销点弹窗 -->
+    <add-wop-dialog :is-visible="isWopVisible"
+                    @closeDialog="isWopVisible = false" @refreshData="getPageData , isWopVisible = false"></add-wop-dialog>
 
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">通过审核</el-button>
-      </span>
-    </el-dialog>
+    <!-- 编辑核销点弹窗 -->
+    <add-wop-dialog :is-visible="isEditWopVisible"
+                    @closeDialog="isEditWopVisible = false" @refreshData="getPageData , isEditWopVisible = false"></add-wop-dialog>
   </div>
 </template>
 
 <script>
+  import { API_PATH } from '@/config/env'
+  import { downloadFile } from '@/config/utils'
+  import addWopDialog from '../components/add-wop-dialog'
   import tableMixins from '@/mixins/table'
   import { PlatformVerifyStationPage, loadSpaceStoreTree, PlatformVerifyStationChangeStatus, PlatformVerifyStationDelete } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
-    components: {},
+    components: {
+      addWopDialog
+    },
     data () {
       return {
-        dialogVisible: false,
-        pointName: '', // 核销点名称
-        pointAddress: '', // 核销点地址
-        pointStore: '', // 关联门店
-        pointProvince: '', // 省市区
-
-        // 列表数据
-        info: [], // 列表
-        options: [] // 树形
+        // 核销点数据
+        pointData: {
+          id: '',
+          name: '你是',
+          storeProp: {
+            label: 'name',
+            value: 'code',
+            children: 'children'
+          },
+          addressProp: {
+            label: 'name',
+            value: 'code',
+            children: 'children',
+            disabled: 'disabled'
+          },
+          storeId: [],
+          addressCode: [],
+          addressDetail: ''
+        },
+        dataForm: '',
+        isWopVisible: false // 弹窗开关
       }
     },
     mounted () {
+      // 获取核销点列表
       this.getPageData()
+      // 获取空间列表
       this.getSpaceStore()
     },
     methods: {
@@ -177,7 +166,7 @@
       getSpaceStore() {
         loadSpaceStoreTree().then(res => {
           if (res.status === 'true') {
-            this.options = res.info
+            this.pointData.storeProp = res.info
           }
         })
       },
@@ -206,6 +195,7 @@
           PlatformVerifyStationDelete(paramsObj).then(res => {
             if (res.status === 'true') {
               this.setMsg('success', '删除成功!')
+              this.getPageData()
             } else {
               this.setMsg('error', res.msg)
             }
@@ -213,6 +203,21 @@
         }).catch(() => {
           this.setMsg('error', '已取消删除!')
         });
+      },
+      EditPoint(id) {
+        this.dataForm = 'write-off'
+        this.pointData.id = id
+        this.isWopVisible = true
+      },
+      // 导出数据
+      exportExcel() {
+        if (!this.tableData.length) {
+          return this.setMsg('暂无数据')
+        }
+        const downParams = {
+        }
+        let url = API_PATH + '/supervisor/platformVerifyStation/export'
+        downloadFile(url, downParams)
       }
     }
   }

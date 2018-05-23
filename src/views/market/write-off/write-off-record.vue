@@ -18,51 +18,49 @@
 
         <el-table-column label="交易号" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.tradeNum }}
           </template>
         </el-table-column>
 
-        <el-table-column label="领取时间" fixed="left" align="left" :min-width="100">
+        <el-table-column label="领取时间" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.createDate }}
+            {{ scope.row.receiveTime }}
           </template>
         </el-table-column>
 
         <el-table-column label="领取人" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.customerName }}
           </template>
         </el-table-column>
 
         <el-table-column label="卡券名称" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.platformCouponName }}
           </template>
         </el-table-column>
 
-        <el-table-column label="状态" align="left">
+        <el-table-column label="状态" align="left" :min-width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.redemptionStatus === 10">未使用</el-tag>
-            <el-tag type="success" v-if="scope.row.redemptionStatus === 20">已兑换</el-tag>
-            <el-tag type="danger" v-if="scope.row.redemptionStatus === 30">已失效</el-tag>
+            <el-tag type="success" v-if="scope.row.status === 1">已兑换</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="核销点" align="left">
           <template slot-scope="scope">
-            {{ scope.row.couponName }}
+            {{ scope.row.stationName }}
           </template>
         </el-table-column>
 
         <el-table-column label="核销员" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.shopName }}</span>
+            <span>{{ scope.row.verifierName }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="核销时间" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.shopName }}</span>
+            <span>{{ scope.row.created }}</span>
           </template>
         </el-table-column>
 
@@ -87,7 +85,7 @@
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
   import tableMixins from '@/mixins/table'
-  import { cantonfairCoupon } from '@/service/canton-fair'
+  import { platformVerifyRecordPage } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
@@ -106,7 +104,7 @@
           pageSize: self.pageSize,
           pageNum: self.currentPage
         }
-        cantonfairCoupon(paramsObj).then(res => {
+        platformVerifyRecordPage(paramsObj).then(res => {
           if (res.status === 'true') {
             if (res.info) {
               let data = res.info
@@ -133,7 +131,7 @@
         if (!this.tableData.length) {
           return this.setMsg('暂无数据')
         }
-        let url = API_PATH + '/supervisor/feedback/export'
+        let url = API_PATH + '/supervisor/platformVerifyRecord/export'
         downloadFile(url)
       }
     }
