@@ -23,6 +23,9 @@ export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupo
 // 添加优惠券
 export const addCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/add', obj, 'POST')
 
+// 编辑优惠券
+export const updateCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/update', obj, 'POST')
+
 // 查询手动下发卡券列表
 export const findUsableCoupon = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/findUsableCoupon', obj, 'POST')
 

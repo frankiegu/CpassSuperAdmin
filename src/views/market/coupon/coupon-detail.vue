@@ -15,7 +15,9 @@
         <!-- 完成第一次发放后不可删除，按钮隐藏v-permissions="'/manage/coupon/delete'"  -->
         <span v-if="couponBaseInfo.canEdit === 1"
               @click="deleteCoupon(couponInfo.id)" class="delete-coupon coupon-created mr15">删除</span>
-        <el-button type="primary" size="small" class=" mr15">编辑</el-button>
+        <router-link :to="'/coupon/add?id=' + couponId">
+          <el-button type="primary" size="small" class=" mr15">编辑</el-button>
+        </router-link>
         <el-tooltip
           :content="couponBaseInfo.fizenStatusText"
           placement="top"

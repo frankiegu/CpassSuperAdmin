@@ -39,7 +39,7 @@
         <h3 class="senior-title">卡券内容</h3>
         <div class="card-body">
           <el-form-item label="卡券类型" required>
-            <el-radio-group v-model="couponForm.couponType">
+            <el-radio-group v-model="couponForm.couponType" :disabled="!canChangeType">
               <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
                 {{value}}
               </el-radio>
@@ -156,7 +156,9 @@
               <!-- 选中的触发条件 -->
               <ol class="condition-list" v-if="hasCondition">
                 <li v-for="(item, index) in couponForm.receiveConditionArray" :key="index" v-if="!!item.startTime">
-                  {{index + 1 + '. '}}{{item.startTime}}至{{item.endTime}}期间，{{conditionTypeList[item.type]}}
+                  {{index + 1 + '. '}}
+                  {{item.startTime.substr(0, 16)}}
+                  至 {{item.endTime.substr(0, 16)}} 期间，{{conditionTypeList[item.type]}}
                   <el-button type="text" icon="el-icon-close" class="ml20" @click="removeCondition(item)"></el-button>
                 </li>
               </ol>
@@ -213,7 +215,7 @@
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon } from '@/service/market'
+  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon, couponDetail, updateCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -238,7 +240,7 @@
       }
       return {
         filterText: '',
-        // 指定项目列表
+        // 指定项目列表 前端暂时写死
         fieldTypeList: {
           1: '会议室',
           2: '路演厅',
@@ -247,6 +249,7 @@
         },
         // 卡券类型列表
         couponTypeList: [],
+        canChangeType: true, // 编辑时不可更改卡券类型
         // 树形列表
         treeData: [],
         treeProp: { label: 'name' },
@@ -338,15 +341,17 @@
       })
       // 获取树形数据
       this.handleGetTreeData()
+
+      // 获取优惠券详情
+      if (this.$route.query.id) this.handleGetCouponDetail()
+      // 获取核销点列表
+      this.handleGetStation()
     },
 
     methods: {
       // 切换卡券类型
       changeType(val) {
         this.selectedRange = []
-        if (val === 3 && !this.stationList.length) {
-          this.handleGetStation()
-        }
       },
       // 获取核销点列表
       handleGetStation() {
@@ -419,8 +424,8 @@
         }
       },
 
-      // 添加领取方式
-      showReceiveDialog() {
+      // 添加领取方式映射
+      mapReceiveConditions() {
         let conditions = this.receiveConditions
         conditions.forEach(item => {
           item.type = 0
@@ -433,8 +438,12 @@
             this.receiveConditions[conditionIndex].dateTime = [item.startTime, item.endTime]
           })
         }
+      },
+      showReceiveDialog() {
+        this.mapReceiveConditions()
         this.isWayVisible = true
       },
+      // 触发条件选中状态切换时
       receiveChange() {
         this.receiveConditions.forEach(item => {
           if (item.type === 0) {
@@ -442,6 +451,7 @@
           }
         })
       },
+      // 确认添加触发方式
       confirmWay() {
         let conditions = this.receiveConditions
         this.couponForm.receiveConditionArray = []
@@ -484,6 +494,74 @@
         // this.receiveConditions.find(item => item.type === data.type).dateTime = []
       },
 
+      // 优惠券详情
+      handleGetCouponDetail() {
+        couponDetail({ id: this.$route.query.id }).then(res => {
+          if (res.status === 'true' && res.info) {
+            let couponForm = this.couponForm
+            let platformCoupon = res.info.platformCoupon
+            let couponReceiveDetailList = res.info.couponReceiveDetailList
+            couponForm.name = platformCoupon.name
+            couponForm.desc = platformCoupon.description
+            couponForm.amount = platformCoupon.quantity
+            couponForm.expireDate = [platformCoupon.startDate, platformCoupon.endDate]
+            couponForm.couponType = platformCoupon.type
+            this.canChangeType = false // 禁止切换卡券类型
+            couponReceiveDetailList.forEach(item => {
+              couponForm.receiveWay.push(item.receiveType)
+              if (item.receiveType === 1) {
+                this.hasCondition = true
+                couponForm.receiveConditionArray = [{
+                  type: item.receiveConditionType,
+                  startTime: item.receiveConditionStartTime,
+                  endTime: item.receiveConditionEndTime
+                }]
+              }
+            })
+            this.mapReceiveConditions()
+
+            switch (platformCoupon.type) {
+              case 1: // 小时券
+                let platformHourCoupon = res.info.platformHourCoupon
+                let platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
+                let storeList = res.info.storeList
+                couponForm.subtractHour = platformHourCoupon.subtractHour
+                platformHourCouponFieldTypeList.forEach(item => {
+                  couponForm.fieldType.push(item.type)
+                })
+                couponForm.isAllStore = platformHourCoupon.storeType
+                // 详情中的门店列表映射回树形门店的选中
+                if (storeList.length > 0) {
+                  let nodeKeys = []
+                  this.treeData.forEach((item) => {
+                    if (item.children && item.children.length > 0) {
+                      for (let i = 0; i < storeList.length; i++) {
+                        let target = item.children.find(child => child.storeId === storeList[i].id)
+                        if (target != null) nodeKeys.push(target.nodeKey)
+                      }
+                    }
+                  })
+                  this.$nextTick(() => {
+                    this.$refs.rangeTree.setCheckedKeys(nodeKeys)
+                  })
+                }
+                break
+              case 3: // 礼品券
+                let platformGiftCoupon = res.info.platformGiftCoupon
+                let verifyStationList = res.info.verifyStationList
+                couponForm.couponRight = platformGiftCoupon.benefit
+                couponForm.isAllStore = platformGiftCoupon.verifyStationType
+                this.$nextTick(() => {
+                  this.$refs.rangeTree.setCheckedNodes(verifyStationList)
+                })
+                break
+              default:
+                break
+            }
+          }
+        })
+      },
+
       // 提交表单
       submitForm() {
         this.$refs['couponForm'].validate(valid => {
@@ -503,6 +581,7 @@
               receiveManual: receiveManual,
               receiveManpower: receiveManpower
             }
+            if (this.$route.query.id) params.id = this.$route.query.id
             if (form.couponType === 1) { // 小时券的特定参数
               params.subtractHour = form.subtractHour
               params.fieldType = form.fieldType
@@ -525,16 +604,18 @@
               }
               params.receiveConditionArray = form.receiveConditionArray
             }
-            addCoupon(params).then(res => {
+            let promise = this.$route.query.id ? updateCoupon(params) : addCoupon(params)
+            promise.then(res => {
               if (res.status === 'true') {
-                this.$message.success('创建成功！')
+                let tipTxt = this.$route.query.id ? '修改成功！' : '创建成功！'
+                this.$message.success(tipTxt)
                 this.$router.replace('/market/coupon')
               } else {
                 this.$message.error(res.msg)
               }
             })
           } else {
-            console.log('表单填写错误。')
+            this.$message.error('请确认表单填写正确！')
           }
         })
       }
