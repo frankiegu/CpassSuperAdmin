@@ -35,7 +35,11 @@
               </template>
             </el-table-column>
             <el-table-column label="名称" prop="name"></el-table-column>
-            <el-table-column label="剩余数量" prop="quantity"></el-table-column>
+            <el-table-column label="剩余数量">
+              <template slot-scope="scope">
+                <span>{{scope.row.quantity - scope.row.statistics.received}}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <span class="pointer-theme-gray" @click="removeSelected(scope.row.nodeKey)">删除</span>
@@ -56,7 +60,11 @@
               </template>
             </el-table-column>
             <el-table-column label="名称" prop="name"></el-table-column>
-            <el-table-column label="剩余数量" prop="quantity"></el-table-column>
+            <el-table-column label="剩余数量">
+              <template slot-scope="scope">
+                <span>{{scope.row.quantity - scope.row.statistics.received}}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </lh-item>
 
@@ -130,8 +138,8 @@
           <!-- 发放失败时展示错误原因 -->
           <lh-item label="错误原因" label-width="120px" v-if="!isSuccess" class="mt24">
             <el-table :data="errorList">
-              <el-table-column label="优惠券" prop="name"></el-table-column>
-              <el-table-column label="原因" prop="reason"></el-table-column>
+              <el-table-column label="优惠券" prop="couponName"></el-table-column>
+              <el-table-column label="原因" prop="errorText"></el-table-column>
             </el-table>
           </lh-item>
         </div>
@@ -236,7 +244,7 @@
       selectedCoupons(val) {
         let nums = []
         val.forEach(item => {
-          nums.push(parseInt(item.quantity))
+          nums.push(parseInt(item.quantity - item.statistics.received))
         })
         this.maxSelection = Math.min(...nums)
       }
@@ -355,6 +363,7 @@
             this.next()
           } else {
             this.isSuccess = false
+            this.errorList = res.info
             this.next()
           }
         })
@@ -365,13 +374,14 @@
         if (this.active-- < 1) this.active = 1
         // 返回上一步回到第一步时，保持树形节点被选中的状态
         if (this.active === 1) {
+          this.submitData.customerIds = []
           this.$nextTick(() => {
             this.$refs.couponTree.setCheckedNodes(this.selectedCoupons)
           })
         }
       },
       next() {
-        if (this.active++ > 2) this.active = 1
+        if (this.active++ > 2) this.$router.replace('/market/coupon')
         if (this.active === 2 && this.memberList.length === 0) this.getPageData()
       }
     }
