@@ -5,7 +5,7 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
 
-        <el-form-item class="fr">
+        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
@@ -14,6 +14,12 @@
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
         </el-form-item>
 
       </el-form>
