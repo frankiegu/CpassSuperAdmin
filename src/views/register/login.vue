@@ -139,6 +139,7 @@
       top: 50%;
       left: 50%;
       margin-left: -150px;
+      margin-top: -150px;
       width: 300px;
       // -webkit-transform: translateY(-50%);
       // transform: translateY(-50%);
