@@ -1,8 +1,9 @@
 <template>
   <div class="tags-view-container">
     <scroll-pane class='tags-view-wrapper' ref='scrollPane'>
-      <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''" v-for="tag in Array.from(visitedViews)"
-        :to="tag.id ? tag.path + '?id=' + tag.id : tag.path" :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
+      <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''"
+        v-for="tag in Array.from(visitedViews)" :to="tag.id ? tag.path + '?id=' + tag.id : tag.path"
+        :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
         {{tag.name}}
         <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'
           v-if="tag.path !== visitedViews[0].path"></span>
@@ -83,7 +84,7 @@ export default {
         if (this.isActive(view)) {
           const latestView = views.slice(-1)[0]
           if (latestView) {
-            this.$router.push(latestView.path)
+            this.$router.push(latestView.path + (latestView.id ? '?id=' + latestView.id : ''))
           } else {
             this.$router.push('/')
           }
@@ -104,7 +105,7 @@ export default {
       if (this.visitedViews.length > 1) {
         this.visible = true
         this.selectedTag = tag
-        this.left = e.clientX
+        this.left = e.clientX - 200
         this.top = e.clientY
       }
     },
@@ -132,6 +133,7 @@ export default {
       font-size: 14px;
       margin-left: 5px;
       margin-top: 4px;
+      user-select: none;
       &:first-of-type {
         margin-left: 24px;
       }
