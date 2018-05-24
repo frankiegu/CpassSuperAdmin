@@ -1,5 +1,7 @@
 import tableMixins from '@/mixins/table'
 import { CUSTOMER_LIST } from '@/service/member'
+import { API_PATH } from '@/config/env'
+import { downloadFile } from '@/config/utils'
 
 export default {
   mixins: [tableMixins],
@@ -39,6 +41,17 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    exportExcel() {
+      if (!this.tableData.length) {
+        return this.setMsg('暂无数据')
+      }
+      const formData = this.formData
+      const downParams = {
+        nickname: formData.name
+      }
+      let url = API_PATH + '/supervisor/customer/exportExcel'
+      downloadFile(url, downParams)
     }
   }
 }
