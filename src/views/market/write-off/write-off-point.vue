@@ -96,7 +96,7 @@
   import addWopDialog from '../components/add-wop-dialog'
   import editWopDialog from '../components/edit-wop-dialog'
   import tableMixins from '@/mixins/table'
-  import { PlatformVerifyStationPage, loadSpaceStoreTree, PlatformVerifyStationChangeStatus, PlatformVerifyStationDelete } from '@/service/market'
+  import { PlatformVerifyStationPage, PlatformVerifyStationChangeStatus, PlatformVerifyStationDelete } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
@@ -123,8 +123,6 @@
     mounted () {
       // 获取核销点列表
       this.getPageData()
-      // 获取空间列表
-      this.getSpaceStore()
     },
     methods: {
       getPageData() {
@@ -153,13 +151,6 @@
             }
           } else {
             this.setMsg('error', res.msg)
-          }
-        })
-      },
-      getSpaceStore() {
-        loadSpaceStoreTree().then(res => {
-          if (res.status === 'true') {
-            this.pointData.storeProp = res.info
           }
         })
       },
@@ -201,14 +192,10 @@
         this.initialName = name
         this.pointData.id = id
         this.pointData.name = name
-        this.pointData.storeId[0] = spaceId
-        this.pointData.storeId[1] = storeId
-        this.pointData.addressCode[0] = provinceCode
-        this.pointData.addressCode[1] = cityCode
-        this.pointData.addressCode[2] = districtCode
+        this.pointData.storeId = [spaceId, storeId]
+        this.pointData.addressCode = [provinceCode, cityCode, districtCode]
         this.pointData.addressDetail = address
         this.isEditWopVisible = true
-        console.log(this.pointData.storeId[0])
       },
       refresh() {
         this.getPageData()

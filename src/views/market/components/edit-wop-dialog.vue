@@ -35,8 +35,7 @@
     data() {
       const checkUnique = (rule, value, callback) => {
         if (value) {
-          if (value === this.pointData.name) {
-            console.log(this.pointData.name)
+          if (value === this.initialName) {
           } else {
             checkStationName({ name: value }).then(res => {
               if (res.status === 'false') {
