@@ -20,7 +20,7 @@
 
         <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
-            <span class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
+            <span class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.spaceId, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 
@@ -82,11 +82,11 @@
 
     <!-- 添加核销点弹窗 -->
     <add-wop-dialog :is-visible="isWopVisible"
-                    @closeDialog="isWopVisible = false" @refreshData="getPageData , isWopVisible = false"></add-wop-dialog>
+                    @closeDialog="isWopVisible = false" @refreshData="refresh"></add-wop-dialog>
 
     <!-- 编辑核销点弹窗 -->
-    <add-wop-dialog :is-visible="isEditWopVisible"
-                    @closeDialog="isEditWopVisible = false" @refreshData="getPageData , isEditWopVisible = false"></add-wop-dialog>
+    <edit-wop-dialog :is-visible="isEditWopVisible" :pointData="pointData" :initialName="initialName"
+                    @closeDialog="isEditWopVisible = false" @refreshData="refresh"></edit-wop-dialog>
   </div>
 </template>
 
@@ -94,36 +94,29 @@
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
   import addWopDialog from '../components/add-wop-dialog'
+  import editWopDialog from '../components/edit-wop-dialog'
   import tableMixins from '@/mixins/table'
   import { PlatformVerifyStationPage, loadSpaceStoreTree, PlatformVerifyStationChangeStatus, PlatformVerifyStationDelete } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
     components: {
-      addWopDialog
+      addWopDialog,
+      editWopDialog
     },
     data () {
       return {
         // 核销点数据
         pointData: {
           id: '',
-          name: '你是',
-          storeProp: {
-            label: 'name',
-            value: 'code',
-            children: 'children'
-          },
-          addressProp: {
-            label: 'name',
-            value: 'code',
-            children: 'children',
-            disabled: 'disabled'
-          },
+          name: '',
           storeId: [],
           addressCode: [],
           addressDetail: ''
         },
+        initialName: '',
         dataForm: '',
+        isEditWopVisible: false,
         isWopVisible: false // 弹窗开关
       }
     },
@@ -204,10 +197,23 @@
           this.setMsg('error', '已取消删除!')
         });
       },
-      EditPoint(id) {
-        this.dataForm = 'write-off'
+      EditPoint(id, name, spaceId, storeId, provinceCode, cityCode, districtCode, address) {
+        this.initialName = name
         this.pointData.id = id
-        this.isWopVisible = true
+        this.pointData.name = name
+        this.pointData.storeId[0] = spaceId
+        this.pointData.storeId[1] = storeId
+        this.pointData.addressCode[0] = provinceCode
+        this.pointData.addressCode[1] = cityCode
+        this.pointData.addressCode[2] = districtCode
+        this.pointData.addressDetail = address
+        this.isEditWopVisible = true
+        console.log(this.pointData.storeId[0])
+      },
+      refresh() {
+        this.getPageData()
+        this.isEditWopVisible = false
+        this.isWopVisible = false
       },
       // 导出数据
       exportExcel() {

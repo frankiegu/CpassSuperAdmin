@@ -29,19 +29,23 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { addPlatformVerifyStation, stationStoreTree, checkStationName } from '@/service/market'
+  import { addPlatformVerifyStationUpdate, stationStoreTree, checkStationName } from '@/service/market'
   export default {
     name: 'add-wop-dialog',
     data() {
       const checkUnique = (rule, value, callback) => {
         if (value) {
-          checkStationName({ name: value }).then(res => {
-            if (res.status === 'false') {
-              return callback(new Error(res.msg))
-            } else {
-              callback()
-            }
-          })
+          if (value === this.pointData.name) {
+            console.log(this.pointData.name)
+          } else {
+            checkStationName({ name: value }).then(res => {
+              if (res.status === 'false') {
+                return callback(new Error(res.msg))
+              } else {
+                callback()
+              }
+            })
+          }
         }
       }
       return {
@@ -81,6 +85,8 @@
       }
     },
     props: {
+      initialName: '',
+      pointData: '',
       isVisible: [Boolean]
     },
     computed: {
@@ -93,6 +99,8 @@
       this.getRegionList()
       // 获取关联门店列表
       if (this.storeList.length === 0) this.handleGetStoreList()
+      // 把列表数据带进来
+      this.formData = this.pointData
     },
     methods: {
       ...mapActions([
@@ -116,16 +124,19 @@
           if (valid) {
             let formData = this.formData
             let params = {
-              name: formData.name,
+              id: formData.id,
               storeId: formData.storeId ? formData.storeId[1] : '',
               provinceCode: formData.addressCode ? formData.addressCode[0] : '',
               cityCode: formData.addressCode ? formData.addressCode[1] : '',
               districtCode: formData.addressCode ? formData.addressCode[2] : '',
               address: formData.addressDetail
             }
-            addPlatformVerifyStation(params).then(res => {
+            if (formData.name !== this.initialName) {
+              params.name = formData.name
+            }
+            addPlatformVerifyStationUpdate(params).then(res => {
               if (res.status === 'true') {
-                this.$message.success('添加成功！')
+                this.$message.success('修改成功！')
                 this.$emit('refreshData')
               } else {
                 this.$message.error(res.msg)
