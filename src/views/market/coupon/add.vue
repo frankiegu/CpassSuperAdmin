@@ -367,6 +367,7 @@
     methods: {
       // 切换卡券类型
       changeType(val) {
+        this.couponForm.isAllStore = 2
         this.selectedRange = []
       },
       // 获取核销点列表
