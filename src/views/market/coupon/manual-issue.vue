@@ -92,7 +92,7 @@
             <el-form-item>
               <el-input v-model.trim="memberSort.nickname" placeholder="请输入会员名称"
                 @keyup.native.enter="getPageData(1)">
-                <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+                <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
               </el-input>
             </el-form-item>
           </el-form>
@@ -335,7 +335,7 @@
       // step 2 获取会员列表
       getPageData(page) {
         this.currentPage = page || this.currentPage
-        let [startDate, endDate] = this.memberSort.registerDate
+        let [startDate, endDate] = this.memberSort.registerDate ? this.memberSort.registerDate : []
         let params = {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
