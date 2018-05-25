@@ -107,6 +107,8 @@
                           :disabled="true"
                           :active-color="switchActiveColor"></el-switch>
                       </el-tooltip>
+                      <!--<el-button type="primary" icon="el-icon-caret-right" v-if="item.couponStatus">生效中</el-button>-->
+                      <!--<el-button type="info" icon="el-icon-caret-right" v-if="!item.couponStatus">未生效</el-button>-->
                     </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 2">
@@ -478,6 +480,10 @@
           if (res.status === 'true') {
             this.receiveList = res.info.result
             this.pageTotal = res.info.total
+            this.receiveList.forEach(v => {
+              if (v.useTime) v.useTime = v.useTime.substr(0, 16)
+              if (v.receiveTime) v.receiveTime = v.receiveTime.substr(0, 16)
+            })
           }
         })
       },
@@ -510,7 +516,7 @@
         if (ids.length > 0) {
           if (type === 1) {
             // 冻结
-            couponBatchFreeze({ ids: ids }).then(res => {
+            couponBatchFreeze({ userIds: ids }).then(res => {
               if (res.status === 'true') {
                 this.$message({
                   type: 'success',
@@ -526,7 +532,7 @@
             })
           } else if (type === 2) {
             // 恢复
-            couponBatchRecover({ ids: ids }).then(res => {
+            couponBatchRecover({ userIds: ids }).then(res => {
               if (res.status === 'true') {
                 this.$message({
                   type: 'success',

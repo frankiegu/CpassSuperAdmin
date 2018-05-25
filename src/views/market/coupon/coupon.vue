@@ -185,6 +185,9 @@
             res.info.result.forEach(v => {
               v.useQuantity = v.statistics.used
               v.receiveQuantity = v.statistics.received
+              if (v.startDate) v.startDate = v.startDate.substr(0, 16)
+              if (v.endDate) v.endDate = v.endDate.substr(0, 16)
+              if (v.created) v.created = v.created.substr(0, 16)
             })
             self.counponTable = res.info.result
             self.tableLoading = false
