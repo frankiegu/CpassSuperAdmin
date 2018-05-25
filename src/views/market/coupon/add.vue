@@ -280,7 +280,7 @@
           // 小时券
           subtractHour: 1, // 减免时长
           fieldType: [],
-          isAllStore: 1, // 是否应用全部门店 1-全部门店，2-部分门店
+          isAllStore: 2, // 是否应用全部门店 1-全部门店，2-部分门店
           range: [], // 部分门店的选中门店列表
 
           // 礼品券
@@ -342,6 +342,7 @@
       loadConstant('couponReceive.conditionType').then(res => {
         if (res.status === 'true') {
           this.receiveConditions = []
+          // this.conditionTypeList = { 1: 'ddd', 2: 'ooo'}
           this.conditionTypeList = res.info
           for (let i = 0; i < Object.keys(this.conditionTypeList).length; i++) {
             this.receiveConditions.push({ type: 0, dateTime: [] })
@@ -366,6 +367,7 @@
     methods: {
       // 切换卡券类型
       changeType(val) {
+        this.couponForm.isAllStore = 2
         this.selectedRange = []
       },
       // 获取核销点列表
@@ -450,7 +452,7 @@
           this.couponForm.receiveConditionArray.forEach((item) => {
             let conditionIndex = Object.keys(this.conditionTypeList).indexOf(item.type += '')
             this.receiveConditions[conditionIndex].type = item.type
-            this.receiveConditions[conditionIndex].dateTime = [item.startTime, item.endTime]
+            this.receiveConditions[conditionIndex].dateTime = item.startTime ? [item.startTime, item.endTime] : []
           })
         }
       },
@@ -504,6 +506,11 @@
         this.isWayVisible = false
       },
       closeWayDialog() {
+        this.couponForm.receiveConditionArray.forEach((item) => {
+          if (!item.startTime) {
+            this.removeCondition(item)
+          }
+        })
         this.isWayVisible = false
       },
       // 移除触发条件
