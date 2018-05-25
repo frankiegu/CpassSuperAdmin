@@ -11,11 +11,12 @@
       <span class="coupon-created ml25">创建日期</span>
       <span class="coupon-created ml10">{{couponBaseInfo.created}}</span>
 
-      <div class="right-part fr">
+      <div class="right-part fr mr15">
         <!-- 完成第一次发放后不可删除，按钮隐藏v-permissions="'/manage/coupon/delete'"  -->
-        <span v-if="couponBaseInfo.canEdit === 1"
-              @click="deleteCoupon(couponInfo.id)" class="delete-coupon coupon-created mr15">删除</span>
-        <router-link :to="'/coupon/add?id=' + couponId">
+        <span v-if="couponBaseInfo.canEdit === 1" @click="deleteCoupon" class="delete-coupon coupon-created mr15">
+          删除
+        </span>
+        <router-link :to="'/coupon/add?id=' + couponId" v-if="couponBaseInfo.canEdit === 1">
           <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         </router-link>
         <el-tooltip
@@ -258,7 +259,7 @@
 <script>
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
-  import { couponDetail, couponReceiveList } from '@/service/market'
+  import { couponBatchFreeze, couponBatchRecover, couponDetail, couponReceiveList, couponDelete, couponChangeStatus } from '@/service/market'
   export default {
     data () {
       return {
@@ -337,12 +338,30 @@
         currentPage: 1,
         pageSize: 20,
         pageTotal: 0,
-        isSwitchOuter: true // 冻结或恢复优惠券Switch的外层遮挡div
+        isSwitchOuter: true, // 冻结或恢复优惠券Switch的外层遮挡div
+        dialogTitle: '',
+        dialogTips: '',
+        couponStatus: ''
       }
     },
     methods: {
       // 删除优惠券
-      deleteCoupon () {},
+      deleteCoupon () {
+        couponDelete({ id: this.couponId }).then(res => {
+          if (res.status === 'true') {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.$router.push('/market/coupon')
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            });
+          }
+        })
+      },
       businessToggleAll (currentStatus, id) {
         const self = this
         // console.log('currentStatus: ', currentStatus);
@@ -413,6 +432,7 @@
             this.getReceiveList()
             this.couponTotalAmount = res.info.couponTotalAmount
             this.receiveStatistics = res.info.statistics
+            this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
             this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
             res.info.couponReceiveDetailList.forEach(v => {
               if (v.receiveConditionStatus === 1) {
@@ -436,7 +456,7 @@
               this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
               this.couponBaseInfo.controlStatus = true
             } else if (res.info.platformCoupon.status === 3) {
-              this.couponBaseInfo.fizenStatusText = '点击解冻优惠券'
+              this.couponBaseInfo.fizenStatusText = '点击启用优惠券'
               this.couponBaseInfo.controlStatus = false
             } else if (res.info.platformCoupon.status === 2) {
               this.couponBaseInfo.fizenStatusText = '优惠券已过期'
@@ -471,38 +491,113 @@
       },
       // 导出数据
       exportExcel() {
-        if (!this.couponInfo.receiveRecord.length) {
+        if (!this.receiveList.length) {
           return this.setMsg('暂无数据')
         }
-        const formData = this.couponInfo.keywords
         const downParams = {
-          name: formData
+          couponType: this.couponBaseInfo.type,
+          couponId: this.couponId
         }
-        let url = API_PATH + '/supervisor/platformOrder/export'
+        let url = API_PATH + '/supervisor/platformCouponCustomer/export'
         downloadFile(url, downParams)
       },
       // 批量冻结/恢复
       batchFreeze (type) {
-        if (type === 1) {
-          // 冻结
-        } else if (type === 2) {
-          // 恢复
+        let ids = []
+        this.multipleSelection.forEach(v => {
+          ids.push(v.id)
+        })
+        if (ids.length > 0) {
+          if (type === 1) {
+            // 冻结
+            couponBatchFreeze({ ids: ids }).then(res => {
+              if (res.status === 'true') {
+                this.$message({
+                  type: 'success',
+                  message: res.info
+                });
+                this.getReceiveList(1)
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.msg
+                });
+              }
+            })
+          } else if (type === 2) {
+            // 恢复
+            couponBatchRecover({ ids: ids }).then(res => {
+              if (res.status === 'true') {
+                this.$message({
+                  type: 'success',
+                  message: res.info
+                });
+                this.getReceiveList(1)
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.msg
+                });
+              }
+            })
+          }
+        } else {
+          this.$message({
+            type: 'info',
+            message: '请先选择领取人'
+          });
         }
-        console.log('123', this.multipleSelection)
       },
       // 是否开启优惠券弹窗
       showDialog () {
-        this.$confirm('优惠券启用后将无法进行任何编辑', '确认开启',
+        // 状态 1 有效 2 过期 3 冻结
+        if (this.couponStatus === 3) {
+          if (this.couponBaseInfo.canEdit === 1) {
+            this.dialogTitle = '优惠券启用后将无法进行任何编辑'
+            this.dialogTips = '确认开启'
+          } else {
+            this.dialogTitle = '优惠券启用后方可使用'
+            this.dialogTips = '确认开启'
+          }
+        } else if (this.couponStatus === 1) {
+          this.dialogTitle = '优惠券冻结后将无法使用'
+          this.dialogTips = '确认冻结'
+        }
+        let title = this.dialogTitle
+        let tips = this.dialogTips
+        let _this = this
+        this.$confirm(title, tips,
           {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
           this.couponInfo.controlStatus = true
-          this.$message({
-            type: 'success',
-            message: '开启成功!'
-          });
+          let params = {
+            id: _this.couponId,
+            status: _this.couponStatus === 1 ? 0 : 1
+          }
+          couponChangeStatus(params).then(res => {
+            if (res.status === 'true') {
+              if (_this.couponStatus === 1) {
+                this.$message({
+                  type: 'success',
+                  message: '冻结成功!'
+                });
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: '开启成功!'
+                });
+              }
+              _this.getPageData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              });
+            }
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -548,8 +643,11 @@
     }
     .right-part {
       position: relative;
+      .delete-coupon {
+        cursor: pointer;
+      }
       .outer-div {
-        width: 55px;
+        width: 40px;
         height: 30px;
         position: absolute;
         right: 0;

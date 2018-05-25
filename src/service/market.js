@@ -20,6 +20,18 @@ export const couponList = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/
 // 优惠券详情查询
 export const couponDetail = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/detail', obj, 'POST')
 
+// 删除优惠券
+export const couponDelete = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/delete', obj, 'POST')
+
+// 生效/冻结优惠券
+export const couponChangeStatus = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/changeStatus', obj, 'POST')
+
+// 批量冻结优惠券
+export const couponBatchFreeze = (obj) => fetch(API_PATH + '/supervisor/platformCouponCustomer/batchFreeze', obj, 'POST')
+
+// 批量恢复优惠券
+export const couponBatchRecover = (obj) => fetch(API_PATH + '/supervisor/platformCouponCustomer/batchRecover', obj, 'POST')
+
 // 优惠券领取列表
 export const couponReceiveList = (obj) => fetch(API_PATH + '/supervisor/platformCouponCustomer/list', obj, 'POST')
 
