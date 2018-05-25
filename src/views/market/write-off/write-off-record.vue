@@ -22,9 +22,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="领取时间" fixed="left" align="left">
+        <el-table-column label="领取时间" fixed="left" align="left" :min-width="110">
           <template slot-scope="scope">
-            {{ scope.row.receiveTime }}
+            <span v-if="scope.row.receiveTime">
+              <span style="display: inline-block; width: 80px; height: 23px;">{{ scope.row.receiveTime.substr(0, 10) }}</span>
+              <span style="display: inline-block; width: 60px; height: 23px;">{{ scope.row.receiveTime.substr(11, 8) }}</span>
+            </span>
           </template>
         </el-table-column>
 
@@ -40,7 +43,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="状态" align="left" :min-width="100">
+        <el-table-column label="状态" align="left">
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.status === 1">已兑换</el-tag>
           </template>
@@ -58,9 +61,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="核销时间" align="left">
+        <el-table-column label="核销时间" align="left" :min-width="110">
           <template slot-scope="scope">
-            <span>{{ scope.row.created }}</span>
+            <span v-if="scope.row.created">
+              <span style="display: inline-block; width: 80px; height: 23px;">{{ scope.row.created.substr(0, 10) }}</span>
+              <span style="display: inline-block; width: 60px; height: 23px;">{{ scope.row.created.substr(11, 8) }}</span>
+            </span>
           </template>
         </el-table-column>
 

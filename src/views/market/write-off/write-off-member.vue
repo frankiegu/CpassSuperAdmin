@@ -27,9 +27,12 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="提交时间" fixed="left" align="left" sortable sort-by="created">
+        <el-table-column label="提交时间" fixed="left" align="left" sortable sort-by="created" :min-width="110">
           <template slot-scope="scope">
-            {{ scope.row.created }}
+            <span v-if="scope.row.created">
+              <span style="display: inline-block; width: 80px; height: 23px;">{{ scope.row.created.substr(0, 10) }}</span>
+              <span style="display: inline-block; width: 60px; height: 23px;">{{ scope.row.created.substr(11, 8) }}</span>
+            </span>
           </template>
         </el-table-column>
 
@@ -71,13 +74,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="left">
+        <el-table-column label="操作" align="left" :min-width="110">
           <template slot-scope="scope">
-            <el-button type="text" @click="operat(scope.row.id)" class="operate-btn">
+            <el-button type="text" @click="operat(scope.row.id, scope.row.platformVerifyStationId, scope.row.name, scope.row.telephone, scope.row.merchantName, scope.row.community)" class="operate-btn">
               <span v-if="scope.row.status === 2">审核</span>
               <span v-if="scope.row.status === 1 || scope.row.status === 0">编辑</span>
             </el-button>
             <el-tooltip
+              v-if="scope.row.status === 1 || scope.row.status === 0"
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
               class="margin-lr6">
@@ -111,30 +115,31 @@
     <!--审核dialog-->
     <el-dialog
       title="核销员审核"
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       width="500px">
       <div class="detail-info">
         <div class="label">名称</div>
-        <div class="label-con"><div class="intro-desc">就是名字</div></div>
+        <div class="label-con"><div class="intro-desc">{{ name }}</div></div>
       </div>
       <div class="detail-info">
         <div class="label">手机号码</div>
-        <div class="label-con"><div class="intro-desc">15622222223</div></div>
+        <div class="label-con"><div class="intro-desc">{{ telephone }}</div></div>
       </div>
       <div class="detail-info">
         <div class="label">所属商家</div>
-        <div class="label-con"><div class="intro-desc">广交会核销点A323</div></div>
+        <div class="label-con"><div class="intro-desc">{{ merchantName }}</div></div>
       </div>
       <div class="detail-info">
         <div class="label">所属社区</div>
-        <div class="label-con"><div class="intro-desc">雷猴空间</div></div>
+        <div class="label-con"><div class="intro-desc">{{ community }}</div></div>
       </div>
       <div class="detail-info">
         <div class="label">绑定核销点</div>
         <div class="label-con">
           <div class="intro-desc">
             <el-select
-              v-model="writeOffPoint"
+              v-model="platformVerifyStationId"
               filterable
               placeholder="请选择"
               class="width150px"
@@ -171,9 +176,13 @@
           name: ''
         },
         dialogVisible: false,
-        writeOffPoint: '', // 选择的核销点
         pointList: [],
-        id: ''
+        id: '', // 核销员Id
+        platformVerifyStationId: '', // 选择的核销点
+        name: '', // 核对员名称
+        telephone: '', // 核对员电话
+        merchantName: '', // 商家
+        community: '', // 核对员所属空间
       }
     },
     mounted () {
@@ -235,15 +244,23 @@
           }
         })
       },
-      operat(Id) {
-        this.id = Id
+      operat(menberId, pointId, name, telephone, merchantName, community) {
+        this.id = menberId
+        this.platformVerifyStationId = pointId
         this.dialogVisible = true
-        this.writeOffPoint = ''
+        this.name = name
+        this.telephone = telephone
+        this.merchantName = merchantName
+        this.community = community
       },
       submit() {
+        if (!this.platformVerifyStationId) {
+          this.setMsg('error', '请选择核销点!')
+          return
+        }
         const paramsObj = {
           verifierId: this.id,
-          stationId: this.writeOffPoint
+          stationId: this.platformVerifyStationId
         }
         platformVerifierReview(paramsObj).then(res => {
           if (res.status === 'true') {

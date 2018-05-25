@@ -1,7 +1,8 @@
 <template>
   <!-- 添加核销点弹窗 -->
-  <el-dialog class="add-wop-dialog" title="添加核销点" :lock-scroll="false" :visible.sync="isVisible"
-    :before-close="closeDialog" width="500px">
+  <el-dialog class="add-wop-dialog" title="添加核销点" :lock-scroll="false" :visible.sync="isVisible" v-if="isVisible"
+
+             :before-close="closeDialog" width="500px">
     <el-form :model="formData" label-width="100px" :rules="formRules" ref="addWop">
       <el-form-item label="核销点名称" prop="name">
         <el-input v-model.trim="formData.name" placeholder="请输入核销点名称"></el-input>
@@ -127,6 +128,12 @@
               if (res.status === 'true') {
                 this.$message.success('添加成功！')
                 this.$emit('refreshData')
+
+                // 提交成功之后清空表单
+                this.formData.name = ''
+                this.formData.storeId = []
+                this.formData.addressCode = []
+                this.formData.addressDetail = ''
               } else {
                 this.$message.error(res.msg)
               }
