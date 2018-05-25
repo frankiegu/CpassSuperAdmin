@@ -85,7 +85,8 @@
             </el-radio-group>
 
             <transition name="slide-fade">
-              <el-form-item v-if="couponForm.isAllStore === 2" class="range-cont clearfix">
+              <el-form-item v-if="couponForm.isAllStore === 2" class="range-cont clearfix" prop="range"
+                :rules="[{required: true, message: '请选择使用范围', trigger: ['blur', 'change']}]">
                 <div class="list-cont fl">
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
