@@ -28,6 +28,7 @@
               end-placeholder="结束日期"
               :picker-options="pickerOptions"
               v-model="couponForm.expireDate"
+              :default-time="['00:00:00', '23:59:59']"
               type="datetimerange">
             </el-date-picker>
           </el-form-item>
@@ -199,6 +200,7 @@
             end-placeholder="结束时间"
             :picker-options="pickerOptions"
             v-model="receiveConditions[index]['dateTime']"
+            :default-time="['00:00:00', '23:59:59']"
             type="datetimerange">
           </el-date-picker>
         </li>
