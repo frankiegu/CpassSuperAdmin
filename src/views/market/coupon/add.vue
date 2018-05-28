@@ -52,8 +52,8 @@
             <div v-if="couponForm.couponType === 1" v-bind:key="1">
               <el-form-item label="优惠内容" required>
                 减免场地订单
-                <el-select v-model="couponForm.subtractHour" class="width60px">
-                  <el-option v-for="i in 8" :key="i" :label="i" :value="i" />
+                <el-select v-model="couponForm.subtractHour" class="width75px">
+                  <el-option v-for="i in 16" :key="i" :label="i / 2" :value="i / 2" />
                 </el-select>
                 小时的费用
               </el-form-item>
@@ -198,7 +198,7 @@
             style="width: 320px"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
-            :picker-options="pickerOptions"
+            :picker-options="subPickerOptions"
             v-model="receiveConditions[index]['dateTime']"
             :default-time="['00:00:00', '23:59:59']"
             type="datetimerange">
@@ -321,7 +321,17 @@
         },
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24;
+            return time.getTime() < Date.now() - 3600 * 1000 * 24
+          }
+        },
+        subPickerOptions: {
+          disabledDate: (time) => {
+            if (this.couponForm.expireDate.length > 1) { // 条件触发的结束时间小于等于使用期限的结束时间
+              return time.getTime() > new Date(this.couponForm.expireDate[1]) ||
+                time.getTime() < Date.now() - 3600 * 1000 * 24
+            } else {
+              return time.getTime() < Date.now() - 3600 * 1000 * 24
+            }
           }
         },
         hasCondition: false, // 是否有选中触发条件
@@ -498,10 +508,21 @@
             } else {
               this.$message.error('起始时间需大于当前时间')
               valid = false
+              this.hasCondition = false
             }
           } else {
             this.$message.error('请选择有效期限')
             valid = false
+            this.hasCondition = false
+          }
+          if (this.couponForm.expireDate && this.couponForm.expireDate.length > 1) {
+            if (item && item['endTime'] && new Date(item['endTime']) <= new Date(this.couponForm.expireDate[1])) {
+              valid = true
+            } else  {
+              this.$message.error('结束时间需小于等于优惠券的使用结束时间')
+              valid = false
+              this.hasCondition = false
+            }
           }
         })
         if (!valid) return
@@ -510,7 +531,8 @@
       },
       closeWayDialog() {
         this.couponForm.receiveConditionArray.forEach((item) => {
-          if (!item.startTime) {
+          if (!item.startTime || new Date(item.startTime) < Date.now() ||
+            new Date(item.endTime) > new Date(this.couponForm.expireDate[1])) {
             this.removeCondition(item)
           }
         })
@@ -640,6 +662,12 @@
                     dateValid = true
                   } else {
                     this.$message.error('条件触发的起始时间需大于当前时间')
+                    dateValid = false
+                  }
+                  if (new Date(item.endTime) <= new Date(this.couponForm.expireDate[1])) {
+                    dateValid = true
+                  } else {
+                    this.$message.error('条件触发的结束时间需小于等于优惠券的使用结束时间')
                     dateValid = false
                   }
                 })
