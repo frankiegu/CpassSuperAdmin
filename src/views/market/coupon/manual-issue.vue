@@ -14,11 +14,12 @@
         <div class="list-cont fl">
           <el-input v-model.trim="filterText" placeholder="请输入优惠券名称" class="fix-input"></el-input>
           <div class="tree-cont">
-            <el-tree node-key="nodeKey" :data="treeData" v-loading="loadingTree"
+            <el-tree node-key="nodeKey" :data="treeData" v-loading="loadingTree" empty-text="暂无数据"
               :filter-node-method="filterNode" default-expand-all :props="treeProp"
               show-checkbox ref="couponTree" class="coupon-tree"
               @check-change="handleCheckChange">
             </el-tree>
+            <p class="theme-light-gray mt60" style="text-align: center" v-if="isFilterNoData">暂无数据</p>
           </div>
         </div>
 
@@ -171,6 +172,7 @@
         active: 1,
         couponType: {},
         // 树形控件数据
+        isFilterNoData: false,
         loadingTree: true,
         filterText: '',
         treeData: [{
@@ -283,7 +285,10 @@
       },
       // step 1 树形数据过滤
       filterNode(value, data, node) {
-        if (!value) return true;
+        this.$nextTick(() => {
+          this.isFilterNoData = this.$refs['couponTree'].$el.offsetHeight === 0
+        })
+        if (!value) return true
         if (data.name && data.name.indexOf(value) !== -1) {
           return true
         } else if (node.parent.data.name && node.parent.data.name.indexOf(value) !== -1) {

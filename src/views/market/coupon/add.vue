@@ -92,17 +92,19 @@
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
                     <!-- 部分门店的树形 -->
-                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
+                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
                     </el-tree>
 
                     <!-- 部分核销点的树形 -->
-                    <el-tree v-if="couponForm.couponType === 3" node-key="id" :data="stationList"
+                    <el-tree v-if="couponForm.couponType === 3" node-key="id" :data="stationList" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="stationTree"
                       show-checkbox ref="rangeTree" class="range-tree" @check-change="handleCheckChange">
                     </el-tree>
+
+                    <p class="theme-light-gray mt60" style="text-align: center" v-if="isFilterNoData">暂无数据</p>
                   </div>
                 </div>
 
@@ -268,6 +270,7 @@
         couponTypeList: [],
         canChangeType: true, // 编辑时不可更改卡券类型
         // 树形列表
+        isFilterNoData: false,
         treeData: [],
         treeProp: { label: 'name' },
         // 核销点列表
@@ -406,6 +409,9 @@
       },
       // 树形数据过滤
       filterNode(value, data, node) {
+        this.$nextTick(() => {
+          this.isFilterNoData = this.$refs['rangeTree'].$el.offsetHeight === 0
+        })
         if (!value) return true
         if (data.name && data.name.indexOf(value) !== -1) {
           return true
