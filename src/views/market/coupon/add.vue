@@ -77,7 +77,7 @@
           </transition>
 
           <el-form-item label="使用范围" required>
-            <el-radio-group v-model="couponForm.isAllStore">
+            <el-radio-group v-model="couponForm.isAllStore" @change="changeRange">
               <el-radio :label="1">{{couponForm.couponType === 1 ? '全部门店' : '全部核销点'}}</el-radio>
               <el-radio :label="2">{{couponForm.couponType === 1 ? '部分门店' : '部分核销点'}}</el-radio>
               <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
@@ -381,6 +381,10 @@
       // 切换卡券类型
       changeType(val) {
         this.couponForm.isAllStore = 2
+        this.selectedRange = []
+      },
+      // 切换使用范围
+      changeRange() {
         this.selectedRange = []
       },
       // 获取核销点列表
