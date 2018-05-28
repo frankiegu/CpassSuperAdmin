@@ -1,13 +1,27 @@
 import tableMixins from '@/mixins/table'
-import { serviceList, serviceToggle, serviceSetOnTop } from '@/service'
+import { serviceList } from '@/service'
 
 export default {
   mixins: [tableMixins],
   data () {
     return {
       id: '',
-      isPermitOpen: '',
-      isOpen: ''
+      statusList: [
+        { val: 10, text: '未发布' },
+        { val: 20, text: '未开始' },
+        { val: 30, text: '进行中' },
+        { val: 40, text: '已结束' },
+        { val: 50, text: '暂停' }
+      ],
+      typeList: [
+        { val: 10, text: '普通活动' },
+        { val: 20, text: '互动游戏' }
+      ],
+      formData: {
+        name: '',
+        type: '',
+        status: ''
+      }
     }
   },
   mounted () {
@@ -32,45 +46,6 @@ export default {
           if (this.tableData.length === 0) {
             this.tableEmpty = '暂时无数据'
           }
-        } else {
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
-    handleSetTop(id) {
-      this.id = id
-      const paramsObj = {
-        id: this.id
-      }
-      serviceSetOnTop(paramsObj).then(res => {
-        if (res.status === 'true') {
-          this.setMsg('success', res.msg)
-          this.getPageData()
-        } else {
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
-    handleUpdateStatus(id, isPermitOpen) {
-      this.id = id
-      this.isPermitOpen = isPermitOpen
-      // if (this.isPermitOpen === 1) {
-      //   this.isPermitOpen = 0
-      //   console.log('isPermitOpen' + this.isPermitOpen)
-      // } else if (this.isPermitOpen === 0) {
-      //   this.isPermitOpen = 1
-      //   console.log('isPermitOpen' + this.isPermitOpen)
-      // }
-      console.log('id' + this.id)
-      console.log('isPermitOpen' + this.isPermitOpen)
-      const paramsObj = {
-        id: this.id,
-        permitOpen: this.isPermitOpen
-      }
-      serviceToggle(paramsObj).then(res => {
-        if (res.status === 'true') {
-          this.setMsg('success', res.msg)
-          this.getPageData()
         } else {
           this.setMsg('error', res.msg)
         }

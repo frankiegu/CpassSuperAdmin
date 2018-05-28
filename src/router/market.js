@@ -62,8 +62,9 @@ export default [{
     component: _import('market/activity/list/list')
   },
   {
-    name: '添加活动',
-    path: '/activity/add',
-    component: _import('market/activity/list')
+    name: '活动详情',
+    path: '/activity/detail',
+    hidden: true,
+    component: _import('market/activity/detail/detail')
   }]
 }]
