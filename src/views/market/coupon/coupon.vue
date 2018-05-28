@@ -38,6 +38,7 @@
           :slot="tableEmpty"
           :data="counponTable"
           v-loading="tableLoading"
+          @sort-change="sortCoupon"
           style="width: 100%">
           <!-- 1 -->
           <el-table-column label="卡券名称">
@@ -79,12 +80,14 @@
 
           <!-- 5 -->
           <el-table-column label="状态">
+
             <template slot-scope="scope">
               <!--有效, 冻结, 过期-->
               <span v-if="scope.row.status === 2">过期</span>
               <span v-else-if="scope.row.status === 1">有效</span>
               <span v-else>冻结</span>
             </template>
+
           </el-table-column>
 
           <!-- 6 -->
@@ -123,7 +126,7 @@
 
           <!-- 9 -->
           <el-table-column
-            label="添加日期" sortable>
+            label="添加日期" sortable="custom">
 
             <template slot-scope="scope">
               {{ scope.row.created }}
@@ -165,6 +168,7 @@
     data () {
       return {
         counponTable: [],
+        orderBy: '',
         couponSort: {
           keywords: ''
         }
@@ -177,7 +181,8 @@
         const paramsObj = {
           pageNum: self.currentPage,
           pageSize: self.pageSize,
-          couponName: self.couponSort.keywords
+          couponName: self.couponSort.keywords,
+          orderBy: this.orderBy
         }
         couponList(paramsObj).then(res => {
           if (res.status === 'true') {
@@ -202,6 +207,11 @@
             })
           }
         })
+      },
+      sortCoupon (sort) {
+        console.log('sort', sort)
+        this.orderBy = sort.order === 'ascending' ? 0 : 1
+        this.getPageData()
       }
     },
     mounted () {
