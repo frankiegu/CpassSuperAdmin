@@ -103,7 +103,15 @@ export default {
         storeAddr: '', // 门店地址
         area: '',
         maxAdmissibleNum: 5, // 可以容纳多少人
-        stationNum: 5 // 工位总数
+        stationNum: 5, // 工位总数
+
+        activityName: '', // 活动名称
+        activityRules: '', // 活动规则
+        activityTemplate: 'goldenEggs', // 活动模板
+        activityType: 'interactive', // 活动类型
+        activityStartDate: '', // 活动开始日期
+        activityEndDate: '', // 活动结束日期
+        rangeDate: '' // 活动日期
       },
       onePartFormRule: {
         type: [{ required: true, trigger: 'click', validator: checkType }],

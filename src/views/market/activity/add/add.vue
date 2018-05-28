@@ -1,5 +1,5 @@
 <template>
-  <div class="page-field-com">
+  <div class="page-activity-com">
     <lh-title :title="titleName" :noBorder="true">
       <div class="com-title-box pb0">
         <h2 class="width100">
@@ -37,55 +37,48 @@
         :model="onePartForm"
         :rules="onePartFormRule"
         ref="onePartForm">
-        <h3 class="text-title mt0">需要发布怎样的场地？</h3>
-        <el-form-item prop="type">
-          <!-- 添加完了第一步，就禁止修改场地类型，非0就禁止 -->
-          <el-select v-model.trim="onePartForm.type" :disabled="!!dataFinishPercent" class="width160px">
-          <!-- 方便测试
-            <el-select v-model.trim="onePartForm.type" class="width160px"> -->
-            <el-option
-              v-for="item in typeList"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key">
-            </el-option>
-          </el-select>
-          <span class="ml10 theme-light-gray">
-            <span v-if="onePartForm.type === '1'">起租时间为半个小时的场地，适合用于会议、洽谈</span>
-            <span v-else-if="onePartForm.type === '3'">按天起租的场地，适合短期办公</span>
-            <span v-else-if="onePartForm.type === '4'">起租时间为半个小时的其他功能场地，如瑜伽室，冥想室等</span>
-            <span v-else>长期租赁的场地，适合团队长期办公，不支持直接下单</span>
-          </span>
+        <!--<h3 class="text-title mt0">需要发布怎样的场地？</h3>-->
+        <el-form-item prop="type" label="活动名称 ">
+          <el-input v-model.trim="onePartForm.activityName" class="activity-name ml20" placeholder="活动名称" :maxlength="30"></el-input>
         </el-form-item>
 
         <!-- 标题文字不要换行，因为会多一个空格，就不对齐了 -->
-        <h3 class="text-title">场地位于哪个门店？
-          <router-link
-            v-permissions="'/manage/store/addStore'"
-            to="/store/com"
-            target="_blank"
-            class="theme-blue fz14 lh32">
-            新增门店
-          </router-link>
-        </h3>
-        <el-form-item prop="storeId">
-          <!-- 每次触发的时候，刷新一次门店列表的数据 -->
-          <el-select
-            v-model.trim="onePartForm.storeId"
-            @change="showStoreAddr()"
-            @visible-change="getStoreList"
-            placeholder="请选择门店"
-            class="width160px"
-            filterable
-            clearable>
-            <el-option
-              v-for="(item, idx) in storeList"
-              :key="idx"
-              :label="item.storeName"
-              :value="item.id">
-            </el-option>
-          </el-select>
-          <span class="ml10 theme-light-gray">{{ onePartForm.storeAddr || '' }}</span>
+        <el-form-item prop="type" label="活动规则 ">
+          <el-input
+            type="textarea"
+            class="activity-name fl ml20"
+            v-model.trim="onePartForm.activityRules"
+            :maxlength="200"
+            :rows="4"
+            placeholder="请填写报名方式"
+          >
+          </el-input>
+
+          <span class="theme-gray fl ml20">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
+
+        <el-form-item prop="activityType" label="活动类型">
+          <template>
+            <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="common">普通活动</el-radio>
+            <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="interactive">互动游戏</el-radio>
+          </template>
+        </el-form-item>
+
+        <el-form-item prop="activityType" label="活动模板">
+          <template>
+            <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="goldenEggs">砸金蛋</el-radio>
+            <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="otherGames">其他</el-radio>
+          </template>
+        </el-form-item>
+        <el-form-item label="活动模板">
+          <el-date-picker
+            class="ml20"
+            v-model="onePartForm.rangeDate"
+            @change="dateChange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            placeholder="选择日期"
+            type="daterange"
+            align="left"></el-date-picker>
         </el-form-item>
 
         <h3 class="text-title">为场地取个名字</h3>
@@ -485,6 +478,7 @@ export default {
   data () {
     return {
       fieldId: this.$route.query.fieldId || sessionStorage.getItem('addFieldFirstStep'),
+      type: this.$route.query.type,
       addStep: this.$route.query.addStep + '',
       titleName: '',
       pickerOptions1
@@ -891,7 +885,7 @@ export default {
       // 拿到门店列表
       this.getStoreList()
       if (!this.fieldId) {
-        titleName = '添加场地'
+        titleName = '添加活动'
         this.addEditType = 0
 
         // 添加场地，默认选中会议室类型
@@ -903,8 +897,11 @@ export default {
         // 初始化预约设置数据
         this.toggleWeek()
       } else {
-        titleName = '编辑场地'
-
+        if (this.type === 'edit') {
+          titleName = '编辑活动'
+        } else {
+          titleName = '复制活动'
+        }
         this.addEditType = 1
         this.getPageData()
       }
@@ -1091,7 +1088,12 @@ export default {
         }
       })
     },
-
+    /**
+     * part 1
+     * */
+    dateChange (val) {
+      console.log('val', val)
+    },
     /**
      * part 2
      * 当不允许取消切换到允许取消，时间设置默认值
@@ -1178,7 +1180,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-field-com {
+.page-activity-com {
 
   .field-name {
     float: left;
@@ -1220,7 +1222,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 /*@import "src/styles/variables";*/
-.page-field-com {
+.page-activity-com {
   .line-wrap {
     display: inline-block;
     width: 75px !important;
@@ -1247,6 +1249,9 @@ export default {
       margin: 0 8px 8px 0;
       text-align: center;
     }
+  }
+  .activity-name {
+    width: 425px;
   }
 }
 </style>
