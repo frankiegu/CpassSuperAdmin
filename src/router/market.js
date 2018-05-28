@@ -66,5 +66,11 @@ export default [{
     path: '/activity/add',
     hidden: true,
     component: _import('market/activity/add/add')
+  },
+  {
+    name: '活动详情',
+    path: '/activity/detail',
+    hidden: true,
+    component: _import('market/activity/detail/detail')
   }]
 }]
