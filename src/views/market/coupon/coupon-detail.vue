@@ -20,6 +20,7 @@
           <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         </router-link>
         <el-tooltip
+          v-if="couponBaseInfo.status === 1 || couponBaseInfo.status === 3"
           :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
@@ -42,7 +43,7 @@
     </lh-title>
     <div class="page-title-info coupon-info">
       <el-row>
-        <el-col :span="16">
+        <el-col :span="20">
           <el-row :gutter="20">
             <el-col>
               <p>{{couponBaseInfo.description}}</p>
@@ -58,7 +59,7 @@
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
+          <el-row :gutter="24">
             <el-col :span="6">
               <lh-item label="总张数：" label-width="60px">
                 <span style="font-size: 18px; color: #000;">{{couponBaseInfo.quantity}}</span>
@@ -66,19 +67,21 @@
             </el-col>
             <el-col :span="6">
               <lh-item label="领取率：" label-width="60px">
-                <span style="font-size: 18px; color: #000;">{{(receiveStatistics.received/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0">0.0%</span>
+                <span style="font-size: 18px; color: #000;" v-else>{{(receiveStatistics.received/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
                 <span>&nbsp;{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="使用率：" label-width="60px">
-                <span style="font-size: 18px; color: #000;">{{(receiveStatistics.used/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0">0.0%</span>
+                <span style="font-size: 18px; color: #000;" v-else>{{(receiveStatistics.used/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
                 <span>&nbsp;{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6" v-if="couponBaseInfo.type === 1">
               <lh-item label="用券总成交额：" label-width="100px">
-                <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;元</span>
+                <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;</span>元
               </lh-item>
             </el-col>
           </el-row>
@@ -99,20 +102,20 @@
                   <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
                       <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
-                      <el-tooltip
-                        :content="item.couponStatus ? '生效中' : '未生效'"
-                        placement="top"
-                        class="margin-lr6">
-                        <el-switch
-                          class=""
-                          v-model="item.couponStatus"
-                          active-text=""
-                          inactive-text=""
-                          :disabled="true"
-                          :active-color="switchActiveColor"></el-switch>
-                      </el-tooltip>
-                      <!--<el-button type="primary" icon="el-icon-caret-right" v-if="item.couponStatus">生效中</el-button>-->
-                      <!--<el-button type="info" icon="el-icon-caret-right" v-if="!item.couponStatus">未生效</el-button>-->
+                      <!--<el-tooltip-->
+                        <!--:content="item.couponStatus ? '生效中' : '未生效'"-->
+                        <!--placement="top"-->
+                        <!--class="margin-lr6">-->
+                        <!--<el-switch-->
+                          <!--class=""-->
+                          <!--v-model="item.couponStatus"-->
+                          <!--active-text=""-->
+                          <!--inactive-text=""-->
+                          <!--:disabled="true"-->
+                          <!--:active-color="switchActiveColor"></el-switch>-->
+                      <!--</el-tooltip>-->
+                      <el-button type="primary" v-if="item.couponStatus">生效中</el-button>
+                      <el-button type="info" v-if="!item.couponStatus">未生效</el-button>
                     </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 2">
