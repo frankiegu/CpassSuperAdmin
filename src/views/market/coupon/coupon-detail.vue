@@ -223,16 +223,22 @@
               sortable
               show-overflow-tooltip>
             </el-table-column>
-            <el-table-column
-              label="使用状态"
-              sortable
-              show-overflow-tooltip prop="useStatusName">
-              <!--<template slot-scope="scope">-->
-                <!--<span v-if="scope.row.useStatus === 0">待使用</span>-->
-                <!--<span v-if="scope.row.useStatus === -1">冻结</span>-->
-                <!--<span v-if="scope.row.useStatus === 1">已使用</span>-->
-              <!--</template>-->
+
+            <el-table-column label="使用状态" prop="useStatusName"
+                             :filters="[{ text: '待使用', value: 0 }, { text: '冻结', value: -1 }, { text: '已使用', value: 1 }]"
+                             :filter-multiple="false"
+                             filter-placement="bottom-end"
+                             column-key="statusType"
+            >
+              <template slot-scope="scope">
+                <!--有效, 冻结, 过期-->
+                <span v-if="scope.row.status === 2">过期</span>
+                <span v-else-if="scope.row.status === 1">有效</span>
+                <span v-else>冻结</span>
+              </template>
+
             </el-table-column>
+
             <el-table-column
               prop="useTime"
               label="使用时间"
