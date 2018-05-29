@@ -60,22 +60,26 @@
 
           <el-row :gutter="20">
             <el-col :span="6">
-              <lh-item label="总张数：" label-width="60px">{{couponBaseInfo.quantity}}</lh-item>
+              <lh-item label="总张数：" label-width="60px">
+                <span style="font-size: 18px; color: #000;">{{couponBaseInfo.quantity}}</span>
+              </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="领取率：" label-width="60px">
-                <span>{{receiveStatistics.received || 0}}</span>
-                <span>{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
+                <span style="font-size: 18px; color: #000;">{{(receiveStatistics.received/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span>&nbsp;{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="使用率：" label-width="60px">
-                <span>{{receiveStatistics.used || 0}}</span>
-                <span>{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
+                <span style="font-size: 18px; color: #000;">{{(receiveStatistics.used/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span>&nbsp;{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6" v-if="couponBaseInfo.type === 1">
-              <lh-item label="用券总成交额：" label-width="100px">{{couponTotalAmount}}</lh-item>
+              <lh-item label="用券总成交额：" label-width="100px">
+                <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;元</span>
+              </lh-item>
             </el-col>
           </el-row>
         </el-col>
