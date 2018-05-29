@@ -184,11 +184,16 @@
             children: []
           }, {
             name: '礼品券',
-            nodeKey: 5,
+            nodeKey: 3,
             children: []
           }]
         }],
-        treeProp: { label: 'name' },
+        treeProp: {
+          label: 'name',
+          disabled: (data) => {
+            return !data.type && (!data.children || !data.children.length)
+          }
+        },
 
         selectedCoupons: [], // 选中的优惠券
         maxSelection: 0, // 最大可选择会员数
