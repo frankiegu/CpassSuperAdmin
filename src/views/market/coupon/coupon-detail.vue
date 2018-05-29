@@ -181,9 +181,13 @@
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
+              clearable
               v-model.trim="searchName"
               placeholder="搜索领取人名称"
-              @keyup.native.enter="getReceiveList(1)"></el-input>
+              @keyup.native.enter="getReceiveList(1)">
+
+              <i slot="suffix" @click="getReceiveList(1)" class="el-input__icon el-icon-search"></i>
+            </el-input>
             <el-button class="lh-btn-export" icon="el-icon-download" @click="exportExcel">导出</el-button>
           </div>
           <el-table
@@ -201,7 +205,7 @@
               label="ID"
               sortable
               width="120">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
+              <template slot-scope="scope">{{ scope.row.couponCode }}</template>
             </el-table-column>
             <el-table-column
               prop="customerName"
