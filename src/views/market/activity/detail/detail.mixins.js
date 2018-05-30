@@ -1,87 +1,79 @@
+import { API_PATH } from '@/config/env'
+import tableMixins from '@/mixins/table'
+import pickerOptions from '@/mixins/pickerOptions'
+import { serviceList } from '@/service'
+import { setFieldStatus } from '@/service/field'
+import { formatTimeString, downloadFile } from '@/config/utils'
+
 export default {
+  mixins: [tableMixins, pickerOptions],
   data () {
     return {
       fieldId: this.$route.query.id + '',
+      field: '',
       fieldType: '',
-      titleName: '',
-      openStatus: false,
+      activeTab: 'couponInformation',
       isOpen: 1,
       mainImg: '', // @#注意：主图不重复展示在列表中
 
-      space: {},
-      stationNum: '',
-      field: {},
-      appointmentTimeType: 2, // 是否区分工作日 1:不区分 2:区分
-      store: {},
-      equipments: {},
-      fieldImgs: {},
-
-      // 该场地，对外开放设置的状态
-      // 跟场地的开放状态不同
-      openSettingStatus: false,
-
-      typeList: [
-        { key: '0', label: '全部' },
-        { key: '1', label: '会议室' },
-        { key: '2', label: '路演厅' },
-        { key: '3', label: '工位' },
-        { key: '5', label: '办公室' },
-        { key: '4', label: '多功能场地' }
-      ],
-
-      openData: [],
-
-      // 会议室和其他、工位
-      // 整周
-      openWeek: [{
-        type: 1,
-        status: 0,
-        startTime: '',
-        endTime: '',
-        price: '', // 收费标准
-        workState: 1,
-        restState: 1,
-        longTime: 0,
-        itmeType: 1
-      }],
-      // 基本价格，工作日、非工作日
-      openPeriod: [{
-        type: 1,
-        status: 0,
-        startTime: '',
-        endTime: '',
-        price: '', // 收费标准
-        workState: 1,
-        restState: 1,
-        longTime: 0,
-        itmeType: 1
-      }, {
-        type: 2,
-        status: 0, // 休息的情况下，接口返回为空，默认休息更合理
-        startTime: '',
-        endTime: '',
-        price: '', // 收费标准
-        workState: 1,
-        restState: 1,
-        longTime: 0,
-        itmeType: 1
-      }],
-      openOffice: [], // 办公室
-
-      // 对外价格，价格总览
-      openPrice: [],
-      openPriceUnit: {
-        type: '',   // 1工作日 2非工作日 or整周
-        itmeType: '', // 0 免费时段 1普通时段 2特殊时段
-        startTime: '',
-        endTime: '',
-        longTime: 0,
-        workState: 1,
-        restState: 1,
-        price: '',
-        clientType: '',
-        appointmentTimeType: '' // 是否区分工作日 1:不区分 2:区分
+      formData: {
+        reg_date: ''
       }
+    }
+  },
+  mounted () {
+    this.getPageData()
+  },
+  methods: {
+    getPageData() {
+      const paramsObj = {
+        pageSize: this.pageSize,
+        pageNum: this.currentPage
+      }
+
+      serviceList(paramsObj).then(res => {
+        if (res.status === 'true') {
+          let data = res.info
+          if (data) {
+            this.pageTotal = data.total
+            this.tableData = data.result
+          }
+
+          this.tableLoading = false
+          if (this.tableData.length === 0) {
+            this.tableEmpty = '暂时无数据'
+          }
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
+    },
+    // 更新会员状态
+    handleUpdateStatus() {
+      setFieldStatus({
+        fieldId: this.fieldId,
+        isOpen: this.isOpen
+      }).then(res => {
+        if (res.status === 'true') {
+          // @注意：感叹号只在需要表达强烈情感的情况下使用，弹出信息推荐不使用
+          this.setMsg('success', '修改成功')
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
+    },
+    exportExcel() {
+      if (!this.tableData.length) {
+        return this.setMsg('暂无数据')
+      }
+      const formData = this.formData
+      const downParams = {
+        content: formData.content,
+        startDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
+        endDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null
+      }
+      let url = API_PATH + '/supervisor/feedback/export'
+      downloadFile(url, downParams)
     }
   }
 }
