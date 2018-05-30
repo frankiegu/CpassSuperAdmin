@@ -50,6 +50,7 @@ export default {
         this.descOrAsc = ''
       }
 
+      this.currentPage = 1
       this.getPageData()
     },
     formatPrice(row, column) {
