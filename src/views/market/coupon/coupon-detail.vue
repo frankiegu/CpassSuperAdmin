@@ -4,9 +4,9 @@
     <lh-title :title="couponBaseInfo.name">
       <span class="ml12">
         <!--小时券, 礼品券, 折扣券, 满减券-->
-        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 1">小时券</el-tag>
-        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 2">满减券</el-tag>
-        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 3">礼品券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.status === 1">生效中</el-tag>
+        <el-tag class="mt2" type="warning" size="mini" v-if="couponBaseInfo.status === 2">已过期</el-tag>
+        <el-tag class="mt2" type="info" size="mini" v-if="couponBaseInfo.status === 3">已冻结</el-tag>
       </span>
       <span class="coupon-created ml25">创建日期</span>
       <span class="coupon-created ml10">{{couponBaseInfo.created}}</span>
@@ -20,6 +20,7 @@
           <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         </router-link>
         <el-tooltip
+          v-if="couponBaseInfo.status === 1 || couponBaseInfo.status === 3"
           :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
@@ -31,21 +32,26 @@
             :active-color="switchActiveColor"></el-switch>
         </el-tooltip>
         <el-tooltip
+          v-if="couponBaseInfo.status === 1 || couponBaseInfo.status === 3"
           :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
-          <div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>
+          <div class="outer-div" @click="showDialog"></div>
         </el-tooltip>
-        <!--<div class="outer-div" v-if="isSwitchOuter" @click="showDialog"></div>-->
       </div>
 
     </lh-title>
     <div class="page-title-info coupon-info">
       <el-row>
-        <el-col :span="16">
+        <el-col :span="20">
           <el-row :gutter="20">
             <el-col>
-              <p>{{couponBaseInfo.description}}</p>
+              <p>
+                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 1">小时券</el-tag>
+                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 2">满减券</el-tag>
+                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 3">礼品券</el-tag>
+                <span>{{couponBaseInfo.description}}</span>
+              </p>
             </el-col>
           </el-row>
 
@@ -58,24 +64,30 @@
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
+          <el-row :gutter="24">
             <el-col :span="6">
-              <lh-item label="总张数：" label-width="60px">{{couponBaseInfo.quantity}}</lh-item>
+              <lh-item label="总张数：" label-width="60px">
+                <span style="font-size: 18px; color: #000;">{{couponBaseInfo.quantity}}</span>
+              </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="领取率：" label-width="60px">
-                <span>{{receiveStatistics.received || 0}}</span>
-                <span>{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
+                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0">0.0%</span>
+                <span style="font-size: 18px; color: #000;" v-else>{{(receiveStatistics.received/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span>&nbsp;{{receiveStatistics.received || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6">
               <lh-item label="使用率：" label-width="60px">
-                <span>{{receiveStatistics.used || 0}}</span>
-                <span>{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
+                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0">0.0%</span>
+                <span style="font-size: 18px; color: #000;" v-else>{{(receiveStatistics.used/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
+                <span>&nbsp;{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6" v-if="couponBaseInfo.type === 1">
-              <lh-item label="用券总成交额：" label-width="100px">{{couponTotalAmount}}</lh-item>
+              <lh-item label="用券总成交额：" label-width="100px">
+                <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;</span>元
+              </lh-item>
             </el-col>
           </el-row>
         </el-col>
@@ -95,20 +107,20 @@
                   <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
                       <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
-                      <el-tooltip
-                        :content="item.couponStatus ? '生效中' : '未生效'"
-                        placement="top"
-                        class="margin-lr6">
-                        <el-switch
-                          class=""
-                          v-model="item.couponStatus"
-                          active-text=""
-                          inactive-text=""
-                          :disabled="true"
-                          :active-color="switchActiveColor"></el-switch>
-                      </el-tooltip>
-                      <!--<el-button type="primary" icon="el-icon-caret-right" v-if="item.couponStatus">生效中</el-button>-->
-                      <!--<el-button type="info" icon="el-icon-caret-right" v-if="!item.couponStatus">未生效</el-button>-->
+                      <!--<el-tooltip-->
+                        <!--:content="item.couponStatus ? '生效中' : '未生效'"-->
+                        <!--placement="top"-->
+                        <!--class="margin-lr6">-->
+                        <!--<el-switch-->
+                          <!--class=""-->
+                          <!--v-model="item.couponStatus"-->
+                          <!--active-text=""-->
+                          <!--inactive-text=""-->
+                          <!--:disabled="true"-->
+                          <!--:active-color="switchActiveColor"></el-switch>-->
+                      <!--</el-tooltip>-->
+                      <el-button type="primary" v-if="item.couponStatus">生效中</el-button>
+                      <el-button type="info" v-if="!item.couponStatus">未生效</el-button>
                     </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 2">
@@ -174,9 +186,13 @@
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
+              clearable
               v-model.trim="searchName"
               placeholder="搜索领取人名称"
-              @keyup.native.enter="getReceiveList(1)"></el-input>
+              @keyup.native.enter="getReceiveList(1)">
+
+              <i slot="suffix" @click="getReceiveList(1)" class="el-input__icon el-icon-search"></i>
+            </el-input>
             <el-button class="lh-btn-export" icon="el-icon-download" @click="exportExcel">导出</el-button>
           </div>
           <el-table
@@ -194,7 +210,7 @@
               label="ID"
               sortable
               width="120">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
+              <template slot-scope="scope">{{ scope.row.couponCode }}</template>
             </el-table-column>
             <el-table-column
               prop="customerName"
@@ -212,16 +228,22 @@
               sortable
               show-overflow-tooltip>
             </el-table-column>
-            <el-table-column
-              label="使用状态"
-              sortable
-              show-overflow-tooltip prop="useStatusName">
-              <!--<template slot-scope="scope">-->
-                <!--<span v-if="scope.row.useStatus === 0">待使用</span>-->
-                <!--<span v-if="scope.row.useStatus === -1">冻结</span>-->
-                <!--<span v-if="scope.row.useStatus === 1">已使用</span>-->
-              <!--</template>-->
+
+            <el-table-column label="使用状态" prop="useStatusName"
+                             :filters="[{ text: '待使用', value: 0 }, { text: '冻结', value: -1 }, { text: '已使用', value: 1 }]"
+                             :filter-multiple="false"
+                             filter-placement="bottom-end"
+                             column-key="statusType"
+            >
+              <template slot-scope="scope">
+                <!--有效, 冻结, 过期-->
+                <span v-if="scope.row.status === 2">过期</span>
+                <span v-else-if="scope.row.status === 1">有效</span>
+                <span v-else>冻结</span>
+              </template>
+
             </el-table-column>
+
             <el-table-column
               prop="useTime"
               label="使用时间"
@@ -269,58 +291,6 @@
         couponId: this.$route.query.id, // 卡券id
         searchName: '', // 领取详情搜索姓名
         receiveList: [], // 领取列表
-        couponInfo: {
-          keywords: '', // 领取人输入框
-          publishStatus: 0,
-          name: '模拟数据',
-          mark: '模拟数据......',
-          discountContent: '可兑换一杯咖啡',
-          useRange: '会议室, 其他场地',
-          type: 0,
-          discount: 80,
-          receiveQuantity: 10, // 领取数量
-          total: 30, // 总数量
-          useQuantity: 10, // 使用量
-          couponAmount: 10000, // 用券总成交额
-          created: '2018-05-16 10:00:00',
-          startDate: '2018-05-16 14:00:00',
-          endDate: '2018-05-31 14:00:00',
-          controlStatus: '',
-          receiveRecord: [
-            {
-              id: '1220455522',
-              receiveName: 'sdh',
-              receiveMethod: '手动领取',
-              receiveTime: '2018-05-11 12:00',
-              useStatus: 0, // 0-待使用, 1-已使用, -1-冻结
-              useTime: '', // 使用时间,
-              orderAmount: '',
-              discountAmount: '' // 优惠金额
-            },
-            {
-              id: '1220455522',
-              receiveName: 'sdh',
-              receiveMethod: '手动领取',
-              receiveTime: '2018-05-11 12:00',
-              useStatus: 0, // 0-待使用, 1-已使用, -1-冻结
-              useTime: '', // 使用时间,
-              orderAmount: '',
-              discountAmount: '' // 优惠金额
-            }
-          ], // 优惠券领取列表
-          useField: [
-            {
-              id: 0,
-              spaceName: '雷猴空间',
-              storeName: '中信广场'
-            },
-            {
-              id: 1,
-              spaceName: '雷猴空间',
-              storeName: '天河北路店'
-            }
-          ]
-        },
         couponTotalAmount: 0, // 用券总成交额
         couponBaseInfo: {}, // 优惠券基本信息
         receiveStatistics: {}, // 优惠券领用情况
@@ -363,66 +333,6 @@
             });
           }
         })
-      },
-      businessToggleAll (currentStatus, id) {
-        const self = this
-        // console.log('currentStatus: ', currentStatus);
-        if (currentStatus === 1) {
-          // unfreezeAll({
-          //   couponId: id
-          // }).then(res => {
-          //   if (res.status === 'true') {
-          //     self.$message({
-          //       type: 'success',
-          //       message: '成功解冻优惠券!'
-          //     });
-          //   } else {
-          //     self.$message({
-          //       showClose: true,
-          //       message: res.msg,
-          //       type: 'error'
-          //     });
-          //   }
-          //   // 刷新一下发放情况列表
-          //   self.getPageData()
-          //   self.findCoupon()
-          // })
-        } else if (currentStatus === 2) {
-          self.$confirm('冻结后优惠券会从会员账户中移除，请谨慎操作', '确认冻结所有优惠券？', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            // freezeAll({
-            //   couponId: id
-            // }).then(res => {
-            //   if (res.status === 'true') {
-            //     self.$message({
-            //       type: 'success',
-            //       message: '优惠券已冻结!'
-            //     });
-            //   } else {
-            //     self.$message({
-            //       showClose: true,
-            //       message: res.msg,
-            //       type: 'error'
-            //     });
-            //   }
-            //   // 刷新一下发放情况列表
-            //   self.getPageData()
-            //   self.findCoupon()
-            // })
-          }).catch(() => {
-            self.$message({
-              type: 'info',
-              message: '已取消'
-            });
-
-            // 刷新一下发放情况列表
-            // self.getPageData()
-            // self.findCoupon()
-          });
-        }
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
@@ -578,7 +488,6 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-          this.couponInfo.controlStatus = true
           let params = {
             id: _this.couponId,
             status: _this.couponStatus === 1 ? 0 : 1

@@ -182,7 +182,7 @@
         name: '', // 核对员名称
         telephone: '', // 核对员电话
         merchantName: '', // 商家
-        community: '', // 核对员所属空间
+        community: '' // 核对员所属空间
       }
     },
     mounted () {
