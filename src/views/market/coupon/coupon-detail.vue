@@ -181,8 +181,8 @@
         </el-tab-pane>
         <!--领券详情标签页-->
         <el-tab-pane label="领券详情" name="receiveRecord" class="receive-list">
-          <el-button type="primary" @click="batchFreeze(1)">批量冻结</el-button>
-          <el-button type="primary" @click="batchFreeze(2)">批量恢复</el-button>
+          <el-button type="primary" @click="batchFreeze(1)" :disabled="multipleSelection.length <= 0">批量冻结</el-button>
+          <el-button type="primary" @click="batchFreeze(2)" :disabled="multipleSelection.length <= 0">批量恢复</el-button>
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
@@ -201,6 +201,8 @@
             tooltip-effect="dark"
             style="width: 100%"
             class="mt20"
+            @sort-change="sortCoupon"
+            @filter-change="filterChange"
             @selection-change="handleSelectionChange">
             <el-table-column
               type="selection"
@@ -229,17 +231,18 @@
               show-overflow-tooltip>
             </el-table-column>
 
-            <el-table-column label="使用状态" prop="useStatusName"
-                             :filters="[{ text: '待使用', value: 0 }, { text: '冻结', value: -1 }, { text: '已使用', value: 1 }]"
+            <!--使用状态 0未使用 1已使用 2已失效 3冻结-->
+            <el-table-column :label="sortFileName" prop="useStatusName"
+                             :filters="[{ text: '待使用', value: 0 }, { text: '已冻结', value: 3 }, { text: '已使用', value: 1 }, { text: '已失效', value: 2 }]"
                              :filter-multiple="false"
                              filter-placement="bottom-end"
                              column-key="statusType"
             >
               <template slot-scope="scope">
-                <!--有效, 冻结, 过期-->
-                <span v-if="scope.row.status === 2">过期</span>
-                <span v-else-if="scope.row.status === 1">有效</span>
-                <span v-else>冻结</span>
+                <span v-if="scope.row.useStatus === 0">待使用</span>
+                <span v-if="scope.row.useStatus === 1">已使用</span>
+                <span v-if="scope.row.useStatus === 2">已失效</span>
+                <span v-if="scope.row.useStatus === 3">已冻结</span>
               </template>
 
             </el-table-column>
@@ -313,7 +316,10 @@
         isSwitchOuter: true, // 冻结或恢复优惠券Switch的外层遮挡div
         dialogTitle: '',
         dialogTips: '',
-        couponStatus: ''
+        couponStatus: '',
+        receiveOrderBy: '', // 领取列表排序
+        sortFileName: '使用状态', // 领取列表状态筛选
+        statusType: '' // 领取列表按状态筛选
       }
     },
     methods: {
@@ -384,7 +390,9 @@
           couponType: this.couponBaseInfo.type,
           customerName: this.searchName,
           pageNum: this.currentPage,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          orderBy: this.receiveOrderBy,
+          useStatus: this.statusType
         }
         couponReceiveList(params).then(res => {
           if (res.status === 'true') {
@@ -519,6 +527,46 @@
             message: '已取消开启'
           });
         });
+      },
+      // 领取列表排序
+      sortCoupon (sort) {
+        this.receiveOrderBy = sort.order === 'ascending' ? 0 : 1
+        this.getReceiveList()
+      },
+      // 筛选触发动作
+      filterChange (filters) {
+        if (filters.hasOwnProperty('statusType')) {
+          if (filters['statusType'].length === 0) {
+            this.sortFileName = '使用状态'
+            this.statusType = ''
+            this.getReceiveList()
+            return;
+          }
+          console.log('filter', filters['statusType'][0])
+          // 使用状态 0未使用 1已使用 2已失效 3冻结
+          switch (filters['statusType'][0]) {
+            case 0:
+              this.statusType = 0
+              this.sortFileName = '未使用'
+              this.getReceiveList()
+              break;
+            case 1:
+              this.statusType = 1
+              this.sortFileName = '已使用'
+              this.getReceiveList()
+              break;
+            case 2:
+              this.statusType = 2
+              this.sortFileName = '已失效'
+              this.getReceiveList()
+              break;
+            case 3:
+              this.statusType = 3
+              this.sortFileName = '已冻结'
+              this.getReceiveList()
+              break;
+          }
+        }
       }
     },
     created () {
