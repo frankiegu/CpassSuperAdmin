@@ -87,79 +87,92 @@
       <el-tabs v-model="activeTab">
         <!-- 领取方式标签页 -->
         <el-tab-pane label="卡券信息" name="couponInformation" class="coupon-detail-info">
+          <div class="mt10 bgcfff">
+            <div class="card-body-title">活动规则</div>
+            <div class="card-body-info">
+              <lh-item :label="(index + 1) + '、'"  label-width="20px" v-for="(item, index) in 6" :key="index">2018-5-18 14:00</lh-item>
+            </div>
+
+            <div class="card-body-title">活动内容</div>
+            <div class="card-body-info">
+              <div class="site-info">最大参与人数：<span class="site-info-desc">1600人</span></div>
+              <div class="site-info">每人最大允许中奖数：<span class="site-info-desc">2次</span></div>
+              <div class="site-info">初始抽奖次数：<span class="site-info-desc">1次</span></div>
+              <div class="site-info">分享成功后额外抽奖次数：<span class="site-info-desc">3次</span></div>
+            </div>
+            <div class="card-body-table">
+              <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+                        style="width: 100%">
+
+                <el-table-column label="奖品" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="奖品类型" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="数量" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="中奖概率" prop="providerName" align="left"></el-table-column>
+
+              </el-table>
+            </div>
+
+            <div class="card-body-title">展示设置</div>
+            <div class="card-body-info">
+              <lh-item label="展示端"  label-width="87px">小程序</lh-item>
+              <lh-item label="未开始提示"  label-width="87px">活动尚未开始</lh-item>
+              <lh-item label="结束提示"  label-width="87px">活动已结束</lh-item>
+            </div>
+
+          </div>
         </el-tab-pane>
         <!--领券详情标签页-->
         <el-tab-pane label="领券详情" name="receiveRecord" class="receive-list">
-          <el-form :model="formData" :inline="true" class="text-right mr-10">
-            <!-- 选择的是到期时间，所以是往后选 -->
-            <el-form-item>
-              <el-date-picker
-                v-model="formData.reg_date"
-                @change="getPageData(1)"
-                type="daterange"
-                align="right"
-                clearable
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                placeholder="选择提交日期"
-                :picker-options="pickerOptions"></el-date-picker>
-            </el-form-item>
+          <div class="mt10 bgcfff">
+            <div class="card-body-title">整体统计</div>
 
-            <el-form-item class="fr">
-              <el-button @click="exportExcel" class="lh-btn-export">
-                <lh-svg icon-class="icon-download" />导出
-              </el-button>
-            </el-form-item>
+            <div>
+              <el-form :model="formData" :inline="true" class="text-right mr-10">
+                <!-- 选择的是到期时间，所以是往后选 -->
+                <el-form-item>
+                  <el-date-picker
+                    v-model="formData.reg_date"
+                    @change="getPageData(1)"
+                    type="daterange"
+                    align="right"
+                    clearable
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    placeholder="选择提交日期"
+                    :picker-options="pickerOptions"></el-date-picker>
+                </el-form-item>
 
-          </el-form>
+                <el-form-item class="fr">
+                  <el-button @click="exportExcel" class="lh-btn-export">
+                    <lh-svg icon-class="icon-download" />导出
+                  </el-button>
+                </el-form-item>
 
-          <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
-                    style="width: 100%">
+              </el-form>
 
-            <el-table-column label="活动ID" prop="name" align="left"></el-table-column>
-            <el-table-column label="活动名称" prop="name" align="left">
-              <template slot-scope="scope">
-                <router-link
-                  :to="{path: '/activity/detail', query: {id: 3210}}"
-                  class="table-link">
-                  {{ scope.row.name }}
-                </router-link>
-              </template>
-            </el-table-column>
-            <el-table-column label="活动类型" prop="price"></el-table-column>
-            <el-table-column label="活动开始时间" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
-            <el-table-column label="活动结束时间" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
-            <el-table-column label="活动状态">
-              <template slot-scope="scope">
-                <span v-if="scope.row.type === 1">未发布</span>
-                <span v-if="scope.row.type === 2">未开始</span>
-                <span v-if="scope.row.type === 3">进行中</span>
-                <span v-if="scope.row.type === 4">已结束</span>
-                <span v-if="scope.row.type === 5">暂停</span>
-              </template>
-            </el-table-column>
+              <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+                        style="width: 100%">
 
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button type="text" v-if="scope.row.statusCode === 1"
-                           class="operate-btn">编辑</el-button>
+                <el-table-column label="日期" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
+                <el-table-column label="查看人数" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="参与次数" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="分享人数" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="分享次数" prop="providerName" align="left"></el-table-column>
 
-                <el-button type="text" v-if="scope.row.statusCode === 1"
-                           class="operate-btn">复制</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+              </el-table>
 
-          <el-pagination
-            :total="pageTotal"
-            :layout="layoutArr"
-            :page-size="pageSize"
-            :page-sizes="pageSizeArr"
-            :current-page="currentPage"
-            class="pagination-container"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            background></el-pagination>
+              <el-pagination
+                :total="pageTotal"
+                :layout="layoutArr"
+                :page-size="pageSize"
+                :page-sizes="pageSizeArr"
+                :current-page="currentPage"
+                class="pagination-container"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                background></el-pagination>
+            </div>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -176,6 +189,11 @@ export default {
   mounted() {
   },
   methods: {
+    paixu(column, prop, order) {
+      console.log(column)
+      console.log(prop)
+      console.log(order)
+    }
   }
 }
 </script>
@@ -238,11 +256,12 @@ export default {
       }
     }
   }
-
   .page-info{
-    height: 41px;
-    padding: 0px 30px;
     background: #fff;
+    padding: 24px;
+    margin: 24px;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px 0 rgba(0, 21, 41, 0.12);
   }
   .big-detail{
     .label-box{
@@ -271,6 +290,33 @@ export default {
         color: #000;
       }
     }
+  }
+  .detail-title{
+    margin: 0px 32px;
+    padding: 16px 0px;
+  }
+  .card-body-title{
+    font-size: 16px;
+  }
+  .card-body-info{
+    padding: 24px 24px;
+
+    .site-info{
+      display: inline-block;
+      color: #333;
+      margin-right: 50px;
+
+      .site-info-desc{
+        font-size: 20px;
+        color: #000;
+      }
+    }
+    .site-info:last-child{
+      margin-right: 0px;
+    }
+  }
+  .card-body-table{
+    padding: 0px 24px 36px 24px;
   }
 }
 </style>
