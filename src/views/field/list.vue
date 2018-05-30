@@ -22,7 +22,7 @@
         :empty-text="tableEmpty"
         :slot="tableEmpty"
         v-loading="tableLoading"
-        @filter-change="filterChange"
+        @sort-change="change"
         class="width100" border>
 
         <el-table-column label="场地名称" fixed="left" align="left">
@@ -39,12 +39,7 @@
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
         <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
 
-        <el-table-column :label="sortFileName" prop="bookNum"
-          :filters="[{ text: '降序', value: 0 }, { text: '升序', value: 1 }]"
-          column-key="bookNumSort"
-          :filter-multiple="false"
-          filter-placement="bottom-end"
-          align="left" width="115"></el-table-column>
+        <el-table-column label="历史预定数" prop="bookNum" sortable="custom" align="left" width="115"></el-table-column>
 
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
@@ -95,7 +90,6 @@
     data () {
       return {
         bookNumSort: '',
-        sortFileName: '历史预定数',
         formData: {
           name: ''
         }
@@ -108,31 +102,18 @@
       formatterPrice(row, column) {
         return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
-      // 筛选触发动作
-      filterChange (filters) {
-        if (filters.hasOwnProperty('bookNumSort')) {
-          // 全部
-          if (filters['bookNumSort'].length === 0) {
-            this.sortFileName = '历史预定数'
-            this.bookNumSort = ''
-            this.getPageData()
-            return;
-          }
-
-          // console.log('filter', filters['bookNumSort'][0])
-          switch (filters['bookNumSort'][0]) {
-            case 0:
-              this.sortFileName = '降序'
-              this.bookNumSort = 0
-              this.getPageData()
-              break;
-            case 1:
-              this.sortFileName = '升序'
-              this.bookNumSort = 1
-              this.getPageData()
-              break;
-          }
+      change(sort) {
+        // console.log('sort', sort);
+        if (sort.order === 'ascending') {
+          this.bookNumSort = 0
+        } else if (sort.order === 'descending') {
+          this.bookNumSort = 1
+        } else if (sort.order === null) {
+          this.bookNumSort = ''
         }
+
+        this.currentPage = 1
+        this.getPageData()
       },
       getPageData(page) {
         this.currentPage = page || this.currentPage
