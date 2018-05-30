@@ -52,8 +52,8 @@
             <div v-if="couponForm.couponType === 1" v-bind:key="1">
               <el-form-item label="优惠内容" required>
                 减免场地订单
-                <el-select v-model="couponForm.subtractHour" class="width60px">
-                  <el-option v-for="i in 8" :key="i" :label="i" :value="i" />
+                <el-select v-model="couponForm.subtractHour" class="width75px">
+                  <el-option v-for="i in 16" :key="i" :label="i / 2" :value="i / 2" />
                 </el-select>
                 小时的费用
               </el-form-item>
@@ -77,7 +77,7 @@
           </transition>
 
           <el-form-item label="使用范围" required>
-            <el-radio-group v-model="couponForm.isAllStore">
+            <el-radio-group v-model="couponForm.isAllStore" @change="changeRange">
               <el-radio :label="1">{{couponForm.couponType === 1 ? '全部门店' : '全部核销点'}}</el-radio>
               <el-radio :label="2">{{couponForm.couponType === 1 ? '部分门店' : '部分核销点'}}</el-radio>
               <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
@@ -92,17 +92,19 @@
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
                     <!-- 部分门店的树形 -->
-                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData"
+                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
                     </el-tree>
 
                     <!-- 部分核销点的树形 -->
-                    <el-tree v-if="couponForm.couponType === 3" node-key="id" :data="stationList"
+                    <el-tree v-if="couponForm.couponType === 3" node-key="id" :data="stationList" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="stationTree"
                       show-checkbox ref="rangeTree" class="range-tree" @check-change="handleCheckChange">
                     </el-tree>
+
+                    <p class="theme-light-gray mt60" style="text-align: center" v-if="isFilterNoData">暂无数据</p>
                   </div>
                 </div>
 
@@ -198,7 +200,7 @@
             style="width: 320px"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
-            :picker-options="pickerOptions"
+            :picker-options="subPickerOptions"
             v-model="receiveConditions[index]['dateTime']"
             :default-time="['00:00:00', '23:59:59']"
             type="datetimerange">
@@ -268,6 +270,7 @@
         couponTypeList: [],
         canChangeType: true, // 编辑时不可更改卡券类型
         // 树形列表
+        isFilterNoData: false,
         treeData: [],
         treeProp: { label: 'name' },
         // 核销点列表
@@ -321,7 +324,17 @@
         },
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24;
+            return time.getTime() < Date.now() - 3600 * 1000 * 24
+          }
+        },
+        subPickerOptions: {
+          disabledDate: (time) => {
+            if (this.couponForm.expireDate.length > 1) { // 条件触发的结束时间小于等于使用期限的结束时间
+              return time.getTime() > new Date(this.couponForm.expireDate[1]) ||
+                time.getTime() < Date.now() - 3600 * 1000 * 24
+            } else {
+              return time.getTime() < Date.now() - 3600 * 1000 * 24
+            }
           }
         },
         hasCondition: false, // 是否有选中触发条件
@@ -373,6 +386,11 @@
         this.couponForm.isAllStore = 2
         this.selectedRange = []
       },
+      // 切换使用范围
+      changeRange() {
+        this.selectedRange = []
+        this.couponForm.range = []
+      },
       // 获取核销点列表
       handleGetStation() {
         loadStation().then(res => {
@@ -392,6 +410,9 @@
       },
       // 树形数据过滤
       filterNode(value, data, node) {
+        this.$nextTick(() => {
+          this.isFilterNoData = this.$refs['rangeTree'].$el.offsetHeight === 0
+        })
         if (!value) return true
         if (data.name && data.name.indexOf(value) !== -1) {
           return true
@@ -498,10 +519,22 @@
             } else {
               this.$message.error('起始时间需大于当前时间')
               valid = false
+              this.hasCondition = false
             }
           } else {
             this.$message.error('请选择有效期限')
             valid = false
+            this.hasCondition = false
+          }
+          if (!valid) return
+          if (this.couponForm.expireDate && this.couponForm.expireDate.length > 1) {
+            if (item && item['endTime'] && new Date(item['endTime']) <= new Date(this.couponForm.expireDate[1])) {
+              valid = true
+            } else  {
+              this.$message.error('结束时间需小于等于优惠券的使用结束时间')
+              valid = false
+              this.hasCondition = false
+            }
           }
         })
         if (!valid) return
@@ -510,7 +543,8 @@
       },
       closeWayDialog() {
         this.couponForm.receiveConditionArray.forEach((item) => {
-          if (!item.startTime) {
+          if (!item.startTime || new Date(item.startTime) < Date.now() ||
+            new Date(item.endTime) > new Date(this.couponForm.expireDate[1])) {
             this.removeCondition(item)
           }
         })
@@ -640,6 +674,12 @@
                     dateValid = true
                   } else {
                     this.$message.error('条件触发的起始时间需大于当前时间')
+                    dateValid = false
+                  }
+                  if (new Date(item.endTime) <= new Date(this.couponForm.expireDate[1])) {
+                    dateValid = true
+                  } else {
+                    this.$message.error('条件触发的结束时间需小于等于优惠券的使用结束时间')
                     dateValid = false
                   }
                 })

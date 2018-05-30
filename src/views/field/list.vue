@@ -22,6 +22,7 @@
         :empty-text="tableEmpty"
         :slot="tableEmpty"
         v-loading="tableLoading"
+        @filter-change="filterChange"
         class="width100" border>
 
         <el-table-column label="场地名称" fixed="left" align="left">
@@ -37,7 +38,14 @@
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
         <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
-        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable sort-by="bookNum" width="115"></el-table-column>
+
+        <el-table-column :label="sortFileName" prop="bookNum"
+          :filters="[{ text: '降序', value: 0 }, { text: '升序', value: 1 }]"
+          column-key="bookNumSort"
+          :filter-multiple="false"
+          filter-placement="bottom-end"
+          align="left" width="115"></el-table-column>
+
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>
@@ -86,6 +94,8 @@
     components: {},
     data () {
       return {
+        bookNumSort: '',
+        sortFileName: '历史预定数',
         formData: {
           name: ''
         }
@@ -98,11 +108,38 @@
       formatterPrice(row, column) {
         return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
+      // 筛选触发动作
+      filterChange (filters) {
+        if (filters.hasOwnProperty('bookNumSort')) {
+          // 全部
+          if (filters['bookNumSort'].length === 0) {
+            this.sortFileName = '历史预定数'
+            this.bookNumSort = ''
+            this.getPageData()
+            return;
+          }
+
+          // console.log('filter', filters['bookNumSort'][0])
+          switch (filters['bookNumSort'][0]) {
+            case 0:
+              this.sortFileName = '降序'
+              this.bookNumSort = 0
+              this.getPageData()
+              break;
+            case 1:
+              this.sortFileName = '升序'
+              this.bookNumSort = 1
+              this.getPageData()
+              break;
+          }
+        }
+      },
       getPageData(page) {
         this.currentPage = page || this.currentPage
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
+          bookNumSort: this.bookNumSort,
           fieldName: this.formData.name
         }
         fieldList(paramsObj).then(res => {
