@@ -156,6 +156,21 @@ export default {
       twoPartMonitor: null,
       twoPartStatus: true,
       openDataMonitor: null,
+      orderLoading: false,
+      prizeList: [
+        {
+          prizeName: '1小时优惠券',
+          type: 1,
+          quantity: 1,
+          probability: '5%'
+        },
+        {
+          prizeName: '普通红包（9.9元）',
+          type: 1,
+          quantity: 2,
+          probability: '15%'
+        }
+      ], // 奖品列表
       twoPartForm: {
         cancelBeforeTime: '3',
         timeType: '', // 允许取消事件的单位 hour 小时 today天
@@ -190,7 +205,8 @@ export default {
 
         attendNum: '', // 参与人数
         winningTimes: '', // 允许的最大中奖次数
-        originalTimes: '' // 初始抽奖次数
+        originalTimes: '', // 初始抽奖次数
+        shareAddTimes: '' // 分享后获得的抽奖次数
       },
       twoPartFormRule: {
         payType: [{ required: true, message: '请至少勾选一种支付方式', trigger: ['blur', 'change'], type: 'array' }],
@@ -201,7 +217,8 @@ export default {
         price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }],
         attendNum: [{ required: true, validator: checkNum, trigger: ['blur', 'change'] }],
         winningTimes: [{ required: true, validator: checkWinningTimes, trigger: ['blur', 'change'] }],
-        originalTimes: [{ required: true, validator: checkOriginalTimes, trigger: ['blur', 'change'] }]
+        originalTimes: [{ required: true, validator: checkOriginalTimes, trigger: ['blur', 'change'] }],
+        shareAddTimes: [{ required: true, validator: checkShareAddTimes, trigger: ['blur', 'change'] }]
       },
 
       // part 3
@@ -398,8 +415,8 @@ const checkNum = (rule, value, callback) => {
 const checkWinningTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入每人最大允许中奖数'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
   } else {
     callback();
   }
@@ -407,9 +424,19 @@ const checkWinningTimes = (rule, value, callback) => {
 // 初始中奖次数
 const checkOriginalTimes = (rule, value, callback) => {
   if (!value) {
-    callback(new Error('请输入每人最大允许中奖数'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
+    callback(new Error('请输入初始可抽奖次数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
+  } else {
+    callback();
+  }
+};
+// 分享后获得的抽奖次数
+const checkShareAddTimes = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入分享成功后额外抽奖次数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
   } else {
     callback();
   }

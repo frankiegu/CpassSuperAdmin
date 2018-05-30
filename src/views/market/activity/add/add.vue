@@ -140,19 +140,53 @@
 
           <el-row>
             <el-col :span="4">
-              <el-form-item prop="attendNum">
+              <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
                 <el-input v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item prop="winningTimes">
+              <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input v-model.trim="twoPartForm.winningTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
+                <el-input v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
+          <!--奖品列表-->
+          <div class="prize-list">
+            <h3 class="prize-title">奖品列表</h3>
+            <el-table
+              :data="prizeList"
+              v-loading="orderLoading"
+              style="width: 500px; margin-bottom: 22px;">
+              <el-table-column label="奖品" prop="prizeName"></el-table-column>
+              <el-table-column label="类型" prop="type">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.type === 1">优惠券</span>
+                  <span v-if="scope.row.type === 2">微信红包</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="数量" prop="quantity">
+                <template slot-scope="scope">
+                  <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
+                  <el-input
+                    :maxlength="8"
+                    v-model="scope.row.quantity"
+                  ></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="中奖概率 （%）" prop="probability">
+                <template slot-scope="scope">
+                  <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
+                  <el-input
+                    :maxlength="8"
+                    v-model="scope.row.probability"
+                  ></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
 
 
           <h3 class="text-title">租金是多少？</h3>

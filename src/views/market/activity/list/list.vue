@@ -5,7 +5,9 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
 
-        <div class="to-bottom-right fl add-btn">添加活动</div>
+        <router-link to="/activity/add">
+          <div class="to-bottom-right fl add-btn">添加活动</div>
+        </router-link>
 
         <el-form-item>
           <el-input
@@ -116,7 +118,8 @@
     .add-btn{
       padding: 0px 20px;
       line-height: 32px;
-      color: fff;
+      color: #fff;
+      cursor: pointer;
     }
     .operate-btn {
       padding: 6px;
