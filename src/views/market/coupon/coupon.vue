@@ -190,7 +190,7 @@
           pageSize: self.pageSize,
           couponName: self.couponSort.keywords,
           orderBy: this.orderBy,
-          filterBy: this.statusType
+          status: this.statusType
         }
         couponList(paramsObj).then(res => {
           if (res.status === 'true') {
