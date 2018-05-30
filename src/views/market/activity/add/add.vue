@@ -38,12 +38,12 @@
         :rules="onePartFormRule"
         ref="onePartForm">
         <!--<h3 class="text-title mt0">需要发布怎样的场地？</h3>-->
-        <el-form-item prop="type" label="活动名称 ">
+        <el-form-item prop="type" label="活动名称 " label-width="86px">
           <el-input v-model.trim="onePartForm.activityName" class="activity-name ml20" placeholder="活动名称" :maxlength="30"></el-input>
         </el-form-item>
 
         <!-- 标题文字不要换行，因为会多一个空格，就不对齐了 -->
-        <el-form-item prop="type" label="活动规则 ">
+        <el-form-item prop="type" label="活动规则 " label-width="86px">
           <el-input
             type="textarea"
             class="activity-name fl ml20"
@@ -56,24 +56,25 @@
 
           <span class="theme-gray fl ml20">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
 
-        <el-form-item prop="activityType" label="活动类型">
+        <el-form-item prop="activityType" label="活动类型" label-width="86px">
           <template>
             <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="common">普通活动</el-radio>
             <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="interactive">互动游戏</el-radio>
           </template>
         </el-form-item>
 
-        <el-form-item prop="activityType" label="活动模板">
+        <el-form-item prop="activityType" label="活动模板" label-width="86px">
           <template>
             <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="goldenEggs">砸金蛋</el-radio>
             <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="otherGames">其他</el-radio>
           </template>
         </el-form-item>
-        <el-form-item label="活动模板">
+        <el-form-item label="活动模板" label-width="86px">
           <el-date-picker
             class="ml20"
             v-model="onePartForm.rangeDate"
             @change="dateChange"
+            :picker-options="orderSortDate"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             placeholder="选择日期"
@@ -81,6 +82,13 @@
             align="left"></el-date-picker>
         </el-form-item>
 
+        <el-form-item label="活动banner" label-width="86px">
+          <lh-upload
+            class="ml25"
+            :imgsArr="threePartForm.imgs"
+            :imgsLenght="imgsLenght"
+            :size="128" />
+        </el-form-item>
         <h3 class="text-title">为场地取个名字</h3>
         <el-form-item prop="fieldName">
           <el-input
@@ -481,7 +489,13 @@ export default {
       type: this.$route.query.type,
       addStep: this.$route.query.addStep + '',
       titleName: '',
-      pickerOptions1
+      pickerOptions1,
+      orderSortDate: {
+        disabledDate(time) {
+          // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
+          return time.getTime() < Date.now()
+        }
+      } // 日期选择范围
     }
   },
   watch: {
@@ -1217,6 +1231,9 @@ export default {
   .el-input-group__append,
   .el-input-group__prepend {
     width: 60px;
+  }
+  .el-form-item__label {
+    text-align: left;
   }
 }
 </style>
