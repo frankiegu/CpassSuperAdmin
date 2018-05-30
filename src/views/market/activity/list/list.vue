@@ -10,16 +10,17 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入活动名称"
             class="width200px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
         <el-select
           v-model="formData.type"
+          @change="getPageData(1)"
           filterable
           placeholder="请选择类型"
           class="width150px"
@@ -33,6 +34,7 @@
 
         <el-select
           v-model="formData.status"
+          @change="getPageData(1)"
           filterable
           placeholder="请选择活动状态"
           class="width150px"
