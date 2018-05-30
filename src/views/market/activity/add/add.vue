@@ -31,6 +31,9 @@
       @tabToggle="toggleTab" />
 
     <div class="lh-card-main lh-card-body">
+      <h3 class="step-one-title" v-if="activityTab === 1">基本信息</h3>
+      <h3 class="step-one-title" v-if="activityTab === 2">活动配置</h3>
+      <h3 class="step-one-title" v-if="activityTab === 3">展示设置</h3>
       <!-- first step -->
       <el-form
         v-show="activityTab === 1"
@@ -38,15 +41,15 @@
         :rules="onePartFormRule"
         ref="onePartForm">
         <!--<h3 class="text-title mt0">需要发布怎样的场地？</h3>-->
-        <el-form-item prop="type" label="活动名称 " label-width="86px">
-          <el-input v-model.trim="onePartForm.activityName" class="activity-name ml20" placeholder="活动名称" :maxlength="30"></el-input>
+        <el-form-item prop="activityName" label="活动名称 " label-width="120px">
+          <el-input v-model.trim="onePartForm.activityName" class="activity-name" placeholder="活动名称" :maxlength="30"></el-input>
         </el-form-item>
 
         <!-- 标题文字不要换行，因为会多一个空格，就不对齐了 -->
-        <el-form-item prop="type" label="活动规则 " label-width="86px">
+        <el-form-item prop="activityRules" label="活动规则 " label-width="120px" class="mt40">
           <el-input
             type="textarea"
-            class="activity-name fl ml20"
+            class="activity-name fl"
             v-model.trim="onePartForm.activityRules"
             :maxlength="200"
             :rows="4"
@@ -54,95 +57,57 @@
           >
           </el-input>
 
-          <span class="theme-gray fl ml20">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
+          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
 
-        <el-form-item prop="activityType" label="活动类型" label-width="86px">
+        <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
-            <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="common">普通活动</el-radio>
-            <el-radio class="mt10 ml25" v-model="onePartForm.activityType" label="interactive">互动游戏</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityType" label="common">普通活动</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityType" label="interactive">互动游戏</el-radio>
           </template>
         </el-form-item>
 
-        <el-form-item prop="activityType" label="活动模板" label-width="86px">
+        <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40">
           <template>
-            <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="goldenEggs">砸金蛋</el-radio>
-            <el-radio class="mt10 ml25" v-model="onePartForm.activityTemplate" label="otherGames">其他</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="goldenEggs">砸金蛋</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="otherGames">其他</el-radio>
           </template>
         </el-form-item>
-        <el-form-item label="活动模板" label-width="86px">
-          <el-date-picker
-            class="ml20"
-            v-model="onePartForm.rangeDate"
-            @change="dateChange"
-            :picker-options="orderSortDate"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            placeholder="选择日期"
-            type="daterange"
-            align="left"></el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="活动banner" label-width="86px">
-          <lh-upload
-            class="ml25"
-            :imgsArr="threePartForm.imgs"
-            :imgsLenght="imgsLenght"
-            :size="128" />
-        </el-form-item>
-        <h3 class="text-title">为场地取个名字</h3>
-        <el-form-item prop="fieldName">
-          <el-input
-            v-model.trim="onePartForm.fieldName"
-            placeholder="请填写场地名称"
-            class="width160px"
-            :maxlength="100"
-            clearable></el-input>
-        </el-form-item>
-
-        <h3 class="text-title mb6 no-required">场地有怎样的硬件设施？</h3>
-        <el-form-item>
-          <div v-for="(city, idx) in equipmentsList" :key="idx" class="dib mb10">
-            <el-checkbox v-model="city.checked" :key="city.id" :label="city">
-              {{city.name}}
-              <!-- @#注意：小图标用背景图，不要用图片 -->
-              <span class="icon-url" :class="{'mr60': idx !== (equipmentsList.length - 1)}" :style="`background: url(${city.icon}) round;`"></span>
-            </el-checkbox>
+        <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
+          <div>
+            <el-date-picker
+              v-model="onePartForm.rangeDate"
+              @change="dateChange"
+              :picker-options="orderSortDate"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              placeholder="选择日期"
+              type="daterange"
+              align="left"></el-date-picker>
           </div>
+          <div class="date-text-wrapper">
+            <i class="el-icon-warning fl theme-light-gray date-warnning"></i>
+            <span class="warnning-text">此处仅为可参与活动的日期，不控制是否显示在用户端</span>
+          </div>
+
         </el-form-item>
 
-        <h3 class="text-title mt57">{{ (onePartForm.type === '1' || onePartForm.type === '2' || onePartForm.type === '4') ? '可以容纳多少人？' : '场地有多少个工位？' }}</h3>
-        <el-form-item v-if="onePartForm.type === '1' || onePartForm.type === '2' || onePartForm.type === '4'" prop="maxAdmissibleNum">
-          <el-input
-            v-model.trim="onePartForm.maxAdmissibleNum"
-            class="width160px"
-            :maxlength="3"
-            clearable></el-input>
-            <span class="theme-gray ml10">人</span>
-        </el-form-item>
-        <el-form-item v-else prop="stationNum">
-          <el-input
-            v-model.trim="onePartForm.stationNum"
-            placeholder="请输入工位数量"
-            class="width160px"
-            :maxlength="3"
-            clearable></el-input>
-        </el-form-item>
-
-        <h3 class="text-title">场地有多大？</h3>
-        <el-form-item prop="area">
-          <el-input
-            v-model.trim="onePartForm.area"
-            class="width160px"
-            :maxlength="4"
-            clearable></el-input>
-            <span class="theme-gray ml10">m²</span>
+        <el-form-item label="活动banner" label-width="120px" prop="bannerPic" class="mt40">
+          <lh-upload
+            :imgUrl="onePartForm.bannerPic"
+            class="fl"
+            @uploadImg="val => onePartForm.bannerPic = val"></lh-upload>
+          <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="uploadText = true"></i>
+          <div v-if="uploadText">
+            <p>建议尺寸： 600PX * 460PX</p>
+            <p class="banner-format">支持格式： JPG / PNG</p>
+          </div>
         </el-form-item>
 
         <el-button
           @click="submitForm('onePartForm', '1')"
           :loading="loadingOnePart"
           class="to-bottom-right width80px mt30"
-          type="primary">继 续</el-button>
+          type="primary">下一步</el-button>
       </el-form>
 
       <!-- second step -->
@@ -154,31 +119,41 @@
         v-if="activityTab === 2"
         :model="twoPartForm"
         :rules="twoPartFormRule"
+        :inline="true"
         ref="twoPartForm">
         <!-- 办公室 -->
-        <div v-if="onePartForm.type === '5'">
-          <h3 class="text-title mt0">办公室什么时候可以开始使用？</h3>
-          <el-form-item prop="startUseTime">
-            <el-date-picker
-              v-model.trim="twoPartForm.startUseTime"
-              placeholder="请选择可以开始进驻的日期"
-              format="yyyy 年 MM 月 dd 日"
-              value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions1"
-              type="date">
-            </el-date-picker>
-          </el-form-item>
+        <div>
+          <el-row>
+            <el-col :span="4">
+              <el-form-item prop="attendNum">
+                <h3 class="text-title second-form-title">参与人数</h3>
+                <el-input v-model.trim="twoPartForm.attendNum" placeholder="请输入最大允许参与人数" :maxlength="6"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="winningTimes">
+                <h3 class="text-title second-form-title">每人最大允许中奖数</h3>
+                <el-input v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数" :maxlength="6"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-          <h3 class="text-title">最少需要租用多久？</h3>
-          <el-form-item prop="minRentMonth">
-            <el-input
-              v-model.trim="twoPartForm.minRentMonth"
-              placeholder="请输入数字"
-              class="width160px"
-              :maxlength="3"
-              clearable></el-input>
-            <span class="theme-gray ml10">月</span>
-          </el-form-item>
+          <el-row>
+            <el-col :span="4">
+              <el-form-item prop="attendNum">
+                <h3 class="text-title second-form-title">初始抽奖次数</h3>
+                <el-input v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="winningTimes">
+                <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
+                <el-input v-model.trim="twoPartForm.winningTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
 
           <h3 class="text-title">租金是多少？</h3>
           <el-form-item prop="price">
@@ -192,156 +167,6 @@
           </el-form-item>
         </div>
 
-        <!-- 非办公室 -->
-        <div v-else>
-          <!--
-            修改第二部 开放预约时段关闭 场地对外开放，调编辑场地的第二步接口
-            并在编辑这块之后弹出确认框提示
-          -->
-          <h3 class="text-title mt0">场地会在什么时段开放预约？</h3>
-          <el-form-item>
-            <el-select v-model.trim="twoPartForm.appointmentTimeType" @change="toggleWeek" class="width160px">
-              <el-option
-                v-for="(item, idx) in workingDay"
-                :key="idx"
-                :label="item.label"
-                :value="item.key">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <div class="mt24 mb-18">
-            <!-- 这里用到3个地方，拆分工作量太大，所以先不拆分 -->
-            <div v-for="(item, idx) in openData" :key="idx">
-              <!-- mt4 是文本距离顶部的高度 -->
-              <h3 v-if="twoPartForm.appointmentTimeType === 2"
-                  class="text-title no-required fz16 mt4 mb19 fl"
-                  :class="['width75px', 'width100', {'line-wrap': onePartForm.type === '3'}]">
-                 {{ !idx ? '工作日' : '非工作日' }}
-              </h3>
-              <h3 v-else
-                  class="text-title no-required mt4 fz16 fl"
-                  :class="['mr14', {'dib': onePartForm.type !== '3'}]">整周</h3>
-
-              <!-- @#注意：不区分工作日只有一条，默认是营业状态，且不可设置 -->
-              <el-form-item v-if="twoPartForm.appointmentTimeType !== 1" class="dib mr12">
-                <el-select
-                  v-model.trim="item.status"
-                  @change="handleOpen(idx)"
-                  class="width75px"
-                  placeholder=" ">
-                  <el-option
-                    v-for="(item, idx) in business"
-                    :key="idx"
-                    :label="item.label"
-                    :value="item.key">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-
-              <div v-if="onePartForm.type !== '3' && item.status" class="dib">
-                <!-- @#注意：起始时间的end要少半个小时，这样结束时间才能选择最后的时间 -->
-                <el-form-item prop="startTime" class="dib">
-                  <el-time-select
-                    v-model="item.startTime"
-                    @change="changeStartTime(idx)"
-                    class="width130px"
-                    format="HH:mm"
-                    placeholder="起始时间"
-                    :picker-options="{ start: '00:00', step: '00:30', end: '23:00' }"
-                    :clearable="false">
-                  </el-time-select>
-                </el-form-item>
-                <span class="theme-gray">-</span>
-                <el-form-item prop="endTime" class="dib mr12" label-width="0">
-                  <el-time-select
-                    v-model="item.endTime"
-                    class="width130px"
-                    placeholder="结束时间"
-                    format="HH:mm"
-                    :picker-options="{ start: item.endStartTime || '00:30', step: '00:30', end: '23:30' }"
-                    :clearable="false">
-                    </el-time-select>
-                </el-form-item>
-              </div>
-
-              <el-form-item v-if="item.status" class="dib">
-                <!-- 用blur和change代替input -->
-                <el-input
-                  v-model.trim="item.price"
-                  :maxlength="4"
-                  class="width130px"
-                  @blur="setWeixinPay"
-                  @change="setWeixinPay"
-                  placeholder="请输入收费标准"></el-input>
-                <span class="theme-light-gray ml10">元/{{ (onePartForm.type === '3') ? '天' : '小时' }}</span>
-              </el-form-item>
-            </div>
-          </div>
-
-          <h3 class="text-title">预约后怎样才可以取消？</h3>
-          <el-form-item>
-            <el-select v-model="twoPartForm.type" @change="changeRule" class="width120px fl">
-              <el-option label="需提前取消" value="1"></el-option>
-              <el-option label="不允许取消" value="2"></el-option>
-            </el-select>
-
-            <div v-if="twoPartForm.type === '1'" class="fl ml48">
-              <span class="fl theme-light-gray">需提前</span>
-
-              <el-select
-                v-model="twoPartForm.cancelBeforeTime"
-                default-first-option
-                class="width70px ml10"
-                placeholder=" "
-                filterable>
-                <el-option
-                  v-for="item in hoursList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-
-              <el-select v-model="twoPartForm.timeType" @change="changeTimeUnit" class="lh-form-small ml12">
-                <el-option label="小时" value="hour"></el-option>
-                <el-option label="天" value="today"></el-option>
-              </el-select>
-
-              <span @click="twoPartForm.type = '2'" class="pointer-theme-light-gray text-center width50px dib ml10">取消</span>
-            </div>
-          </el-form-item>
-
-          <h3 class="text-title no-required">预约时候是否可以使用优惠</h3>
-          <el-form-item>
-            <el-checkbox
-              v-model="twoPartForm.canUseCoupon"
-              :true-label="1"
-              :false-label="0"
-              class="width105px fl"
-              border>优惠券</el-checkbox>
-
-            <el-checkbox
-              v-model="twoPartForm.canUsePoint"
-              :true-label="1"
-              :false-label="0"
-              class="ml16 fl"
-              border>积分</el-checkbox>
-              <span class="theme-light-gray ml10">10积分=1元</span>
-          </el-form-item>
-
-          <!-- @#注意：如果支付方式有改动，需要手动添加 -->
-          <h3 class="text-title">支持使用怎样的支付方式？</h3>
-          <el-form-item prop="payType">
-            <el-checkbox-group v-model="twoPartForm.payType" class="dib fl">
-              <el-checkbox v-for="item in paymentList" :label="item.name" :key="item.name"
-                :disabled="item.name === 20 && disabledweixinPay" class="fl" border>{{item.value}}</el-checkbox>
-              <!--<el-checkbox :label="20" :disabled="disabledweixinPay" class="ml16 fl" border>微信支付</el-checkbox>-->
-            </el-checkbox-group>
-
-            <span class="theme-light-gray fl dib ml12" v-if="disabledweixinPay">当场地费用为0时不支持微信支付</span>
-          </el-form-item>
-        </div>
 
         <el-button
           @click="submitForm('twoPartForm', '2')"
@@ -495,7 +320,8 @@ export default {
           // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
           return time.getTime() < Date.now()
         }
-      } // 日期选择范围
+      }, // 日期选择范围
+      uploadText: false // 上传图片提示文字
     }
   },
   watch: {
@@ -1269,6 +1095,35 @@ export default {
   }
   .activity-name {
     width: 425px;
+  }
+  .date-text-wrapper {
+  }
+  .date-warnning {
+    margin-top: 7px;
+  }
+  .upload-text-icon {
+    cursor: pointer;
+  }
+  .warnning-text {
+    font-size: 12px;
+    color: rgb(140, 140, 140);
+    margin-top: 8px;
+    margin-left: 6px;
+  }
+  .banner-format {
+    margin-left: 132px;
+    margin-top: -10px;
+  }
+  .step-one-title {
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  .second-form-title {
+    margin-top: 0;
+    margin-bottom: 4px;
+    font-size: 14px;
+    /*width: 30%;*/
   }
 }
 </style>
