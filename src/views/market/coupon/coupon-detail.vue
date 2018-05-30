@@ -79,9 +79,9 @@
             </el-col>
             <el-col :span="6">
               <lh-item label="使用率：" label-width="60px">
-                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0">0.0%</span>
-                <span style="font-size: 18px; color: #000;" v-else>{{(receiveStatistics.used/couponBaseInfo.quantity * 100).toFixed(1) + '%' || 0}}</span>
-                <span>&nbsp;{{receiveStatistics.used || 0}}/{{couponBaseInfo.quantity}}</span>
+                <span style="font-size: 18px; color: #000;" v-if="couponBaseInfo.quantity === 0 || !receiveStatistics.used || !receiveStatistics.received">0.0%</span>
+                <span style="font-size: 18px; color: #000;" v-else-if="receiveStatistics.used && receiveStatistics.received">{{(receiveStatistics.used/receiveStatistics.received * 100).toFixed(1) + '%' || 0}}</span>
+                <span>&nbsp;{{receiveStatistics.used || 0}}/{{receiveStatistics.received || 0}}</span>
               </lh-item>
             </el-col>
             <el-col :span="6" v-if="couponBaseInfo.type === 1">
@@ -210,8 +210,9 @@
             </el-table-column>
             <el-table-column
               label="ID"
+              prop="couponCode"
               sortable
-              width="120">
+              width="160">
               <template slot-scope="scope">{{ scope.row.couponCode }}</template>
             </el-table-column>
             <el-table-column
@@ -530,8 +531,20 @@
       },
       // 领取列表排序
       sortCoupon (sort) {
-        this.receiveOrderBy = sort.order === 'ascending' ? 0 : 1
+        // 卡券id 10升序 11降序 领取时间 20 21 使用时间 30 31 订单金额 40 41 优惠金额 50 51
+        if (sort.prop === 'couponCode') {
+          this.receiveOrderBy = sort.order === 'ascending' ? 10 : 11
+        } else if (sort.prop === 'receiveTime') {
+          this.receiveOrderBy = sort.order === 'ascending' ? 20 : 21
+        } else if (sort.prop === 'useTime') {
+          this.receiveOrderBy = sort.order === 'ascending' ? 30 : 31
+        } else if (sort.prop === 'orderAmount') {
+          this.receiveOrderBy = sort.order === 'ascending' ? 40 : 41
+        } else if (sort.prop === 'discountAmount') {
+          this.receiveOrderBy = sort.order === 'ascending' ? 50 : 51
+        }
         this.getReceiveList()
+        console.log('sort', sort)
       },
       // 筛选触发动作
       filterChange (filters) {
