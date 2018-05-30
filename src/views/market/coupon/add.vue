@@ -389,6 +389,7 @@
       // 切换使用范围
       changeRange() {
         this.selectedRange = []
+        this.couponForm.range = []
       },
       // 获取核销点列表
       handleGetStation() {
@@ -525,6 +526,7 @@
             valid = false
             this.hasCondition = false
           }
+          if (!valid) return
           if (this.couponForm.expireDate && this.couponForm.expireDate.length > 1) {
             if (item && item['endTime'] && new Date(item['endTime']) <= new Date(this.couponForm.expireDate[1])) {
               valid = true
