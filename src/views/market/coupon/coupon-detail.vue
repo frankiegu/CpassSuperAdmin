@@ -584,6 +584,13 @@
     },
     created () {
       this.getPageData()
+    },
+    watch: {
+      searchName (val) {
+        if (!val) {
+          this.getReceiveList(1)
+        }
+      }
     }
   }
 </script>
