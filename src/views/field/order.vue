@@ -68,6 +68,7 @@
         :empty-text="tableEmpty"
         :slot="tableEmpty"
         v-loading="tableLoading"
+        @sort-change="change"
         class="width100" border>
 
         <el-table-column label="订单编号" fixed="left" align="left" width="140">
@@ -81,7 +82,7 @@
         </el-table-column>
 
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
-        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
+        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable="custom"></el-table-column>
 
         <el-table-column label="场地类型" align="left">
           <template slot-scope="scope">
@@ -94,13 +95,13 @@
         </el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
-        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable sort-by="bookStartTime"></el-table-column>
+        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable="custom"></el-table-column>
         <el-table-column label="场地所属" prop="storeName" align="left">
           <template slot-scope="scope">
             <span>{{ scope.row.storeName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount" width="116"></el-table-column>
+        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable="custom" width="116"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">

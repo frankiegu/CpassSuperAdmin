@@ -17,7 +17,9 @@ export default {
         bookDate: '',
         orderDate: '',
         status: ''
-      }
+      },
+      sortField: '', // 1-生成时间 2-预订时间 3-订单金额
+      descOrAsc: '' // 排序方式 0-升序 1-降序
     }
   },
   props: {},
@@ -28,6 +30,29 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    change(sort) {
+      console.log(sort)
+      if (sort.prop === 'created') {
+        this.sortField = 1
+      } else if (sort.prop === 'bookingPeriod') {
+        this.sortField = 2
+      } else if (sort.prop === 'formatPrice') {
+        this.sortField = 3
+      } else if (sort.prop === null) {
+        this.sortField = ''
+      }
+
+      if (sort.order === 'ascending') {
+        this.descOrAsc = 0
+      } else if (sort.order === 'descending') {
+        this.descOrAsc = 1
+      } else if (sort.order === null) {
+        this.descOrAsc = ''
+      }
+
+      this.currentPage = 1
+      this.getPageData()
+    },
     formatPrice(row, column) {
       return '￥ ' + row.orderAmount
     },
@@ -45,7 +70,9 @@ export default {
         bookEndDate: this.formData.bookDate ? formatTimeString(this.formData.bookDate[1]) : null,
         orderStartDate: this.formData.orderDate ? formatTimeString(this.formData.orderDate[0]) : null,
         orderEndDate: this.formData.orderDate ? formatTimeString(this.formData.orderDate[1]) : null,
-        orderStatus: this.formData.status
+        orderStatus: this.formData.status,
+        sortField: this.sortField,
+        descOrAsc: this.descOrAsc
       }
       fieldOrderList(paramsObj).then(res => {
         if (res.status === 'true') {
