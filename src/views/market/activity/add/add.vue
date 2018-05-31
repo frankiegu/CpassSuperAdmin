@@ -121,19 +121,18 @@
         :rules="twoPartFormRule"
         :inline="true"
         ref="twoPartForm">
-        <!-- 办公室 -->
         <div>
           <el-row>
             <el-col :span="4">
               <el-form-item prop="attendNum">
                 <h3 class="text-title second-form-title">参与人数</h3>
-                <el-input v-model.trim="twoPartForm.attendNum" placeholder="请输入最大允许参与人数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.attendNum" placeholder="请输入最大允许参与人数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="winningTimes">
                 <h3 class="text-title second-form-title">每人最大允许中奖数</h3>
-                <el-input v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -142,25 +141,26 @@
             <el-col :span="4">
               <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
-                <el-input v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
           <!--奖品列表-->
           <div class="prize-list">
-            <h3 class="prize-title">奖品列表</h3>
+            <h3 class="prize-title mb24 mt22">奖品列表</h3>
             <el-table
               :data="prizeList"
               v-loading="orderLoading"
-              style="width: 500px; margin-bottom: 22px;">
-              <el-table-column label="奖品" prop="prizeName"></el-table-column>
+              :rules="prizeTableRules"
+              style="width: 800px; margin-bottom: 22px;">
+              <el-table-column label="奖品" prop="prizeName" width="200px"></el-table-column>
               <el-table-column label="类型" prop="type">
                 <template slot-scope="scope">
                   <span v-if="scope.row.type === 1">优惠券</span>
@@ -173,16 +173,22 @@
                   <el-input
                     :maxlength="8"
                     v-model="scope.row.quantity"
+                    @input.native="handleInputPrice(scope.row.id)"
                   ></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="中奖概率 （%）" prop="probability">
+              <el-table-column label="中奖概率 （%）" prop="probability" width="140px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
                     :maxlength="8"
                     v-model="scope.row.probability"
                   ></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <span>删除</span>
                 </template>
               </el-table-column>
             </el-table>
