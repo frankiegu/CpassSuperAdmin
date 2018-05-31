@@ -16,12 +16,36 @@ export default {
       }
       callback();
     };
+    const validateActivityName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入活动名称'));
+      }
+      callback();
+    };
+    const validateActivityDate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择活动有效期'));
+      }
+      callback();
+    };
+    const validateActivityBanner = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请上传活动banner'));
+      }
+      callback();
+    };
+    const validateActivityRules = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入活动规则'));
+      }
+      callback();
+    };
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 1,     // tab 的门
+      activityTab: 2,     // tab 的门
       tabSwitch: 1,       // tab 的值
-      tabList: ['基本信息', '开放时段', '更多信息'],
+      tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
       // tab 1
       imgsLenght: 5,      // 限制上传图片数量
@@ -111,15 +135,20 @@ export default {
         activityType: 'interactive', // 活动类型
         activityStartDate: '', // 活动开始日期
         activityEndDate: '', // 活动结束日期
-        rangeDate: '' // 活动日期
+        rangeDate: '', // 活动日期
+        bannerPic: '' // 活动banner
       },
       onePartFormRule: {
         type: [{ required: true, trigger: 'click', validator: checkType }],
+        activityName: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityName }],
+        activityRules: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityRules }],
         fieldName: [{ required: true, message: '请填写场地名称', trigger: ['blur', 'change'] }],
         storeId: [{ required: true, trigger: 'selected', validator: checkStore }],
         maxAdmissibleNum: [{ required: true, trigger: ['blur', 'change'], validator: checkMaxAdmissibleNum }],
         area: [{ required: true, trigger: ['blur', 'change'], validator: checkArea }],
-        stationNum: [{ required: true, validator: validateStationNum, trigger: ['blur', 'change'] }]
+        stationNum: [{ required: true, validator: validateStationNum, trigger: ['blur', 'change'] }],
+        rangeDate: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityDate }],
+        bannerPic: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityBanner }]
       },
 
       // part 2
@@ -127,6 +156,21 @@ export default {
       twoPartMonitor: null,
       twoPartStatus: true,
       openDataMonitor: null,
+      orderLoading: false,
+      prizeList: [
+        {
+          prizeName: '1小时优惠券',
+          type: 1,
+          quantity: 1,
+          probability: '5%'
+        },
+        {
+          prizeName: '普通红包（9.9元）',
+          type: 1,
+          quantity: 2,
+          probability: '15%'
+        }
+      ], // 奖品列表
       twoPartForm: {
         cancelBeforeTime: '3',
         timeType: '', // 允许取消事件的单位 hour 小时 today天
@@ -156,7 +200,13 @@ export default {
          */
         minRentMonth: '', // 最少预定多少个月
         startUseTime: '', // 开始使用时间
-        price: ''         // 租金
+        price: '',         // 租金
+
+
+        attendNum: '', // 参与人数
+        winningTimes: '', // 允许的最大中奖次数
+        originalTimes: '', // 初始抽奖次数
+        shareAddTimes: '' // 分享后获得的抽奖次数
       },
       twoPartFormRule: {
         payType: [{ required: true, message: '请至少勾选一种支付方式', trigger: ['blur', 'change'], type: 'array' }],
@@ -164,7 +214,11 @@ export default {
         // 办公室验证
         startUseTime: [{ required: true, message: '请选择可以开始进驻的日期', trigger: ['blur', 'change'] }],
         minRentMonth: [{ required: true, validator: checkMinRentMonth, trigger: ['blur', 'change'] }],
-        price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }]
+        price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }],
+        attendNum: [{ required: true, validator: checkNum, trigger: ['blur', 'change'] }],
+        winningTimes: [{ required: true, validator: checkWinningTimes, trigger: ['blur', 'change'] }],
+        originalTimes: [{ required: true, validator: checkOriginalTimes, trigger: ['blur', 'change'] }],
+        shareAddTimes: [{ required: true, validator: checkShareAddTimes, trigger: ['blur', 'change'] }]
       },
 
       // part 3
@@ -343,6 +397,46 @@ const checkPrice = (rule, value, callback) => {
     callback(new Error('请输入租金'));
   } else if (!POSITIVE_INTEGER.test(value)) {
     callback(new Error('请输入大于0的正整数'));
+  } else {
+    callback();
+  }
+};
+// 参与人数
+const checkNum = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入最大允许参与人数'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else {
+    callback();
+  }
+};
+// 最大中奖次数
+const checkWinningTimes = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入每人最大允许中奖数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
+  } else {
+    callback();
+  }
+};
+// 初始中奖次数
+const checkOriginalTimes = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入初始可抽奖次数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
+  } else {
+    callback();
+  }
+};
+// 分享后获得的抽奖次数
+const checkShareAddTimes = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入分享成功后额外抽奖次数'));
+  } else if (!NATURAL_NUM.test(value)) {
+    callback(new Error('请输入数字'));
   } else {
     callback();
   }
