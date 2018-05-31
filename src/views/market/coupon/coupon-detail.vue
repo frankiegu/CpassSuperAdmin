@@ -186,7 +186,6 @@
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
-              clearable
               v-model.trim="searchName"
               placeholder="搜索领取人名称"
               @keyup.native.enter="getReceiveList(1)">
@@ -421,7 +420,9 @@
         }
         const downParams = {
           couponType: this.couponBaseInfo.type,
-          couponId: this.couponId
+          couponId: this.couponId,
+          customerName: this.searchName,
+          useStatus: this.statusType + ''
         }
         let url = API_PATH + '/supervisor/platformCouponCustomer/export'
         downloadFile(url, downParams)
@@ -560,7 +561,7 @@
           switch (filters['statusType'][0]) {
             case 0:
               this.statusType = 0
-              this.sortFileName = '未使用'
+              this.sortFileName = '待使用'
               this.getReceiveList()
               break;
             case 1:
@@ -584,13 +585,6 @@
     },
     created () {
       this.getPageData()
-    },
-    watch: {
-      searchName (val) {
-        if (!val) {
-          this.getReceiveList(1)
-        }
-      }
     }
   }
 </script>
