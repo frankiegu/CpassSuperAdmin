@@ -5,11 +5,11 @@
         <el-form-item>
           <el-input
           v-model.trim="formData.name"
-          @keyup.native.enter="getPageData"
+          @keyup.native.enter="getPageData(1)"
           placeholder="请输入核销员名称"
           class="width220px">
 
-          <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+          <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
@@ -190,8 +190,9 @@
       this.getPoint()
     },
     methods: {
-      getPageData() {
+      getPageData(page) {
         const self = this
+        self.currentPage = page || self.currentPage
         const paramsObj = {
           pageSize: self.pageSize,
           pageNum: self.currentPage,
