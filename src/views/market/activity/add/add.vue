@@ -49,6 +49,7 @@
         <el-form-item prop="activityRules" label="活动规则 " label-width="120px" class="mt40">
           <el-input
             type="textarea"
+            resize="none"
             class="activity-name fl"
             v-model.trim="onePartForm.activityRules"
             :maxlength="200"
@@ -154,7 +155,7 @@
 
           <!--奖品列表-->
           <div class="prize-list">
-            <h3 class="prize-title mb24 mt22">奖品列表</h3>
+            <h3 class="step-one-title mt36">奖品列表</h3>
             <el-table
               :data="prizeList"
               v-loading="orderLoading"
@@ -167,23 +168,40 @@
                   <span v-if="scope.row.type === 2">微信红包</span>
                 </template>
               </el-table-column>
-              <el-table-column label="数量" prop="quantity">
+              <el-table-column label="数量" prop="quantity" width="220px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
-                    :maxlength="8"
+                    :maxlength="4"
                     v-model="scope.row.quantity"
-                    @input.native="handleInputPrice(scope.row.id)"
+                    @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
+                  <div v-if="scope.row.validate">
+                    <i class="el-icon-warning fl theme-red upload-text-icon mt4"></i>
+                    <span class="prize-warnning">{{scope.row.prizeQuantityWarning}}</span>
+                  </div>
+                  <div v-if="scope.row.probabilityValidate">
+                    <i class="el-icon-warning fl theme-red upload-text-icon mt4" style="opacity: 0;"></i>
+                    <span class="prize-warnning" style="opacity: 0;">{{scope.row.prizeProbabilityWarning}}</span>
+                  </div>
                 </template>
               </el-table-column>
-              <el-table-column label="中奖概率 （%）" prop="probability" width="140px">
+              <el-table-column label="中奖概率 （%）" prop="probability" width="220px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
-                    :maxlength="8"
+                    :maxlength="3"
                     v-model="scope.row.probability"
+                    @input.native="handleInputProbability(scope.row.probability, scope.row.id)"
                   ></el-input>
+                  <div v-if="scope.row.probabilityValidate">
+                    <i class="el-icon-warning fl theme-red upload-text-icon mt4"></i>
+                    <span class="prize-warnning">{{scope.row.prizeProbabilityWarning}}</span>
+                  </div>
+                  <div v-if="scope.row.validate">
+                    <i class="el-icon-warning fl theme-red upload-text-icon mt4" style="opacity: 0;"></i>
+                    <span class="prize-warnning" style="opacity: 0;">{{scope.row.prizeQuantityWarning}}</span>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -192,28 +210,75 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-button class="fl" type="primary" icon="el-icon-circle-plus" plain @click="dialogVisible = true">添加奖品</el-button>
           </div>
-
-
-          <h3 class="text-title">租金是多少？</h3>
-          <el-form-item prop="price">
-            <el-input
-              v-model.trim="twoPartForm.price"
-              placeholder="请输入租金"
-              class="width160px"
-              :maxlength="6"
-              clearable></el-input>
-            <span class="theme-light-gray ml10">元/月</span>
-          </el-form-item>
+          <el-form-item></el-form-item>
         </div>
 
-
+        <el-button plain class="ml12" @click="toPrev(1)">上一步</el-button>
         <el-button
           @click="submitForm('twoPartForm', '2')"
           class="to-bottom-right width80px mt30"
           :loading="loadingTwoPart"
-          type="primary">继 续</el-button>
-        <el-button plain class="ml12" @click="toPrev(1)">上一步</el-button>
+          type="primary">下一步</el-button>
+        <!--添加奖品弹窗-->
+        <el-dialog
+          title="添加奖品"
+          width="30%"
+          :visible.sync="dialogVisible"
+          class="set-dialog">
+
+          <!--一下均可以由用户更改-->
+          <el-form
+            :model="addPrizeForm"
+            label-width="90px"
+            ref="userAccessForm"
+            :inline="false"
+            :rules="addPrizeFormRule">
+            <el-form-item label="奖品类型" prop="addPrizeType" style="width: 100%">
+              <template>
+                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="coupons">优惠券</el-radio>
+                <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="RedEnvelope">微信红包</el-radio>
+              </template>
+            </el-form-item>
+            <el-form-item style="width: 100%" label="选择优惠券" prop="addPrizeType" v-if="addPrizeForm.addPrizeType === 'coupons'">
+              <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info">
+                <el-option
+                  v-for="(value, key) in prizeType"
+                  :label="value.name"
+                  :value="value.type"
+                  :key="key"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
+              <template>
+                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="commonType">普通红包</el-radio>
+              </template>
+            </el-form-item>
+            <el-form-item style="width: 100%" label="" prop="couponId" v-if="addPrizeForm.addPrizeType === 'coupons'">
+              <el-select v-model="addPrizeForm.couponId" class="width220px add-prize-info add-prize-checkbox">
+                <el-option
+                  v-for="(value, key) in couponList"
+                  :label="value.name"
+                  :value="value.id"
+                  :key="key"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item style="width: 100%" label="红包金额" prop="redEnvelopeAmount" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
+              <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="add-prize-info"></el-input>
+            </el-form-item>
+
+            <el-form-item style="width: 100%" label="" prop="allowRepeat">
+              <el-checkbox class="add-prize-checkbox" v-model="addPrizeForm.allowRepeat">允许同一用户重复获得此奖品</el-checkbox>
+            </el-form-item>
+          </el-form>
+
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" class="width80px" plain @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" class="width80px">确 定</el-button>
+          </div>
+        </el-dialog>
       </el-form>
 
       <!-- third step -->
@@ -222,109 +287,83 @@
         :model="threePartForm"
         :rules="threePartFormRule"
         ref="threePartForm">
-
-        <h3 class="text-title mt0">为场地上传一些好看的照片</h3>
-        <el-form-item label="展示图" label-width="54px">
-          <lh-upload
-            :imgsArr="threePartForm.imgs"
-            :imgsLenght="imgsLenght"
-            :size="128" />
+        <el-form-item label="展示端" label-width="100px">
+          <template>
+            <el-checkbox-group v-model="threePartForm.displayTerminal">
+              <!--<el-checkbox label="小程序"></el-checkbox>-->
+              <!--<el-checkbox label="APP IOS端"></el-checkbox>-->
+              <!--<el-checkbox label="APP 安卓端"></el-checkbox>-->
+              <el-checkbox :label="item.name" value="item.id" v-for="item in threePartForm.terminalList" :key="item.id"></el-checkbox>
+            </el-checkbox-group>
+          </template>
         </el-form-item>
 
-        <h3 class="text-title no-required mt30">场地的简短描述和使用须知</h3>
-        <el-row class="limit-words-box">
-          <div class="limit-words-in">
-            <div class="limit-words theme-gray">{{ editor1TextLength }}/{{ quillLenght }}</div>
-          </div>
-
-          <el-form-item label="场地描述" label-width="68px">
-            <div class="editor-container quill-editor-box">
-              <quill-editor
-                v-model.trim="threePartForm.facilitiesAndServices"
-                ref="myQuillEditor1"
-                :options="editorOption1"
-                @change="onTextChange1($event)" />
-            </div>
-          </el-form-item>
-        </el-row>
-
-        <!-- <h3 class="text-title no-required mt48">使用须知</h3> -->
-        <el-row class="limit-words-box mt4">
-          <div class="limit-words-in">
-            <div class="limit-words theme-gray">{{ editor2TextLength }}/{{ quillLenght }}</div>
-          </div>
-
-          <el-form-item label="使用须知" label-width="68px">
-            <div class="editor-container quill-editor-box">
-              <quill-editor
-                v-model.trim="threePartForm.instructionsForUse"
-                ref="myQuillEditor2"
-                :options="editorOption1"
-                @change="onTextChange2($event)" />
-            </div>
-          </el-form-item>
-        </el-row>
-
-        <h3 class="text-title no-required mt43">最后一步，留下场地负责人的联系方式</h3>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="联系人" prop="contactName" label-width="91px">
-              <el-input
-                v-model.trim="threePartForm.contactName"
-                placeholder="请输入姓名"
-                class="width160px"
-                :maxlength="20"
-                clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <!-- @#issue有空拿到公共可复用的界面去 -->
-          <el-col :span="16">
-            <el-form-item class="is-required lh-input-group" label="联系电话">
-              <el-select
-                v-model="threePartForm.telLineSelected"
-                @change="threePartForm.contactTel = ''"
-                class="left-select fl"
-                placeholder="请选择联系方式">
-                <el-option label="手机" value="0"></el-option>
-                <el-option label="固定" value="1"></el-option>
-              </el-select>
-
-              <el-form-item prop="contactTel" class="fl dib">
-                <el-input
-                  v-if="threePartForm.telLineSelected === '0'"
-                  v-model.trim="threePartForm.contactTel"
-                  :maxlength="11"
-                  class="right-input"
-                  placeholder="请输入联系方式"
-                  clearable></el-input>
-
-                <el-input
-                  v-else
-                  v-model.trim="threePartForm.contactTel"
-                  :maxlength="12"
-                  class="right-input"
-                  placeholder="请输入联系方式"
-                  clearable></el-input>
-              </el-form-item>
-              <span v-if="threePartForm.telLineSelected === '1'" class="theme-light-gray fl dib ml12">包括区号、电话、分机号，以 “-” 隔开</span>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <h3 class="text-title no-required mt27">完成场地创建后，可以在场地列表查看并调整场地的日程</h3>
-        <!-- 发布成功之后，到成功页看到对应的开放状态，勾选则开放 -->
-        <el-form-item>
-          <el-checkbox v-model="threePartForm.isEffect" label="马上生效" border></el-checkbox>
+        <el-form-item label="活动有效期" label-width="100px">
+          <template>
+            <span>{{threePartForm.activityStart}}</span> 至 <span>{{threePartForm.activityEnd}}</span>
+          </template>
         </el-form-item>
 
+        <el-form-item label="显示时间" label-width="100px">
+          <el-date-picker
+            v-model="threePartForm.activityDisplayStart"
+            :picker-options="orderSortDate"
+            placeholder="选择开始日期"
+            type="datetime"
+            @change="displayStart"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+            align="left"></el-date-picker>
+          <i class="el-icon-warning theme-light-gray date-warnning ml10"></i>
+          <span class="warnning-text display-activity">活动将在该时间自动在客户端显示</span>
+        </el-form-item>
+
+        <el-form-item label="隐藏时间" label-width="100px">
+          <el-date-picker
+            v-model="threePartForm.activityDisplayEnd"
+            :picker-options="orderSortDate"
+            placeholder="选择结束日期"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+            type="datetime"
+            align="left"></el-date-picker>
+          <i class="el-icon-warning theme-light-gray date-warnning ml10"></i>
+          <span class="warnning-text display-activity">活动将在该时间自动在客户端隐藏</span>
+        </el-form-item>
+
+        <div class="prompt-setting">
+          <h3 class="step-one-title mt36">提示设定</h3>
+          <el-form-item label="未开始提示" label-width="100px" prop="tipsBeforeStart">
+            <el-input
+              type="textarea"
+              resize="none"
+              class="activity-name fl"
+              v-model="threePartForm.tipsBeforeStart"
+              :maxlength="20"
+              :rows="2"
+              placeholder="活动尚未开始">
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="结束提示" label-width="100px" prop="tipsEnd" class="mt27">
+            <el-input
+              type="textarea"
+              resize="none"
+              class="activity-name fl"
+              v-model="threePartForm.tipsEnd"
+              :maxlength="20"
+              :rows="2"
+              placeholder="活动已结束">
+            </el-input>
+          </el-form-item>
+        </div>
         <div class="mt64">
+          <el-button plain class="ml12" @click="toPrev(2)">上一步</el-button>
           <el-button
             @click="submitForm('threePartForm', '3')"
             :loading="loadingThreePart"
             class="to-bottom-right width80px"
-            type="primary">保 存</el-button>
-          <el-button plain class="ml12" @click="toPrev(2)">上一步</el-button>
+            type="primary">完成创建</el-button>
         </div>
       </el-form>
     </div>
@@ -372,6 +411,9 @@ export default {
       } else {
         this.hoursList = this.monthList
       }
+    },
+    'threePartForm.displayTerminal': function (val) {
+      console.log('display', val)
     }
   },
   mounted() {
@@ -1104,7 +1146,7 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-/*@import "src/styles/variables";*/
+@import "../../../../styles/variables";
 .page-activity-com {
   .line-wrap {
     display: inline-block;
@@ -1164,6 +1206,18 @@ export default {
     margin-bottom: 4px;
     font-size: 14px;
     /*width: 30%;*/
+  }
+  .prize-warnning {
+    margin-left: -15px;
+  }
+  .add-prize-info {
+    margin-left: -50px;
+  }
+  .add-prize-checkbox {
+    margin-left: 40px;
+  }
+  .display-activity {
+    margin-left: 0;
   }
 }
 </style>

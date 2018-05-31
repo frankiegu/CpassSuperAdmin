@@ -43,7 +43,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 2,     // tab 的门
+      activityTab: 3,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
@@ -163,14 +163,19 @@ export default {
           type: 1,
           quantity: 1,
           probability: 5,
-          id: 123
+          maxQuantity: 5,
+          id: 123,
+          validate: false, // 奖品数量的输入验证通过为false, 验证不通过为true
+          probabilityValidate: false // 奖品中奖概率的输入, 验证通过为false, 验证不通过为true
         },
         {
           prizeName: '普通红包（9.9元）',
-          type: 1,
+          type: 2,
           quantity: 2,
           probability: 15,
-          id: 124
+          id: 124,
+          validate: false, // 奖品数量的输入验证通过为false, 验证不通过为true
+          probabilityValidate: false // 奖品中奖概率的输入, 验证通过为false, 验证不通过为true
         }
       ], // 奖品列表
       twoPartForm: {
@@ -209,6 +214,9 @@ export default {
         originalTimes: '', // 初始抽奖次数
         shareAddTimes: '' // 分享后获得的抽奖次数
       },
+      ifPrizeQuantityWarning: false, // 奖品数量错误提示显示/隐藏
+      prizeQuantityWarning: '', // 奖品数量错误提示文本
+      currentPrizeIds: [], // 奖品数量验证不通过的奖品id
       twoPartFormRule: {
         payType: [{ required: true, message: '请至少勾选一种支付方式', trigger: ['blur', 'change'], type: 'array' }],
 
@@ -224,6 +232,39 @@ export default {
       prizeTableRules: {
         probability: [{ required: true, validator: checkWinProsibility, trigger: ['blur', 'change'] }]
       },
+      dialogVisible: false, // 添加商品弹窗
+      addPrizeForm: {
+        addPrizeType: 'RedEnvelope',
+        redEnvelopeType: 'commonType',
+        redEnvelopeAmount: '',
+        couponId: '',
+        couponType: '', // 优惠券类型
+        allowRepeat: false // 是否允许重复中奖
+      }, // 添加奖品
+      addPrizeFormRule: {
+        redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }]
+      }, // 添加奖品验证
+      // 奖品类型 1-优惠券, 2-微信红包
+      prizeType: [
+        {
+          type: 1,
+          name: '小时券'
+        },
+        {
+          type: 2,
+          name: '礼品券'
+        }
+      ],
+      couponList: [
+        {
+          name: '1杯咖啡券',
+          id: '110'
+        },
+        {
+          name: '2杯咖啡券',
+          id: '112'
+        }
+      ], // 优惠券列表
 
       // part 3
       threePartForm: {
@@ -234,11 +275,37 @@ export default {
         contactTel: '',
         facilitiesAndServices: '',
         instructionsForUse: '',
-        isEffect: false // 马上生效
+        isEffect: false, // 马上生效
+
+        // 展示端
+        displayTerminal: [],
+        activityStart: '2018-05-28 12:00', // 活动开始时间
+        activityEnd: '2018-06-28 12:00', // 活动结束时间
+        activityDisplayStart: '', // 活动展示开始时间
+        activityDisplayEnd: '', // 活动展示结束时间
+        tipsBeforeStart: '', // 活动未开始提示
+        tipsEnd: '', // 活动结束提示
+        displayStartValue: '', // 活动显示的开始时间的毫秒数
+        terminalList: [
+          {
+            name: '小程序',
+            id: 1
+          },
+          {
+            name: 'APP IOS端',
+            id: 2
+          },
+          {
+            name: 'APP 安卓端',
+            id: 3
+          }
+        ]
       },
       threePartFormRule: {
         contactName: [{ required: true, message: '请填写场地联系人姓名', trigger: ['blur', 'change'] }],
-        contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }]
+        contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
+        tipsBeforeStart: [{ required: true, message: '请输入活动未开始提示', trigger: ['blur', 'change'] }],
+        tipsEnd: [{ required: true, message: '请输入活动结束提示', trigger: ['blur', 'change'] }]
       },
 
       todayList: [
@@ -390,24 +457,120 @@ export default {
         }
       }
     },
-    handleInputPrice(id) {
+    // 验证添加的奖品的数量的输入
+    handleInputQuantity(currentQuantity, id, type, max) {
       let feeTarget = this.prizeList.find(target => {
         return target.id === id
       })
-      // let index = this.siteFeeList.indexOf(feeTarget)
-
-      if (!feeTarget.quantity || feeTarget.quantity === '') {
-        feeTarget.quantity = 0
+      let tempObj, index
+      this.prizeList.forEach((v, i) => {
+        if (v.id === id) {
+          tempObj = v
+          index = i
+        }
+      })
+      if (!currentQuantity) {
+        tempObj.validate = true
+        this.prizeList.splice(index, 1, tempObj)
       }
-      if (feeTarget.actualPrice - 1 + 1 > 99999999) {
-        feeTarget.quantity = String(feeTarget.quantity).slice(0, 8)
+      if (!POSITIVE_INTEGER.test(currentQuantity)) {
+        tempObj.prizeQuantityWarning = '奖品数量必须为正整数'
+        tempObj.validate = true
+        this.prizeList.splice(index, 1, tempObj)
+      } else {
+        // 1-优惠券, 2-微信红包
+        if (type === 1) {
+          if (max >= 0) {
+            if (feeTarget.quantity - 1 + 1 > max) {
+              tempObj.prizeQuantityWarning = '奖品数量不能超过券剩余量'
+              tempObj.validate = true
+              this.prizeList.splice(index, 1, tempObj)
+            } else if (feeTarget.quantity - 1 + 1 <= 0) {
+              tempObj.prizeQuantityWarning = '奖品数量不能为0'
+              tempObj.validate = true
+              this.prizeList.splice(index, 1, tempObj)
+            } else {
+              tempObj.prizeQuantityWarning = ''
+              tempObj.validate = false
+              this.prizeList.splice(index, 1, tempObj)
+            }
+          }
+        } else if (type === 2) {
+          if (feeTarget.quantity - 1 + 1 > 9999) {
+            feeTarget.quantity = String(feeTarget.quantity).slice(0, 3)
+            tempObj.prizeQuantityWarning = '奖品数量不能超过8位数'
+            tempObj.validate = true
+            this.prizeList.splice(index, 1, tempObj)
+          } else if (feeTarget.quantity - 1 + 1 <= 0) {
+            tempObj.prizeQuantityWarning = '奖品数量不能为0'
+            tempObj.validate = true
+            this.prizeList.splice(index, 1, tempObj)
+          } else {
+            tempObj.prizeQuantityWarning = ''
+            tempObj.validate = false
+            this.prizeList.splice(index, 1, tempObj)
+          }
+        }
       }
-      if (!POSITIVE_INTEGER.test(feeTarget.quantity)) {
-        // this.warningTxt = '金额最小为0，最大8位整数'
+    },
+    // 验证添加的奖品的中奖概率的输入
+    handleInputProbability(probability, id) {
+      let max = 100
+      let feeTarget = this.prizeList.find(target => {
+        return target.id === id
+      })
+      let tempObj, index
+      this.prizeList.forEach((v, i) => {
+        if (v.id === id) {
+          tempObj = v
+          index = i
+        }
+      })
+      if (!probability) {
+        tempObj.probabilityValidate = true
+        this.prizeList.splice(index, 1, tempObj)
       }
-      if (feeTarget.quantity - 1 + 1 >= 0 && feeTarget.quantity - 1 + 1 <= 99999999 && (parseInt(feeTarget.quantity) === feeTarget.quantity)) {
-        // this.warningTxt = ''
+      if (!POSITIVE_INTEGER.test(probability)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为正整数'
+        tempObj.probabilityValidate = true
+        this.prizeList.splice(index, 1, tempObj)
+      } else {
+        if (feeTarget.probability - 1 + 1 > max) {
+          tempObj.prizeProbabilityWarning = '中奖概率不能超过100%'
+          tempObj.probabilityValidate = true
+          this.prizeList.splice(index, 1, tempObj)
+        } else if (feeTarget.probability - 1 + 1 < 0) {
+          tempObj.prizeProbabilityWarning = '中奖概率不能小于0'
+          tempObj.probabilityValidate = true
+          this.prizeList.splice(index, 1, tempObj)
+        } else {
+          tempObj.prizeProbabilityWarning = ''
+          tempObj.probabilityValidate = false
+          this.prizeList.splice(index, 1, tempObj)
+        }
       }
+    },
+    // 关闭弹窗
+    handleCloseDialog(done) {
+      // if (this.selectedMembers.length) {
+      //   const _this = this
+      //   _this.$confirm('未保存添加，是否确认关闭？', {
+      //     lockScroll: false
+      //   })
+      //     .then(_ => {
+      //       _this.selectedMembers = []
+      //       done()
+      //     })
+      //     .catch(_ => {
+      //     })
+      // } else {
+      //   done()
+      // }
+    },
+    // 显示活动日期
+    displayStart (date) {
+      this.threePartForm.displayStartValue = new Date(date).valueOf()
+      console.log('date', this.threePartForm.displayStartValue)
     }
   }
 }
@@ -468,6 +631,16 @@ const checkShareAddTimes = (rule, value, callback) => {
 const checkWinProsibility = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入奖品中奖概率'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else {
+    callback();
+  }
+};
+// 微信红包单个红包金额输入验证
+const validateRedEnvelopeAmount = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入单个红包的金额'));
   } else if (!POSITIVE_INTEGER.test(value)) {
     callback(new Error('请输入大于0的正整数'));
   } else {
