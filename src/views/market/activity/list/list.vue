@@ -12,16 +12,17 @@
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
-            @keyup.native.enter="getPageData"
+            @keyup.native.enter="getPageData(1)"
             placeholder="请输入活动名称"
             class="width200px">
 
-            <i slot="suffix" @click="getPageData" class="el-input__icon el-icon-search"></i>
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
         <el-select
           v-model="formData.type"
+          @change="getPageData(1)"
           filterable
           placeholder="请选择类型"
           class="width150px"
@@ -35,6 +36,7 @@
 
         <el-select
           v-model="formData.status"
+          @change="getPageData(1)"
           filterable
           placeholder="请选择活动状态"
           class="width150px"
@@ -48,29 +50,40 @@
 
       </el-form>
 
-      <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+      <el-table
+        :data="tableData"
+        :empty-text="tableEmpty"
+        :slot="tableEmpty"
+        v-loading="tableLoading"
+        @sort-change="change"
+        border
         style="width: 100%">
 
-        <el-table-column label="活动ID" prop="name" align="left"></el-table-column>
+        <el-table-column label="活动ID" prop="code" align="left"></el-table-column>
         <el-table-column label="活动名称" prop="name" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/activity/detail', query: {id: 3210}}"
+              :to="{path: '/activity/detail', query: {id: scope.row.code}}"
               class="table-link">
               {{ scope.row.name }}
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column label="活动类型" prop="price"></el-table-column>
-        <el-table-column label="活动开始时间" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
-        <el-table-column label="活动结束时间" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
+        <el-table-column label="活动类型" prop="type">
+          <template slot-scope="scope">
+            <span v-if="scope.row.type === 1">普通活动</span>
+            <span v-if="scope.row.type === 2">互动活动</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动开始时间" prop="startDate" align="left" sortable="custom"></el-table-column>
+        <el-table-column label="活动结束时间" prop="endDate" align="left" sortable="custom"></el-table-column>
         <el-table-column label="活动状态">
           <template slot-scope="scope">
-            <span v-if="scope.row.type === 1">未发布</span>
-            <span v-if="scope.row.type === 2">未开始</span>
-            <span v-if="scope.row.type === 3">进行中</span>
-            <span v-if="scope.row.type === 4">已结束</span>
-            <span v-if="scope.row.type === 5">暂停</span>
+            <span v-if="scope.row.status === 0">未发布</span>
+            <span v-if="scope.row.status === 1">未开始</span>
+            <span v-if="scope.row.status === 2">进行中</span>
+            <span v-if="scope.row.status === 3">已结束</span>
+            <span v-if="scope.row.status === 4">暂停</span>
           </template>
         </el-table-column>
 
@@ -100,9 +113,9 @@
 </template>
 
 <script>
-  import serviceList from './list.mixins'
+  import activityList from './list.mixins'
   export default {
-    mixins: [serviceList],
+    mixins: [activityList],
     data() {
       return {
       }

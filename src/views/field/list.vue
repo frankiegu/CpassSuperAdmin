@@ -22,6 +22,7 @@
         :empty-text="tableEmpty"
         :slot="tableEmpty"
         v-loading="tableLoading"
+        @sort-change="change"
         class="width100" border>
 
         <el-table-column label="场地名称" fixed="left" align="left">
@@ -37,7 +38,9 @@
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
         <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
-        <el-table-column label="历史预定数" prop="bookNum" align="left" sortable sort-by="bookNum" width="115"></el-table-column>
+
+        <el-table-column label="历史预定数" prop="bookNum" sortable="custom" align="left" width="115"></el-table-column>
+
         <el-table-column label="预定价格" :formatter="formatterPrice" align="left"></el-table-column>
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>
@@ -86,6 +89,7 @@
     components: {},
     data () {
       return {
+        bookNumSort: '',
         formData: {
           name: ''
         }
@@ -98,11 +102,25 @@
       formatterPrice(row, column) {
         return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
+      change(sort) {
+        // console.log('sort', sort);
+        if (sort.order === 'ascending') {
+          this.bookNumSort = 0
+        } else if (sort.order === 'descending') {
+          this.bookNumSort = 1
+        } else if (sort.order === null) {
+          this.bookNumSort = ''
+        }
+
+        this.currentPage = 1
+        this.getPageData()
+      },
       getPageData(page) {
         this.currentPage = page || this.currentPage
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
+          bookNumSort: this.bookNumSort,
           fieldName: this.formData.name
         }
         fieldList(paramsObj).then(res => {

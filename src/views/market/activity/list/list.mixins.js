@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { serviceList } from '@/service'
+import { platformactivityList } from '@/service/market'
 
 export default {
   mixins: [tableMixins],
@@ -17,6 +17,7 @@ export default {
         { val: 10, text: '普通活动' },
         { val: 20, text: '互动游戏' }
       ],
+      orderBy: '', // 列表排序 开始时间 升序 10 降序 11 结束时间 升序 20 降序 21
       formData: {
         name: '',
         type: '',
@@ -28,13 +29,33 @@ export default {
     this.getPageData()
   },
   methods: {
-    getPageData() {
+    change(sort) {
+      console.log(sort)
+
+      if (sort.prop === 'startDate' && sort.order === 'ascending') {
+        this.orderBy = 10
+      } else if (sort.prop === 'startDate' && sort.order === 'descending') {
+        this.orderBy = 11
+      } else if (sort.prop === 'endDate' && sort.order === 'ascending') {
+        this.orderBy = 20
+      } else if (sort.prop === 'endDate' && sort.order === 'descending') {
+        this.orderBy = 21
+      } else {
+        this.orderBy = 0
+      }
+      this.getPageData()
+    },
+    getPageData(page) {
+      this.currentPage = page || this.currentPage
       const paramsObj = {
         pageSize: this.pageSize,
-        pageNum: this.currentPage
+        pageNum: this.currentPage,
+        type: this.formData.type,
+        status: this.formData.status,
+        orderBy: this.orderBy
       }
 
-      serviceList(paramsObj).then(res => {
+      platformactivityList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {

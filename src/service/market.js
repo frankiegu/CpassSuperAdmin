@@ -95,3 +95,13 @@ export const platformVerifierPage = (obj) => fetch(API_PATH + '/supervisor/platf
 
 // 分页查询核销记录
 export const platformVerifyRecordPage = (obj) => fetch(API_PATH + '/supervisor/platformVerifyRecord/page', obj, 'POST')
+
+/**
+ * 活动管理
+ */
+
+// 分页查询活动列表
+export const platformactivityList = (obj) => fetch(API_PATH + '/supervisor/platformactivity/list', obj, 'POST')
+
+// 查询活动详情
+export const platformactivityDetail = (obj) => fetch(API_PATH + '/supervisor/platformactivity/detail', obj, 'POST')

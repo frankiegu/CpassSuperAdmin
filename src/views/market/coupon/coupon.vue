@@ -38,6 +38,8 @@
           :slot="tableEmpty"
           :data="counponTable"
           v-loading="tableLoading"
+          @sort-change="sortCoupon"
+          @filter-change="filterChange"
           style="width: 100%">
           <!-- 1 -->
           <el-table-column label="卡券名称">
@@ -78,13 +80,19 @@
           </el-table-column>
 
           <!-- 5 -->
-          <el-table-column label="状态">
+          <el-table-column :label="sortFileName" prop="status"
+            :filters="[{ text: '有效', value: 1 }, { text: '过期', value: 2 }, { text: '冻结', value: 3 }]"
+            :filter-multiple="false"
+            filter-placement="bottom-end"
+            column-key="statusType"
+          >
             <template slot-scope="scope">
               <!--有效, 冻结, 过期-->
               <span v-if="scope.row.status === 2">过期</span>
               <span v-else-if="scope.row.status === 1">有效</span>
               <span v-else>冻结</span>
             </template>
+
           </el-table-column>
 
           <!-- 6 -->
@@ -123,7 +131,7 @@
 
           <!-- 9 -->
           <el-table-column
-            label="添加日期" sortable>
+            label="添加日期" sortable="custom">
 
             <template slot-scope="scope">
               {{ scope.row.created }}
@@ -165,6 +173,9 @@
     data () {
       return {
         counponTable: [],
+        orderBy: '',
+        sortFileName: '状态',
+        statusType: '',
         couponSort: {
           keywords: ''
         }
@@ -177,7 +188,9 @@
         const paramsObj = {
           pageNum: self.currentPage,
           pageSize: self.pageSize,
-          couponName: self.couponSort.keywords
+          couponName: self.couponSort.keywords,
+          orderBy: this.orderBy,
+          status: this.statusType
         }
         couponList(paramsObj).then(res => {
           if (res.status === 'true') {
@@ -202,11 +215,46 @@
             })
           }
         })
+      },
+      sortCoupon (sort) {
+        console.log('sort', sort)
+        this.orderBy = sort.order === 'ascending' ? 0 : 1
+        this.getPageData()
+      },
+      // 筛选触发动作
+      filterChange (filters) {
+        if (filters.hasOwnProperty('statusType')) {
+          if (filters['statusType'].length === 0) {
+            this.sortFileName = '状态'
+            this.statusType = ''
+            this.getPageData()
+            return;
+          }
+          console.log('filter', filters['statusType'][0])
+          switch (filters['statusType'][0]) {
+            case 1:
+              this.statusType = 1
+              this.sortFileName = '有效'
+              this.getPageData()
+              break;
+            case 2:
+              this.statusType = 2
+              this.sortFileName = '过期'
+              this.getPageData()
+              break;
+            case 3:
+              this.statusType = 3
+              this.sortFileName = '冻结'
+              this.getPageData()
+              break;
+          }
+        }
       }
     },
     mounted () {
       this.getPageData()
-    }
+    },
+    watch: {}
   }
 </script>
 <style lang="scss" scoped>
