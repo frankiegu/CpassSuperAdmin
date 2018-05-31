@@ -151,7 +151,7 @@
         <el-button v-if="active === 1" type="primary" @click="next" :disabled="selectedCoupons.length === 0">
           下一步
         </el-button>
-        <el-button v-if="active === 2" type="primary" @click="handleConfirmIssue"
+        <el-button v-if="active === 2" type="primary" @click="handleConfirmIssue" :loading="issueLoading"
           :disabled="submitData.customerIds.length === 0">确 定
         </el-button>
         <el-button v-if="active === 3" @click="next">返回列表</el-button>
@@ -210,6 +210,7 @@
           customerIds: [],
           platformCouponIds: []
         },
+        issueLoading: false,
         isSuccess: true,
         errorList: [],
         pickerOptions: {
@@ -367,11 +368,14 @@
           this.$message.error('剩余券数量不足，请重新选择')
           return false
         }
+        this.issueLoading = true
         manualCoupon(this.submitData).then(res => {
           if (res.status === 'true') {
+            this.issueLoading = false
             this.isSuccess = true
             this.next()
           } else {
+            this.issueLoading = false
             this.isSuccess = false
             this.errorList = res.info
             this.next()
