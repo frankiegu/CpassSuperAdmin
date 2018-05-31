@@ -66,7 +66,7 @@
 
     <!-- 预约设置 -->
     <lh-card
-      :cardTitle="fieldType === '1' || fieldType === '4' ? '预约设置' : '开放时段'">
+      :cardTitle="fieldType === '1' || fieldType === '2' || fieldType === '4' ? '预约设置' : '开放时段'">
       <h3 class="text-title fz16 mb6 mt0 no-required">基本价格</h3>
 
       <!-- 非办公室 -->
@@ -100,7 +100,7 @@
 
         <el-table-column label="收费标准">
           <template slot-scope="scope">
-            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === '1' ? '元/小时' : '元/天') : '-' }}
+            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === '1' || fieldType === '2' || fieldType === '4' ? '元/小时' : '元/天') : '-' }}
           </template>
         </el-table-column>
       </el-table>
