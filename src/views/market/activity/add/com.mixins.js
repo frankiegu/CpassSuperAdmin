@@ -162,13 +162,15 @@ export default {
           prizeName: '1小时优惠券',
           type: 1,
           quantity: 1,
-          probability: '5%'
+          probability: 5,
+          id: 123
         },
         {
           prizeName: '普通红包（9.9元）',
           type: 1,
           quantity: 2,
-          probability: '15%'
+          probability: 15,
+          id: 124
         }
       ], // 奖品列表
       twoPartForm: {
@@ -218,6 +220,9 @@ export default {
         winningTimes: [{ required: true, validator: checkWinningTimes, trigger: ['blur', 'change'] }],
         originalTimes: [{ required: true, validator: checkOriginalTimes, trigger: ['blur', 'change'] }],
         shareAddTimes: [{ required: true, validator: checkShareAddTimes, trigger: ['blur', 'change'] }]
+      },
+      prizeTableRules: {
+        probability: [{ required: true, validator: checkWinProsibility, trigger: ['blur', 'change'] }]
       },
 
       // part 3
@@ -384,6 +389,25 @@ export default {
           this.setMsg(`${head}${msgHead}${msgCon}`)
         }
       }
+    },
+    handleInputPrice(id) {
+      let feeTarget = this.prizeList.find(target => {
+        return target.id === id
+      })
+      // let index = this.siteFeeList.indexOf(feeTarget)
+
+      if (!feeTarget.quantity || feeTarget.quantity === '') {
+        feeTarget.quantity = 0
+      }
+      if (feeTarget.actualPrice - 1 + 1 > 99999999) {
+        feeTarget.quantity = String(feeTarget.quantity).slice(0, 8)
+      }
+      if (!POSITIVE_INTEGER.test(feeTarget.quantity)) {
+        // this.warningTxt = '金额最小为0，最大8位整数'
+      }
+      if (feeTarget.quantity - 1 + 1 >= 0 && feeTarget.quantity - 1 + 1 <= 99999999 && (parseInt(feeTarget.quantity) === feeTarget.quantity)) {
+        // this.warningTxt = ''
+      }
     }
   }
 }
@@ -436,6 +460,16 @@ const checkShareAddTimes = (rule, value, callback) => {
     callback(new Error('请输入分享成功后额外抽奖次数'));
   } else if (!NATURAL_NUM.test(value)) {
     callback(new Error('请输入数字'));
+  } else {
+    callback();
+  }
+};
+// 奖品中奖概率
+const checkWinProsibility = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入奖品中奖概率'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
   } else {
     callback();
   }
