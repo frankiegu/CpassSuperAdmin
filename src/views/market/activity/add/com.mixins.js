@@ -202,7 +202,6 @@ export default {
         startUseTime: '', // 开始使用时间
         price: '',         // 租金
 
-
         attendNum: '', // 参与人数
         winningTimes: '', // 允许的最大中奖次数
         originalTimes: '', // 初始抽奖次数
