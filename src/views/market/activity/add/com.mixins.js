@@ -25,8 +25,8 @@ export default {
         name: value
       }
       activityIsUnique(params).then(res => {
-        if (res.status === 'true') {
-
+        if (res.status === 'false') {
+          callback(new Error(res.msg));
         }
       })
       callback();
@@ -58,7 +58,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 2,     // tab 的门
+      activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 

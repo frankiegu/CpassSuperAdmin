@@ -388,7 +388,7 @@ export default {
   },
   data () {
     return {
-      fieldId: this.$route.query.fieldId || sessionStorage.getItem('addFieldFirstStep'),
+      activityId: this.$route.query.activityId || sessionStorage.getItem('addFieldFirstStep'),
       type: this.$route.query.type,
       addStep: this.$route.query.addStep + '',
       titleName: '',
@@ -443,7 +443,7 @@ export default {
           this.activityTab = 2       // 切换到第二道门
           this.loadingOnePart = false
           let resInfo = res.info
-          this.fieldId = resInfo.id // 保存新增id
+          this.activityId = resInfo.id // 保存新增id
           this.dataFinishPercent = resInfo.dataFinishPercent
         } else {
           this.setMsg('error', res.msg)
@@ -521,7 +521,7 @@ export default {
 
       this.dataFinishInterface(ajaxParams).then(res => {
         if (res.status === 'true') {
-          if (this.fieldId) {
+          if (this.activityId) {
             this.setMsg('success', '保存成功')
           }
           this.loadingThreePart = false
@@ -534,7 +534,7 @@ export default {
             this.$router.replace({
               path: '/activity/detail',
               query: {
-                id: this.fieldId,
+                id: this.activityId,
                 title: this.onePartForm.fieldName,
                 open: this.threePartForm.isEffect ? 1 : 0
               }
@@ -553,7 +553,7 @@ export default {
         if (valid) {
           let ajaxParams = {
             // 如果已经添加的场地，如添加了第一步，进来编辑第一步的信息也需要传Id
-            id: this.dataFinishPercent ? this.fieldId : null,
+            id: this.dataFinishPercent ? this.activityId : null,
             type: this.onePartForm.type,
             storeId: this.onePartForm.storeId
           }
@@ -611,7 +611,7 @@ export default {
               //         this.addPartTwo(ajaxParams)
               //       } else {
               //         done()
-              //         window.open(`#/field/open/settings?id=${this.fieldId}&type=${this.onePartForm.type}`, '_blank')
+              //         window.open(`#/field/open/settings?id=${this.activityId}&type=${this.onePartForm.type}`, '_blank')
               //       }
               //     }
               //   })
@@ -674,7 +674,7 @@ export default {
        * 渲染前，需要请求的接口数据
        * 像这种请求列表的接口，不用考虑失败情况
        */
-      // equipmentList({ fieldId: this.fieldId }).then(res => {
+      // equipmentList({ activityId: this.activityId }).then(res => {
       //   if (res.status === 'true') {
       //     this.equipmentsList = res.info
       //   }
@@ -690,7 +690,7 @@ export default {
 
       // 拿到门店列表
       this.getStoreList()
-      if (!this.fieldId) {
+      if (!this.activityId) {
         titleName = '添加活动'
         this.addEditType = 0
 
@@ -797,7 +797,7 @@ export default {
       // console.log('openData', this.twoPartForm.appointmentTimeType, this.openData, this.openWeek, this.openPeriod);
     },
     getPageData() {
-      fieldDetail({ fieldId: this.fieldId }).then(res => {
+      fieldDetail({ activityId: this.activityId }).then(res => {
         if (res.status === 'true') {
           let resInfo = res.info
           let fieldData = resInfo.field
