@@ -22,6 +22,12 @@ export default {
       }
       callback();
     };
+    const validateTerminal = (rule, value, callback) => {
+      if (value.length <= 0) {
+        callback(new Error('请选择活动展示端'));
+      }
+      callback();
+    };
     const validateActivityDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请选择活动有效期'));
@@ -43,7 +49,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 3,     // tab 的门
+      activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
@@ -218,11 +224,6 @@ export default {
       prizeQuantityWarning: '', // 奖品数量错误提示文本
       currentPrizeIds: [], // 奖品数量验证不通过的奖品id
       twoPartFormRule: {
-        payType: [{ required: true, message: '请至少勾选一种支付方式', trigger: ['blur', 'change'], type: 'array' }],
-
-        // 办公室验证
-        startUseTime: [{ required: true, message: '请选择可以开始进驻的日期', trigger: ['blur', 'change'] }],
-        minRentMonth: [{ required: true, validator: checkMinRentMonth, trigger: ['blur', 'change'] }],
         price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }],
         attendNum: [{ required: true, validator: checkNum, trigger: ['blur', 'change'] }],
         winningTimes: [{ required: true, validator: checkWinningTimes, trigger: ['blur', 'change'] }],
@@ -279,8 +280,8 @@ export default {
 
         // 展示端
         displayTerminal: [],
-        activityStart: '2018-05-28 12:00', // 活动开始时间
-        activityEnd: '2018-06-28 12:00', // 活动结束时间
+        activityStart: '', // 活动开始时间
+        activityEnd: '', // 活动结束时间
         activityDisplayStart: '', // 活动展示开始时间
         activityDisplayEnd: '', // 活动展示结束时间
         tipsBeforeStart: '', // 活动未开始提示
@@ -304,6 +305,7 @@ export default {
       threePartFormRule: {
         contactName: [{ required: true, message: '请填写场地联系人姓名', trigger: ['blur', 'change'] }],
         contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
+        displayTerminal: [{ required: true, validator: validateTerminal, trigger: ['blur', 'change'] }],
         tipsBeforeStart: [{ required: true, message: '请输入活动未开始提示', trigger: ['blur', 'change'] }],
         tipsEnd: [{ required: true, message: '请输入活动结束提示', trigger: ['blur', 'change'] }]
       },
@@ -641,15 +643,6 @@ const checkWinProsibility = (rule, value, callback) => {
 const validateRedEnvelopeAmount = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入单个红包的金额'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
-  } else {
-    callback();
-  }
-};
-const checkMinRentMonth = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请输入最少预定多少个月'));
   } else if (!POSITIVE_INTEGER.test(value)) {
     callback(new Error('请输入大于0的正整数'));
   } else {

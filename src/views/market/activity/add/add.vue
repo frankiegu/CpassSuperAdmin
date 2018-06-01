@@ -76,13 +76,16 @@
         <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
           <div>
             <el-date-picker
+              class="width340px"
               v-model="onePartForm.rangeDate"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
               @change="dateChange"
               :picker-options="orderSortDate"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               placeholder="选择日期"
-              type="daterange"
+              type="datetimerange"
               align="left"></el-date-picker>
           </div>
           <div class="date-text-wrapper">
@@ -287,7 +290,7 @@
         :model="threePartForm"
         :rules="threePartFormRule"
         ref="threePartForm">
-        <el-form-item label="展示端" label-width="100px">
+        <el-form-item label="展示端" label-width="100px" prop="displayTerminal">
           <template>
             <el-checkbox-group v-model="threePartForm.displayTerminal">
               <!--<el-checkbox label="小程序"></el-checkbox>-->
@@ -323,6 +326,7 @@
             v-model="threePartForm.activityDisplayEnd"
             :picker-options="orderSortDate"
             placeholder="选择结束日期"
+            @change="displayEnd"
             format="yyyy-MM-dd HH:mm"
             value-format="yyyy-MM-dd HH:mm"
             type="datetime"
@@ -411,9 +415,6 @@ export default {
       } else {
         this.hoursList = this.monthList
       }
-    },
-    'threePartForm.displayTerminal': function (val) {
-      console.log('display', val)
     }
   },
   mounted() {
@@ -436,12 +437,6 @@ export default {
         if (i.checked) return i.id
       })
 
-      if (this.onePartForm.type === '3' || this.onePartForm.type === '5') {
-        ajaxParams.stationNum = onePartForm.stationNum
-      } else {
-        ajaxParams.maxAdmissibleNum = onePartForm.maxAdmissibleNum
-      }
-
       this.dataFinishInterface(ajaxParams).then(res => {
         if (res.status === 'true') {
           if (this.addEditType) {
@@ -452,20 +447,9 @@ export default {
           this.tabSwitch = 2         // add field 打开第三道门
           this.activityTab = 2       // 切换到第二道门
           this.loadingOnePart = false
-
           let resInfo = res.info
           this.fieldId = resInfo.id // 保存新增id
           this.dataFinishPercent = resInfo.dataFinishPercent
-
-          // if (!this.addEditType && !this.$route.query.addStep) {
-          //   this.$router.replace({
-          //     path: '/field/com',
-          //     query: {
-          //       fieldId: this.fieldId,
-          //       addStep: 2
-          //     }
-          //   })
-          // }
         } else {
           this.setMsg('error', res.msg)
           this.loadingOnePart = false
@@ -473,78 +457,7 @@ export default {
       })
     },
     addPartTwo(ajaxParams) {
-      if (this.onePartForm.type === '5') {
-        let twoPartForm = this.twoPartForm
-        ajaxParams.startUseTime = twoPartForm.startUseTime
-        ajaxParams.minRentMonth = twoPartForm.minRentMonth
-        ajaxParams.price = twoPartForm.price
-      } else {
-        let twoPartForm = this.twoPartForm
-        this.loadingTwoPart = true
-
-        // 整周和工作日是同一个字段
-        ajaxParams.appointmentTimeType = twoPartForm.appointmentTimeType
-        ajaxParams.canUsePoint = twoPartForm.canUsePoint ? twoPartForm.canUsePoint : 0
-        ajaxParams.canUseCoupon = twoPartForm.canUseCoupon ? twoPartForm.canUseCoupon : 0
-        ajaxParams.cancel = (twoPartForm.type === '2') ? 0 : 1
-        ajaxParams.payType = twoPartForm.payType
-
-        /**
-         * appointmentTimeType为1时 workState必须传 1
-         * 整周，默认营业，且不可修改
-         */
-        // console.log('this.openData', this.openData);
-        ajaxParams.workState = this.openData[0].status
-        // 如果没有workState，不需要传workPriceDetailParam
-        if (ajaxParams.workState) {
-          // @#注意：工位和会议室的参数不一样
-          if (this.onePartForm.type !== '3') {
-            let obj = {
-              price: this.openData[0].price
-            }
-            obj.startTime = this.openData[0].startTime
-            obj.endTime = this.openData[0].endTime
-            ajaxParams.workPriceDetailParam = []
-            ajaxParams.workPriceDetailParam.push(obj)
-            // console.log('ajaxParams.workPriceDetailParam', ajaxParams.workPriceDetailParam);
-          } else {
-            ajaxParams.workPrice = this.openData[0].price
-          }
-        }
-
-        if (this.twoPartForm.appointmentTimeType !== 1) {
-          ajaxParams.restState = this.openData[1].status
-
-          // 如果没有 restState ，不需要传 restPriceDetailParam
-          if (ajaxParams.restState) {
-            // @#注意：工位和会议室的参数不一样
-            if (this.onePartForm.type !== '3') {
-              let obj = {
-                price: this.openData[1].price
-              }
-              obj.startTime = this.openData[1].startTime
-              obj.endTime = this.openData[1].endTime
-              ajaxParams.restPriceDetailParam = []
-              ajaxParams.restPriceDetailParam.push(obj)
-              // console.log('ajaxParams.restPriceDetailParam', ajaxParams.restPriceDetailParam);
-            } else {
-              ajaxParams.restPrice = this.openData[1].price
-            }
-          }
-        }
-
-        // 如果不允许取消，就不传取消规则的参数
-        if (twoPartForm.type !== '2') {
-          ajaxParams.cancelBeforeTime = twoPartForm.cancelBeforeTime
-          ajaxParams.cancelBeforeUnit = (twoPartForm.timeType === 'today') ? 'D' : 'H'
-        }
-        // 如果收费标准有一个为0，则禁止微信支付
-        if (this.disabledweixinPay) {
-          ajaxParams.payType = [twoPartForm.payType[0]]
-        }
-      }
-
-      // console.log('ajaxParams', ajaxParams);
+      console.log('ajaxParams', ajaxParams);
       this.dataFinishInterface(ajaxParams).then(res => {
         if (res.status === 'true') {
           if (this.addEditType === 1) {
@@ -552,23 +465,11 @@ export default {
           } else {
             this.setMsg('success', '完成场地新增第二步')
           }
-
           // @#注意：需要刷新备份的数据
           this.deepCopy()
-
           this.tabSwitch = 3      // add field 打开第三道门
           this.activityTab = 3 // 切换到第二道门
           this.loadingTwoPart = false
-
-          // if (!this.addEditType && !this.$route.query.addStep) {
-          //   this.$router.replace({
-          //     path: '/field/com',
-          //     query: {
-          //       fieldId: this.fieldId,
-          //       addStep: 3
-          //     }
-          //   })
-          // }
         } else {
           this.setMsg('error', res.msg)
           this.loadingTwoPart = false
@@ -615,20 +516,13 @@ export default {
       })
     },
     addPartThree(ajaxParams) {
-      if (!this.validateImgs()) return
-
       this.loadingThreePart = true
 
+      // 接口参数
       let threePartForm = this.threePartForm
       ajaxParams.contactName = threePartForm.contactName
       ajaxParams.contactTel = threePartForm.contactTel
       ajaxParams.facilitiesAndServices = threePartForm.facilitiesAndServices
-      ajaxParams.instructionsForUse = threePartForm.instructionsForUse
-      ajaxParams.mainImg = threePartForm.mainImg
-      ajaxParams.isEffect = threePartForm.isEffect ? 1 : 0
-      ajaxParams.imgs = threePartForm.imgs.map((item) => {
-        if (item.img) return item.img
-      })
 
       this.dataFinishInterface(ajaxParams).then(res => {
         if (res.status === 'true') {
@@ -643,7 +537,7 @@ export default {
            */
           if (this.dataFinishPercent !== 100) {
             this.$router.replace({
-              path: '/field/success',
+              path: '/activity/detail',
               query: {
                 id: this.fieldId,
                 title: this.onePartForm.fieldName,
@@ -672,27 +566,22 @@ export default {
             case '1':
               ajaxParams.step = 1
               this.addPartOne(ajaxParams)
-              if (!this.paymentList.length) {
-                // paymentType().then(res => {
-                //   if (res.status === 'true' && res.info) {
-                //     this.paymentList = res.info
-                //   }
-                // })
-              }
               break;
             case '3':
               ajaxParams.step = 3
               this.addPartThree(ajaxParams)
               break;
             case '2':
+              ajaxParams.step = 2
+              this.addPartTwo(ajaxParams)
               // 校验预约设置
-              if (this.onePartForm.type === '5') {
-                ajaxParams.step = 2
-                this.addPartTwo(ajaxParams)
-                return
-              }
+              // if (this.onePartForm.type === '5') {
+              //   ajaxParams.step = 2
+              //   this.addPartTwo(ajaxParams)
+              //   return
+              // }
 
-              if (this.onePartForm.type !== '5' && !this.verifyReservationSetting()) return
+              // if (this.onePartForm.type !== '5' && !this.verifyReservationSetting()) return
 
               // 判断表单是否有改动，true为有改动，false则未改动
               // 没改动不调接口，调接口需求要关闭对外开放，所以未改动就不调用编辑接口
@@ -700,41 +589,41 @@ export default {
                 this.monitorTwoPart()
               }
 
-              if (!this.twoPartStatus) {
-                this.tabSwitch = 3  // add field 打开第三道门
-                this.activityTab = 3 // 切换到第二道门
-                this.loadingTwoPart = false
-                return
-              }
+              // if (!this.twoPartStatus) {
+              //   this.tabSwitch = 3  // add field 打开第三道门
+              //   this.activityTab = 3 // 切换到第二道门
+              //   this.loadingTwoPart = false
+              //   return
+              // }
 
               // 编辑的时候，弹出确认框
-              if (this.dataFinishPercent === 100) {
-                const h = this.$createElement;
-                this.$msgbox({
-                  title: '调整确认',
-                  message: h('p', null, [
-                    h('p', { style: 'color: #1C1C2F' }, '当前场地对外开放中，请调整对外开放信息'),
-                    h('p', { style: 'color: #868696' }, '为了保障您的利益，已停止对外开放')
-                  ]),
-                  type: 'warning',
-                  showCancelButton: true,
-                  confirmButtonText: '确认',
-                  cancelButtonText: '去设置',
-                  beforeClose: (action, instance, done) => {
-                    if (action === 'confirm') {
-                      done()
-                      ajaxParams.step = 2
-                      this.addPartTwo(ajaxParams)
-                    } else {
-                      done()
-                      window.open(`#/field/open/settings?id=${this.fieldId}&type=${this.onePartForm.type}`, '_blank')
-                    }
-                  }
-                })
-              } else {
-                ajaxParams.step = 2
-                this.addPartTwo(ajaxParams)
-              }
+              // if (this.dataFinishPercent === 100) {
+              //   const h = this.$createElement;
+              //   this.$msgbox({
+              //     title: '调整确认',
+              //     message: h('p', null, [
+              //       h('p', { style: 'color: #1C1C2F' }, '当前场地对外开放中，请调整对外开放信息'),
+              //       h('p', { style: 'color: #868696' }, '为了保障您的利益，已停止对外开放')
+              //     ]),
+              //     type: 'warning',
+              //     showCancelButton: true,
+              //     confirmButtonText: '确认',
+              //     cancelButtonText: '去设置',
+              //     beforeClose: (action, instance, done) => {
+              //       if (action === 'confirm') {
+              //         done()
+              //         ajaxParams.step = 2
+              //         this.addPartTwo(ajaxParams)
+              //       } else {
+              //         done()
+              //         window.open(`#/field/open/settings?id=${this.fieldId}&type=${this.onePartForm.type}`, '_blank')
+              //       }
+              //     }
+              //   })
+              // } else {
+              //   ajaxParams.step = 2
+              //   this.addPartTwo(ajaxParams)
+              // }
               break;
           }
         } else {
@@ -1015,6 +904,37 @@ export default {
      * */
     dateChange (val) {
       console.log('val', val)
+      let start = new Date(val[0])
+      let sy = start.getFullYear()
+      let sm = start.getMonth()
+      let sd = start.getDate()
+      let sH = start.getHours()
+      let sM = start.getMinutes()
+      let end = new Date(val[1])
+      let ey = end.getFullYear()
+      let em = end.getMonth()
+      let ed = end.getDate()
+      let eH = end.getHours()
+      let eM = end.getMinutes()
+
+      // 活动展示时间
+      this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+      // 活动隐藏时间
+      this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+      // 活动开始/结束日期
+      sm = sm + 1
+      sm = sm >= 10 ? sm : '0' + sm
+      sd = sd >= 10 ? sd : '0' + sd
+      sH = sH >= 10 ? sH : '0' + sH
+      sM = sM >= 10 ? sM : '0' + sM
+
+      em = em + 1
+      em = em >= 10 ? em : '0' + em
+      ed = ed >= 10 ? ed : '0' + ed
+      eH = eH >= 10 ? eH : '0' + eH
+      eM = eM >= 10 ? eM : '0' + eM
+      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM
+      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM
     },
     /**
      * part 2
@@ -1096,6 +1016,28 @@ export default {
         this.$refs.myQuillEditor2.quill.setText(this.$refs.myQuillEditor2.quill.getText().substring(0, this.quillLenght))
         this.$refs.myQuillEditor2.quill.formatText(0, this.$refs.myQuillEditor2.quill.getLength(), formartObject)
       }
+    },
+    displayStart (val) {
+      let start = new Date(val)
+      let sy = start.getFullYear()
+      let sm = start.getMonth()
+      let sd = start.getDate()
+      let sH = start.getHours()
+      let sM = start.getMinutes()
+
+      // 活动展示时间
+      this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+    },
+    displayEnd (val) {
+      let end = new Date(val)
+      let ey = end.getFullYear()
+      let em = end.getMonth()
+      let ed = end.getDate()
+      let eH = end.getHours()
+      let eM = end.getMinutes()
+
+      // 活动隐藏时间
+      this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
     }
   }
 }
@@ -1142,6 +1084,9 @@ export default {
   }
   .el-form-item__label {
     text-align: left;
+  }
+  .el-range-editor.el-input__inner {
+    width: 310px;
   }
 }
 </style>
