@@ -1,26 +1,6 @@
 <template>
   <div class="page-activity-com">
-    <lh-title :title="titleName" :noBorder="true">
-      <div class="com-title-box pb0">
-        <h2 class="width100">
-          <span v-if="dataFinishPercent !== 100" class="width100">
-            <span class="fl">正在创建场地...</span>
-            <span class="field-name a-line ml12">{{ onePartForm.fieldName }}</span>
-            <span v-if="dataFinishPercent" class="lh-process ml12">
-              <span
-                v-for="(item, idx) in 3"
-                :key="idx"
-                class="blue-step"
-                :class="processStep(idx)"
-                :style="`width: ${100 / 3}%`"></span>
-            </span>
-          </span>
-          <span v-else>
-            {{ onePartForm.fieldName }}
-          </span>
-        </h2>
-      </div>
-    </lh-title>
+    <lh-title :title="titleName" :noBorder="true"></lh-title>
 
     <!-- tab 切换 -->
     <lh-page-tab
@@ -229,6 +209,7 @@
           title="添加奖品"
           width="30%"
           :visible.sync="dialogVisible"
+          v-if="dialogVisible"
           class="set-dialog">
 
           <!--一下均可以由用户更改-->
@@ -244,8 +225,9 @@
                 <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="RedEnvelope">微信红包</el-radio>
               </template>
             </el-form-item>
+            <!--选择优惠券类型-->
             <el-form-item style="width: 100%" label="选择优惠券" prop="addPrizeType" v-if="addPrizeForm.addPrizeType === 'coupons'">
-              <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info">
+              <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" v-if="addPrizeForm.addPrizeType === 'coupons'">
                 <el-option
                   v-for="(value, key) in prizeType"
                   :label="value.name"
@@ -258,8 +240,10 @@
                 <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="commonType">普通红包</el-radio>
               </template>
             </el-form-item>
+
+            <!--选择优惠券-->
             <el-form-item style="width: 100%" label="" prop="couponId" v-if="addPrizeForm.addPrizeType === 'coupons'">
-              <el-select v-model="addPrizeForm.couponId" class="width220px add-prize-info add-prize-checkbox">
+              <el-select v-model="addPrizeForm.couponId" class="width220px add-prize-info add-prize-checkbox" v-if="addPrizeForm.addPrizeType === 'coupons'">
                 <el-option
                   v-for="(value, key) in couponList"
                   :label="value.name"
@@ -268,8 +252,13 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item style="width: 100%" label="红包金额" prop="redEnvelopeAmount" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
-              <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="add-prize-info"></el-input>
+            <!--红包金额-->
+            <el-form-item style="width: 100%" label="红包金额" class="red-envelope" prop="redEnvelopeAmount" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
+              <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="width300px add-prize-info" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'"></el-input>
+            </el-form-item>
+
+            <el-form-item style="width: 100%" label="使用说明" class="red-envelope" prop="useInstruction">
+              <el-input v-model="addPrizeForm.useInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>
             </el-form-item>
 
             <el-form-item style="width: 100%" label="" prop="allowRepeat">
@@ -1046,6 +1035,7 @@ export default {
 <style lang="scss">
 .page-activity-com {
 
+
   .field-name {
     float: left;
     max-width: 66%;
@@ -1088,6 +1078,12 @@ export default {
   .el-range-editor.el-input__inner {
     width: 310px;
   }
+  .red-envelope {
+    .el-form-item__error {
+      margin-left: -50px;
+    }
+  }
+
 }
 </style>
 <style lang="scss" scoped>
@@ -1138,7 +1134,7 @@ export default {
     margin-left: 6px;
   }
   .banner-format {
-    margin-left: 132px;
+    margin-left: 106px;
     margin-top: -10px;
   }
   .step-one-title {

@@ -1,5 +1,6 @@
 import { checkPhone } from '@/config/utils'
 import { FIXPHONEREG, POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
+import { activityIsUnique } from '@/service/market'
 
 export default {
   data () {
@@ -20,6 +21,14 @@ export default {
       if (!value) {
         callback(new Error('请输入活动名称'));
       }
+      let params = {
+        name: value
+      }
+      activityIsUnique(params).then(res => {
+        if (res.status === 'true') {
+
+        }
+      })
       callback();
     };
     const validateTerminal = (rule, value, callback) => {
@@ -49,7 +58,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 1,     // tab 的门
+      activityTab: 2,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
@@ -240,10 +249,14 @@ export default {
         redEnvelopeAmount: '',
         couponId: '',
         couponType: '', // 优惠券类型
-        allowRepeat: false // 是否允许重复中奖
+        allowRepeat: false, // 是否允许重复中奖
+        useInstruction: '' // 使用说明
       }, // 添加奖品
       addPrizeFormRule: {
-        redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }]
+        redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }],
+        useInstruction: [{ required: true, message: '请填写奖品的使用说明', trigger: ['blur', 'change'] }],
+        couponId: [{ required: true, message: '请选择优惠券', trigger: ['blur', 'change'] }],
+        addPrizeType: [{ required: true, message: '请选择优惠券类型', trigger: ['blur', 'change'] }]
       }, // 添加奖品验证
       // 奖品类型 1-优惠券, 2-微信红包
       prizeType: [

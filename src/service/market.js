@@ -105,3 +105,6 @@ export const platformactivityList = (obj) => fetch(API_PATH + '/supervisor/platf
 
 // 查询活动详情
 export const platformactivityDetail = (obj) => fetch(API_PATH + '/supervisor/platformactivity/detail', obj, 'POST')
+
+// 检验活动名称重复
+export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformactivity/isUnique', obj, 'POST')
