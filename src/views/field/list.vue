@@ -105,9 +105,9 @@
       change(sort) {
         // console.log('sort', sort);
         if (sort.order === 'ascending') {
-          this.bookNumSort = 0
-        } else if (sort.order === 'descending') {
           this.bookNumSort = 1
+        } else if (sort.order === 'descending') {
+          this.bookNumSort = 0
         } else if (sort.order === null) {
           this.bookNumSort = ''
         }
