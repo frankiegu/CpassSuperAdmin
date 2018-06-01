@@ -215,8 +215,8 @@
           <!--一下均可以由用户更改-->
           <el-form
             :model="addPrizeForm"
-            label-width="90px"
-            ref="userAccessForm"
+            label-width="100px"
+            ref="addPrizeForm"
             :inline="false"
             :rules="addPrizeFormRule">
             <el-form-item label="奖品类型" prop="addPrizeType" style="width: 100%">
@@ -225,36 +225,42 @@
                 <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="RedEnvelope">微信红包</el-radio>
               </template>
             </el-form-item>
-            <!--选择优惠券类型-->
-            <el-form-item style="width: 100%" label="选择优惠券" prop="addPrizeType" v-if="addPrizeForm.addPrizeType === 'coupons'">
-              <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" v-if="addPrizeForm.addPrizeType === 'coupons'">
-                <el-option
-                  v-for="(value, key) in prizeType"
-                  :label="value.name"
-                  :value="value.type"
-                  :key="key"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
-              <template>
-                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="commonType">普通红包</el-radio>
-              </template>
-            </el-form-item>
+            <!--微信红包-->
+            <div v-if="addPrizeForm.showRedEnvelope">
+              <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType">
+                <template>
+                  <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="commonType">普通红包</el-radio>
+                </template>
+              </el-form-item>
+              <!--红包金额-->
+              <el-form-item style="width: 100%" label="红包金额" class="red-envelope" prop="redEnvelopeAmount">
+                <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="width300px add-prize-info"></el-input>
+              </el-form-item>
+            </div>
 
+            <!--优惠券-->
+            <div v-else>
+              <!--选择优惠券类型-->
+              <el-form-item style="width: 100%" class="choose-coupon-type" label="选择优惠券" prop="couponType">
+                <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info">
+                  <el-option
+                    v-for="(value, key) in prizeType"
+                    :label="value.name"
+                    :value="value.type"
+                    :key="key"></el-option>
+                </el-select>
+              </el-form-item>
+
+            </div>
             <!--选择优惠券-->
-            <el-form-item style="width: 100%" label="" prop="couponId" v-if="addPrizeForm.addPrizeType === 'coupons'">
-              <el-select v-model="addPrizeForm.couponId" class="width220px add-prize-info add-prize-checkbox" v-if="addPrizeForm.addPrizeType === 'coupons'">
+            <el-form-item style="width: 100%" prop="selCouponId" class="choose-coupon" v-if="!addPrizeForm.showRedEnvelope">
+              <el-select v-model="addPrizeForm.selCouponId" class="width220px add-prize-info coupon-sel">
                 <el-option
                   v-for="(value, key) in couponList"
                   :label="value.name"
                   :value="value.id"
                   :key="key"></el-option>
               </el-select>
-            </el-form-item>
-
-            <!--红包金额-->
-            <el-form-item style="width: 100%" label="红包金额" class="red-envelope" prop="redEnvelopeAmount" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'">
-              <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="width300px add-prize-info" v-if="addPrizeForm.addPrizeType === 'RedEnvelope'"></el-input>
             </el-form-item>
 
             <el-form-item style="width: 100%" label="使用说明" class="red-envelope" prop="useInstruction">
@@ -268,7 +274,7 @@
 
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" class="width80px" plain @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" class="width80px">确 定</el-button>
+            <el-button type="primary" class="width80px" @click="sureAddPrize">确 定</el-button>
           </div>
         </el-dialog>
       </el-form>
@@ -1027,6 +1033,16 @@ export default {
 
       // 活动隐藏时间
       this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+    },
+    // 确定添加奖品
+    sureAddPrize () {
+      this.$refs['addPrizeForm'].validate((valid) => {
+        if (valid) {
+        } else {
+          this.$message.error('请填写完整信息')
+          return false;
+        }
+      });
     }
   }
 }
@@ -1079,6 +1095,16 @@ export default {
     width: 310px;
   }
   .red-envelope {
+    .el-form-item__error {
+      margin-left: -50px;
+    }
+  }
+  .choose-coupon {
+    .el-form-item__error {
+      margin-left: 50px;
+    }
+  }
+  .choose-coupon-type {
     .el-form-item__error {
       margin-left: -50px;
     }
@@ -1153,6 +1179,9 @@ export default {
   }
   .add-prize-info {
     margin-left: -50px;
+  }
+  .coupon-sel {
+    margin-left: 50px;
   }
   .add-prize-checkbox {
     margin-left: 40px;

@@ -247,16 +247,17 @@ export default {
         addPrizeType: 'RedEnvelope',
         redEnvelopeType: 'commonType',
         redEnvelopeAmount: '',
-        couponId: '',
+        selCouponId: '',
         couponType: '', // 优惠券类型
         allowRepeat: false, // 是否允许重复中奖
-        useInstruction: '' // 使用说明
+        useInstruction: '', // 使用说明
+        showRedEnvelope: true
       }, // 添加奖品
       addPrizeFormRule: {
         redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }],
         useInstruction: [{ required: true, message: '请填写奖品的使用说明', trigger: ['blur', 'change'] }],
-        couponId: [{ required: true, message: '请选择优惠券', trigger: ['blur', 'change'] }],
-        addPrizeType: [{ required: true, message: '请选择优惠券类型', trigger: ['blur', 'change'] }]
+        selCouponId: [{ required: true, message: '请选择优惠券', trigger: ['blur', 'change'] }],
+        couponType: [{ required: true, message: '请选择优惠券类型', trigger: ['blur', 'change'] }]
       }, // 添加奖品验证
       // 奖品类型 1-优惠券, 2-微信红包
       prizeType: [
@@ -587,6 +588,16 @@ export default {
       this.threePartForm.displayStartValue = new Date(date).valueOf()
       console.log('date', this.threePartForm.displayStartValue)
     }
+  },
+  watch: {
+    'addPrizeForm.addPrizeType': function (val, oldVal) {
+      if (val === 'RedEnvelope') {
+        this.addPrizeForm.showRedEnvelope = true
+      } else {
+        this.addPrizeForm.showRedEnvelope = false
+      }
+      console.log('radio', this.addPrizeFormRule)
+    }
   }
 }
 
@@ -661,7 +672,7 @@ const validateRedEnvelopeAmount = (rule, value, callback) => {
   } else {
     callback();
   }
-};
+}
 
 /**
  * other
