@@ -34,7 +34,7 @@
             v-model.trim="onePartForm.activityRules"
             :maxlength="200"
             :rows="4"
-            placeholder="请填写报名方式"
+            placeholder="请填写活动规则"
           >
           </el-input>
 
@@ -50,7 +50,7 @@
         <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40">
           <template>
             <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>
+            <!--<el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>-->
           </template>
         </el-form-item>
         <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
@@ -147,8 +147,8 @@
               <el-table-column label="奖品" prop="prizeName" width="200px"></el-table-column>
               <el-table-column label="类型" prop="type">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.type === 1">优惠券</span>
-                  <span v-if="scope.row.type === 2">微信红包</span>
+                  <span v-if="scope.row.type === '1'">优惠券</span>
+                  <span v-if="scope.row.type === '2'">微信红包</span>
                 </template>
               </el-table-column>
               <el-table-column label="数量" prop="quantity" width="220px">
@@ -156,16 +156,17 @@
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
                     :maxlength="4"
+                    :autofocus="true"
                     v-model="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
                   <div v-if="scope.row.validate">
                     <i class="el-icon-warning fl theme-red upload-text-icon mt4"></i>
-                    <span class="prize-warnning">{{scope.row.prizeQuantityWarning}}</span>
+                    <span class="prize-warnning fl ml4">{{scope.row.prizeQuantityWarning}}</span>
                   </div>
                   <div v-if="scope.row.probabilityValidate">
                     <i class="el-icon-warning fl theme-red upload-text-icon mt4" style="opacity: 0;"></i>
-                    <span class="prize-warnning" style="opacity: 0;">{{scope.row.prizeProbabilityWarning}}</span>
+                    <span class="prize-warnning fl ml4" style="opacity: 0;">{{scope.row.prizeProbabilityWarning}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -173,17 +174,18 @@
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
+                    :autofocus="true"
                     :maxlength="3"
                     v-model="scope.row.probability"
                     @input.native="handleInputProbability(scope.row.probability, scope.row.id)"
                   ></el-input>
                   <div v-if="scope.row.probabilityValidate">
                     <i class="el-icon-warning fl theme-red upload-text-icon mt4"></i>
-                    <span class="prize-warnning">{{scope.row.prizeProbabilityWarning}}</span>
+                    <span class="prize-warnning fl ml4">{{scope.row.prizeProbabilityWarning}}</span>
                   </div>
                   <div v-if="scope.row.validate">
                     <i class="el-icon-warning fl theme-red upload-text-icon mt4" style="opacity: 0;"></i>
-                    <span class="prize-warnning" style="opacity: 0;">{{scope.row.prizeQuantityWarning}}</span>
+                    <span class="prize-warnning fl ml4" style="opacity: 0;">{{scope.row.prizeQuantityWarning}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -193,7 +195,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-button class="fl" type="primary" icon="el-icon-circle-plus" plain @click="dialogVisible = true">添加奖品</el-button>
+            <el-button class="fl" type="primary" icon="el-icon-circle-plus" plain @click="addPrize">添加奖品</el-button>
           </div>
           <el-form-item></el-form-item>
         </div>
@@ -221,8 +223,8 @@
             :rules="addPrizeFormRule">
             <el-form-item label="奖品类型" prop="addPrizeType" style="width: 100%">
               <template>
-                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="coupons">优惠券</el-radio>
-                <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="RedEnvelope">微信红包</el-radio>
+                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="1">优惠券</el-radio>
+                <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="2">微信红包</el-radio>
               </template>
             </el-form-item>
             <!--微信红包-->
@@ -242,7 +244,7 @@
             <div v-else>
               <!--选择优惠券类型-->
               <el-form-item style="width: 100%" class="choose-coupon-type" label="选择优惠券" prop="couponType">
-                <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" @change="getCouponList">
+                <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" @change="couponTypeChange">
                   <el-option
                     v-for="(value, key) in prizeType"
                     :label="value.name"
@@ -561,22 +563,30 @@ export default {
             template: this.onePartForm.activityTemplate, // 活动模板
             startDate: this.threePartForm.activityStart, // 活动开始日期
             endDate: this.threePartForm.activityEnd, // 活动结束日期
-            bannerPath: this.onePartForm.bannerPic, // 活动banner
-            id: this.dataFinishPercent ? this.activityId : null,
-            storeId: this.onePartForm.storeId
+            bannerPath: this.onePartForm.bannerPic // 活动banner
           }
           switch (step) {
             case '1':
               ajaxParams.step = 1
-              this.addPartOne(ajaxParams)
+              this.submitObject = ajaxParams
+              this.tabSwitch = 2
+              this.activityTab = 2
+              this.loadingOnePart = false
               break;
             case '3':
               ajaxParams.step = 3
-              this.addPartThree(ajaxParams)
+              this.submitObject = ajaxParams
               break;
             case '2':
               ajaxParams.step = 2
-              this.addPartTwo(ajaxParams)
+              ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
+              ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
+              ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
+              ajaxParams.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
+              this.submitObject = ajaxParams
+              this.tabSwitch = 3      // add field 打开第三道门
+              this.activityTab = 3 // 切换到第二道门
+              this.loadingTwoPart = false
               // 校验预约设置
               // if (this.onePartForm.type === '5') {
               //   ajaxParams.step = 2
@@ -588,9 +598,9 @@ export default {
 
               // 判断表单是否有改动，true为有改动，false则未改动
               // 没改动不调接口，调接口需求要关闭对外开放，所以未改动就不调用编辑接口
-              if (this.dataFinishPercent === 100) {
-                this.monitorTwoPart()
-              }
+              // if (this.dataFinishPercent === 100) {
+              //   this.monitorTwoPart()
+              // }
 
               // if (!this.twoPartStatus) {
               //   this.tabSwitch = 3  // add field 打开第三道门
@@ -629,6 +639,7 @@ export default {
               // }
               break;
           }
+          console.log('this.submitObject', this.submitObject)
         } else {
           // return
         }
@@ -1046,11 +1057,63 @@ export default {
     sureAddPrize () {
       this.$refs['addPrizeForm'].validate((valid) => {
         if (valid) {
+          let couponName = ''
+          let couponRest = 0
+          if (this.addPrizeForm.selCouponId) {
+            this.couponList.forEach(v => {
+              if (v.id === this.addPrizeForm.selCouponId) {
+                couponName = v.name
+                couponRest = v.notUseQuantity
+              }
+            })
+          }
+          let prize = {
+            type: this.addPrizeForm.addPrizeType - 1 + 1,
+            prizeName: this.addPrizeForm.showRedEnvelope ? '普通红包' + this.addPrizeForm.redEnvelopeAmount : couponName,
+            maxQuantity: couponRest,
+            quantity: '',
+            probability: '',
+            id: this.addPrizeForm.selCouponId,
+            validate: true,
+            probabilityValidate: true,
+            prizeQuantityWarning: '请输入奖品数量',
+            prizeProbabilityWarning: '请输入中奖概率'
+          }
+          this.prizeList.push(prize)
+          console.log('this.prizeList', this.prizeList)
+          this.dialogVisible = false
+          this.addPrizeForm = {
+            addPrizeType: '1',
+            redEnvelopeType: 'commonType',
+            redEnvelopeAmount: '',
+            selCouponId: '',
+            couponType: 1, // 优惠券类型
+            allowRepeat: false, // 是否允许重复中奖
+            useInstruction: '', // 使用说明
+            showRedEnvelope: false
+          }
         } else {
           this.$message.error('请填写完整信息')
           return false;
         }
       });
+    },
+    // 添加奖品弹窗
+    addPrize () {
+      if (this.prizeList.length < 20) {
+        if (this.couponList.length > 0 && this.prizeList.length > 0) {
+          for (let i = 0; i < this.couponList.length; i++) {
+            for (let j = 0; j < this.prizeList.length; j++) {
+              if (this.prizeList[j].id === this.couponList[i].id) {
+                this.couponList.splice(i, 1)
+              }
+            }
+          }
+        }
+        this.dialogVisible = true
+      } else {
+        this.setMsg('最多只能添加20个奖品')
+      }
     }
   }
 }
@@ -1183,7 +1246,6 @@ export default {
     /*width: 30%;*/
   }
   .prize-warnning {
-    margin-left: -15px;
   }
   .add-prize-info {
     margin-left: -50px;
