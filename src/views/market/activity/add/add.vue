@@ -143,15 +143,15 @@
               :data="prizeList"
               v-loading="orderLoading"
               :rules="prizeTableRules"
-              style="width: 800px; margin-bottom: 22px;">
+              style="width: 860px; margin-bottom: 22px;">
               <el-table-column label="奖品" prop="prizeName" width="200px"></el-table-column>
               <el-table-column label="类型" prop="type">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.type === '1'">优惠券</span>
-                  <span v-if="scope.row.type === '2'">微信红包</span>
+                  <span v-if="scope.row.type === 1">优惠券</span>
+                  <span v-if="scope.row.type === 2">微信红包</span>
                 </template>
               </el-table-column>
-              <el-table-column label="数量" prop="quantity" width="220px">
+              <el-table-column label="数量" prop="quantity" width="240px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
@@ -170,7 +170,7 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="中奖概率 （%）" prop="probability" width="220px">
+              <el-table-column label="中奖概率 （%）" prop="probability" width="240px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
@@ -191,7 +191,7 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span>删除</span>
+                  <span style="cursor: pointer;" @click="deletePrize(scope.row.id)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -267,6 +267,11 @@
 
             <el-form-item style="width: 100%" label="使用说明" class="red-envelope" prop="useInstruction">
               <el-input v-model="addPrizeForm.useInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>
+            </el-form-item>
+
+            <!--礼品券奖品说明-->
+            <el-form-item v-if="!addPrizeForm.showRedEnvelope && addPrizeForm.couponType === 3" style="width: 100%" label="奖品说明" class="red-envelope" prop="giftUseInstruction">
+              <el-input v-model="addPrizeForm.giftUseInstruction" :maxlength="5" placeholder="请填写礼品券使用说明" class="width300px add-prize-info"></el-input>
             </el-form-item>
 
             <el-form-item style="width: 100%" label="" prop="allowRepeat">
@@ -584,9 +589,13 @@ export default {
               ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
               ajaxParams.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
               this.submitObject = ajaxParams
-              this.tabSwitch = 3      // add field 打开第三道门
-              this.activityTab = 3 // 切换到第二道门
-              this.loadingTwoPart = false
+              if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
+                this.tabSwitch = 3      // add field 打开第三道门
+                this.activityTab = 3 // 切换到第二道门
+                this.loadingTwoPart = false
+              } else if (this.prizeList.length <= 0) {
+                this.$message.info('请至少添加一个奖品')
+              }
               // 校验预约设置
               // if (this.onePartForm.type === '5') {
               //   ajaxParams.step = 2
@@ -1067,6 +1076,9 @@ export default {
               }
             })
           }
+          if (this.addPrizeForm.addPrizeType - 1 + 1 === 2) {
+            couponRest = 9999
+          }
           let prize = {
             type: this.addPrizeForm.addPrizeType - 1 + 1,
             prizeName: this.addPrizeForm.showRedEnvelope ? '普通红包' + this.addPrizeForm.redEnvelopeAmount : couponName,
@@ -1110,10 +1122,35 @@ export default {
             }
           }
         }
-        this.dialogVisible = true
+        if (this.prizeList.length > 0) {
+          if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
+            this.dialogVisible = true
+          } else {
+            this.$message.info('请填写完整信息')
+          }
+        } else {
+          this.dialogVisible = true
+        }
       } else {
         this.setMsg('最多只能添加20个奖品')
       }
+    },
+    // 删除奖品
+    deletePrize (id) {
+      console.log('delete', id)
+      this.prizeList.forEach((v, i) => {
+        if (v.id === id) {
+          this.prizeList.splice(i, 1)
+        }
+      })
+    },
+    // 判断prizeList所有元素的数量输入验证是否都通过
+    checkPrizeQuantity (item) {
+      return item.validate === false
+    },
+    // 判断prizeList所有元素的中奖概率输入验证是否都通过
+    checkPrizeProbability (item) {
+      return item.probabilityValidate === false
     }
   }
 }

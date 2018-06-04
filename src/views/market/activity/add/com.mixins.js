@@ -232,11 +232,13 @@ export default {
         couponType: 1, // 优惠券类型
         allowRepeat: false, // 是否允许重复中奖
         useInstruction: '', // 使用说明
-        showRedEnvelope: false
+        showRedEnvelope: false,
+        giftUseInstruction: '' // 礼品券使用说明
       }, // 添加奖品
       addPrizeFormRule: {
         redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }],
         useInstruction: [{ required: true, message: '请填写奖品的使用说明', trigger: ['blur', 'change'] }],
+        giftUseInstruction: [{ required: true, message: '请填写礼品券使用说明', trigger: ['blur', 'change'] }],
         selCouponId: [{ required: true, message: '请选择优惠券', trigger: ['blur', 'change'] }],
         couponType: [{ required: true, message: '请选择优惠券类型', trigger: ['blur', 'change'] }]
       }, // 添加奖品验证
@@ -466,13 +468,12 @@ export default {
           index = i
         }
       })
-      console.log('index', [index, currentQuantity])
       if (!currentQuantity) {
         tempObj.validate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!POSITIVE_INTEGER.test(currentQuantity) && currentQuantity > 0) {
-        tempObj.prizeQuantityWarning = '奖品数量必须为正整数'
+      if (!POSITIVE_INTEGER.test(currentQuantity)) {
+        tempObj.prizeQuantityWarning = '奖品数量必须为大于0的正整数'
         tempObj.validate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
@@ -528,8 +529,8 @@ export default {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!POSITIVE_INTEGER.test(probability)) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为正整数'
+      if (!NATURAL_NUM.test(probability)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为自然数'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
@@ -575,6 +576,8 @@ export default {
       findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
         if (res.status === 'true') {
           this.couponList = res.info
+          this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
+          console.log('delete', this.couponList)
         }
       })
     },
@@ -583,13 +586,20 @@ export default {
       findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
         if (res.status === 'true') {
           this.couponList = res.info
-          for (let i = 0; i < this.couponList.length; i++) {
-            for (let j = 0; j < this.prizeList.length; j++) {
-              if (this.prizeList[j].id === this.couponList[i].id) {
-                this.couponList.splice(i, 1)
+          if (this.couponList.length > 0 && this.prizeList.length > 0) {
+            for (let i = 0; i < this.couponList.length; i++) {
+              for (let j = 0; j < this.prizeList.length; j++) {
+                console.log('prize111111', this.prizeList[j])
+                console.log('111111', this.couponList[i])
+                if (this.prizeList[j] && this.couponList[i] && this.prizeList[j].id === this.couponList[i].id) {
+                  this.couponList.splice(i, 1)
+                } else if (this.prizeList[j] && this.couponList[i] && this.couponList[i].notUseQuantity <= 0) {
+                  this.couponList.splice(i, 1)
+                }
               }
             }
           }
+          this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
         }
       })
     }
