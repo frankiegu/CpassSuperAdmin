@@ -1,6 +1,6 @@
 import { checkPhone } from '@/config/utils'
 import { FIXPHONEREG, POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
-import { activityIsUnique } from '@/service/market'
+import { activityIsUnique, findUsableCouponByType } from '@/service/market'
 
 export default {
   data () {
@@ -27,9 +27,10 @@ export default {
       activityIsUnique(params).then(res => {
         if (res.status === 'false') {
           callback(new Error(res.msg));
+        } else {
+          callback();
         }
       })
-      callback();
     };
     const validateTerminal = (rule, value, callback) => {
       if (value.length <= 0) {
@@ -146,8 +147,8 @@ export default {
 
         activityName: '', // 活动名称
         activityRules: '', // 活动规则
-        activityTemplate: 'goldenEggs', // 活动模板
-        activityType: 'interactive', // 活动类型
+        activityTemplate: '1', // 活动模板
+        activityType: '2', // 活动类型
         activityStartDate: '', // 活动开始日期
         activityEndDate: '', // 活动结束日期
         rangeDate: '', // 活动日期
@@ -248,7 +249,7 @@ export default {
         redEnvelopeType: 'commonType',
         redEnvelopeAmount: '',
         selCouponId: '',
-        couponType: '', // 优惠券类型
+        couponType: 1, // 优惠券类型
         allowRepeat: false, // 是否允许重复中奖
         useInstruction: '', // 使用说明
         showRedEnvelope: true
@@ -266,7 +267,7 @@ export default {
           name: '小时券'
         },
         {
-          type: 2,
+          type: 3,
           name: '礼品券'
         }
       ],
@@ -587,6 +588,14 @@ export default {
     displayStart (date) {
       this.threePartForm.displayStartValue = new Date(date).valueOf()
       console.log('date', this.threePartForm.displayStartValue)
+    },
+    // 添加奖品选择优惠券
+    getCouponList () {
+      findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
+        if (res.status === 'true') {
+          console.log(res)
+        }
+      })
     }
   },
   watch: {
@@ -598,6 +607,9 @@ export default {
       }
       console.log('radio', this.addPrizeFormRule)
     }
+  },
+  created () {
+    this.getCouponList()
   }
 }
 

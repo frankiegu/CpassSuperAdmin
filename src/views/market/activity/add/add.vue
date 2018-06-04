@@ -42,15 +42,15 @@
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
-            <el-radio class="mt10" v-model="onePartForm.activityType" label="common">普通活动</el-radio>
-            <el-radio class="mt10" v-model="onePartForm.activityType" label="interactive">互动游戏</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityType" label="1">普通活动</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityType" label="2">互动游戏</el-radio>
           </template>
         </el-form-item>
 
         <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40">
           <template>
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="goldenEggs">砸金蛋</el-radio>
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="otherGames">其他</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>
           </template>
         </el-form-item>
         <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
@@ -242,7 +242,7 @@
             <div v-else>
               <!--选择优惠券类型-->
               <el-form-item style="width: 100%" class="choose-coupon-type" label="选择优惠券" prop="couponType">
-                <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info">
+                <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" @change="getCouponList">
                   <el-option
                     v-for="(value, key) in prizeType"
                     :label="value.name"
@@ -399,7 +399,8 @@ export default {
           return time.getTime() < Date.now()
         }
       }, // 日期选择范围
-      uploadText: false // 上传图片提示文字
+      uploadText: false, // 上传图片提示文字
+      submitObject: {} // 创建活动提交参数对象
     }
   },
   watch: {
@@ -551,10 +552,17 @@ export default {
     submitForm(formName, step) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          // this.submitObject
           let ajaxParams = {
             // 如果已经添加的场地，如添加了第一步，进来编辑第一步的信息也需要传Id
+            name: this.onePartForm.activityName, // 活动名称
+            regulation: this.onePartForm.activityRules, // 活动规则
+            type: this.onePartForm.activityType, // 活动类型
+            template: this.onePartForm.activityTemplate, // 活动模板
+            startDate: this.threePartForm.activityStart, // 活动开始日期
+            endDate: this.threePartForm.activityEnd, // 活动结束日期
+            bannerPath: this.onePartForm.bannerPic, // 活动banner
             id: this.dataFinishPercent ? this.activityId : null,
-            type: this.onePartForm.type,
             storeId: this.onePartForm.storeId
           }
           switch (step) {
