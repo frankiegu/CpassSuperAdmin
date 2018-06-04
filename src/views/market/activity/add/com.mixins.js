@@ -1,6 +1,6 @@
 import { checkPhone } from '@/config/utils'
 import { FIXPHONEREG, POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
-import { activityIsUnique } from '@/service/market'
+import { activityIsUnique, findUsableCouponByType } from '@/service/market'
 
 export default {
   data () {
@@ -27,9 +27,10 @@ export default {
       activityIsUnique(params).then(res => {
         if (res.status === 'false') {
           callback(new Error(res.msg));
+        } else {
+          callback();
         }
       })
-      callback();
     };
     const validateTerminal = (rule, value, callback) => {
       if (value.length <= 0) {
@@ -58,7 +59,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 1,     // tab 的门
+      activityTab: 2,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
@@ -146,8 +147,8 @@ export default {
 
         activityName: '', // 活动名称
         activityRules: '', // 活动规则
-        activityTemplate: 'goldenEggs', // 活动模板
-        activityType: 'interactive', // 活动类型
+        activityTemplate: '1', // 活动模板
+        activityType: '2', // 活动类型
         activityStartDate: '', // 活动开始日期
         activityEndDate: '', // 活动结束日期
         rangeDate: '', // 活动日期
@@ -172,27 +173,7 @@ export default {
       twoPartStatus: true,
       openDataMonitor: null,
       orderLoading: false,
-      prizeList: [
-        {
-          prizeName: '1小时优惠券',
-          type: 1,
-          quantity: 1,
-          probability: 5,
-          maxQuantity: 5,
-          id: 123,
-          validate: false, // 奖品数量的输入验证通过为false, 验证不通过为true
-          probabilityValidate: false // 奖品中奖概率的输入, 验证通过为false, 验证不通过为true
-        },
-        {
-          prizeName: '普通红包（9.9元）',
-          type: 2,
-          quantity: 2,
-          probability: 15,
-          id: 124,
-          validate: false, // 奖品数量的输入验证通过为false, 验证不通过为true
-          probabilityValidate: false // 奖品中奖概率的输入, 验证通过为false, 验证不通过为true
-        }
-      ], // 奖品列表
+      prizeList: [], // 奖品列表
       twoPartForm: {
         cancelBeforeTime: '3',
         timeType: '', // 允许取消事件的单位 hour 小时 today天
@@ -244,14 +225,14 @@ export default {
       },
       dialogVisible: false, // 添加商品弹窗
       addPrizeForm: {
-        addPrizeType: 'RedEnvelope',
+        addPrizeType: '1',
         redEnvelopeType: 'commonType',
         redEnvelopeAmount: '',
         selCouponId: '',
-        couponType: '', // 优惠券类型
+        couponType: 1, // 优惠券类型
         allowRepeat: false, // 是否允许重复中奖
         useInstruction: '', // 使用说明
-        showRedEnvelope: true
+        showRedEnvelope: false
       }, // 添加奖品
       addPrizeFormRule: {
         redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }],
@@ -266,7 +247,7 @@ export default {
           name: '小时券'
         },
         {
-          type: 2,
+          type: 3,
           name: '礼品券'
         }
       ],
@@ -485,11 +466,12 @@ export default {
           index = i
         }
       })
+      console.log('index', [index, currentQuantity])
       if (!currentQuantity) {
         tempObj.validate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!POSITIVE_INTEGER.test(currentQuantity)) {
+      if (!POSITIVE_INTEGER.test(currentQuantity) && currentQuantity > 0) {
         tempObj.prizeQuantityWarning = '奖品数量必须为正整数'
         tempObj.validate = true
         this.prizeList.splice(index, 1, tempObj)
@@ -587,17 +569,43 @@ export default {
     displayStart (date) {
       this.threePartForm.displayStartValue = new Date(date).valueOf()
       console.log('date', this.threePartForm.displayStartValue)
+    },
+    // 添加奖品选择优惠券
+    getCouponList () {
+      findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
+        if (res.status === 'true') {
+          this.couponList = res.info
+        }
+      })
+    },
+    // 优惠券类型变化
+    couponTypeChange () {
+      findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
+        if (res.status === 'true') {
+          this.couponList = res.info
+          for (let i = 0; i < this.couponList.length; i++) {
+            for (let j = 0; j < this.prizeList.length; j++) {
+              if (this.prizeList[j].id === this.couponList[i].id) {
+                this.couponList.splice(i, 1)
+              }
+            }
+          }
+        }
+      })
     }
   },
   watch: {
     'addPrizeForm.addPrizeType': function (val, oldVal) {
-      if (val === 'RedEnvelope') {
+      if (val === '2') {
         this.addPrizeForm.showRedEnvelope = true
       } else {
         this.addPrizeForm.showRedEnvelope = false
       }
       console.log('radio', this.addPrizeFormRule)
     }
+  },
+  created () {
+    this.getCouponList()
   }
 }
 

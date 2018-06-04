@@ -108,3 +108,6 @@ export const platformActivityDetail = (obj) => fetch(API_PATH + '/supervisor/pla
 
 // 检验活动名称重复
 export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformActivity/isUnique', obj, 'POST')
+
+// 活动奖品选择优惠券
+export const findUsableCouponByType = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/findUsableCouponByType', obj, 'POST')

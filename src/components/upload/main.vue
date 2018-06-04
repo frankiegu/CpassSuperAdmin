@@ -5,7 +5,7 @@
     @click.native="clickUpload"
     :disabled="disabled"
     :style="imgSize"
-    name="img"
+    name="file"
     :action="action"
     :headers="headers"
     :show-file-list="false"
@@ -41,7 +41,7 @@
     name: 'LhUpload',
     data () {
       return {
-        action: API_PATH + '/manage/file/uploadPic',
+        action: API_PATH + '/supervisor/file/upload',
         progress: '',
         maskStatus: false,
         headers: {
@@ -88,7 +88,7 @@
           setTimeout(_ => {
             this.progress = ''
           }, 600)
-          this.$emit('uploadImg', res.info)
+          this.$emit('uploadImg', res.info.path)
         } else {
           this.setMsg('上传图片失败！')
         }
