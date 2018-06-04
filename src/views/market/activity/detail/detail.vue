@@ -7,7 +7,7 @@
     <div class="com-title-box">
       <div class="img-box">
         <div class="img-box-in">
-          <img :src="mainImg" v-if="field.dataFinishPercent === 100">
+          <img :src="bannerPath" v-if="bannerPath">
           <span v-else class="lh-edit-img no-border">
               编辑中
             </span>
@@ -18,9 +18,13 @@
         <el-row>
           <el-col :span="24">
             <el-row :gutter="20" class="mb6">
-              <h1 class="info-title ml10">这里是活动名称</h1>
-              <el-tag type="success" class="info-title-tag ml12 mt2">互动游戏</el-tag>
-              <div class="info-title-id ml12">ID:102348984</div>
+              <h1 class="info-title ml10">{{ name }}</h1>
+              <el-tag class="info-title-tag ml12 mt2" v-if="status === 0">未发布</el-tag>
+              <el-tag class="info-title-tag ml12 mt2" v-if="status === 1">未开始</el-tag>
+              <el-tag type="success" class="info-title-tag ml12 mt2" v-if="status === 2">进行中</el-tag>
+              <el-tag type="danger" class="info-title-tag ml12 mt2" v-if="status === 3">已结束</el-tag>
+              <el-tag type="warning" class="info-title-tag ml12 mt2" v-if="status === 4">暂停</el-tag>
+              <div class="info-title-id ml12">ID:{{ code }}</div>
 
               <el-tooltip
                 :content="isOpen === 1 ? '点击开启活动' : '点击关闭活动'"
@@ -42,16 +46,22 @@
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <lh-item label="活动有效期：" label-width="87px">2018-5-18 12:00至2018-5-19 24:00</lh-item>
+                <lh-item label="活动有效期：" label-width="87px">{{ startDate }} 至 {{ endDate }}</lh-item>
               </el-col>
               <el-col :span="8">
-                <lh-item label="活动类型：" label-width="auto">线上活动</lh-item>
+                <lh-item label="活动类型：" label-width="auto">
+                  <span v-if="type === 1">普通活动</span>
+                  <span v-if="type === 2">互动游戏</span>
+                </lh-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <lh-item label="展示时间：" label-width="87px">2018-5-18 12:00至2018-5-19 24:00</lh-item>
+                <lh-item label="展示时间：" label-width="87px">
+                  <span v-if="showDate && hiddenDate">{{ showDate }} 至 {{ hiddenDate }}</span>
+                  <span v-else>未设置</span>
+                </lh-item>
               </el-col>
               <el-col :span="8">
                 <lh-item label="创建日期：" label-width="auto">2018-5-7 17:09</lh-item>
@@ -61,20 +71,20 @@
             <el-row :gutter="20" class="big-detail">
               <div class="label-box">
                 <span class="label-title">查看人数：</span>
-                <span class="label-info">11,100</span>
+                <span class="label-info">{{ lookPlayer }}</span>
               </div>
               <div class="label-box">
                 <span class="label-title">参与次数：</span>
-                <span class="label-info">100</span>
+                <span class="label-info">{{ lotteryCount }}</span>
               </div>
-              <div class="label-box">
-                <span class="label-title">分享人数：</span>
-                <span class="label-info">10</span>
-              </div>
-              <div class="label-box">
-                <span class="label-title">分享次数：</span>
-                <span class="label-info">20</span>
-              </div>
+              <!--<div class="label-box">-->
+                <!--<span class="label-title">分享人数：</span>-->
+                <!--<span class="label-info">10</span>-->
+              <!--</div>-->
+              <!--<div class="label-box">-->
+                <!--<span class="label-title">分享次数：</span>-->
+                <!--<span class="label-info">20</span>-->
+              <!--</div>-->
             </el-row>
           </el-col>
         </el-row>
@@ -90,33 +100,44 @@
           <div class="mt10 bgcfff">
             <div class="card-body-title">活动规则</div>
             <div class="card-body-info">
-              <lh-item :label="(index + 1) + '、'"  label-width="20px" v-for="(item, index) in 6" :key="index">2018-5-18 14:00</lh-item>
+              <lh-item label=""  label-width="0px">{{ regulation }}</lh-item>
             </div>
 
             <div class="card-body-title">活动内容</div>
             <div class="card-body-info">
-              <div class="site-info">最大参与人数：<span class="site-info-desc">1600人</span></div>
-              <div class="site-info">每人最大允许中奖数：<span class="site-info-desc">2次</span></div>
-              <div class="site-info">初始抽奖次数：<span class="site-info-desc">1次</span></div>
-              <div class="site-info">分享成功后额外抽奖次数：<span class="site-info-desc">3次</span></div>
+              <div class="site-info">最大参与人数：<span class="site-info-desc">{{ lotteryPlayer }}人</span></div>
+              <div class="site-info">每人最大允许中奖数：<span class="site-info-desc">{{ winningMaxTime }}次</span></div>
+              <div class="site-info">初始抽奖次数：<span class="site-info-desc">{{ lotteryInitTime }}次</span></div>
+              <div class="site-info">分享成功后额外抽奖次数：<span class="site-info-desc">{{ lotteryExtraTime }}次</span></div>
             </div>
             <div class="card-body-table">
-              <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+              <el-table :data="platformActivityGiftList" empty-text="暂无数据" border
                         style="width: 100%">
 
-                <el-table-column label="奖品" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="奖品类型" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="数量" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="中奖概率" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="奖品" align="left">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.couponName || scope.row.redpacketName }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="奖品类型" prop="typeName" align="left"></el-table-column>
+                <el-table-column label="数量" prop="giftQuantity" align="left"></el-table-column>
+                <el-table-column label="中奖概率" prop="lotteryRate" align="left"></el-table-column>
 
               </el-table>
             </div>
 
             <div class="card-body-title">展示设置</div>
             <div class="card-body-info">
-              <lh-item label="展示端"  label-width="87px">小程序</lh-item>
-              <lh-item label="未开始提示"  label-width="87px">活动尚未开始</lh-item>
-              <lh-item label="结束提示"  label-width="87px">活动已结束</lh-item>
+              <lh-item label="展示端"  label-width="87px">
+                <span v-for="(item, index) in platformActivityShowConfigList" :key="index">
+                  <span v-if="index >= 1 && index < platformActivityShowConfigList.length">、</span>
+                  <span v-if="item.type === 1">小程序</span>
+                  <span v-if="item.type === 2">ios端</span>
+                  <span v-if="item.type === 3">安卓端</span>
+                </span>
+              </lh-item>
+              <lh-item label="未开始提示"  label-width="87px">{{ notBeginPrompt }}</lh-item>
+              <lh-item label="结束提示"  label-width="87px">{{ endPrompt }}</lh-item>
             </div>
 
           </div>

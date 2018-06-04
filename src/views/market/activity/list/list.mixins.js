@@ -6,16 +6,20 @@ export default {
   data () {
     return {
       id: '',
+      // 状态 0未发布 1未开始 2进行中 3已结束 4暂停
       statusList: [
-        { val: 10, text: '未发布' },
-        { val: 20, text: '未开始' },
-        { val: 30, text: '进行中' },
-        { val: 40, text: '已结束' },
-        { val: 50, text: '暂停' }
+        { val: 5, text: '全部' },
+        { val: 0, text: '未发布' },
+        { val: 1, text: '未开始' },
+        { val: 2, text: '进行中' },
+        { val: 3, text: '已结束' },
+        { val: 4, text: '暂停' }
       ],
+      // 1普通活动 2互动活动
       typeList: [
-        { val: 10, text: '普通活动' },
-        { val: 20, text: '互动游戏' }
+        { val: 5, text: '全部' },
+        { val: 1, text: '普通活动' },
+        { val: 2, text: '互动游戏' }
       ],
       orderBy: '', // 列表排序 开始时间 升序 10 降序 11 结束时间 升序 20 降序 21
       formData: {
@@ -41,7 +45,7 @@ export default {
       } else if (sort.prop === 'endDate' && sort.order === 'descending') {
         this.orderBy = 21
       } else {
-        this.orderBy = 0
+        this.orderBy = ''
       }
       this.getPageData()
     },
@@ -50,8 +54,9 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        type: this.formData.type,
-        status: this.formData.status,
+        activityName: this.formData.name,
+        type: this.formData.type === 5 ? '' : this.formData.type,
+        status: this.formData.status === 5 ? '' : this.formData.status,
         orderBy: this.orderBy
       }
 
