@@ -101,10 +101,10 @@ export const platformVerifyRecordPage = (obj) => fetch(API_PATH + '/supervisor/p
  */
 
 // 分页查询活动列表
-export const platformactivityList = (obj) => fetch(API_PATH + '/supervisor/platformactivity/list', obj, 'POST')
+export const platformActivityList = (obj) => fetch(API_PATH + '/supervisor/platformActivity/list', obj, 'POST')
 
 // 查询活动详情
-export const platformactivityDetail = (obj) => fetch(API_PATH + '/supervisor/platformactivity/detail', obj, 'POST')
+export const platformActivityDetail = (obj) => fetch(API_PATH + '/supervisor/platformActivity/detail', obj, 'POST')
 
 // 检验活动名称重复
-export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformactivity/isUnique', obj, 'POST')
+export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformActivity/isUnique', obj, 'POST')

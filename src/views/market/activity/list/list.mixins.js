@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { platformactivityList } from '@/service/market'
+import { platformActivityList } from '@/service/market'
 
 export default {
   mixins: [tableMixins],
@@ -55,7 +55,7 @@ export default {
         orderBy: this.orderBy
       }
 
-      platformactivityList(paramsObj).then(res => {
+      platformActivityList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
