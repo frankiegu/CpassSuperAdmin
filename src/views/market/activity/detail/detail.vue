@@ -40,7 +40,9 @@
                   inactive-text=""
                   :active-color="switchActiveColor"></el-switch>
               </el-tooltip>
-              <el-button type="primary" class="fr mr10">编辑</el-button>
+              <router-link :to="'/activity/add?activityId=' + activityId + '&type=edit'">
+                <el-button type="primary" class="fr mr10">编辑</el-button>
+              </router-link>
               <el-button type="primary" class="fr mr10">删除</el-button>
             </el-row>
 
