@@ -120,3 +120,6 @@ export const platformActivityStatisticsList = (obj) => fetch(API_PATH + '/superv
 
 // 发布/暂停活动
 export const platformActivityChangeStatus = (obj) => fetch(API_PATH + '/supervisor/platformActivity/changeStatus', obj, 'POST')
+
+// 添加活动
+export const platformActivityAdd = (obj) => fetch(API_PATH + '/supervisor/platformActivity/add', obj, 'POST')

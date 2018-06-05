@@ -59,7 +59,7 @@ export default {
     return {
       disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
-      activityTab: 2,     // tab 的门
+      activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
 
@@ -226,7 +226,7 @@ export default {
       dialogVisible: false, // 添加商品弹窗
       addPrizeForm: {
         addPrizeType: '1',
-        redEnvelopeType: 'commonType',
+        redEnvelopeType: '1',
         redEnvelopeAmount: '',
         selCouponId: '',
         couponType: 1, // 优惠券类型
@@ -284,6 +284,8 @@ export default {
         tipsBeforeStart: '', // 活动未开始提示
         tipsEnd: '', // 活动结束提示
         displayStartValue: '', // 活动显示的开始时间的毫秒数
+        displayStartSubmit: '', // 提交的显示日期
+        displayEndSubmit: '', // 提交的隐藏日期
         terminalList: [
           {
             name: '小程序',
