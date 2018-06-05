@@ -914,7 +914,7 @@ export default {
           if (this.type === 'copy') {
             this.onePartForm.activityName = ''
           }
-          this.monitorOnePartForm = this.onePartForm
+          this.monitorOnePartForm = deepCopyObj(this.onePartForm)
 
           this.twoPartForm = {
             attendNum: partOne.lotteryPlayer, // 参与人数

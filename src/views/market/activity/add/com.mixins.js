@@ -152,7 +152,7 @@ export default {
       },
       onePartFormRule: {
         type: [{ required: true, trigger: 'click', validator: checkType }],
-        activityName: [{ required: true, trigger: 'blur,change', validator: validateActivityName }],
+        activityName: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityName }],
         activityRules: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityRules }],
         fieldName: [{ required: true, message: '请填写场地名称', trigger: ['blur', 'change'] }],
         storeId: [{ required: true, trigger: 'selected', validator: checkStore }],
