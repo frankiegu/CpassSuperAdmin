@@ -27,7 +27,8 @@
               <div class="info-title-id ml12">ID:{{ code }}</div>
 
               <el-tooltip
-                :content="isOpen === 1 ? '点击开启活动' : '点击关闭活动'"
+                v-if="status === 0 || status === 1 || status === 2 || status === 4"
+                :content="isOpen === 0 ? '点击开启活动' : '点击暂停活动'"
                 placement="top"
                 class="margin-lr6 mt6">
                 <el-switch
@@ -40,8 +41,10 @@
                   inactive-text=""
                   :active-color="switchActiveColor"></el-switch>
               </el-tooltip>
-              <el-button type="primary" class="fr mr10">编辑</el-button>
-              <el-button type="primary" class="fr mr10">删除</el-button>
+              <router-link :to="{path: '/activity/add', query: {activityId: activityId, type: 'edit'}}" v-if="canEdit">
+                <el-button type="primary" class="fr mr10">编辑</el-button>
+              </router-link>
+              <el-button type="primary" class="fr mr10" @click="delectActivity" v-if="isDelete">删除</el-button>
             </el-row>
 
             <el-row :gutter="20">
@@ -64,7 +67,7 @@
                 </lh-item>
               </el-col>
               <el-col :span="8">
-                <lh-item label="创建日期：" label-width="auto">2018-5-7 17:09</lh-item>
+                <lh-item label="创建日期：" label-width="auto">{{ created }}</lh-item>
               </el-col>
             </el-row>
 
@@ -128,7 +131,7 @@
 
             <div class="card-body-title">展示设置</div>
             <div class="card-body-info">
-              <lh-item label="展示端"  label-width="87px">
+              <lh-item label="展示端："  label-width="87px">
                 <span v-for="(item, index) in platformActivityShowConfigList" :key="index">
                   <span v-if="index >= 1 && index < platformActivityShowConfigList.length">、</span>
                   <span v-if="item.type === 1">小程序</span>
@@ -136,8 +139,8 @@
                   <span v-if="item.type === 3">安卓端</span>
                 </span>
               </lh-item>
-              <lh-item label="未开始提示"  label-width="87px">{{ notBeginPrompt }}</lh-item>
-              <lh-item label="结束提示"  label-width="87px">{{ endPrompt }}</lh-item>
+              <lh-item label="未开始提示："  label-width="87px">{{ notBeginPrompt || '未设置' }}</lh-item>
+              <lh-item label="结束提示："  label-width="87px">{{ endPrompt || '未设置' }}</lh-item>
             </div>
 
           </div>
@@ -159,7 +162,7 @@
                     clearable
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                    placeholder="选择提交日期"
+                    placeholder="选择添加时间"
                     :picker-options="pickerOptions"></el-date-picker>
                 </el-form-item>
 
@@ -171,14 +174,14 @@
 
               </el-form>
 
-              <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+              <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border @sort-change="change"
                         style="width: 100%">
 
-                <el-table-column label="日期" prop="providerName" align="left" sortable sort-by="created"></el-table-column>
-                <el-table-column label="查看人数" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="参与次数" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="分享人数" prop="providerName" align="left"></el-table-column>
-                <el-table-column label="分享次数" prop="providerName" align="left"></el-table-column>
+                <el-table-column label="日期" prop="date" align="left" sortable="custom"></el-table-column>
+                <el-table-column label="查看人数" prop="lookPlayer" align="left"></el-table-column>
+                <el-table-column label="参与次数" prop="lotteryCount" align="left"></el-table-column>
+                <el-table-column label="分享人数" prop="sharePlayer" align="left"></el-table-column>
+                <el-table-column label="分享次数" prop="shareCount" align="left"></el-table-column>
 
               </el-table>
 

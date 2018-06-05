@@ -111,3 +111,12 @@ export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformA
 
 // 活动奖品选择优惠券
 export const findUsableCouponByType = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/findUsableCouponByType', obj, 'POST')
+
+// 删除活动
+export const platformActivityDelete = (obj) => fetch(API_PATH + '/supervisor/platformActivity/delete', obj, 'POST')
+
+// 活动统计列表
+export const platformActivityStatisticsList = (obj) => fetch(API_PATH + '/supervisor/platformActivity/statisticsList', obj, 'POST')
+
+// 发布/暂停活动
+export const platformActivityChangeStatus = (obj) => fetch(API_PATH + '/supervisor/platformActivity/changeStatus', obj, 'POST')

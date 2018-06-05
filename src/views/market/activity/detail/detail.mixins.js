@@ -1,8 +1,7 @@
 import { API_PATH } from '@/config/env'
 import tableMixins from '@/mixins/table'
 import pickerOptions from '@/mixins/pickerOptions'
-import { platformActivityDetail } from '@/service/market'
-import { serviceList } from '@/service'
+import { platformActivityDetail, platformActivityChangeStatus, platformActivityStatisticsList } from '@/service/market'
 import { setFieldStatus } from '@/service/field'
 import { formatTimeString, downloadFile } from '@/config/utils'
 
@@ -14,12 +13,14 @@ export default {
       field: '',
       fieldType: '',
       activeTab: 'couponInformation',
-      isOpen: 1,
+      isOpen: 0,
+      oldStatus: 0, // 测试用的 改状态前的status
       mainImg: '', // @#注意：主图不重复展示在列表中
 
       formData: {
         reg_date: ''
       },
+      orderBy: '', // 添加时间的排序 升序10 降序11
 
       code: '', // 活动id
       bannerPath: '', // 活动banner地址
@@ -29,8 +30,8 @@ export default {
       endDate: '', // 活动结束时间
       created: '', // 活动创建时间
       status: '', // 活动状态  0未发布 1未开始 2进行中 3已结束 4暂停
-      is_delete: '', // 活动是否删除  0-未删除 1-已删除
-      can_edit: '', // 活动是否允许编辑 0不可编辑 1可编辑
+      isDelete: '', // 活动是否删除  0-未删除 1-已删除
+      canEdit: '', // 活动是否允许编辑 0不可编辑 1可编辑
       regulation: '', // 活动规则
       lotteryPlayer: '', // 参与人数
       lotteryExtraTime: '', // 分享成功后额外抽奖次数(上限值)
@@ -58,6 +59,18 @@ export default {
     this.getActivityDetail()
   },
   methods: {
+    change (sort) {
+      console.log(sort)
+      if (sort.order === 'ascending') {
+        this.orderBy = 10
+      } else if (sort.order === 'descending') {
+        this.orderBy = 11
+      } else {
+        this.orderBy = ''
+      }
+      this.getPageData()
+    },
+    // 获取活动详情
     getActivityDetail () {
       const paramsObj = {
         activityId: this.activityId
@@ -75,12 +88,23 @@ export default {
               this.created = res.info.platformActivity.created || ''
               this.status = res.info.platformActivity.status || ''
               this.regulation = res.info.platformActivity.regulation || ''
-              this.is_delete = res.info.platformActivity.is_delete || ''
-              this.can_edit = res.info.platformActivity.can_edit || ''
+              this.isDelete = res.info.platformActivity.isDelete || ''
+              this.canEdit = res.info.platformActivity.canEdit || ''
+
               this.lotteryPlayer = res.info.platformActivity.lotteryPlayer || ''
               this.lotteryExtraTime = res.info.platformActivity.lotteryExtraTime || ''
               this.lotteryInitTime = res.info.platformActivity.lotteryInitTime || ''
               this.winningMaxTime = res.info.platformActivity.winningMaxTime || ''
+
+              this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer || ''
+              this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount || ''
+
+              if (this.status === 2) {
+                this.isOpen = 1
+              } else if (this.status === 0 || this.status === 1 || this.status === 3 || this.status === 4) {
+                this.isOpen = 0
+              }
+              console.log(this.isOpen)
             }
 
             if (res.info.activityStatistics) {
@@ -104,13 +128,19 @@ export default {
         }
       })
     },
-    getPageData() {
+    // 获取活动统计列表
+    getPageData(page) {
+      this.currentPage = page || this.currentPage
       const paramsObj = {
         pageSize: this.pageSize,
-        pageNum: this.currentPage
+        pageNum: this.currentPage,
+        activityId: this.activityId,
+        startDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
+        endDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null,
+        orderBy: this.orderBy
       }
 
-      serviceList(paramsObj).then(res => {
+      platformActivityStatisticsList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
@@ -127,31 +157,70 @@ export default {
         }
       })
     },
-    // 更新会员状态
+    // 更改活动状态
     handleUpdateStatus() {
-      setFieldStatus({
-        fieldId: this.fieldId,
-        isOpen: this.isOpen
+      if (this.isOpen === 0) {
+        this.oldStatus = 1
+      } else {
+        this.oldStatus = 0
+      }
+      platformActivityChangeStatus({
+        activityId: this.activityId,
+        status: this.isOpen
       }).then(res => {
         if (res.status === 'true') {
-          // @注意：感叹号只在需要表达强烈情感的情况下使用，弹出信息推荐不使用
           this.setMsg('success', '修改成功')
+          if (res.info) {
+            this.status = res.info.status
+            this.canEdit = res.info.canEdit
+            this.isDelete = res.info.isDelete
+          }
         } else {
+          this.isOpen = this.oldStatus
           this.setMsg('error', res.msg)
         }
       })
     },
+    // 删除活动
+    delectActivity () {
+      this.$confirm('此操作将永久删除该活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setFieldStatus({ activityId: this.activityId }).then(res => {
+          if (res.status === 'true') {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          } else {
+            this.$message({
+              type: 'info',
+              message: res.msg
+            });
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
     exportExcel() {
-      if (!this.tableData.length) {
-        return this.setMsg('暂无数据')
+      const self = this
+      const formData = self.formData
+      if (!self.tableData.length) {
+        return self.setMsg('暂无数据')
       }
-      const formData = this.formData
       const downParams = {
-        content: formData.content,
-        startDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
-        endDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null
+        activityId: self.activityId,
+        startDate: formData.reg_date ? formatTimeString(self.formData.reg_date[0]) : null,
+        endDate: formData.reg_date ? formatTimeString(self.formData.reg_date[1]) : null,
+        orderBy: self.orderBy
       }
-      let url = API_PATH + '/supervisor/feedback/export'
+      let url = API_PATH + '/supervisor/platformActivity/statisticsExport'
       downloadFile(url, downParams)
     }
   }
