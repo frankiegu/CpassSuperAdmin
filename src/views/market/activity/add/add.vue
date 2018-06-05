@@ -231,7 +231,7 @@
             <div v-if="addPrizeForm.showRedEnvelope">
               <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType">
                 <template>
-                  <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="commonType">普通红包</el-radio>
+                  <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="1">普通红包</el-radio>
                 </template>
               </el-form-item>
               <!--红包金额-->
@@ -385,6 +385,7 @@ import commonMixins from './common.mixins'
 import { quillEditor } from 'vue-quill-editor'
 import { getEndStartTime, deepCopyObj } from '@/config/utils'
 import { fieldDetail } from '@/service'
+import { platformActivityAdd } from '@/service/market'
 
 export default {
   mixins: [addMixins, commonMixins],
@@ -395,7 +396,7 @@ export default {
   },
   data () {
     return {
-      activityId: this.$route.query.activityId || sessionStorage.getItem('addFieldFirstStep'),
+      activityId: this.$route.query.activityId,
       type: this.$route.query.type,
       addStep: this.$route.query.addStep + '',
       titleName: '',
@@ -568,7 +569,13 @@ export default {
             template: this.onePartForm.activityTemplate, // 活动模板
             startDate: this.threePartForm.activityStart, // 活动开始日期
             endDate: this.threePartForm.activityEnd, // 活动结束日期
-            bannerPath: this.onePartForm.bannerPic // 活动banner
+            bannerPath: this.onePartForm.bannerPic, // 活动banner
+            lotteryPlayer: '',
+            winningMaxTime: '',
+            lotteryInitTime: '',
+            lotteryExtraTime: '',
+            giftCouponArray: [],
+            giftRedpacketArray: []
           }
           switch (step) {
             case '1':
@@ -578,17 +585,45 @@ export default {
               this.activityTab = 2
               this.loadingOnePart = false
               break;
-            case '3':
-              ajaxParams.step = 3
-              this.submitObject = ajaxParams
-              break;
             case '2':
               ajaxParams.step = 2
               ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
               ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
               ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
               ajaxParams.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
-              this.submitObject = ajaxParams
+              console.log(1111111)
+              let giftCouponArray = [] // 优惠券数组
+              let giftRedpacketArray = [] // 红包数组
+              // 奖品数组
+              this.prizeList.forEach(v => {
+                let tempCoupon, tempReEvenlope
+                if (v.type === 1) {
+                  // 优惠券
+                  tempCoupon = {
+                    platformCouponId: v.id,
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftCouponArray.push(tempCoupon)
+                } else {
+                  tempReEvenlope = {
+                    type: v.redEnvelopeType, // 红包类型
+                    amount: v.redEnvelopeAmount, // 红包金额
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftRedpacketArray.push(tempReEvenlope)
+                }
+              })
+              console.log(123)
+              if (giftCouponArray.length > 0) ajaxParams.giftCouponArray = giftCouponArray // 优惠券数组
+              if (giftRedpacketArray.length > 0) ajaxParams.giftRedpacketArray = giftRedpacketArray // 红包数组
+              console.log('ajaxParams.giftCouponArray', ajaxParams.giftCouponArray)
+              console.log('ajaxParams.giftRedpacketArray', ajaxParams.giftRedpacketArray)
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 this.tabSwitch = 3      // add field 打开第三道门
                 this.activityTab = 3 // 切换到第二道门
@@ -596,15 +631,8 @@ export default {
               } else if (this.prizeList.length <= 0) {
                 this.$message.info('请至少添加一个奖品')
               }
-              // 校验预约设置
-              // if (this.onePartForm.type === '5') {
-              //   ajaxParams.step = 2
-              //   this.addPartTwo(ajaxParams)
-              //   return
-              // }
-
-              // if (this.onePartForm.type !== '5' && !this.verifyReservationSetting()) return
-
+              this.submitObject = ajaxParams
+              console.log('step2', this.submitObject)
               // 判断表单是否有改动，true为有改动，false则未改动
               // 没改动不调接口，调接口需求要关闭对外开放，所以未改动就不调用编辑接口
               // if (this.dataFinishPercent === 100) {
@@ -646,6 +674,33 @@ export default {
               //   ajaxParams.step = 2
               //   this.addPartTwo(ajaxParams)
               // }
+              break;
+            case '3':
+              ajaxParams.step = 3
+              let terminals = []
+              for (let i = 0; i < this.threePartForm.terminalList.length; i++) {
+                for (let j = 0; j < this.threePartForm.displayTerminal.length; j++) {
+                  if (this.threePartForm.terminalList[i].name === this.threePartForm.displayTerminal[j]) {
+                    terminals.push(this.threePartForm.terminalList[i].id)
+                  }
+                }
+              }
+              this.submitObject.showType = terminals // 展示端
+              this.submitObject.showDate = this.threePartForm.displayStartSubmit ? this.threePartForm.displayStartSubmit : this.threePartForm.activityStart // 展示日期
+              this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit ? this.threePartForm.displayEndSubmit : this.threePartForm.activityEnd // 隐藏日期
+              this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
+              this.submitObject.endPrompt = this.threePartForm.tipsEnd // 结束提示
+              // this.submitObject = ajaxParams
+              // 请求接口
+              if (!this.activityId) {
+                platformActivityAdd(this.submitObject).then(res => {
+                  if (res.status === 'true') {
+                    this.$router.push('/activity/detail?activityId=' + res.info.id)
+                  } else {
+                    this.setMsg('error', res.msg)
+                  }
+                })
+              }
               break;
           }
           console.log('this.submitObject', this.submitObject)
@@ -956,8 +1011,8 @@ export default {
       ed = ed >= 10 ? ed : '0' + ed
       eH = eH >= 10 ? eH : '0' + eH
       eM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM
+      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
+      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':00'
     },
     /**
      * part 2
@@ -1050,6 +1105,13 @@ export default {
 
       // 活动展示时间
       this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+      // 提交的展示时间
+      let dsm = sm + 1
+      dsm = dsm >= 10 ? dsm : '0' + dsm
+      let dsd = sd >= 10 ? sd : '0' + sd
+      let dsH = sH >= 10 ? sH : '0' + sH
+      let dsM = sM >= 10 ? sM : '0' + sM
+      this.threePartForm.displayStartSubmit = sy + '-' + dsm + '-' + dsd + ' ' + dsH + ':' + dsM + ':00'
     },
     displayEnd (val) {
       let end = new Date(val)
@@ -1061,6 +1123,13 @@ export default {
 
       // 活动隐藏时间
       this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+      // 提交的展示时间
+      let dem = em + 1
+      dem = dem >= 10 ? dem : '0' + dem
+      let ded = ed >= 10 ? ed : '0' + ed
+      let deH = eH >= 10 ? eH : '0' + eH
+      let deM = eM >= 10 ? eM : '0' + eM
+      this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
     },
     // 确定添加奖品
     sureAddPrize () {
@@ -1089,14 +1158,18 @@ export default {
             validate: true,
             probabilityValidate: true,
             prizeQuantityWarning: '请输入奖品数量',
-            prizeProbabilityWarning: '请输入中奖概率'
+            prizeProbabilityWarning: '请输入中奖概率',
+            isRepeat: this.addPrizeForm.allowRepeat ? 1 : 0,
+            useExplain: this.addPrizeForm.useInstruction, // 奖品使用说明
+            redEnvelopeType: this.addPrizeForm.redEnvelopeType, // 红包类型
+            redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
           }
           this.prizeList.push(prize)
           console.log('this.prizeList', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
             addPrizeType: '1',
-            redEnvelopeType: 'commonType',
+            redEnvelopeType: '1',
             redEnvelopeAmount: '',
             selCouponId: '',
             couponType: 1, // 优惠券类型
