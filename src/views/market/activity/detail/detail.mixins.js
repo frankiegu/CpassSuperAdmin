@@ -96,8 +96,10 @@ export default {
               this.lotteryInitTime = res.info.platformActivity.lotteryInitTime
               this.winningMaxTime = res.info.platformActivity.winningMaxTime
 
-              this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer
-              this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount
+              if (res.info.platformActivity.activityStatistics) {
+                this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer
+                this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount
+              }
 
               if (this.status === 2) {
                 this.isOpen = 1
@@ -105,11 +107,6 @@ export default {
                 this.isOpen = 0
               }
               console.log(this.isOpen)
-            }
-
-            if (res.info.activityStatistics) {
-              this.lookPlayer = res.info.activityStatistics.lookPlayer || 0
-              this.lotteryCount = res.info.activityStatistics.lotteryCount || 0
             }
 
             if (res.info.platformActivityShowConfigList) {
