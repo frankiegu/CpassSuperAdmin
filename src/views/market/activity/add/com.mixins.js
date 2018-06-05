@@ -61,79 +61,16 @@ export default {
       callback();
     };
     return {
-      disabledweixinPay: false, // 场地费用有0就禁止微信支付，费用默认为null，不禁止
       addEditType: 0,     // 区分编辑还是新增
       activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
-
-      // tab 1
-      imgsLenght: 5,      // 限制上传图片数量
-      storeList: [],
-
-      // tab 2
-      paymentList: [],    // 支付方式列表
-      equipmentsList: [], // 设备列表
-
-      giveUpEditing: false,
-      quillLenght: 1000,   // 富文本编辑器的length
-      editor1TextLength: 0,
-      editor2TextLength: 0,
-      // 切换区分工作日的数据
-      openData: [],
-      openWeek: [{
-        status: 1,
-        startTime: '',
-        endTime: '',
-        endStartTime: '00:00', // 时段结束时间的起始值
-        price: '', // 场地费用
-        workState: 1,
-        restState: 1
-      }],
-      /**
-       * 预约设置，数据放在一起，类型用页面的场地类型
-       * 初始数据，每处用到的地方会赋值一次
-       * 注意：保留此结构，场地新增和编辑有用到
-       */
-      openPeriod: [{
-        type: 1, // 1 工作日，2 非工作日，3 整周
-        status: 1,
-        startTime: '',
-        endTime: '',
-        endStartTime: '00:00', // 时段结束时间的起始值
-        price: '', // 场地费用
-        workState: 1,
-        restState: 1
-      }, {
-        type: 2,
-        status: 1,
-        startTime: '',
-        endTime: '',
-        endStartTime: '00:00', // 时段结束时间的起始值
-        price: '', // 场地费用
-        workState: 1,
-        restState: 1
-      }],
-
-      editorOption1: {
-        modules: {
-          toolbar: [
-            [{ 'list': 'bullet' }]
-          ]
-        },
-        placeholder: ' ',
-        theme: 'snow'  // or 'bubble'
-      },
-      hoursList: [],
-
       /**
        * 信息完整度
        * 添加100%之后调用编辑接口
        * 否则，调用添加接口
        * 第一步：30，第二步70，第三步100
        */
-      dataFinishPercent: null,
-      dataFinishInterface: null, // 用来区分添加和编辑的接口名
       step: null, // 添加步骤 1:第一步 2:第二步 3:第三步
       loadingOnePart: false,
       loadingTwoPart: false,
@@ -177,9 +114,6 @@ export default {
         originalTimes: '', // 初始抽奖次数
         shareAddTimes: '' // 分享后获得的抽奖次数
       },
-      ifPrizeQuantityWarning: false, // 奖品数量错误提示显示/隐藏
-      prizeQuantityWarning: '', // 奖品数量错误提示文本
-      currentPrizeIds: [], // 奖品数量验证不通过的奖品id
       twoPartFormRule: {
         price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }],
         attendNum: [{ required: true, validator: checkNum, trigger: ['blur', 'change'] }],
@@ -220,16 +154,7 @@ export default {
           name: '礼品券'
         }
       ],
-      couponList: [
-        {
-          name: '1杯咖啡券',
-          id: '110'
-        },
-        {
-          name: '2杯咖啡券',
-          id: '112'
-        }
-      ], // 优惠券列表
+      couponList: [], // 优惠券列表
 
       // part 3
       threePartForm: {
@@ -265,157 +190,10 @@ export default {
         displayTerminal: [{ required: true, validator: validateTerminal, trigger: ['blur', 'change'] }],
         tipsBeforeStart: [{ required: true, message: '请输入活动未开始提示', trigger: ['blur', 'change'] }],
         tipsEnd: [{ required: true, message: '请输入活动结束提示', trigger: ['blur', 'change'] }]
-      },
-
-      todayList: [
-        { value: '0.5', label: '0.5' },
-        { value: '1', label: '1' },
-        { value: '2', label: '2' },
-        { value: '3', label: '3' },
-        { value: '4', label: '4' },
-        { value: '5', label: '5' },
-        { value: '6', label: '6' },
-        { value: '7', label: '7' },
-        { value: '8', label: '8' },
-        { value: '9', label: '9' },
-        { value: '10', label: '10' },
-        { value: '11', label: '11' },
-        { value: '12', label: '12' }
-      ],
-      monthList: [
-        { value: '1', label: '1' },
-        { value: '2', label: '2' },
-        { value: '3', label: '3' },
-        { value: '4', label: '4' },
-        { value: '5', label: '5' },
-        { value: '6', label: '6' },
-        { value: '7', label: '7' },
-        { value: '8', label: '8' },
-        { value: '9', label: '9' },
-        { value: '10', label: '10' },
-        { value: '11', label: '11' },
-        { value: '12', label: '12' },
-        { value: '13', label: '13' },
-        { value: '14', label: '14' },
-        { value: '15', label: '15' },
-        { value: '16', label: '16' },
-        { value: '17', label: '17' },
-        { value: '18', label: '18' },
-        { value: '19', label: '19' },
-        { value: '20', label: '20' },
-        { value: '21', label: '21' },
-        { value: '22', label: '22' },
-        { value: '23', label: '23' },
-        { value: '24', label: '24' },
-        { value: '25', label: '25' },
-        { value: '26', label: '26' },
-        { value: '27', label: '27' },
-        { value: '28', label: '28' },
-        { value: '29', label: '29' },
-        { value: '30', label: '30' }
-      ]
+      }
     }
   },
   methods: {
-    validateImgs () {
-      if (!this.threePartForm.imgs[0].img) {
-        this.setMsg('请上传场地图片')
-        return
-      }
-
-      this.threePartForm.mainImg = ''
-      for (let list of this.threePartForm.imgs) {
-        if (list.mainImg === 1) {
-          this.threePartForm.mainImg = list.img
-        }
-      }
-      if (!this.threePartForm.mainImg) {
-        this.setMsg('请设置场地主图')
-        return
-      }
-      return true
-    },
-    // 提交表单第二步验证
-    verifyNaturalTrue(val) {
-      return (!NATURAL_NUM.test(val))
-    },
-    verifyReservationSetting() {
-      // 1 区分工作日，2 不区分工作日
-      let msgHead, msgCon
-      if (this.twoPartForm.appointmentTimeType === 2) {
-        for (let item of this.openData) {
-          msgHead = item.type === 1 ? '工作日' : '非工作日'
-
-          if (item.status) {
-            if (this.onePartForm.type !== '3') {
-              if (!item.startTime) {
-                msgCon = '起始时间'
-                this.popTip(msgHead, msgCon)
-                return
-              }
-              if (!item.endTime) {
-                msgCon = '结束时间'
-                this.popTip(msgHead, msgCon)
-                return
-              }
-            }
-
-            if (!item.price) {
-              msgCon = '收费标准'
-              this.popTip(msgHead, msgCon)
-              return
-            } else {
-              if (this.verifyNaturalTrue(item.price)) {
-                msgCon = 'price'
-                this.popTip(msgHead, msgCon)
-                return
-              }
-            }
-          }
-        }
-        return true
-      } else {
-        msgHead = '整周'
-
-        if (this.openData[0].status) {
-          if (this.onePartForm.type !== '3') {
-            if (!this.openData[0].startTime) {
-              msgCon = '起始时间'
-              this.popTip(msgHead, msgCon)
-              return
-            }
-            if (!this.openData[0].endTime) {
-              msgCon = '结束时间'
-              this.popTip(msgHead, msgCon)
-              return
-            }
-          }
-
-          if (this.verifyNaturalTrue(this.openData[0].price)) {
-            msgCon = 'price'
-            this.popTip(msgHead, msgCon)
-            return
-          }
-        }
-        return true
-      }
-    },
-    popTip(msgHead, msgCon) {
-      if (msgCon) {
-        let head
-        if (!msgCon.includes('时间')) {
-          head = '请输入'
-        } else {
-          head = '请选择'
-        }
-
-        if (msgCon === 'price') {
-          this.setMsg('场地价格仅支持整数')
-        } else {
-          this.setMsg(`${head}${msgHead}${msgCon}`)
-        }
-      }
-    },
     // 验证添加的奖品的数量的输入
     handleInputQuantity(currentQuantity, id, type, max) {
       let feeTarget = this.prizeList.find(target => {
@@ -509,27 +287,9 @@ export default {
         }
       }
     },
-    // 关闭弹窗
-    handleCloseDialog(done) {
-      // if (this.selectedMembers.length) {
-      //   const _this = this
-      //   _this.$confirm('未保存添加，是否确认关闭？', {
-      //     lockScroll: false
-      //   })
-      //     .then(_ => {
-      //       _this.selectedMembers = []
-      //       done()
-      //     })
-      //     .catch(_ => {
-      //     })
-      // } else {
-      //   done()
-      // }
-    },
     // 显示活动日期
     displayStart (date) {
       this.threePartForm.displayStartValue = new Date(date).valueOf()
-      console.log('date', this.threePartForm.displayStartValue)
     },
     // 添加奖品选择优惠券
     getCouponList () {
@@ -537,7 +297,6 @@ export default {
         if (res.status === 'true') {
           this.couponList = res.info
           this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
-          console.log('delete', this.couponList)
         }
       })
     },
@@ -549,8 +308,6 @@ export default {
           if (this.couponList.length > 0 && this.prizeList.length > 0) {
             for (let i = 0; i < this.couponList.length; i++) {
               for (let j = 0; j < this.prizeList.length; j++) {
-                console.log('prize111111', this.prizeList[j])
-                console.log('111111', this.couponList[i])
                 if (this.prizeList[j] && this.couponList[i] && this.prizeList[j].id === this.couponList[i].id) {
                   this.couponList.splice(i, 1)
                 } else if (this.prizeList[j] && this.couponList[i] && this.couponList[i].notUseQuantity <= 0) {
@@ -571,7 +328,6 @@ export default {
       } else {
         this.addPrizeForm.showRedEnvelope = false
       }
-      console.log('radio', this.addPrizeFormRule)
     }
   },
   created () {

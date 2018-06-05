@@ -381,18 +381,15 @@
 
 <script>
 import addMixins from './com.mixins'
-import { pickerOptions1 } from '@/mixins/head/data-picker'
 import upload from '@/components/upload'
 import pageTab from './components/page-tab'
 import commonMixins from './common.mixins'
-import { quillEditor } from 'vue-quill-editor'
-import { getEndStartTime, deepCopyObj } from '@/config/utils'
+import { deepCopyObj } from '@/config/utils'
 import { platformActivityAdd, platformActivityDetail, findUsableCouponByType, platformActivityEdit } from '@/service/market'
 
 export default {
   mixins: [addMixins, commonMixins],
   components: {
-    quillEditor,
     [pageTab.name]: pageTab,
     [upload.name]: upload
   },
@@ -400,9 +397,7 @@ export default {
     return {
       activityId: this.$route.query.activityId,
       type: this.$route.query.type,
-      addStep: this.$route.query.addStep + '',
       titleName: '',
-      pickerOptions1,
       orderSortDate: {
         disabledDate(time) {
           // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
@@ -413,19 +408,8 @@ export default {
       submitObject: {} // 创建活动提交参数对象
     }
   },
-  watch: {
-    'twoPartForm.timeType': function(val, oldVal) {
-      // console.log('timeType', val, oldVal, this.hoursList);
-      if (val === 'hour') {
-        this.hoursList = this.todayList
-      } else {
-        this.hoursList = this.monthList
-      }
-    }
-  },
+  watch: {},
   mounted() {
-    // 渲染页面权重更高
-    this.renderPage()
     // 设置标题之后，里面去填充页面内容
     this.setPageTitle()
   },
@@ -433,132 +417,6 @@ export default {
     /**
      * 提交表单
      */
-    addPartOne(ajaxParams) {
-      this.loadingOnePart = true
-
-      const onePartForm = this.onePartForm
-      ajaxParams.fieldName = onePartForm.fieldName
-      ajaxParams.area = onePartForm.area
-      ajaxParams.equipments = this.equipmentsList.map((i) => {
-        if (i.checked) return i.id
-      })
-
-      this.dataFinishInterface(ajaxParams).then(res => {
-        if (res.status === 'true') {
-          if (this.addEditType) {
-            this.setMsg('success', '更新成功')
-          } else {
-            this.setMsg('success', '完成场地新增第一步')
-          }
-          this.tabSwitch = 2         // add field 打开第三道门
-          this.activityTab = 2       // 切换到第二道门
-          this.loadingOnePart = false
-          let resInfo = res.info
-          this.activityId = resInfo.id // 保存新增id
-          // this.dataFinishPercent = resInfo.dataFinishPercent
-        } else {
-          this.setMsg('error', res.msg)
-          this.loadingOnePart = false
-        }
-      })
-    },
-    addPartTwo(ajaxParams) {
-      console.log('ajaxParams', ajaxParams);
-      this.dataFinishInterface(ajaxParams).then(res => {
-        if (res.status === 'true') {
-          if (this.addEditType === 1) {
-            this.setMsg('success', '更新成功')
-          } else {
-            this.setMsg('success', '完成场地新增第二步')
-          }
-          // @#注意：需要刷新备份的数据
-          this.deepCopy()
-          this.tabSwitch = 3      // add field 打开第三道门
-          this.activityTab = 3 // 切换到第二道门
-          this.loadingTwoPart = false
-        } else {
-          this.setMsg('error', res.msg)
-          this.loadingTwoPart = false
-        }
-      })
-    },
-    // 监听第二步是否有修改
-    monitorTwoPart() {
-      // console.log('monitor', this.openDataMonitor); // this.twoPartMonitor, this.openDataMonitor
-      // console.log('原生', this.openData); // this.twoPartForm, this.openData
-
-      this.twoPartStatus = false
-      for (let key of Object.keys(this.twoPartMonitor)) {
-        if (typeof this.twoPartMonitor[key] !== 'object') {
-          // console.log(`string-${key}`, this.twoPartForm[key], this.twoPartMonitor[key]);
-
-          if (this.twoPartForm[key] !== this.twoPartMonitor[key]) {
-            // console.log('key1', key);
-            this.twoPartStatus = true
-            return
-          }
-        } else {
-          // console.log(`object-${key}`, this.twoPartForm[key], this.twoPartMonitor[key]);
-
-          if (this.twoPartForm[key].length !== this.twoPartMonitor[key].length) {
-            // console.log('key2', key);
-            this.twoPartStatus = true
-            return
-          }
-        }
-      }
-
-      // 找到对应的idx
-      this.openData.forEach((item, idx) => {
-        for (let list of Object.keys(item)) {
-          // console.log('----', this.openDataMonitor[idx][list], item[list])
-
-          if (item[list] !== this.openDataMonitor[idx][list]) {
-            // console.log('list', list);
-            this.twoPartStatus = true
-            return
-          }
-        }
-      })
-    },
-    addPartThree(ajaxParams) {
-      this.loadingThreePart = true
-
-      // 接口参数
-      let threePartForm = this.threePartForm
-      ajaxParams.contactName = threePartForm.contactName
-      ajaxParams.contactTel = threePartForm.contactTel
-      ajaxParams.facilitiesAndServices = threePartForm.facilitiesAndServices
-
-      this.dataFinishInterface(ajaxParams).then(res => {
-        if (res.status === 'true') {
-          if (this.activityId) {
-            this.setMsg('success', '保存成功')
-          }
-          this.loadingThreePart = false
-
-          /**
-           * 没有100%添加成功的场地，比如，添加了第一步，退出
-           * 再进来编辑到100%，还是要跳转到发布成功页
-           */
-          // if (this.dataFinishPercent !== 100) {
-          //   this.$router.replace({
-          //     path: '/activity/detail',
-          //     query: {
-          //       id: this.activityId,
-          //       title: this.onePartForm.fieldName,
-          //       open: this.threePartForm.isEffect ? 1 : 0
-          //     }
-          //   })
-          // } else {
-          //   this.$router.replace({ path: '/field/list' })
-          // }
-        } else {
-          this.setMsg('error', res.msg)
-          this.loadingThreePart = false
-        }
-      })
-    },
     submitForm(formName, step) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -745,49 +603,9 @@ export default {
         }
       });
     },
-
     /**
      * 公共部分
      */
-    processStep(idx) {
-      if (idx === 1) {
-        return this.dataFinishPercent === 30 ? 'light-blue-step' : 'blue-step'
-      }
-      if (idx === 2) {
-        return this.dataFinishPercent === 30 ? 'bgcfff' : 'light-blue-step'
-      }
-    },
-    // 选择门店之后，旁边显示对应的地址
-    showStoreAddr() {
-      for (var item of this.storeList) {
-        if (this.onePartForm.storeId) {
-          if (this.onePartForm.storeId === item.id) {
-            this.onePartForm.storeAddr = item.provinceName + item.cityName + item.districtName + item.address
-          }
-        } else {
-          if (this.onePartForm.storeId === item.id) {
-            this.onePartForm.storeAddr = item.provinceName + item.cityName + item.districtName + item.address
-          }
-        }
-      }
-      // console.log('showStoreAddr', id, this.onePartForm.storeAddr);
-    },
-    renderPage() {
-      /**
-       * 渲染前，需要请求的接口数据
-       * 像这种请求列表的接口，不用考虑失败情况
-       */
-      // equipmentList({ activityId: this.activityId }).then(res => {
-      //   if (res.status === 'true') {
-      //     this.equipmentsList = res.info
-      //   }
-      // })
-
-      /* 公用场地类型的数据，方便维护，避免错误 */
-      this.typeList = (this.typeList.length === 5) ? this.typeList.splice(1) : this.typeList
-      // 默认选中，需提前取消
-      this.changeRule()
-    },
     setPageTitle() {
       let titleName
       if (!this.activityId) {
@@ -812,80 +630,11 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
-
-      /* 分步的数据，隐藏的部分应该在步骤内时再请求 */
-      if (val === 2 && !this.paymentList.length) {
-        // paymentType().then(res => {
-        //   if (res.status === 'true' && res.info) {
-        //     this.paymentList = res.info
-        //   }
-        // })
-      }
-    },
-    // 把预约设置接口数据结构 转成自己需要的结构
-    // 因为区分工作日可以手动切换，所以用openWeek 和 openPeriod保存起来，但提交表单的时候不用区分
-    turnOpenData(ajaxData) {
-      // console.log('ajaxData', ajaxData);
-
-      // 如果添加场地第一步刷新，第二步的数据都是空的
-      // 所以读取的时候，直接拿新增的数据
-      if (ajaxData.appointmentTimeType) {
-        // 工作日，包含整周
-        if (ajaxData.appointmentTimeType === 1) {
-          // console.log('1-------');
-          // @#注意：整周默认营业
-          let obj = [{
-            status: ajaxData.workState || 0,
-            price: ajaxData.workPriceDetailList[0].price
-          }]
-
-          // console.log('1');
-          obj[0].startTime = ajaxData.workPriceDetailList[0].startTime
-          obj[0].endStartTime = ajaxData.workPriceDetailList[0].startTime
-          obj[0].endTime = ajaxData.workPriceDetailList[0].endTime
-
-          this.openWeek = obj
-        } else {
-          // console.log('4');
-          // console.log('2-------', ajaxData.workPriceDetailList[0].price);
-          // 工作日，包含整周
-          this.openPeriod[0].status = ajaxData.workState || 0
-
-          if (ajaxData.workState) {
-            this.openPeriod[0].price = ajaxData.workPriceDetailList[0].price
-            this.openPeriod[0].startTime = ajaxData.workPriceDetailList[0].startTime
-            this.openPeriod[0].endStartTime = ajaxData.workPriceDetailList[0].startTime
-            this.openPeriod[0].endTime = ajaxData.workPriceDetailList[0].endTime
-          }
-
-          // 非工作日
-          // 把null设置成0
-          this.openPeriod[1].status = ajaxData.restState || 0
-          if (ajaxData.restState) {
-            this.openPeriod[1].price = ajaxData.restPriceDetailList[0].price
-            this.openPeriod[1].startTime = ajaxData.restPriceDetailList[0].startTime
-            this.openPeriod[1].endStartTime = ajaxData.restPriceDetailList[0].startTime
-            this.openPeriod[1].endTime = ajaxData.restPriceDetailList[0].endTime
-          }
-        }
-      }
-    },
-    // 备份，判断表单是否有改动
-    deepCopy() {
-      this.twoPartMonitor = deepCopyObj(this.twoPartForm)
-      this.openDataMonitor = deepCopyObj(this.openData)
     },
     getPageData() {
       platformActivityDetail({ activityId: this.activityId }).then(res => {
         if (res.status === 'true') {
           let partOne = res.info.platformActivity
-
-          // 信息完整度100%之后调用编辑接口，否则 调用添加接口
-          // this.dataFinishPercent = fieldData.dataFinishPercent
-          // this.dataFinishInterface = (fieldData.dataFinishPercent === 100) ? fieldEditField : fieldAddField
-
-          // 如果不是编辑状态，都要设置成添加状态
-          // this.addEditType = (fieldData.dataFinishPercent === 100) ? 1 : 0
           let startDate = new Date(partOne.startDate)
           let sy = startDate.getFullYear()
           let sm = startDate.getMonth()
@@ -990,16 +739,10 @@ export default {
         }
       })
     },
-    // 判断表格内容是否有变化
-    checkIfChange (form) {
-      if (form === '1') {
-      }
-    },
     /**
      * part 1
      * */
     dateChange (val) {
-      console.log('val', val)
       let start = new Date(val[0])
       let sy = start.getFullYear()
       let sm = start.getMonth()
@@ -1032,87 +775,10 @@ export default {
       this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
       this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':00'
     },
-    /**
-     * part 2
-     * 当不允许取消切换到允许取消，时间设置默认值
-     */
-    // 同时选择休息时，禁止选择，弹出提示：不能歇业
-    handleOpen(idx) {
-      if (!this.openData[0].status && !this.openData[1].status) {
-        this.openData[idx].status = 1
-        this.setMsg('至少需要选中一个营业的日期')
-      }
-    },
-    changeRule() {
-      if (this.twoPartForm.type === '1') {
-        this.twoPartForm.timeType = 'hour'
-        this.changeTimeUnit()
-      }
-    },
-    /**
-     * 在有支付方式的情况下，办公室特殊，是没有的
-     * 是否可以微信支付：场地费用有0出现的时候就禁用微信支付
-     * 切换和修改场地费用的时候，都要重置一次：场地类型、区分工作日、3个费用输入框值的改动
-     * 考虑新增和读取的交互
-     */
-    setWeixinPay() {
-      if (this.twoPartForm.appointmentTimeType === 1) {
-        this.disabledweixinPay = (this.openWeek[0].price === '0')
-      } else {
-        this.disabledweixinPay = ((this.openPeriod[0].price === '0') || (this.openPeriod[1].price === '0'))
-      }
-
-      let hasWeixinPay = 10
-      for (let item of this.paymentList) {
-        if (item.name === 20) {
-          hasWeixinPay = 20
-          break;
-        }
-      }
-      // 如果不包含微信支付，就不展示微信支付相关提示
-      if (hasWeixinPay === 10) {
-        this.disabledweixinPay = false
-      }
-      // console.log('test', this.disabledweixinPay);
-    },
-    changeTimeUnit() {
-      // 切换日期单位的时候，默认选中第一个
-      this.twoPartForm.cancelBeforeTime = (this.twoPartForm.timeType === 'hour') ? '3' : '1'
-    },
-    // 需要区分工作日和非工作日
-    changeStartTime(idx) {
-      this.openData[idx].endTime = null
-      this.openData[idx].endStartTime = getEndStartTime(this.openData[idx].startTime)
-
-      // 调整开始时间就清空结束时间
-    },
 
     /**
      * part 3
      */
-    onTextChange1(editor) {
-      // 针对只是列表的可以满足需求，但是复杂就不好做字数限制了
-      let formartObject
-      formartObject = this.$refs.myQuillEditor1.quill.getFormat(0, this.$refs.myQuillEditor1.quill.getLength())
-      this.editor1TextLength = this.$refs.myQuillEditor1.quill.getLength() - 1
-
-      // console.log('text-change111', this.$refs.myQuillEditor1.quill.getLength())
-      if (this.$refs.myQuillEditor1.quill.getLength() > this.quillLenght + 1) {
-        this.$refs.myQuillEditor1.quill.setText(this.$refs.myQuillEditor1.quill.getText().substring(0, this.quillLenght))
-        this.$refs.myQuillEditor1.quill.formatText(0, this.$refs.myQuillEditor1.quill.getLength(), formartObject)
-      }
-      // console.log('text-change111', this.$refs.myQuillEditor1.quill.getLength())
-    },
-    onTextChange2(editor1) {
-      let formartObject
-      formartObject = this.$refs.myQuillEditor2.quill.getFormat(0, this.$refs.myQuillEditor2.quill.getLength())
-      this.editor2TextLength = this.$refs.myQuillEditor2.quill.getLength() - 1
-
-      if (this.$refs.myQuillEditor2.quill.getLength() > this.quillLenght + 1) {
-        this.$refs.myQuillEditor2.quill.setText(this.$refs.myQuillEditor2.quill.getText().substring(0, this.quillLenght))
-        this.$refs.myQuillEditor2.quill.formatText(0, this.$refs.myQuillEditor2.quill.getLength(), formartObject)
-      }
-    },
     displayStart (val) {
       let start = new Date(val)
       let sy = start.getFullYear()
@@ -1183,7 +849,6 @@ export default {
             redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
           }
           this.prizeList.push(prize)
-          console.log('this.prizeList', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
             addPrizeType: '1',
@@ -1228,7 +893,6 @@ export default {
     },
     // 删除奖品
     deletePrize (id) {
-      console.log('delete', id)
       this.prizeList.forEach((v, i) => {
         if (v.id === id) {
           this.prizeList.splice(i, 1)
@@ -1249,8 +913,6 @@ export default {
 
 <style lang="scss">
 .page-activity-com {
-
-
   .field-name {
     float: left;
     max-width: 66%;

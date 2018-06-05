@@ -89,14 +89,13 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <router-link :to="{path: '/activity/add', query: {activityId: scope.row.id, type: 'edit'}}">
-              <el-button type="text" v-if="scope.row.status === 1 || scope.row.status === 2 || scope.row.status === 4 || scope.row.status === 0"
-                class="operate-btn">编辑</el-button>
+            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {activityId: scope.row.id, type: 'edit'}}">
+              <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
             <router-link :to="{path: '/activity/add', query: {activityId: scope.row.id, type: 'copy'}}">
               <el-button type="text"
-                         class="operate-btn" :class="{'ml45' : scope.row.status === 3 }">复制</el-button>
+                         class="operate-btn" :class="{'ml3' : scope.row.status === 0 }">复制</el-button>
             </router-link>
           </template>
         </el-table-column>
