@@ -79,25 +79,25 @@ export default {
         if (res.status === 'true') {
           if (res.info) {
             if (res.info.platformActivity) {
-              this.code = res.info.platformActivity.code || ''
-              this.bannerPath = res.info.platformActivity.bannerPath || ''
-              this.name = res.info.platformActivity.name || ''
-              this.type = res.info.platformActivity.type || ''
-              this.startDate = res.info.platformActivity.startDate || ''
-              this.endDate = res.info.platformActivity.endDate || ''
-              this.created = res.info.platformActivity.created || ''
-              this.status = res.info.platformActivity.status || ''
-              this.regulation = res.info.platformActivity.regulation || ''
-              this.isDelete = res.info.platformActivity.isDelete || ''
-              this.canEdit = res.info.platformActivity.canEdit || ''
+              this.code = res.info.platformActivity.code
+              this.bannerPath = res.info.platformActivity.bannerPath
+              this.name = res.info.platformActivity.name
+              this.type = res.info.platformActivity.type
+              this.startDate = res.info.platformActivity.startDate
+              this.endDate = res.info.platformActivity.endDate
+              this.created = res.info.platformActivity.created
+              this.status = res.info.platformActivity.status
+              this.regulation = res.info.platformActivity.regulation
+              this.isDelete = res.info.platformActivity.isDelete
+              this.canEdit = res.info.platformActivity.canEdit
 
-              this.lotteryPlayer = res.info.platformActivity.lotteryPlayer || ''
-              this.lotteryExtraTime = res.info.platformActivity.lotteryExtraTime || ''
-              this.lotteryInitTime = res.info.platformActivity.lotteryInitTime || ''
-              this.winningMaxTime = res.info.platformActivity.winningMaxTime || ''
+              this.lotteryPlayer = res.info.platformActivity.lotteryPlayer
+              this.lotteryExtraTime = res.info.platformActivity.lotteryExtraTime
+              this.lotteryInitTime = res.info.platformActivity.lotteryInitTime
+              this.winningMaxTime = res.info.platformActivity.winningMaxTime
 
-              this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer || ''
-              this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount || ''
+              this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer
+              this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount
 
               if (this.status === 2) {
                 this.isOpen = 1
@@ -113,15 +113,15 @@ export default {
             }
 
             if (res.info.platformActivityShowConfigList) {
-              this.platformActivityShowConfigList = res.info.platformActivityShowConfigList || []
-              this.showDate = res.info.platformActivityShowConfigList[0].showDate || ''
-              this.hiddenDate = res.info.platformActivityShowConfigList[0].hiddenDate || ''
-              this.notBeginPrompt = res.info.platformActivityShowConfigList[0].notBeginPrompt || ''
-              this.endPrompt = res.info.platformActivityShowConfigList[0].endPrompt || ''
-              this.showType = res.info.platformActivityShowConfigList[0].showType || ''
+              this.platformActivityShowConfigList = res.info.platformActivityShowConfigList
+              this.showDate = res.info.platformActivityShowConfigList[0].showDate
+              this.hiddenDate = res.info.platformActivityShowConfigList[0].hiddenDate
+              this.notBeginPrompt = res.info.platformActivityShowConfigList[0].notBeginPrompt
+              this.endPrompt = res.info.platformActivityShowConfigList[0].endPrompt
+              this.showType = res.info.platformActivityShowConfigList[0].showType
             }
 
-            this.platformActivityGiftList = res.info.platformActivityGiftList || []
+            this.platformActivityGiftList = res.info.platformActivityGiftList
           }
         } else {
           this.setMsg('error', res.msg)
