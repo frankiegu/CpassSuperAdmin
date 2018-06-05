@@ -21,16 +21,20 @@ export default {
       if (!value) {
         callback(new Error('请输入活动名称'));
       }
-      let params = {
-        name: value
-      }
-      activityIsUnique(params).then(res => {
-        if (res.status === 'false') {
-          callback(new Error(res.msg));
-        } else {
-          callback();
+      if (this.monitorOnePartForm.activityName !== value) {
+        let params = {
+          name: value
         }
-      })
+        activityIsUnique(params).then(res => {
+          if (res.status === 'false') {
+            callback(new Error(res.msg));
+          } else {
+            callback();
+          }
+        })
+      } else {
+        callback();
+      }
     };
     const validateTerminal = (rule, value, callback) => {
       if (value.length <= 0) {
@@ -137,14 +141,6 @@ export default {
 
       // part 1
       onePartForm: {
-        type: '',
-        fieldName: '',
-        storeId: '',
-        storeAddr: '', // 门店地址
-        area: '',
-        maxAdmissibleNum: 5, // 可以容纳多少人
-        stationNum: 5, // 工位总数
-
         activityName: '', // 活动名称
         activityRules: '', // 活动规则
         activityTemplate: '1', // 活动模板
@@ -156,7 +152,7 @@ export default {
       },
       onePartFormRule: {
         type: [{ required: true, trigger: 'click', validator: checkType }],
-        activityName: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityName }],
+        activityName: [{ required: true, trigger: 'blur,change', validator: validateActivityName }],
         activityRules: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityRules }],
         fieldName: [{ required: true, message: '请填写场地名称', trigger: ['blur', 'change'] }],
         storeId: [{ required: true, trigger: 'selected', validator: checkStore }],
@@ -166,6 +162,7 @@ export default {
         rangeDate: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityDate }],
         bannerPic: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityBanner }]
       },
+      monitorOnePartForm: {}, // 编辑和复制活动时备份原来的信息
 
       // part 2
       // 备份，判断表单是否有改动
@@ -175,36 +172,6 @@ export default {
       orderLoading: false,
       prizeList: [], // 奖品列表
       twoPartForm: {
-        cancelBeforeTime: '3',
-        timeType: '', // 允许取消事件的单位 hour 小时 today天
-        type: '1', // 是否允许取消, 0-不允许, 1-允许
-        canUseCoupon: 0, // 是否可使用优惠卷 , 1=可使用, 0=不可使用
-        canUsePoint: 0, // 是否可使用积分, 1=可使用, 0=不可使用
-        payType: [],
-
-        /**
-         * 非办公室
-         * 工作日营业状态 1:营业 0:休息
-         * appointmentTimeType 无论为1或2都必传,当appointmentTimeType为1时 workState必须传 1
-         * 注意：整周用workState、workPriceDetail
-         */
-        workState: 1,
-        // 如果workState=0 则不需要传
-        workPriceDetail: [],
-        appointmentTimeType: 2, // 是否区分工作日 1:不区分 2:区分
-        workPrice: '', // 工作日价格
-        restState: 1,  // 非工作日营业状态 1:营业 0:休息
-        restPrice: '', // 非工作日价格时
-        // restState=0 则不需要传
-        restPriceDetail: [],
-
-        /**
-         * 办公室
-         */
-        minRentMonth: '', // 最少预定多少个月
-        startUseTime: '', // 开始使用时间
-        price: '',         // 租金
-
         attendNum: '', // 参与人数
         winningTimes: '', // 允许的最大中奖次数
         originalTimes: '', // 初始抽奖次数
@@ -266,15 +233,6 @@ export default {
 
       // part 3
       threePartForm: {
-        mainImg: '', // 在验证的时候需要
-        imgs: [{}],
-        contactName: '',
-        telLineSelected: '0', // 0手机号码，1固定电话
-        contactTel: '',
-        facilitiesAndServices: '',
-        instructionsForUse: '',
-        isEffect: false, // 马上生效
-
         // 展示端
         displayTerminal: [],
         activityStart: '', // 活动开始时间

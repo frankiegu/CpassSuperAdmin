@@ -305,7 +305,7 @@
 
         <el-form-item label="活动有效期" label-width="100px">
           <template>
-            <span>{{threePartForm.activityStart}}</span> 至 <span>{{threePartForm.activityEnd}}</span>
+            <span>{{threePartForm.activityStart?threePartForm.activityStart.substr(0, 16):''}}</span> 至 <span>{{threePartForm.activityEnd?threePartForm.activityEnd.substr(0, 16):''}}</span>
           </template>
         </el-form-item>
 
@@ -369,7 +369,10 @@
             @click="submitForm('threePartForm', '3')"
             :loading="loadingThreePart"
             class="to-bottom-right width80px"
-            type="primary">完成创建</el-button>
+            type="primary">
+            <span v-if="!activityId">完成创建</span>
+            <span v-if="activityId">保 存</span>
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -384,8 +387,7 @@ import pageTab from './components/page-tab'
 import commonMixins from './common.mixins'
 import { quillEditor } from 'vue-quill-editor'
 import { getEndStartTime, deepCopyObj } from '@/config/utils'
-import { fieldDetail } from '@/service'
-import { platformActivityAdd } from '@/service/market'
+import { platformActivityAdd, platformActivityDetail, findUsableCouponByType, platformActivityEdit } from '@/service/market'
 
 export default {
   mixins: [addMixins, commonMixins],
@@ -453,7 +455,7 @@ export default {
           this.loadingOnePart = false
           let resInfo = res.info
           this.activityId = resInfo.id // 保存新增id
-          this.dataFinishPercent = resInfo.dataFinishPercent
+          // this.dataFinishPercent = resInfo.dataFinishPercent
         } else {
           this.setMsg('error', res.msg)
           this.loadingOnePart = false
@@ -539,18 +541,18 @@ export default {
            * 没有100%添加成功的场地，比如，添加了第一步，退出
            * 再进来编辑到100%，还是要跳转到发布成功页
            */
-          if (this.dataFinishPercent !== 100) {
-            this.$router.replace({
-              path: '/activity/detail',
-              query: {
-                id: this.activityId,
-                title: this.onePartForm.fieldName,
-                open: this.threePartForm.isEffect ? 1 : 0
-              }
-            })
-          } else {
-            this.$router.replace({ path: '/field/list' })
-          }
+          // if (this.dataFinishPercent !== 100) {
+          //   this.$router.replace({
+          //     path: '/activity/detail',
+          //     query: {
+          //       id: this.activityId,
+          //       title: this.onePartForm.fieldName,
+          //       open: this.threePartForm.isEffect ? 1 : 0
+          //     }
+          //   })
+          // } else {
+          //   this.$router.replace({ path: '/field/list' })
+          // }
         } else {
           this.setMsg('error', res.msg)
           this.loadingThreePart = false
@@ -579,19 +581,18 @@ export default {
           }
           switch (step) {
             case '1':
-              ajaxParams.step = 1
+              // ajaxParams.step = 1
               this.submitObject = ajaxParams
               this.tabSwitch = 2
               this.activityTab = 2
               this.loadingOnePart = false
               break;
             case '2':
-              ajaxParams.step = 2
+              // ajaxParams.step = 2
               ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
               ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
               ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
               ajaxParams.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
-              console.log(1111111)
               let giftCouponArray = [] // 优惠券数组
               let giftRedpacketArray = [] // 红包数组
               // 奖品数组
@@ -619,11 +620,8 @@ export default {
                   giftRedpacketArray.push(tempReEvenlope)
                 }
               })
-              console.log(123)
               if (giftCouponArray.length > 0) ajaxParams.giftCouponArray = giftCouponArray // 优惠券数组
               if (giftRedpacketArray.length > 0) ajaxParams.giftRedpacketArray = giftRedpacketArray // 红包数组
-              console.log('ajaxParams.giftCouponArray', ajaxParams.giftCouponArray)
-              console.log('ajaxParams.giftRedpacketArray', ajaxParams.giftRedpacketArray)
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 this.tabSwitch = 3      // add field 打开第三道门
                 this.activityTab = 3 // 切换到第二道门
@@ -632,7 +630,6 @@ export default {
                 this.$message.info('请至少添加一个奖品')
               }
               this.submitObject = ajaxParams
-              console.log('step2', this.submitObject)
               // 判断表单是否有改动，true为有改动，false则未改动
               // 没改动不调接口，调接口需求要关闭对外开放，所以未改动就不调用编辑接口
               // if (this.dataFinishPercent === 100) {
@@ -676,7 +673,7 @@ export default {
               // }
               break;
             case '3':
-              ajaxParams.step = 3
+              // ajaxParams.step = 3
               let terminals = []
               for (let i = 0; i < this.threePartForm.terminalList.length; i++) {
                 for (let j = 0; j < this.threePartForm.displayTerminal.length; j++) {
@@ -700,10 +697,49 @@ export default {
                     this.setMsg('error', res.msg)
                   }
                 })
+              } else if (this.activityId) {
+                this.submitObject.id = this.activityId
+                if (this.submitObject.giftCouponArray.length > 0) {
+                  this.submitObject.giftCouponArray.forEach(v => {
+                    if (v.isRepeat) {
+                      v.isRepeat = 1
+                    } else {
+                      v.isRepeat = 0
+                    }
+                  })
+                }
+                if (this.submitObject.giftRedpacketArray.length > 0) {
+                  this.submitObject.giftRedpacketArray.forEach(v => {
+                    if (v.isRepeat) {
+                      v.isRepeat = 1
+                    } else {
+                      v.isRepeat = 0
+                    }
+                  })
+                }
+                if (this.type === 'edit') {
+                  platformActivityEdit(this.submitObject).then(res => {
+                    if (res.status === 'true') {
+                      this.setMsg('success', '更新成功')
+                      this.$router.push('/activity/detail?activityId=' + this.activityId)
+                    } else {
+                      this.setMsg('error', res.msg)
+                    }
+                  })
+                } else if (this.type === 'copy') {
+                  this.submitObject.id = ''
+                  platformActivityAdd(this.submitObject).then(res => {
+                    if (res.status === 'true') {
+                      this.setMsg('success', res.msg)
+                      this.$router.push('/activity/detail?activityId=' + res.info.id)
+                    } else {
+                      this.setMsg('error', res.msg)
+                    }
+                  })
+                }
               }
               break;
           }
-          console.log('this.submitObject', this.submitObject)
         } else {
           // return
         }
@@ -719,22 +755,6 @@ export default {
       }
       if (idx === 2) {
         return this.dataFinishPercent === 30 ? 'bgcfff' : 'light-blue-step'
-      }
-    },
-    getStoreList(visible) {
-      // 新增场地visible等于undefined，或者在触发选择框的时候，刷新门店列表
-      // 因为旁边有个新增门店的功能
-      if (visible === undefined || visible) {
-        // findAllStore().then(res => {
-        //   if (res.status === 'true') {
-        //     this.storeList = res.info
-        //     /* 新增场地，默认为读取门店列表的第一个场地 */
-        //     if (!this.onePartForm.storeId) {
-        //       this.onePartForm.storeId = this.storeList[0].id
-        //       this.showStoreAddr()
-        //     }
-        //   }
-        // })
       }
     },
     // 选择门店之后，旁边显示对应的地址
@@ -770,21 +790,9 @@ export default {
     },
     setPageTitle() {
       let titleName
-
-      // 拿到门店列表
-      this.getStoreList()
       if (!this.activityId) {
         titleName = '添加活动'
         this.addEditType = 0
-
-        // 添加场地，默认选中会议室类型
-        this.onePartForm.type = '1'
-
-        // 添加场地，使用添加接口
-        // this.dataFinishInterface = fieldAddField
-
-        // 初始化预约设置数据
-        this.toggleWeek()
       } else {
         if (this.type === 'edit') {
           titleName = '编辑活动'
@@ -867,115 +875,125 @@ export default {
       this.twoPartMonitor = deepCopyObj(this.twoPartForm)
       this.openDataMonitor = deepCopyObj(this.openData)
     },
-    // 切换，区分工作日和非工作日
-    toggleWeek() {
-      if (this.twoPartForm.appointmentTimeType === 1) {
-        this.openData = [...this.openWeek]
-      } else {
-        this.openData = [...this.openPeriod]
-      }
-      // 每次切换的时候，清空禁止微信支付
-      this.disabledweixinPay = false
-
-      // console.log('openData', this.twoPartForm.appointmentTimeType, this.openData, this.openWeek, this.openPeriod);
-    },
     getPageData() {
-      fieldDetail({ activityId: this.activityId }).then(res => {
+      platformActivityDetail({ activityId: this.activityId }).then(res => {
         if (res.status === 'true') {
-          let resInfo = res.info
-          let fieldData = resInfo.field
+          let partOne = res.info.platformActivity
 
           // 信息完整度100%之后调用编辑接口，否则 调用添加接口
-          this.dataFinishPercent = fieldData.dataFinishPercent
+          // this.dataFinishPercent = fieldData.dataFinishPercent
           // this.dataFinishInterface = (fieldData.dataFinishPercent === 100) ? fieldEditField : fieldAddField
 
           // 如果不是编辑状态，都要设置成添加状态
-          this.addEditType = (fieldData.dataFinishPercent === 100) ? 1 : 0
+          // this.addEditType = (fieldData.dataFinishPercent === 100) ? 1 : 0
+          let startDate = new Date(partOne.startDate)
+          let sy = startDate.getFullYear()
+          let sm = startDate.getMonth()
+          let sd = startDate.getDate()
+          let sH = startDate.getHours()
+          let sM = startDate.getMinutes()
+          let start = new Date(sy, sm, sd, sH, sM)
 
+          let endDate = new Date(partOne.endDate)
+          let ey = endDate.getFullYear()
+          let em = endDate.getMonth()
+          let ed = endDate.getDate()
+          let eH = endDate.getHours()
+          let eM = endDate.getMinutes()
+          let end = new Date(ey, em, ed, eH, eM)
           this.onePartForm = {
-            type: fieldData.type + '',
-            storeId: fieldData.storeId,
-            fieldName: fieldData.fieldName,
-            maxAdmissibleNum: resInfo.fieldMeeting ? resInfo.fieldMeeting.maxAdmissibleNum || '' : (resInfo.fieldRoadshowHall ? resInfo.fieldRoadshowHall.maxAdmissibleNum || '' : (resInfo.fieldOther ? resInfo.fieldOther.maxAdmissibleNum : '')),
-            area: fieldData.area
+            activityName: partOne.name, // 活动名称
+            activityRules: partOne.regulation, // 活动规则
+            activityTemplate: partOne.template + '', // 活动模板
+            activityType: partOne.type + '', // 活动类型
+            activityStartDate: partOne.startDate, // 活动开始日期
+            activityEndDate: partOne.endDate, // 活动结束日期
+            rangeDate: [start, end], // 活动日期
+            bannerPic: partOne.bannerPath // 活动banner
           }
-          // 显示门店地址信息
-          this.showStoreAddr()
-
-          let twoPartForm = {
-            appointmentTimeType: fieldData.appointmentTimeType || 2,
-            cancelBeforeTime: fieldData.cancelBeforeTime || 3,
-            timeType: (fieldData.cancelBeforeUnit === 'H') ? 'hour' : 'today',
-            type: (fieldData.cancel !== 0) ? '1' : '2',
-            canUseCoupon: fieldData.canUseCoupon,
-            canUsePoint: fieldData.canUsePoint,
-            payType: resInfo.paymentTypeList
+          if (this.type === 'copy') {
+            this.onePartForm.activityName = ''
           }
+          this.monitorOnePartForm = this.onePartForm
 
-          if (this.onePartForm.type === '5') {
-            let fieldOffice = resInfo.fieldOffice
-            twoPartForm.startUseTime = fieldOffice.startUseTime || ''
-            twoPartForm.minRentMonth = fieldOffice.stationNum || ''
-            twoPartForm.price = fieldOffice.price || ''
+          this.twoPartForm = {
+            attendNum: partOne.lotteryPlayer, // 参与人数
+            winningTimes: partOne.winningMaxTime, // 允许的最大中奖次数
+            originalTimes: partOne.lotteryInitTime, // 初始抽奖次数
+            shareAddTimes: partOne.lotteryExtraTime // 分享后获得的抽奖次数
           }
-          this.twoPartForm = twoPartForm
-
-          switch (this.onePartForm.type) {
-            case '1':
-              this.turnOpenData(resInfo.fieldMeeting)
-              break;
-            case '2':
-              this.turnOpenData(resInfo.fieldRoadshowHall)
-              break;
-            case '4':
-              this.turnOpenData(resInfo.fieldOther)
-              break;
-            case '5':
-              this.onePartForm.stationNum = resInfo.fieldOffice.stationNum
-              break;
-            case '3':
-              this.onePartForm.stationNum = resInfo.fieldStation.stationNum
-
-              if (this.twoPartForm.appointmentTimeType === 1) {
-                let fieldPriceList = [...this.openWeek]
-                fieldPriceList[0].price = resInfo.fieldStation.workPrice
-                fieldPriceList[0].status = resInfo.fieldStation.workState
-                this.openWeek = [...fieldPriceList]
-              } else {
-                let fieldPriceList = [...this.openPeriod]
-                fieldPriceList[0].price = resInfo.fieldStation.workPrice
-                fieldPriceList[0].status = resInfo.fieldStation.workState
-                fieldPriceList[1].price = resInfo.fieldStation.restPrice
-                fieldPriceList[1].status = resInfo.fieldStation.restState
-                this.openPeriod = [...fieldPriceList]
+          if (res.info.platformActivityGiftList.length > 0) {
+            res.info.platformActivityGiftList.forEach(v => {
+              let prize = {
+                type: v.platformCouponId ? 1 : 2,
+                prizeName: v.platformCouponId ? v.couponName : v.typeName + '(' + v.amount + '元)',
+                quantity: v.giftQuantity,
+                probability: v.lotteryRate * 100,
+                id: v.platformCouponId,
+                validate: false,
+                probabilityValidate: false,
+                prizeQuantityWarning: '',
+                prizeProbabilityWarning: '',
+                isRepeat: v.isRepeat === 1,
+                useExplain: v.redemptRemark,
+                redEnvelopeType: v.type + '',
+                redEnvelopeAmount: v.amount
               }
-              break;
-          }
-          // 拼接预约设置的数据
-          this.toggleWeek()
-
-          // 备份，判断表单是否有改动
-          // @#注意：深拷贝
-          this.deepCopy()
-          // console.log('monitor', this.twoPartMonitor, this.openDataMonitor);
-
-          this.threePartForm = {
-            contactName: fieldData.contactName || '',
-            contactTel: fieldData.contactTel || '',
-            telLineSelected: (fieldData.contactTel && fieldData.contactTel.length > 11) ? '1' : '0',
-            facilitiesAndServices: fieldData.facilitiesAndServices,
-            instructionsForUse: fieldData.instructionsForUse,
-            isEffect: fieldData.status === 10,
-            imgs: !resInfo.fieldImgs.length ? [{}] : resInfo.fieldImgs.map(img => ({ img: img.img, mainImg: img.mainImg }))
+              this.prizeList.push(prize)
+            })
+            findUsableCouponByType().then(res => {
+              if (res.status === 'true') {
+                let list = res.info
+                for (let i = 0; i < list.length; i++) {
+                  for (let j = 0; j < this.prizeList.length; j++) {
+                    if (list[i].id === this.prizeList[j].id) {
+                      this.prizeList[j].maxQuantity = list[i].notUseQuantity > 0 ? list[i].notUseQuantity : list[i].giftQuantity
+                    }
+                  }
+                }
+              }
+            })
           }
 
-          if (this.dataFinishPercent === 30) {
-            this.tabSwitch = 2 // add field 打开第二道门
-          } else if (this.dataFinishPercent === 70) {
-            this.tabSwitch = 3 // add field 打开第三道门
+          if (res.info.platformActivityShowConfigList.length > 0) {
+            res.info.platformActivityShowConfigList.forEach(v => {
+              if (v.type === 1) {
+                this.threePartForm.displayTerminal.push('小程序')
+              } else if (v.type === 2) {
+                this.threePartForm.displayTerminal.push('APP IOS端')
+              } else if (v.type === 3) {
+                this.threePartForm.displayTerminal.push('APP 安卓端')
+              }
+            })
           }
+          this.threePartForm.activityStart = partOne.startDate
+          this.threePartForm.activityEnd = partOne.endDate
+          // 活动展示时间
+          let startS = new Date(res.info.platformActivityShowConfigList[0].showDate)
+          let syS = startS.getFullYear()
+          let smS = startS.getMonth()
+          let sdS = startS.getDate()
+          let sHS = startS.getHours()
+          let sMS = startS.getMinutes()
+          this.threePartForm.activityDisplayStart = new Date(syS, smS, sdS, sHS, sMS)
+          // 活动隐藏时间
+          let endS = new Date(res.info.platformActivityShowConfigList[0].hiddenDate)
+          let eyS = endS.getFullYear()
+          let emS = endS.getMonth()
+          let edS = endS.getDate()
+          let eHS = endS.getHours()
+          let eMS = endS.getMinutes()
+          this.threePartForm.activityDisplayEnd = new Date(eyS, emS, edS, eHS, eMS)
+          // 活动未开始提示
+          this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
+          this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
         }
       })
+    },
+    // 判断表格内容是否有变化
+    checkIfChange (form) {
+      if (form === '1') {
+      }
     },
     /**
      * part 1
@@ -1150,7 +1168,7 @@ export default {
           }
           let prize = {
             type: this.addPrizeForm.addPrizeType - 1 + 1,
-            prizeName: this.addPrizeForm.showRedEnvelope ? '普通红包' + this.addPrizeForm.redEnvelopeAmount : couponName,
+            prizeName: this.addPrizeForm.showRedEnvelope ? '普通红包(' + this.addPrizeForm.redEnvelopeAmount + '元)' : couponName,
             maxQuantity: couponRest,
             quantity: '',
             probability: '',

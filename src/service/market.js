@@ -123,3 +123,6 @@ export const platformActivityChangeStatus = (obj) => fetch(API_PATH + '/supervis
 
 // 添加活动
 export const platformActivityAdd = (obj) => fetch(API_PATH + '/supervisor/platformActivity/add', obj, 'POST')
+
+// 编辑活动
+export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platformActivity/update', obj, 'POST')
