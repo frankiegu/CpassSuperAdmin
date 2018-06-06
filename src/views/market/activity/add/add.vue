@@ -33,12 +33,12 @@
             class="activity-name fl"
             v-model.trim="onePartForm.activityRules"
             :maxlength="200"
-            :rows="4"
+            :rows="7"
             placeholder="请填写活动规则"
           >
           </el-input>
 
-          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
+          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/200）限制字数200</span></el-form-item>
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
@@ -47,7 +47,7 @@
           </template>
         </el-form-item>
 
-        <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40">
+        <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40" v-if="onePartForm.activityType === '2'">
           <template>
             <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
             <!--<el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>-->
@@ -237,7 +237,7 @@
               </el-form-item>
               <!--红包金额-->
               <el-form-item style="width: 100%" label="红包金额" class="red-envelope" prop="redEnvelopeAmount">
-                <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="width300px add-prize-info"></el-input>
+                <el-input v-model="addPrizeForm.redEnvelopeAmount" :maxlength="addPrizeForm.redEnvelopeAmount.indexOf('.') > -1 ? (addPrizeForm.redEnvelopeAmount.indexOf('.') + 3) : 3" placeholder="请输入单个红包的金额" class="width300px add-prize-info"></el-input>
               </el-form-item>
             </div>
 
@@ -270,10 +270,16 @@
               <el-input v-model="addPrizeForm.useInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>
             </el-form-item>
 
+            <!--红包使用说明-->
+            <!--<el-form-item v-if="addPrizeForm.showRedEnvelope" style="width: 100%" label="使用说明" class="red-envelope" prop="useInstruction">-->
+              <!--<el-input v-model="addPrizeForm.redEnvelopeInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>-->
+            <!--</el-form-item>-->
+
+
             <!--礼品券奖品说明-->
-            <el-form-item v-if="!addPrizeForm.showRedEnvelope && addPrizeForm.couponType === 3" style="width: 100%" label="奖品说明" class="red-envelope" prop="giftUseInstruction">
-              <el-input v-model="addPrizeForm.giftUseInstruction" :maxlength="5" placeholder="请填写礼品券使用说明" class="width300px add-prize-info"></el-input>
-            </el-form-item>
+            <!--<el-form-item v-if="!addPrizeForm.showRedEnvelope && addPrizeForm.couponType === 3" style="width: 100%" label="奖品说明" class="red-envelope" prop="giftUseInstruction">-->
+              <!--<el-input v-model="addPrizeForm.giftUseInstruction" :maxlength="5" placeholder="请填写礼品券使用说明" class="width300px add-prize-info"></el-input>-->
+            <!--</el-form-item>-->
 
             <el-form-item style="width: 100%" label="" prop="allowRepeat">
               <el-checkbox class="add-prize-checkbox" v-model="addPrizeForm.allowRepeat">允许同一用户重复获得此奖品</el-checkbox>
@@ -398,7 +404,7 @@ export default {
   },
   data () {
     return {
-      activityId: this.$route.query.activityId,
+      activityId: this.$route.query.id,
       type: this.$route.query.type,
       titleName: '',
       orderSortDate: {
@@ -411,7 +417,22 @@ export default {
       submitObject: {} // 创建活动提交参数对象
     }
   },
-  watch: {},
+  watch: {
+    dialogVisible (val) {
+      if (!val) {
+        this.addPrizeForm = {
+          addPrizeType: '1',
+          redEnvelopeType: '1',
+          redEnvelopeAmount: '',
+          selCouponId: '',
+          couponType: 1, // 优惠券类型
+          allowRepeat: false, // 是否允许重复中奖
+          useInstruction: '', // 使用说明
+          showRedEnvelope: false
+        }
+      }
+    }
+  },
   mounted() {
     // 设置标题之后，里面去填充页面内容
     this.setPageTitle()
@@ -558,6 +579,8 @@ export default {
               this.submitObject.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
               let giftCouponTwo = [] // 优惠券数组
               let giftRedpacketTwo = [] // 红包数组
+              this.submitObject.giftCouponArray = []
+              this.submitObject.giftRedpacketArray = []
               // 奖品数组
               this.prizeList.forEach(v => {
                 let tempCoupon, tempReEvenlope
@@ -595,7 +618,7 @@ export default {
               if (!this.activityId) {
                 platformActivityAdd(this.submitObject).then(res => {
                   if (res.status === 'true') {
-                    this.$router.push('/activity/detail?activityId=' + res.info.id)
+                    this.$router.push('/activity/detail?id=' + res.info.id)
                   } else {
                     this.setMsg('error', res.msg)
                   }
@@ -624,7 +647,7 @@ export default {
                   platformActivityEdit(this.submitObject).then(res => {
                     if (res.status === 'true') {
                       this.setMsg('success', '更新成功')
-                      this.$router.push('/activity/detail?activityId=' + this.activityId)
+                      this.$router.push('/activity/detail?id=' + this.activityId)
                     } else {
                       this.setMsg('error', res.msg)
                     }
@@ -634,7 +657,7 @@ export default {
                   platformActivityAdd(this.submitObject).then(res => {
                     if (res.status === 'true') {
                       this.setMsg('success', res.msg)
-                      this.$router.push('/activity/detail?activityId=' + res.info.id)
+                      this.$router.push('/activity/detail?id=' + res.info.id)
                     } else {
                       this.setMsg('error', res.msg)
                     }
@@ -737,7 +760,7 @@ export default {
             res.info.platformActivityGiftList.forEach(v => {
               let prize = {
                 type: v.platformCouponId ? 1 : 2,
-                prizeName: v.platformCouponId ? v.couponName : v.typeName + '(' + v.amount + '元)',
+                prizeName: v.platformCouponId ? v.couponName : '普通红包(' + v.amount + '元)',
                 quantity: v.giftQuantity,
                 probability: v.lotteryRate * 100,
                 id: v.platformCouponId,
@@ -922,6 +945,7 @@ export default {
           }
           if (this.addPrizeForm.addPrizeType - 1 + 1 === 2) {
             couponRest = 9999
+            console.log(1234)
           }
           let prize = {
             type: this.addPrizeForm.addPrizeType - 1 + 1,
@@ -935,11 +959,13 @@ export default {
             prizeQuantityWarning: '请输入奖品数量',
             prizeProbabilityWarning: '请输入中奖概率',
             isRepeat: this.addPrizeForm.allowRepeat ? 1 : 0,
+            // useExplain: this.addPrizeForm.showRedEnvelope ? this.addPrizeForm.redEnvelopeInstruction : this.addPrizeForm.useInstruction, // 奖品使用说明
             useExplain: this.addPrizeForm.useInstruction, // 奖品使用说明
             redEnvelopeType: this.addPrizeForm.redEnvelopeType, // 红包类型
             redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
           }
           this.prizeList.push(prize)
+          console.log('456', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
             addPrizeType: '1',
@@ -963,7 +989,7 @@ export default {
         if (this.couponList.length > 0 && this.prizeList.length > 0) {
           for (let i = 0; i < this.couponList.length; i++) {
             for (let j = 0; j < this.prizeList.length; j++) {
-              if (this.prizeList[j].id === this.couponList[i].id) {
+              if (this.prizeList[j] && this.couponList[i] && this.prizeList[j].id === this.couponList[i].id) {
                 this.couponList.splice(i, 1)
               }
             }
@@ -973,7 +999,7 @@ export default {
           if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
             this.dialogVisible = true
           } else {
-            this.$message.info('请填写完整信息')
+            this.$message.info('请填写完整奖品信息')
           }
         } else {
           this.dialogVisible = true
