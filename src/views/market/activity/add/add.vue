@@ -33,12 +33,12 @@
             class="activity-name fl"
             v-model.trim="onePartForm.activityRules"
             :maxlength="200"
-            :rows="4"
+            :rows="7"
             placeholder="请填写活动规则"
           >
           </el-input>
 
-          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/50）限制字数50</span></el-form-item>
+          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/200）限制字数200</span></el-form-item>
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
@@ -47,7 +47,7 @@
           </template>
         </el-form-item>
 
-        <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40">
+        <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40" v-if="onePartForm.activityType === '2'">
           <template>
             <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
             <!--<el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>-->
@@ -61,6 +61,7 @@
               format="yyyy-MM-dd HH:mm"
               value-format="yyyy-MM-dd HH:mm"
               @change="dateChange"
+              :clearable="false"
               :picker-options="orderSortDate"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -107,7 +108,7 @@
         ref="twoPartForm">
         <div>
           <el-row>
-            <el-col :span="4">
+            <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="attendNum">
                 <h3 class="text-title second-form-title">参与人数</h3>
                 <el-input class="width220px" v-model.trim="twoPartForm.attendNum" placeholder="请输入最大允许参与人数" :maxlength="6"></el-input>
@@ -122,7 +123,7 @@
           </el-row>
 
           <el-row>
-            <el-col :span="4">
+            <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
                 <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
@@ -236,7 +237,7 @@
               </el-form-item>
               <!--红包金额-->
               <el-form-item style="width: 100%" label="红包金额" class="red-envelope" prop="redEnvelopeAmount">
-                <el-input v-model="addPrizeForm.redEnvelopeAmount" placeholder="请输入单个红包的金额" class="width300px add-prize-info"></el-input>
+                <el-input v-model="addPrizeForm.redEnvelopeAmount" :maxlength="addPrizeForm.redEnvelopeAmount.indexOf('.') > -1 ? (addPrizeForm.redEnvelopeAmount.indexOf('.') + 3) : 3" placeholder="请输入单个红包的金额" class="width300px add-prize-info"></el-input>
               </el-form-item>
             </div>
 
@@ -269,10 +270,16 @@
               <el-input v-model="addPrizeForm.useInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>
             </el-form-item>
 
+            <!--红包使用说明-->
+            <!--<el-form-item v-if="addPrizeForm.showRedEnvelope" style="width: 100%" label="使用说明" class="red-envelope" prop="useInstruction">-->
+              <!--<el-input v-model="addPrizeForm.redEnvelopeInstruction" :maxlength="15" placeholder="请填写奖品的使用说明" class="width300px add-prize-info"></el-input>-->
+            <!--</el-form-item>-->
+
+
             <!--礼品券奖品说明-->
-            <el-form-item v-if="!addPrizeForm.showRedEnvelope && addPrizeForm.couponType === 3" style="width: 100%" label="奖品说明" class="red-envelope" prop="giftUseInstruction">
-              <el-input v-model="addPrizeForm.giftUseInstruction" :maxlength="5" placeholder="请填写礼品券使用说明" class="width300px add-prize-info"></el-input>
-            </el-form-item>
+            <!--<el-form-item v-if="!addPrizeForm.showRedEnvelope && addPrizeForm.couponType === 3" style="width: 100%" label="奖品说明" class="red-envelope" prop="giftUseInstruction">-->
+              <!--<el-input v-model="addPrizeForm.giftUseInstruction" :maxlength="5" placeholder="请填写礼品券使用说明" class="width300px add-prize-info"></el-input>-->
+            <!--</el-form-item>-->
 
             <el-form-item style="width: 100%" label="" prop="allowRepeat">
               <el-checkbox class="add-prize-checkbox" v-model="addPrizeForm.allowRepeat">允许同一用户重复获得此奖品</el-checkbox>
@@ -311,6 +318,7 @@
 
         <el-form-item label="显示时间" label-width="100px">
           <el-date-picker
+            :clearable="false"
             v-model="threePartForm.activityDisplayStart"
             :picker-options="orderSortDate"
             placeholder="选择开始日期"
@@ -325,6 +333,7 @@
 
         <el-form-item label="隐藏时间" label-width="100px">
           <el-date-picker
+            :clearable="false"
             v-model="threePartForm.activityDisplayEnd"
             :picker-options="orderSortDate"
             placeholder="选择结束日期"
@@ -408,7 +417,22 @@ export default {
       submitObject: {} // 创建活动提交参数对象
     }
   },
-  watch: {},
+  watch: {
+    dialogVisible (val) {
+      if (!val) {
+        this.addPrizeForm = {
+          addPrizeType: '1',
+          redEnvelopeType: '1',
+          redEnvelopeAmount: '',
+          selCouponId: '',
+          couponType: 1, // 优惠券类型
+          allowRepeat: false, // 是否允许重复中奖
+          useInstruction: '', // 使用说明
+          showRedEnvelope: false
+        }
+      }
+    }
+  },
   mounted() {
     // 设置标题之后，里面去填充页面内容
     this.setPageTitle()
@@ -438,9 +462,11 @@ export default {
               this.tabSwitch = 2
               this.activityTab = 2
               this.loadingOnePart = false
+              this.validatePartOne = true
               break;
             case '2':
               // ajaxParams.step = 2
+              this.validatePartTwo = true
               ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
               ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
               ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
@@ -526,6 +552,8 @@ export default {
               break;
             case '3':
               // ajaxParams.step = 3
+              // threePartForm
+              this.validatePartThree = true
               let terminals = []
               for (let i = 0; i < this.threePartForm.terminalList.length; i++) {
                 for (let j = 0; j < this.threePartForm.displayTerminal.length; j++) {
@@ -534,17 +562,63 @@ export default {
                   }
                 }
               }
+
+              // onePartForm
+              this.submitObject.name = this.onePartForm.activityName // 活动名称
+              this.submitObject.regulation = this.onePartForm.activityRules // 活动规则
+              this.submitObject.type = this.onePartForm.activityType // 活动类型
+              this.submitObject.template = this.onePartForm.activityTemplate // 活动模板
+              this.submitObject.startDate = this.threePartForm.activityStart // 活动开始日期
+              this.submitObject.endDate = this.threePartForm.activityEnd // 活动结束日期
+              this.submitObject.bannerPath = this.onePartForm.bannerPic // 活动banner
+
+              // twoPartForm
+              this.submitObject.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
+              this.submitObject.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
+              this.submitObject.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
+              this.submitObject.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
+              let giftCouponTwo = [] // 优惠券数组
+              let giftRedpacketTwo = [] // 红包数组
+              this.submitObject.giftCouponArray = []
+              this.submitObject.giftRedpacketArray = []
+              // 奖品数组
+              this.prizeList.forEach(v => {
+                let tempCoupon, tempReEvenlope
+                if (v.type === 1) {
+                  // 优惠券
+                  tempCoupon = {
+                    platformCouponId: v.id,
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftCouponTwo.push(tempCoupon)
+                } else {
+                  tempReEvenlope = {
+                    type: v.redEnvelopeType, // 红包类型
+                    amount: v.redEnvelopeAmount, // 红包金额
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftRedpacketTwo.push(tempReEvenlope)
+                }
+              })
+              if (giftCouponTwo.length > 0) this.submitObject.giftCouponArray = giftCouponTwo // 优惠券数组
+              if (giftRedpacketTwo.length > 0) this.submitObject.giftRedpacketArray = giftRedpacketTwo // 红包数组
               this.submitObject.showType = terminals // 展示端
               this.submitObject.showDate = this.threePartForm.displayStartSubmit ? this.threePartForm.displayStartSubmit : this.threePartForm.activityStart // 展示日期
               this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit ? this.threePartForm.displayEndSubmit : this.threePartForm.activityEnd // 隐藏日期
               this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
               this.submitObject.endPrompt = this.threePartForm.tipsEnd // 结束提示
-              // this.submitObject = ajaxParams
+
               // 请求接口
               if (!this.activityId) {
                 platformActivityAdd(this.submitObject).then(res => {
                   if (res.status === 'true') {
-                    this.$router.push('/activity/detail?activityId=' + res.info.id)
+                    this.$router.push('/activity/detail?id=' + res.info.id)
                   } else {
                     this.setMsg('error', res.msg)
                   }
@@ -573,7 +647,7 @@ export default {
                   platformActivityEdit(this.submitObject).then(res => {
                     if (res.status === 'true') {
                       this.setMsg('success', '更新成功')
-                      this.$router.push('/activity/detail?activityId=' + this.activityId)
+                      this.$router.push('/activity/detail?id=' + this.activityId)
                     } else {
                       this.setMsg('error', res.msg)
                     }
@@ -583,7 +657,7 @@ export default {
                   platformActivityAdd(this.submitObject).then(res => {
                     if (res.status === 'true') {
                       this.setMsg('success', res.msg)
-                      this.$router.push('/activity/detail?activityId=' + res.info.id)
+                      this.$router.push('/activity/detail?id=' + res.info.id)
                     } else {
                       this.setMsg('error', res.msg)
                     }
@@ -624,12 +698,15 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
+      // validatePartOne validatePartTwo validatePartThree
       // if (val === 1) {
-      //   this.submitForm('onePartForm', '1')
+      //   if (this.validatePartOne) this.activityTab = val
       // } else if (val === 2) {
-      //   this.submitForm('twoPartForm', '2')
+      //   if (this.validatePartTwo) this.activityTab = val
       // } else if (val === 3) {
-      //   this.submitForm('threePartForm', '3')
+      //   if (this.validatePartThree) this.activityTab = val
+      // } else {
+      //   return false
       // }
     },
     getPageData() {
@@ -683,7 +760,7 @@ export default {
             res.info.platformActivityGiftList.forEach(v => {
               let prize = {
                 type: v.platformCouponId ? 1 : 2,
-                prizeName: v.platformCouponId ? v.couponName : v.typeName + '(' + v.amount + '元)',
+                prizeName: v.platformCouponId ? v.couponName : '普通红包(' + v.amount + '元)',
                 quantity: v.giftQuantity,
                 probability: v.lotteryRate * 100,
                 id: v.platformCouponId,
@@ -868,6 +945,7 @@ export default {
           }
           if (this.addPrizeForm.addPrizeType - 1 + 1 === 2) {
             couponRest = 9999
+            console.log(1234)
           }
           let prize = {
             type: this.addPrizeForm.addPrizeType - 1 + 1,
@@ -881,11 +959,13 @@ export default {
             prizeQuantityWarning: '请输入奖品数量',
             prizeProbabilityWarning: '请输入中奖概率',
             isRepeat: this.addPrizeForm.allowRepeat ? 1 : 0,
+            // useExplain: this.addPrizeForm.showRedEnvelope ? this.addPrizeForm.redEnvelopeInstruction : this.addPrizeForm.useInstruction, // 奖品使用说明
             useExplain: this.addPrizeForm.useInstruction, // 奖品使用说明
             redEnvelopeType: this.addPrizeForm.redEnvelopeType, // 红包类型
             redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
           }
           this.prizeList.push(prize)
+          console.log('456', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
             addPrizeType: '1',
@@ -909,7 +989,7 @@ export default {
         if (this.couponList.length > 0 && this.prizeList.length > 0) {
           for (let i = 0; i < this.couponList.length; i++) {
             for (let j = 0; j < this.prizeList.length; j++) {
-              if (this.prizeList[j].id === this.couponList[i].id) {
+              if (this.prizeList[j] && this.couponList[i] && this.prizeList[j].id === this.couponList[i].id) {
                 this.couponList.splice(i, 1)
               }
             }
@@ -919,7 +999,7 @@ export default {
           if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
             this.dialogVisible = true
           } else {
-            this.$message.info('请填写完整信息')
+            this.$message.info('请填写完整奖品信息')
           }
         } else {
           this.dialogVisible = true

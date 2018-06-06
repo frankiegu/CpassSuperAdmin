@@ -65,6 +65,9 @@ export default {
       activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
+      validatePartOne: false, // 验证第一步
+      validatePartTwo: false, // 验证第二步
+      validatePartThree: false, // 验证第三步
       /**
        * 信息完整度
        * 添加100%之后调用编辑接口
@@ -133,13 +136,15 @@ export default {
         couponType: 1, // 优惠券类型
         allowRepeat: false, // 是否允许重复中奖
         useInstruction: '', // 使用说明
-        showRedEnvelope: false,
-        giftUseInstruction: '' // 礼品券使用说明
+        // redEnvelopeInstruction: '', // 红包使用说明
+        showRedEnvelope: false
+        // giftUseInstruction: '' // 礼品券使用说明
       }, // 添加奖品
       addPrizeFormRule: {
         redEnvelopeAmount: [{ required: true, validator: validateRedEnvelopeAmount, trigger: ['blur', 'change'] }],
         useInstruction: [{ required: true, message: '请填写奖品的使用说明', trigger: ['blur', 'change'] }],
-        giftUseInstruction: [{ required: true, message: '请填写礼品券使用说明', trigger: ['blur', 'change'] }],
+        // redEnvelopeInstruction: [{ required: true, message: '请填写奖品的使用说明', trigger: ['blur', 'change'] }],
+        // giftUseInstruction: [{ required: true, message: '请填写礼品券使用说明', trigger: ['blur', 'change'] }],
         selCouponId: [{ required: true, message: '请选择优惠券', trigger: ['blur', 'change'] }],
         couponType: [{ required: true, message: '请选择优惠券类型', trigger: ['blur', 'change'] }]
       }, // 添加奖品验证
@@ -399,10 +404,19 @@ const checkWinProsibility = (rule, value, callback) => {
 };
 // 微信红包单个红包金额输入验证
 const validateRedEnvelopeAmount = (rule, value, callback) => {
+  let temp = value.replace(/\./g, '')
   if (!value) {
     callback(new Error('请输入单个红包的金额'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
+  } else if (temp - 1 + 1 <= 0) {
+    callback(new Error('红包金额必须大于0'));
+  } else if (!NATURAL_NUM.test(temp)) {
+    callback(new Error('红包金额必须数字'));
+  } else if (NATURAL_NUM.test(temp)) {
+    if (value > 200) {
+      callback(new Error('红包金额不能大于200'));
+    } else {
+      callback();
+    }
   } else {
     callback();
   }
