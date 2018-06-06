@@ -100,7 +100,7 @@
         第一步、第三步使用v-show，因为相关事件失效了
       -->
       <el-form
-        v-if="activityTab === 2"
+        v-show="activityTab === 2"
         :model="twoPartForm"
         :rules="twoPartFormRule"
         :inline="true"
@@ -429,13 +429,7 @@ export default {
             template: this.onePartForm.activityTemplate, // 活动模板
             startDate: this.threePartForm.activityStart, // 活动开始日期
             endDate: this.threePartForm.activityEnd, // 活动结束日期
-            bannerPath: this.onePartForm.bannerPic, // 活动banner
-            lotteryPlayer: '',
-            winningMaxTime: '',
-            lotteryInitTime: '',
-            lotteryExtraTime: '',
-            giftCouponArray: [],
-            giftRedpacketArray: []
+            bannerPath: this.onePartForm.bannerPic // 活动banner
           }
           switch (step) {
             case '1':
@@ -630,6 +624,13 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
+      // if (val === 1) {
+      //   this.submitForm('onePartForm', '1')
+      // } else if (val === 2) {
+      //   this.submitForm('twoPartForm', '2')
+      // } else if (val === 3) {
+      //   this.submitForm('threePartForm', '3')
+      // }
     },
     getPageData() {
       platformActivityDetail({ activityId: this.activityId }).then(res => {
@@ -660,6 +661,13 @@ export default {
             rangeDate: [start, end], // 活动日期
             bannerPic: partOne.bannerPath // 活动banner
           }
+          this.submitObject.name = this.onePartForm.activityName
+          this.submitObject.regulation = this.onePartForm.activityRules
+          this.submitObject.type = this.onePartForm.activityType
+          this.submitObject.template = this.onePartForm.activityTemplate
+          this.submitObject.startDate = this.onePartForm.activityStartDate
+          this.submitObject.endDate = this.onePartForm.activityEndDate
+          this.submitObject.bannerPath = this.onePartForm.bannerPic
           if (this.type === 'copy') {
             this.onePartForm.activityName = ''
           }
@@ -700,6 +708,35 @@ export default {
                     }
                   }
                 }
+                let giftCouponArray = [] // 红包数组
+                let giftRedpacketArray = [] // 红包数组
+                // 奖品数组
+                this.prizeList.forEach(v => {
+                  let tempCoupon, tempReEvenlope
+                  if (v.type === 1) {
+                    // 优惠券
+                    tempCoupon = {
+                      platformCouponId: v.id,
+                      isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                      giftQuantity: v.quantity, // 奖品数量
+                      lotteryRate: v.probability, // 中奖概率
+                      redemptRemark: v.useExplain // 奖品使用说明
+                    }
+                    giftCouponArray.push(tempCoupon)
+                  } else {
+                    tempReEvenlope = {
+                      type: v.redEnvelopeType, // 红包类型
+                      amount: v.redEnvelopeAmount, // 红包金额
+                      isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                      giftQuantity: v.quantity, // 奖品数量
+                      lotteryRate: v.probability, // 中奖概率
+                      redemptRemark: v.useExplain // 奖品使用说明
+                    }
+                    giftRedpacketArray.push(tempReEvenlope)
+                  }
+                })
+                if (giftCouponArray.length > 0) this.submitObject.giftCouponArray = giftCouponArray // 优惠券数组
+                if (giftRedpacketArray.length > 0) this.submitObject.giftRedpacketArray = giftRedpacketArray // 红包数组
               }
             })
           }
