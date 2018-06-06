@@ -9,7 +9,7 @@ export default {
   mixins: [tableMixins, pickerOptions],
   data () {
     return {
-      activityId: this.$route.query.activityId || '',
+      activityId: this.$route.query.id,
       field: '',
       fieldType: '',
       activeTab: 'couponInformation',

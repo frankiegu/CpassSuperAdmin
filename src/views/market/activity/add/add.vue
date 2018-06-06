@@ -395,7 +395,7 @@ export default {
   },
   data () {
     return {
-      activityId: this.$route.query.activityId,
+      activityId: this.$route.query.id,
       type: this.$route.query.type,
       titleName: '',
       orderSortDate: {

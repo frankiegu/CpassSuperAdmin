@@ -41,10 +41,10 @@
                   inactive-text=""
                   :active-color="switchActiveColor"></el-switch>
               </el-tooltip>
-              <router-link :to="{path: '/activity/add', query: {activityId: activityId, type: 'edit'}}" v-if="canEdit">
+              <router-link :to="{path: '/activity/add', query: {id: activityId, type: 'edit'}}" v-if="canEdit">
                 <el-button type="primary" class="fr mr10">编辑</el-button>
               </router-link>
-              <el-button type="primary" class="fr mr10" @click="delectActivity" v-if="isDelete">删除</el-button>
+              <el-button type="primary" class="fr mr10" @click="delectActivity" v-if="canEdit">删除</el-button>
             </el-row>
 
             <el-row :gutter="20">
@@ -119,7 +119,7 @@
 
                 <el-table-column label="奖品" align="left">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.couponName || scope.row.redpacketName }}</span>
+                    <span>{{ scope.row.couponName || (scope.row.redpacketName + '（' + scope.row.amount + '元）') }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="奖品类型" prop="typeName" align="left"></el-table-column>

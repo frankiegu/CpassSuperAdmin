@@ -63,7 +63,7 @@
         <el-table-column label="活动名称" prop="name" align="left">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/activity/detail', query: {activityId: scope.row.id}}"
+              :to="{path: '/activity/detail', query: {id: scope.row.id}}"
               class="table-link">
               {{ scope.row.name }}
             </router-link>
@@ -89,11 +89,11 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {activityId: scope.row.id, type: 'edit'}}">
+            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
-            <router-link :to="{path: '/activity/add', query: {activityId: scope.row.id, type: 'copy'}}">
+            <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
               <el-button type="text"
                          class="operate-btn" :class="{'ml3' : scope.row.status === 0 }">复制</el-button>
             </router-link>
