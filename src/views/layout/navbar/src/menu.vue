@@ -1,9 +1,9 @@
 <template>
   <div class="navbar-menu-box">
     <el-menu :default-active="activeIndex" mode="horizontal">
-      <el-menu-item index="1" class="fr el-submenu__title">
+      <!-- <el-menu-item index="1" class="fr el-submenu__title">
         <screenfull class="svg-style"></screenfull>
-      </el-menu-item>
+      </el-menu-item> -->
 
       <el-submenu index="2" class="profile-box">
         <template slot="title">

@@ -6,8 +6,9 @@
   display: inline-block;
   color: #fff;
   /* 英文比中文上下少两个像素，高度少4个像素，这种情况设置高度和行高兼容 */
-  padding: 9px 15px;
+  padding: 0 15px;
   height: 32px;
+  line-height: 32px;
   border-radius: 4px;
   box-sizing: border-box;
   @include to-bottom-right;

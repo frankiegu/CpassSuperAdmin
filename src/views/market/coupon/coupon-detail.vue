@@ -262,7 +262,7 @@
             </el-table-column>
             <el-table-column
               v-if="couponBaseInfo.type === 1"
-              prop="discountAmount"
+              prop="couponAmount"
               label="优惠金额"
               sortable
               show-overflow-tooltip>
