@@ -65,6 +65,9 @@ export default {
       activityTab: 1,     // tab 的门
       tabSwitch: 1,       // tab 的值
       tabList: ['① 基本配置', '② 活动配置', '③ 发布设置'],
+      validatePartOne: false, // 验证第一步
+      validatePartTwo: false, // 验证第二步
+      validatePartThree: false, // 验证第三步
       /**
        * 信息完整度
        * 添加100%之后调用编辑接口

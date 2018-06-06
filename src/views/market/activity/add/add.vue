@@ -61,6 +61,7 @@
               format="yyyy-MM-dd HH:mm"
               value-format="yyyy-MM-dd HH:mm"
               @change="dateChange"
+              :clearable="false"
               :picker-options="orderSortDate"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -107,7 +108,7 @@
         ref="twoPartForm">
         <div>
           <el-row>
-            <el-col :span="4">
+            <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="attendNum">
                 <h3 class="text-title second-form-title">参与人数</h3>
                 <el-input class="width220px" v-model.trim="twoPartForm.attendNum" placeholder="请输入最大允许参与人数" :maxlength="6"></el-input>
@@ -122,7 +123,7 @@
           </el-row>
 
           <el-row>
-            <el-col :span="4">
+            <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
                 <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
@@ -311,6 +312,7 @@
 
         <el-form-item label="显示时间" label-width="100px">
           <el-date-picker
+            :clearable="false"
             v-model="threePartForm.activityDisplayStart"
             :picker-options="orderSortDate"
             placeholder="选择开始日期"
@@ -325,6 +327,7 @@
 
         <el-form-item label="隐藏时间" label-width="100px">
           <el-date-picker
+            :clearable="false"
             v-model="threePartForm.activityDisplayEnd"
             :picker-options="orderSortDate"
             placeholder="选择结束日期"
@@ -438,9 +441,11 @@ export default {
               this.tabSwitch = 2
               this.activityTab = 2
               this.loadingOnePart = false
+              this.validatePartOne = true
               break;
             case '2':
               // ajaxParams.step = 2
+              this.validatePartTwo = true
               ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
               ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
               ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
@@ -526,6 +531,8 @@ export default {
               break;
             case '3':
               // ajaxParams.step = 3
+              // threePartForm
+              this.validatePartThree = true
               let terminals = []
               for (let i = 0; i < this.threePartForm.terminalList.length; i++) {
                 for (let j = 0; j < this.threePartForm.displayTerminal.length; j++) {
@@ -534,12 +541,56 @@ export default {
                   }
                 }
               }
+
+              // onePartForm
+              this.submitObject.name = this.onePartForm.activityName // 活动名称
+              this.submitObject.regulation = this.onePartForm.activityRules // 活动规则
+              this.submitObject.type = this.onePartForm.activityType // 活动类型
+              this.submitObject.template = this.onePartForm.activityTemplate // 活动模板
+              this.submitObject.startDate = this.threePartForm.activityStart // 活动开始日期
+              this.submitObject.endDate = this.threePartForm.activityEnd // 活动结束日期
+              this.submitObject.bannerPath = this.onePartForm.bannerPic // 活动banner
+
+              // twoPartForm
+              this.submitObject.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
+              this.submitObject.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
+              this.submitObject.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
+              this.submitObject.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
+              let giftCouponTwo = [] // 优惠券数组
+              let giftRedpacketTwo = [] // 红包数组
+              // 奖品数组
+              this.prizeList.forEach(v => {
+                let tempCoupon, tempReEvenlope
+                if (v.type === 1) {
+                  // 优惠券
+                  tempCoupon = {
+                    platformCouponId: v.id,
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftCouponTwo.push(tempCoupon)
+                } else {
+                  tempReEvenlope = {
+                    type: v.redEnvelopeType, // 红包类型
+                    amount: v.redEnvelopeAmount, // 红包金额
+                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
+                    giftQuantity: v.quantity, // 奖品数量
+                    lotteryRate: v.probability, // 中奖概率
+                    redemptRemark: v.useExplain // 奖品使用说明
+                  }
+                  giftRedpacketTwo.push(tempReEvenlope)
+                }
+              })
+              if (giftCouponTwo.length > 0) this.submitObject.giftCouponArray = giftCouponTwo // 优惠券数组
+              if (giftRedpacketTwo.length > 0) this.submitObject.giftRedpacketArray = giftRedpacketTwo // 红包数组
               this.submitObject.showType = terminals // 展示端
               this.submitObject.showDate = this.threePartForm.displayStartSubmit ? this.threePartForm.displayStartSubmit : this.threePartForm.activityStart // 展示日期
               this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit ? this.threePartForm.displayEndSubmit : this.threePartForm.activityEnd // 隐藏日期
               this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
               this.submitObject.endPrompt = this.threePartForm.tipsEnd // 结束提示
-              // this.submitObject = ajaxParams
+
               // 请求接口
               if (!this.activityId) {
                 platformActivityAdd(this.submitObject).then(res => {
@@ -624,12 +675,15 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
+      // validatePartOne validatePartTwo validatePartThree
       // if (val === 1) {
-      //   this.submitForm('onePartForm', '1')
+      //   if (this.validatePartOne) this.activityTab = val
       // } else if (val === 2) {
-      //   this.submitForm('twoPartForm', '2')
+      //   if (this.validatePartTwo) this.activityTab = val
       // } else if (val === 3) {
-      //   this.submitForm('threePartForm', '3')
+      //   if (this.validatePartThree) this.activityTab = val
+      // } else {
+      //   return false
       // }
     },
     getPageData() {
