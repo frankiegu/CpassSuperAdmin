@@ -216,7 +216,7 @@ export default {
         this.prizeList.splice(index, 1, tempObj)
       }
       if (!POSITIVE_INTEGER.test(currentQuantity)) {
-        tempObj.prizeQuantityWarning = '奖品数量必须为大于0的正整数'
+        tempObj.prizeQuantityWarning = '奖品数量必须为正整数'
         tempObj.validate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
