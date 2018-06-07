@@ -42,7 +42,7 @@
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
-            <el-radio class="mt10" v-model="onePartForm.activityType" label="1">普通活动</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityType" label="1" :disabled="true">普通活动</el-radio>
             <el-radio class="mt10" v-model="onePartForm.activityType" label="2">互动游戏</el-radio>
           </template>
         </el-form-item>
@@ -444,9 +444,7 @@ export default {
     submitForm(formName, step) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // this.submitObject
           let ajaxParams = {
-            // 如果已经添加的场地，如添加了第一步，进来编辑第一步的信息也需要传Id
             name: this.onePartForm.activityName, // 活动名称
             regulation: this.onePartForm.activityRules, // 活动规则
             type: this.onePartForm.activityType, // 活动类型
@@ -467,39 +465,6 @@ export default {
             case '2':
               // ajaxParams.step = 2
               this.validatePartTwo = true
-              ajaxParams.lotteryPlayer = this.twoPartForm.attendNum // 参与人数
-              ajaxParams.winningMaxTime = this.twoPartForm.winningTimes // 每人最大允许中奖数
-              ajaxParams.lotteryInitTime = this.twoPartForm.originalTimes // 初始抽奖次数
-              ajaxParams.lotteryExtraTime = this.twoPartForm.shareAddTimes // 分享成功后额外抽奖次数
-              let giftCouponArray = [] // 优惠券数组
-              let giftRedpacketArray = [] // 红包数组
-              // 奖品数组
-              this.prizeList.forEach(v => {
-                let tempCoupon, tempReEvenlope
-                if (v.type === 1) {
-                  // 优惠券
-                  tempCoupon = {
-                    platformCouponId: v.id,
-                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
-                    giftQuantity: v.quantity, // 奖品数量
-                    lotteryRate: v.probability, // 中奖概率
-                    redemptRemark: v.useExplain // 奖品使用说明
-                  }
-                  giftCouponArray.push(tempCoupon)
-                } else {
-                  tempReEvenlope = {
-                    type: v.redEnvelopeType, // 红包类型
-                    amount: v.redEnvelopeAmount, // 红包金额
-                    isRepeat: v.isRepeat, // 是否允许统一用户重复中奖
-                    giftQuantity: v.quantity, // 奖品数量
-                    lotteryRate: v.probability, // 中奖概率
-                    redemptRemark: v.useExplain // 奖品使用说明
-                  }
-                  giftRedpacketArray.push(tempReEvenlope)
-                }
-              })
-              if (giftCouponArray.length > 0) ajaxParams.giftCouponArray = giftCouponArray // 优惠券数组
-              if (giftRedpacketArray.length > 0) ajaxParams.giftRedpacketArray = giftRedpacketArray // 红包数组
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 this.tabSwitch = 3      // add field 打开第三道门
                 this.activityTab = 3 // 切换到第二道门
@@ -507,48 +472,6 @@ export default {
               } else if (this.prizeList.length <= 0) {
                 this.$message.info('请至少添加一个奖品')
               }
-              this.submitObject = ajaxParams
-              // 判断表单是否有改动，true为有改动，false则未改动
-              // 没改动不调接口，调接口需求要关闭对外开放，所以未改动就不调用编辑接口
-              // if (this.dataFinishPercent === 100) {
-              //   this.monitorTwoPart()
-              // }
-
-              // if (!this.twoPartStatus) {
-              //   this.tabSwitch = 3  // add field 打开第三道门
-              //   this.activityTab = 3 // 切换到第二道门
-              //   this.loadingTwoPart = false
-              //   return
-              // }
-
-              // 编辑的时候，弹出确认框
-              // if (this.dataFinishPercent === 100) {
-              //   const h = this.$createElement;
-              //   this.$msgbox({
-              //     title: '调整确认',
-              //     message: h('p', null, [
-              //       h('p', { style: 'color: #1C1C2F' }, '当前场地对外开放中，请调整对外开放信息'),
-              //       h('p', { style: 'color: #868696' }, '为了保障您的利益，已停止对外开放')
-              //     ]),
-              //     type: 'warning',
-              //     showCancelButton: true,
-              //     confirmButtonText: '确认',
-              //     cancelButtonText: '去设置',
-              //     beforeClose: (action, instance, done) => {
-              //       if (action === 'confirm') {
-              //         done()
-              //         ajaxParams.step = 2
-              //         this.addPartTwo(ajaxParams)
-              //       } else {
-              //         done()
-              //         window.open(`#/field/open/settings?id=${this.activityId}&type=${this.onePartForm.type}`, '_blank')
-              //       }
-              //     }
-              //   })
-              // } else {
-              //   ajaxParams.step = 2
-              //   this.addPartTwo(ajaxParams)
-              // }
               break;
             case '3':
               // ajaxParams.step = 3
@@ -562,6 +485,30 @@ export default {
                   }
                 }
               }
+              this.submitObject.showType = terminals // 展示端
+              // 展示时间
+              let s = new Date(this.threePartForm.activityDisplayStart)
+              let sy = s.getFullYear()
+              let dsm = s.getMonth() + 1
+              dsm = dsm >= 10 ? dsm : '0' + dsm
+              let dsd = s.getDate() >= 10 ? s.getDate() : '0' + s.getDate()
+              let dsH = s.getHours() >= 10 ? s.getHours() : '0' + s.getHours()
+              let dsM = s.getMinutes() >= 10 ? s.getMinutes() : '0' + s.getMinutes()
+              this.threePartForm.displayStartSubmit = sy + '-' + dsm + '-' + dsd + ' ' + dsH + ':' + dsM + ':00'
+              // 隐藏日期
+              let e = new Date(this.threePartForm.activityDisplayEnd)
+              // 提交的展示时间
+              let ey = e.getFullYear()
+              let dem = e.getMonth() + 1
+              dem = dem >= 10 ? dem : '0' + dem
+              let ded = e.getDate() >= 10 ? e.getDate() : '0' + e.getDate()
+              let deH = e.getHours() >= 10 ? e.getHours() : '0' + e.getHours()
+              let deM = e.getMinutes() >= 10 ? e.getMinutes() : '0' + e.getMinutes()
+              this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
+              this.submitObject.showDate = this.threePartForm.displayStartSubmit // 展示日期
+              this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit // 隐藏日期
+              this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
+              this.submitObject.endPrompt = this.threePartForm.tipsEnd // 结束提示
 
               // onePartForm
               this.submitObject.name = this.onePartForm.activityName // 活动名称
@@ -608,12 +555,8 @@ export default {
               })
               if (giftCouponTwo.length > 0) this.submitObject.giftCouponArray = giftCouponTwo // 优惠券数组
               if (giftRedpacketTwo.length > 0) this.submitObject.giftRedpacketArray = giftRedpacketTwo // 红包数组
-              this.submitObject.showType = terminals // 展示端
-              this.submitObject.showDate = this.threePartForm.displayStartSubmit ? this.threePartForm.displayStartSubmit : this.threePartForm.activityStart // 展示日期
-              this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit ? this.threePartForm.displayEndSubmit : this.threePartForm.activityEnd // 隐藏日期
-              this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
-              this.submitObject.endPrompt = this.threePartForm.tipsEnd // 结束提示
 
+              console.log('this.threePartForm.displayStartSubmit', [this.threePartForm.displayStartSubmit, this.threePartForm.displayEndSubmit])
               // 请求接口
               if (!this.activityId) {
                 platformActivityAdd(this.submitObject).then(res => {
@@ -831,6 +774,8 @@ export default {
           }
           this.threePartForm.activityStart = partOne.startDate
           this.threePartForm.activityEnd = partOne.endDate
+          this.threePartForm.displayStartSubmit = partOne.startDate
+          this.threePartForm.displayEndSubmit = partOne.endDate
           // 活动展示时间
           let startS = new Date(res.info.platformActivityShowConfigList[0].showDate)
           let syS = startS.getFullYear()
@@ -904,6 +849,7 @@ export default {
       // 活动展示时间
       this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
       // 提交的展示时间
+      // threePartForm.activityDisplayStart
       let dsm = sm + 1
       dsm = dsm >= 10 ? dsm : '0' + dsm
       let dsd = sd >= 10 ? sd : '0' + sd
@@ -922,6 +868,7 @@ export default {
       // 活动隐藏时间
       this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
       // 提交的展示时间
+      // threePartForm.activityDisplayEnd
       let dem = em + 1
       dem = dem >= 10 ? dem : '0' + dem
       let ded = ed >= 10 ? ed : '0' + ed

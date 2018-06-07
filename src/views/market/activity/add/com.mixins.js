@@ -307,6 +307,7 @@ export default {
     },
     // 优惠券类型变化
     couponTypeChange () {
+      this.addPrizeForm.selCouponId = ''
       findUsableCouponByType({ type: this.addPrizeForm.couponType }).then(res => {
         if (res.status === 'true') {
           this.couponList = res.info
