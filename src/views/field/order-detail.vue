@@ -177,7 +177,7 @@
         fieldOrderDetail({ id: this.orderId }).then(res => {
           if (res.status === 'true') {
             this.order = res.info.platformOrderDetail.platformOrder
-            this.platformOrderField = res.info.platformOrderDetail.platformOrderField
+            // this.platformOrderField = res.info.platformOrderDetail.platformOrderField
             this.orderContact = res.info.platformOrderDetail.platformOrderContact
             this.orderPay = res.info.platformOrderDetail.platformOrderPay
             this.fieldInfo = res.info.platformOrderDetail.fieldSnapshot
@@ -202,15 +202,20 @@
             this.tableData.push(res.info.platformOrderDetail.platformOrderPay)
             if (this.fieldInfo.type === 1) {
               this.fieldInfo.typeName = '会议室'
-              res.info.platformOrderDetail.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderField
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
             } else if (this.fieldInfo.type === 2) {
               this.fieldInfo.typeName = '路演厅'
-              res.info.platformOrderDetail.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
-              this.platformOrderField = res.info.platformOrderDetail.platformOrderField
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderRoadshowHall
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderRoadshowHall.bookDate
             } else if (this.fieldInfo.type === 3) {
               this.fieldInfo.typeName = '工位'
-              res.info.platformOrderDetail.platformOrderStation.reservationDate = res.info.platformOrderDetail.platformOrderStation.bookStartDate + '～' + res.info.platformOrderDetail.platformOrderStation.bookEndDate
               this.platformOrderField = res.info.platformOrderDetail.platformOrderStation
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderStation.bookStartDate + '～' + res.info.platformOrderDetail.platformOrderStation.bookEndDate
+            } else if (this.fieldInfo.type === 4) {
+              this.fieldInfo.typeName = '多功能场地'
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderOther
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderOther.bookDate
             }
           } else {
             this.setMsg('error', res.msg)
