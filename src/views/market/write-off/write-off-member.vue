@@ -64,7 +64,8 @@
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 2">待审核</el-tag>
             <el-tag type="success" v-if="scope.row.status === 1">生效中</el-tag>
-            <el-tag type="danger" v-if="scope.row.status === 0">已停用</el-tag>
+            <el-tag type="warning" v-if="scope.row.status === 0">已停用</el-tag>
+            <el-tag type="danger" v-if="scope.row.status === 4">已过期</el-tag>
           </template>
         </el-table-column>
 

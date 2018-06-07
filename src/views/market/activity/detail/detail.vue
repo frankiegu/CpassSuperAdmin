@@ -44,7 +44,7 @@
               <router-link :to="{path: '/activity/add', query: {id: activityId, type: 'edit'}}" v-if="canEdit">
                 <el-button type="primary" class="fr mr10">编辑</el-button>
               </router-link>
-              <el-button type="primary" class="fr mr10" @click="delectActivity" v-if="canEdit">删除</el-button>
+              <el-button type="primary" plain class="fr mr10" @click="delectActivity" v-if="canEdit">删除</el-button>
             </el-row>
 
             <el-row :gutter="20">
@@ -217,11 +217,6 @@ export default {
   mounted() {
   },
   methods: {
-    paixu(column, prop, order) {
-      console.log(column)
-      console.log(prop)
-      console.log(order)
-    }
   }
 }
 </script>

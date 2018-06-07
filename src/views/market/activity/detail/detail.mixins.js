@@ -1,8 +1,7 @@
 import { API_PATH } from '@/config/env'
 import tableMixins from '@/mixins/table'
 import pickerOptions from '@/mixins/pickerOptions'
-import { platformActivityDetail, platformActivityChangeStatus, platformActivityStatisticsList } from '@/service/market'
-import { setFieldStatus } from '@/service/field'
+import { platformActivityDetail, platformActivityChangeStatus, platformActivityStatisticsList, platformActivityDelete } from '@/service/market'
 import { formatTimeString, downloadFile } from '@/config/utils'
 
 export default {
@@ -185,12 +184,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        setFieldStatus({ activityId: this.activityId }).then(res => {
+        platformActivityDelete({ activityId: this.activityId }).then(res => {
           if (res.status === 'true') {
             this.$message({
               type: 'success',
               message: '删除成功!'
             })
+            this.$router.push('/activity')
           } else {
             this.$message({
               type: 'info',
