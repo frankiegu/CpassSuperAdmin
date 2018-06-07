@@ -9,17 +9,6 @@
           <div class="to-bottom-right fl add-btn">添加活动</div>
         </router-link>
 
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData(1)"
-            placeholder="请输入活动名称"
-            class="width200px">
-
-            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
-
         <el-select
           v-model="formData.type"
           @change="getPageData(1)"
@@ -47,6 +36,17 @@
             :value="item.val"
             :key="item.val"></el-option>
         </el-select>
+
+        <el-form-item>
+          <el-input
+            v-model.trim="formData.name"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入活动名称"
+            class="width200px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
 
       </el-form>
 
@@ -79,23 +79,23 @@
         <el-table-column label="活动结束时间" prop="endDate" align="left" sortable="custom"></el-table-column>
         <el-table-column label="活动状态" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 0">未发布</span>
-            <span v-if="scope.row.status === 1">未开始</span>
-            <span v-if="scope.row.status === 2">进行中</span>
-            <span v-if="scope.row.status === 3">已结束</span>
-            <span v-if="scope.row.status === 4">暂停</span>
+            <el-tag v-if="scope.row.status === 0">未发布</el-tag>
+            <el-tag type="info" v-if="scope.row.status === 1">未开始</el-tag>
+            <el-tag type="success" v-if="scope.row.status === 2">进行中</el-tag>
+            <el-tag type="danger" v-if="scope.row.status === 3">已结束</el-tag>
+            <el-tag type="warning" v-if="scope.row.status === 4">暂停</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
+            <router-link v-if="scope.row.status === 0 || scope.row.status === 1" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
             <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
               <el-button type="text"
-                         class="operate-btn" :class="{'ml3' : scope.row.status === 0 }">复制</el-button>
+                         class="operate-btn" :class="{'ml45' : scope.row.status !== 0 && scope.row.status !== 1 }">复制</el-button>
             </router-link>
           </template>
         </el-table-column>

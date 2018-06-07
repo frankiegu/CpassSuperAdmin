@@ -124,7 +124,11 @@
                 </el-table-column>
                 <el-table-column label="奖品类型" prop="typeName" align="left"></el-table-column>
                 <el-table-column label="数量" prop="giftQuantity" align="left"></el-table-column>
-                <el-table-column label="中奖概率" prop="lotteryRate" align="left"></el-table-column>
+                <el-table-column label="中奖概率（%）" prop="lotteryRate" align="left">
+                  <template slot-scope="scope">
+                    <span>{{ (scope.row.lotteryRate * 100) + '%' }}</span>
+                  </template>
+                </el-table-column>
 
               </el-table>
             </div>
