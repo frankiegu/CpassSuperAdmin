@@ -39,8 +39,8 @@ export default {
       winningMaxTime: '', // 每人最大允许中奖数
 
       // 活动统计
-      lookPlayer: '', // 查看人数
-      lotteryCount: '', // 参与次数
+      lookPlayer: 0, // 查看人数
+      lotteryCount: 0, // 参与次数
 
       platformActivityGiftList: [], // 奖品
       platformActivityShowConfigList: [], // 展示设置
@@ -97,8 +97,8 @@ export default {
               this.winningMaxTime = res.info.platformActivity.winningMaxTime
 
               if (res.info.platformActivity.activityStatistics) {
-                this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer
-                this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount
+                this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer || 0
+                this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount || 0
               }
 
               if (this.status === 2) {
