@@ -1,8 +1,15 @@
 <template>
   <div class="tags-view-container">
     <scroll-pane class='tags-view-wrapper' ref='scrollPane'>
+      <!--<router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''"-->
+        <!--v-for="tag in Array.from(visitedViews)" :to="tag.id ? tag.path + '?id=' + tag.id : tag.path"-->
+        <!--:key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">-->
+        <!--{{tag.name}}-->
+        <!--<span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'-->
+          <!--v-if="tag.path !== visitedViews[0].path"></span>-->
+      <!--</router-link>-->
       <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''"
-        v-for="tag in Array.from(visitedViews)" :to="tag.id ? tag.path + '?id=' + tag.id : tag.path"
+        v-for="tag in Array.from(visitedViews)" :to="tag.lastPath"
         :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
         {{tag.name}}
         <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'

@@ -946,7 +946,7 @@ export default {
           if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
             this.dialogVisible = true
           } else {
-            this.$message.info('请填写完整奖品信息')
+            this.$message.info('请确认奖品信息填写无误')
           }
         } else {
           this.dialogVisible = true
