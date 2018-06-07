@@ -31,6 +31,7 @@ export default {
   },
   methods: {
     tabToggle (index) {
+      console.log('tabIndex', index)
       /**
        * new ，需要完成第一步tab才能切换下一步，但是可以随便回到前面的步骤，类推
        * 添加的时候，门是否已经打开？
