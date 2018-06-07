@@ -416,7 +416,11 @@ const validateRedEnvelopeAmount = (rule, value, callback) => {
     if (value > 200) {
       callback(new Error('红包金额不能大于200'));
     } else {
-      callback();
+      if (value.split('')[0] - 1 + 1 === 0 && value.split('')[1] !== '.') {
+        callback(new Error('红包金额必须大于0'));
+      } else {
+        callback();
+      }
     }
   } else {
     callback();
