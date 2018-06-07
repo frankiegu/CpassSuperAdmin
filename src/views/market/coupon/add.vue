@@ -73,6 +73,10 @@
                 <el-input v-model.trim="couponForm.couponRight" class="width340px"
                   placeholder="请输入可享受的权益"></el-input>
               </el-form-item>
+
+              <el-form-item label="卡券价值" prop="worth">
+                <el-input v-model="couponForm.worth" class="width340px" placeholder="请输入卡券的价值"></el-input>
+              </el-form-item>
             </div>
           </transition>
 
@@ -234,6 +238,13 @@
         }
         callback()
       }
+      const checkWorth = (rule, value, callback) => {
+        if (value && (value.toString().indexOf('.') !== -1 ||
+          isNaN(Number(value)) || Number(value) < 0 || Number(value) > 9999)) {
+          callback(new Error('请输入0-9999的正整数'))
+        }
+        callback()
+      }
       const checkNameUnique = (rule, value, callback) => {
         if (value) {
           let params = {
@@ -291,6 +302,7 @@
 
           // 礼品券
           couponRight: '', // 卡券权益
+          worth: '', // 卡券价值
           receiveWay: [], // 领取方式
           receiveConditionArray: [] // 自动发券触发条件
         },
@@ -317,6 +329,10 @@
           couponRight: [
             { required: true, message: '请输入可享受的权益', trigger: ['blur', 'change'] },
             { max: 50, message: '最大允许输入50字', trigger: ['blur', 'change'] }
+          ],
+          worth: [
+            { required: true, message: '请输入卡券价值', trigger: ['blur', 'change'] },
+            { validator: checkWorth, trigger: ['blur', 'change'] }
           ],
           receiveWay: [
             { required: true, message: '至少选择一种领取方式', trigger: ['blur', 'change'], type: 'array' }
@@ -614,6 +630,7 @@
                 let platformGiftCoupon = res.info.platformGiftCoupon
                 let verifyStationList = res.info.verifyStationList
                 couponForm.couponRight = platformGiftCoupon.benefit
+                couponForm.worth = platformGiftCoupon.worth
                 couponForm.isAllStore = platformGiftCoupon.verifyStationType
                 if (verifyStationList.length > 0) {
                   this.$nextTick(() => {
@@ -658,6 +675,7 @@
             }
             if (form.couponType === 3) { // 礼品券的特定参数
               params.benefit = form.couponRight
+              params.worth = form.worth
               params.verifyStationType = form.isAllStore
               if (form.isAllStore === 2) {
                 params.verifyStationIds = form.range
