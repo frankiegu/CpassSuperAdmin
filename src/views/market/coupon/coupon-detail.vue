@@ -46,7 +46,7 @@
     </lh-title>
     <div class="page-title-info coupon-info">
       <el-row>
-        <el-col :span="20">
+        <el-col :span="24">
           <el-row :gutter="20">
             <el-col>
               <p v-if="couponBaseInfo.description">卡券说明: {{couponBaseInfo.description}}</p>
