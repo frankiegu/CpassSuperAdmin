@@ -91,7 +91,7 @@ export default {
         if (this.isActive(view)) {
           const latestView = views.slice(-1)[0]
           if (latestView) {
-            this.$router.push(latestView.path + (latestView.id ? '?id=' + latestView.id : ''))
+            this.$router.push(latestView.lastPath)
           } else {
             this.$router.push('/')
           }
