@@ -62,7 +62,7 @@ export default [{
     component: _import('market/activity/list/list')
   },
   {
-    name: '添加/编辑活动',
+    name: '添加/编辑/复制活动',
     path: '/activity/add',
     hidden: true,
     component: _import('market/activity/add/add')
