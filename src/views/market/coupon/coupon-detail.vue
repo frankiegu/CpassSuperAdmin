@@ -49,7 +49,7 @@
         <el-col :span="20">
           <el-row :gutter="20">
             <el-col>
-              <p v-if="couponBaseInfo.description">卡券权益: {{couponBaseInfo.description}}</p>
+              <p v-if="couponBaseInfo.description">卡券说明: {{couponBaseInfo.description}}</p>
               <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: {{couponDiscountContent.worth}}元</p>
             </el-col>
           </el-row>
