@@ -7,10 +7,11 @@ import client from '@/router/client'               // 客户管理
 import service from '@/router/service'             // 服务管理
 import field from '@/router/field'                 // 场地管理
 import member from '@/router/member'               // 会员管理
-import order from '@/router/order'                 // 订单管理
+// import order from '@/router/order'                 // 订单管理
 import refund from '@/router/refund'               // 退款
 import cantonFair from '@/router/canton-fair'      // 广交会活动
 import feedback from '@/router/feedback'           // 广交会活动
+import market from '@/router/market'           // 营销管理
 
 export const constantRouterMap = [
   {
@@ -30,13 +31,14 @@ export const constantRouterMap = [
   },
   ...example,
   ...client,
-  ...service,
-  ...field,
   ...member,
-  ...order,
+  ...field,
+  ...service,
+  // ...order,
   ...refund,
   ...cantonFair,
   ...feedback,
+  ...market,
   ...register,
   /* 必须保证404页面在最后引入，有坑 */
   {

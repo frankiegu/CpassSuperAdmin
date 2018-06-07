@@ -19,5 +19,14 @@ export default [{
     path: 'detail',
     hidden: true,
     component: _import('field/detail')
+  }, {
+    name: '场地订单',
+    path: 'order',
+    component: _import('field/order')
+  }, {
+    name: '场地订单详情',
+    path: 'order/detail',
+    hidden: true,
+    component: _import('field/order-detail')
   }]
 }]

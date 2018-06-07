@@ -5,6 +5,7 @@ export default {
       fieldType: '',
       titleName: '',
       openStatus: false,
+      isOpen: 1,
       mainImg: '', // @#注意：主图不重复展示在列表中
 
       space: {},
@@ -22,10 +23,10 @@ export default {
       typeList: [
         { key: '0', label: '全部' },
         { key: '1', label: '会议室' },
-        // { key: '2', label: '路演厅' },
+        { key: '2', label: '路演厅' },
         { key: '3', label: '工位' },
         { key: '5', label: '办公室' },
-        { key: '4', label: '其他' }
+        { key: '4', label: '多功能场地' }
       ],
 
       openData: [],

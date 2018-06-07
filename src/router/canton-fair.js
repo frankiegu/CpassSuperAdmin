@@ -7,6 +7,7 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '广交会活动',
   path: '/canton-fair',
+  hidden: true,
   redirect: '/canton-fair/exchange',
   component: layout,
   icon: 'icon-activity',

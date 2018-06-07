@@ -57,7 +57,9 @@
         </el-form-item>
 
         <el-form-item class="fr">
-          <el-button @click="exportExcel" icon="el-icon-download" class="btn-green fr">导出表格</el-button>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
         </el-form-item>
       </el-form>
 
@@ -66,12 +68,13 @@
         :empty-text="tableEmpty"
         :slot="tableEmpty"
         v-loading="tableLoading"
+        @sort-change="change"
         class="width100" border>
 
         <el-table-column label="订单编号" fixed="left" align="left" width="140">
           <template slot-scope="scope">
             <router-link
-              :to="{path: '/order/field/detail', query: {id: scope.row.platformOrderId}}"
+              :to="{path: '/field/order/detail', query: {id: scope.row.platformOrderId}}"
               class="table-link">
               {{ scope.row.orderNum }}
             </router-link>
@@ -79,23 +82,26 @@
         </el-table-column>
 
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
-        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable></el-table-column>
+        <el-table-column label="生成时间" prop="created" align="left" width="155" sortable="custom"></el-table-column>
 
         <el-table-column label="场地类型" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.type === 3">工位</span>
-            <span v-else>会议室</span>
+            <span v-else-if="scope.row.type === 1">会议室</span>
+            <span v-else-if="scope.row.type === 2">路演厅</span>
+            <span v-else-if="scope.row.type === 4">多功能场地</span>
+            <span v-else-if="scope.row.type === 5">办公室</span>
           </template>
         </el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
-        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable sort-by="bookStartTime"></el-table-column>
-        <el-table-column label="场地所属" prop="spaceName" align="left">
+        <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable="custom"></el-table-column>
+        <el-table-column label="场地所属" prop="storeName" align="left">
           <template slot-scope="scope">
-            <span>{{ scope.row.spaceName }}</span>
+            <span>{{ scope.row.storeName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable sort-by="orderAmount" width="116"></el-table-column>
+        <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable="custom" width="116"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">
@@ -133,7 +139,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import fieldMixins from './field.mixins'
+  import fieldMixins from './order.mixins'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   export default {

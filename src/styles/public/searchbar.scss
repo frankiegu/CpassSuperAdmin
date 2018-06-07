@@ -1,5 +1,89 @@
 @import "../common/var";
 
+/* 迭代版
+ * 特殊样式应采用新设计一个，不建议复合旧样式，这样容易样式冲突
+ * 除非一开始就架构好，考虑了扩展
+-------------------------- */
+@mixin lh-svg {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 4px;
+  margin-top: -3px;
+}
+.lh-search-box {
+  min-height: 76px;
+  padding: 22px 18px 0 16px;
+  margin: 24px;
+  text-align: right;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0,21,41,0.12);
+  border-radius: $radius-medium;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.lh-search-box-in {
+  margin: 0 -6px 0 -8px;
+  text-align: right;
+  background-color: #fff;
+}
+.lh-search-box-in, .lh-search-box {
+  .fill-light-gray {
+    float: left;
+  }
+  .lh-form-btn {
+    float: left;
+    margin: 0 8px 18px;
+  }
+  // 换行有空格占4px，因此左右少2px
+  .lh-form-item {
+    width: 180px;
+    margin: 0 6px 18px;
+    vertical-align: top;
+  }
+  .el-date-editor {
+    width: 265px;
+  }
+  .el-button {
+    height: 32px;
+    padding: 8px 15px;
+    margin: 0 8px 18px;
+  }
+  .el-select {
+    vertical-align: top;
+  }
+  .lh-form-btn {
+    .lh-svg {
+      @include lh-svg;
+    }
+  }
+}
+.lh-btn-export {
+  height: 32px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-left: 5px !important;
+  // margin-right: 6px !important;
+  background-color: $btn-green !important;
+  border-color: $btn-green !important;
+  color: #fff !important;
+
+  &:hover, &:focus {
+    opacity: .8;
+  }
+  .lh-svg {
+    fill: #fff !important;
+    @include lh-svg;
+  }
+
+  &.is-disabled {
+    opacity: .6;
+  }
+}
+/* 顶部对齐form 筛选条件 */
+.el-form-item--small .el-form-item__content {
+  line-height: 29px;
+}
+
 /* form
 -------------------------- */
 .lh-form-box {
