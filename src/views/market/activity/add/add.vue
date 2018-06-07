@@ -1034,6 +1034,9 @@ export default {
       margin-left: -50px;
     }
   }
+  .el-dialog {
+    min-width: 510px;
+  }
 
 }
 </style>
