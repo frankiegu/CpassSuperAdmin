@@ -70,7 +70,7 @@
             <!-- 代金券 -->
             <div v-if="couponForm.couponType === 2" v-bind:key="2">
               <el-form-item label="优惠内容" required>
-                <el-radio-group v-model="couponForm.voucherType">
+                <el-radio-group v-model="couponForm.voucherType" @change="changeVoucherType">
                   <el-radio :label="1">无门槛</el-radio>
                   <el-radio :label="2">满减</el-radio>
                 </el-radio-group>
@@ -85,12 +85,15 @@
                   </el-form-item>
 
                   <!-- 满减 -->
-                  <el-form-item class="discounted-price"
-                    v-if="couponForm.voucherType === 2" key="voucher2">
+                  <el-form-item class="discounted-price" v-if="couponForm.voucherType === 2" key="voucher2">
                     满
-                    <el-input v-model="couponForm.voucherFull" class="width100px"></el-input>
+                    <el-form-item prop="voucherFull" class="mb0 dib">
+                      <el-input v-model="couponForm.voucherFull" class="width100px"></el-input>
+                    </el-form-item>
                     减
-                    <el-input v-model="couponForm.voucherReduce" class="width100px"></el-input>
+                    <el-form-item prop="voucherReduce" class="mb0 dib">
+                      <el-input v-model="couponForm.voucherReduce" class="width100px"></el-input>
+                    </el-form-item>
                   </el-form-item>
                 </transition>
               </el-form-item>
@@ -275,6 +278,19 @@
         }
         callback()
       }
+      const checkAmount = (rule, value, callback) => {
+        if (value && (value.toString().indexOf('.') !== -1 ||
+          isNaN(Number(value)) || Number(value) < 1 || Number(value) > 999999)) {
+          callback(new Error('请输入1-999999的正整数'))
+        }
+        callback()
+      }
+      const checkReduce = (rule, value, callback) => {
+        if (value && (Number(value) > Number(this.couponForm.voucherFull))) {
+          callback(new Error('优惠金额不得大于满减金额'))
+        }
+        callback()
+      }
       const checkWorth = (rule, value, callback) => {
         if (value && (value.toString().indexOf('.') !== -1 ||
           isNaN(Number(value)) || Number(value) < 0 || Number(value) > 9999)) {
@@ -367,6 +383,19 @@
             { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] },
             { validator: checkMinDate, trigger: ['blur', 'change'] }
           ],
+          voucherAmount: [
+            { required: true, message: '请输入优惠金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] }
+          ],
+          voucherFull: [
+            { required: true, message: '请输入满金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] }
+          ],
+          voucherReduce: [
+            { required: true, message: '请输入减金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] },
+            { validator: checkReduce, trigger: ['blur', 'change'] },
+          ],
           fieldType: [
             { required: true, message: '至少选择一个项目', trigger: ['blur', 'change'] }
           ],
@@ -443,8 +472,22 @@
     methods: {
       // 切换卡券类型
       changeType(val) {
-        this.couponForm.isAllStore = 2
         this.selectedRange = []
+        this.couponForm.range = []
+        this.couponForm.fieldType = []
+        this.couponForm.couponRight = ''
+        this.couponForm.worth = ''
+        this.couponForm.voucherType = 1
+        this.couponForm.voucherAmount = ''
+        this.couponForm.voucherFull = ''
+        this.couponForm.voucherReduce = ''
+        this.couponForm.isAllStore = 2
+        this.removeSelected()
+      },
+      changeVoucherType() {
+        this.couponForm.voucherAmount = ''
+        this.couponForm.voucherFull = ''
+        this.couponForm.voucherReduce = ''
       },
       // 切换使用范围
       changeRange() {
@@ -505,7 +548,7 @@
         this.selectedRange = this.getCheckedNodes()
         this.couponForm.range = []
         for (let i = 0; i < this.selectedRange.length; i++) {
-          if (this.couponForm.couponType === 1) {
+          if (this.couponForm.couponType !== 3) {
             this.couponForm.range.push(
               { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
             )
