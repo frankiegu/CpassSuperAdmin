@@ -3,6 +3,9 @@
     <!--<lh-title></lh-title>-->
     <lh-title :title="couponBaseInfo.name">
       <span class="ml12">
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 1">小时券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 2">满减券</el-tag>
+        <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 3">礼品券</el-tag>
         <!--小时券, 礼品券, 折扣券, 满减券-->
         <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.status === 1">生效中</el-tag>
         <el-tag class="mt2" type="warning" size="mini" v-if="couponBaseInfo.status === 2">已过期</el-tag>
@@ -43,15 +46,11 @@
     </lh-title>
     <div class="page-title-info coupon-info">
       <el-row>
-        <el-col :span="20">
+        <el-col :span="24">
           <el-row :gutter="20">
             <el-col>
-              <p>
-                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 1">小时券</el-tag>
-                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 2">满减券</el-tag>
-                <el-tag class="mt2" type="success" size="mini" v-if="couponBaseInfo.type === 3">礼品券</el-tag>
-                <span>{{couponBaseInfo.description}}</span>
-              </p>
+              <p v-if="couponBaseInfo.description">卡券说明: {{couponBaseInfo.description}}</p>
+              <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: {{couponDiscountContent.worth}}元</p>
             </el-col>
           </el-row>
 
