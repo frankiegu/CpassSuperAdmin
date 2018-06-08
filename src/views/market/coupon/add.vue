@@ -41,7 +41,7 @@
         <div class="card-body">
           <el-form-item label="卡券类型" required>
             <el-radio-group v-model="couponForm.couponType" :disabled="!canChangeType">
-              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
+              <el-radio v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
                 {{value}}
               </el-radio>
             </el-radio-group>
@@ -60,6 +60,43 @@
 
               <el-form-item label="指定项目" prop="fieldType">
                 <el-checkbox-group v-model="couponForm.fieldType">
+                  <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" v-if="key !== '5' && key !== '6'" :label="parseInt(key)">
+                    {{value}}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </div>
+
+            <!-- 代金券 -->
+            <div v-if="couponForm.couponType === 2" v-bind:key="2">
+              <el-form-item label="优惠内容" required>
+                <el-radio-group v-model="couponForm.voucherType">
+                  <el-radio :label="1">无门槛</el-radio>
+                  <el-radio :label="2">满减</el-radio>
+                </el-radio-group>
+
+                <transition name="slide-fade" mode="out-in">
+                  <!-- 无门槛 -->
+                  <el-form-item prop="voucherAmount" class="discounted-price"
+                    v-if="couponForm.voucherType === 1" key="voucher1">
+                    优惠金额
+                    <el-input v-model="couponForm.voucherAmount" class="width100px"></el-input>
+                    元
+                  </el-form-item>
+
+                  <!-- 满减 -->
+                  <el-form-item class="discounted-price"
+                    v-if="couponForm.voucherType === 2" key="voucher2">
+                    满
+                    <el-input v-model="couponForm.voucherFull" class="width100px"></el-input>
+                    减
+                    <el-input v-model="couponForm.voucherReduce" class="width100px"></el-input>
+                  </el-form-item>
+                </transition>
+              </el-form-item>
+
+              <el-form-item label="指定项目" prop="fieldType">
+                <el-checkbox-group v-model="couponForm.fieldType">
                   <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" :label="parseInt(key)">
                     {{value}}
                   </el-checkbox>
@@ -68,7 +105,7 @@
             </div>
 
             <!-- 礼品券 -->
-            <div v-if="couponForm.couponType === 3" v-bind:key="2">
+            <div v-if="couponForm.couponType === 3" v-bind:key="3">
               <el-form-item label="卡券权益" prop="couponRight">
                 <el-input v-model.trim="couponForm.couponRight" class="width340px"
                   placeholder="请输入可享受的权益"></el-input>
@@ -82,8 +119,8 @@
 
           <el-form-item label="使用范围" required>
             <el-radio-group v-model="couponForm.isAllStore" @change="changeRange">
-              <el-radio :label="1">{{couponForm.couponType === 1 ? '全部门店' : '全部核销点'}}</el-radio>
-              <el-radio :label="2">{{couponForm.couponType === 1 ? '部分门店' : '部分核销点'}}</el-radio>
+              <el-radio :label="1">{{couponForm.couponType !== 3 ? '全部门店' : '全部核销点'}}</el-radio>
+              <el-radio :label="2">{{couponForm.couponType !== 3 ? '部分门店' : '部分核销点'}}</el-radio>
               <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
                 添加
               </el-button>
@@ -96,7 +133,7 @@
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
                     <!-- 部分门店的树形 -->
-                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
+                    <el-tree v-if="couponForm.couponType !== 3" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
@@ -114,13 +151,13 @@
 
                 <div class="list-cont fl">
                   <p class="theme-gray clearfix fix-input">
-                    {{couponForm.couponType === 1 ? '已选门店' : '已选核销点'}}
+                    {{couponForm.couponType !== 3 ? '已选门店' : '已选核销点'}}
                     <span class="theme-blue ml12">{{selectedRange.length}}</span>
                     <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
                   </p>
 
                   <!-- 选中的部分门店 -->
-                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1" key="storeTable">
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType !== 3" key="storeTable">
                     <el-table-column label="空间" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
@@ -274,7 +311,8 @@
         fieldTypeList: {
           1: '会议室',
           2: '路演厅',
-          // 3: '开放式卡座',
+          5: '时租工位',
+          6: '移动工位',
           4: '多功能场地'
         },
         // 卡券类型列表
@@ -299,6 +337,12 @@
           fieldType: [],
           isAllStore: 2, // 是否应用全部门店 1-全部门店，2-部分门店
           range: [], // 部分门店的选中门店列表
+
+          // 代金券
+          voucherType: 1, // 1-无门槛，2-满减
+          voucherAmount: '', // 优惠金额
+          voucherFull: '', // 满金额
+          voucherReduce: '', // 减金额
 
           // 礼品券
           couponRight: '', // 卡券权益
@@ -742,6 +786,9 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .add-coupon {
+    .discounted-price {
+      margin: 18px 0 0;
+    }
     .range-cont {
       margin-right: -12px;
       .list-cont {
