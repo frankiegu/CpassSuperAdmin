@@ -201,14 +201,11 @@
         }
         platformVerifierPage(paramsObj).then(res => {
           if (res.status === 'true') {
+            console.log(res.info.result[2])
             if (res.info) {
-              let data = res.info
-              if (data) {
-                if (data.result) {
-                  this.pageTotal = data.total
-                  this.tableData = data.result || []
-                }
-              }
+              this.tableData = []
+              this.pageTotal = res.info.total
+              this.tableData = res.info.result || []
 
               this.tableLoading = false
               if (this.tableData.length === 0) {
