@@ -207,10 +207,6 @@
                 if (data.result) {
                   this.pageTotal = data.total
                   this.tableData = data.result || []
-
-                  this.tableData.forEach(v => {
-                    v.status = 4
-                  })
                 }
               }
 
