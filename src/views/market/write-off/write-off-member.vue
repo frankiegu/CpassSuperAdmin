@@ -88,13 +88,13 @@
               class="margin-lr6">
 
               <el-switch
-                v-model="scope.row.status"
+                v-model="scope.row.openStatus"
                 :active-value="1"
                 :inactive-value="0"
                 :active-color="switchActiveColor"
                 active-text=""
                 inactive-text=""
-                @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
+                @change="handleUpdateStatus(scope.row.id, scope.row.openStatus)"></el-switch>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -201,11 +201,20 @@
         }
         platformVerifierPage(paramsObj).then(res => {
           if (res.status === 'true') {
-            console.log(res.info.result[2])
             if (res.info) {
               this.tableData = []
               this.pageTotal = res.info.total
               this.tableData = res.info.result || []
+
+              this.tableData.forEach(item => {
+                if (item.status === 0 || item.status === 4) {
+                  item.openStatus = 0
+                }
+                if (item.status === 1) {
+                  item.openStatus = 1
+                }
+              })
+              console.log(this.tableData)
 
               this.tableLoading = false
               if (this.tableData.length === 0) {
@@ -238,6 +247,7 @@
         platformVerifierChangeStatus(paramsObj).then(res => {
           if (res.status === 'true') {
             this.setMsg('success', '修改成功!')
+            this.getPageData()
           } else {
             this.setMsg('error', res.msg)
           }
