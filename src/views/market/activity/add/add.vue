@@ -158,7 +158,7 @@
                   <el-input
                     :maxlength="4"
                     :autofocus="true"
-                    v-model="scope.row.quantity"
+                    v-model.trim="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
                   <div v-if="scope.row.validate">
@@ -177,7 +177,7 @@
                   <el-input
                     :autofocus="true"
                     :maxlength="3"
-                    v-model="scope.row.probability"
+                    v-model.trim="scope.row.probability"
                     @input.native="handleInputProbability(scope.row.probability, scope.row.id)"
                   ></el-input>
                   <div v-if="scope.row.probabilityValidate">
@@ -945,6 +945,7 @@ export default {
         if (this.prizeList.length > 0) {
           if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
             this.dialogVisible = true
+            this.couponTypeChange()
           } else {
             this.$message.info('请确认奖品信息填写无误')
           }
