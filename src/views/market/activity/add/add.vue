@@ -951,6 +951,7 @@ export default {
           }
         } else {
           this.dialogVisible = true
+          this.couponTypeChange()
         }
       } else {
         this.setMsg('最多只能添加20个奖品')
