@@ -272,8 +272,8 @@ export default {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!NATURAL_NUM.test(probability)) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为自然数'
+      if (!POSITIVE_INTEGER.test(probability)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
@@ -367,8 +367,8 @@ const checkNum = (rule, value, callback) => {
 const checkWinningTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入每人最大允许中奖数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
   } else {
     callback();
   }
@@ -377,15 +377,15 @@ const checkWinningTimes = (rule, value, callback) => {
 const checkOriginalTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入初始可抽奖次数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
   } else {
     callback();
   }
 };
 // 分享后获得的抽奖次数
 const checkShareAddTimes = (rule, value, callback) => {
-  if (!value) {
+  if (!value && value !== 0) {
     callback(new Error('请输入分享成功后额外抽奖次数'));
   } else if (!NATURAL_NUM.test(value)) {
     callback(new Error('请输入数字'));
