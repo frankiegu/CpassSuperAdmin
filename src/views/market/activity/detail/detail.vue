@@ -80,14 +80,14 @@
                 <span class="label-title">参与次数：</span>
                 <span class="label-info">{{ lotteryCount }}</span>
               </div>
-              <!--<div class="label-box">-->
-                <!--<span class="label-title">分享人数：</span>-->
-                <!--<span class="label-info">10</span>-->
-              <!--</div>-->
-              <!--<div class="label-box">-->
-                <!--<span class="label-title">分享次数：</span>-->
-                <!--<span class="label-info">20</span>-->
-              <!--</div>-->
+              <div class="label-box">
+                <span class="label-title">分享人数：</span>
+                <span class="label-info">{{sharePlayerCount}}</span>
+              </div>
+              <div class="label-box">
+                <span class="label-title">分享次数：</span>
+                <span class="label-info">{{shareTotalCount}}</span>
+              </div>
             </el-row>
           </el-col>
         </el-row>

@@ -45,6 +45,11 @@ export default {
     const validateActivityDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请选择活动有效期'));
+      } else if (value && value.length > 0) {
+        if (new Date(value[0]) < new Date()) {
+          return callback(new Error('起始时间需大于当前时间'))
+        }
+        callback()
       }
       callback();
     };
@@ -78,6 +83,17 @@ export default {
       loadingOnePart: false,
       loadingTwoPart: false,
       loadingThreePart: false,
+      editorOption1: {
+        modules: {
+          toolbar: [
+            [{ 'list': 'ordered' }]
+          ]
+        },
+        placeholder: '请填写活动规则',
+        theme: 'snow'  // or 'bubble'
+      }, // 富文本编辑器
+      editor1TextLength: 0,
+      quillLenght: 200,
 
       // part 1
       onePartForm: {
@@ -177,15 +193,18 @@ export default {
         terminalList: [
           {
             name: '小程序',
-            id: 1
+            id: 1,
+            disabled: false
           },
           {
             name: 'APP IOS端',
-            id: 2
+            id: 2,
+            disabled: true
           },
           {
             name: 'APP 安卓端',
-            id: 3
+            id: 3,
+            disabled: true
           }
         ]
       },
@@ -272,8 +291,8 @@ export default {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!NATURAL_NUM.test(probability)) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为自然数'
+      if (!POSITIVE_INTEGER.test(probability)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
@@ -325,6 +344,20 @@ export default {
           this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
         }
       })
+    },
+    // 富文本编辑器
+    onTextChange1(editor) {
+      // 针对只是列表的可以满足需求，但是复杂就不好做字数限制了
+      let formartObject
+      formartObject = this.$refs.myQuillEditor1.quill.getFormat(0, this.$refs.myQuillEditor1.quill.getLength())
+      this.editor1TextLength = this.$refs.myQuillEditor1.quill.getLength() - 1
+
+      // console.log('text-change111', this.$refs.myQuillEditor1.quill.getLength())
+      if (this.$refs.myQuillEditor1.quill.getLength() > this.quillLenght + 1) {
+        this.$refs.myQuillEditor1.quill.setText(this.$refs.myQuillEditor1.quill.getText().substring(0, this.quillLenght))
+        this.$refs.myQuillEditor1.quill.formatText(0, this.$refs.myQuillEditor1.quill.getLength(), formartObject)
+      }
+      // console.log('text-change1112222222', this.$refs.myQuillEditor1.quill.getLength())
     }
   },
   watch: {
@@ -367,8 +400,10 @@ const checkNum = (rule, value, callback) => {
 const checkWinningTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入每人最大允许中奖数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('初始抽奖次数不得大于999'));
   } else {
     callback();
   }
@@ -377,18 +412,22 @@ const checkWinningTimes = (rule, value, callback) => {
 const checkOriginalTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入初始可抽奖次数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('每人最大允许中奖数不得大于999'));
   } else {
     callback();
   }
 };
 // 分享后获得的抽奖次数
 const checkShareAddTimes = (rule, value, callback) => {
-  if (!value) {
+  if (!value && value !== 0) {
     callback(new Error('请输入分享成功后额外抽奖次数'));
   } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+    callback(new Error('请输入0—999内的整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('分享成功后额外抽奖次数不得大于999'));
   } else {
     callback();
   }

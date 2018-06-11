@@ -27,18 +27,27 @@
 
         <!-- 标题文字不要换行，因为会多一个空格，就不对齐了 -->
         <el-form-item prop="activityRules" label="活动规则 " label-width="120px" class="mt40">
-          <el-input
-            type="textarea"
-            resize="none"
-            class="activity-name fl"
-            v-model.trim="onePartForm.activityRules"
-            :maxlength="200"
-            :rows="7"
-            placeholder="请填写活动规则"
-          >
-          </el-input>
+          <!--<el-input-->
+            <!--type="textarea"-->
+            <!--resize="none"-->
+            <!--class="activity-name fl"-->
+            <!--v-model.trim="onePartForm.activityRules"-->
+            <!--:maxlength="200"-->
+            <!--:rows="7"-->
+            <!--placeholder="请填写活动规则"-->
+          <!--&gt;</el-input>-->
+          <!--<div class="limit-words-in">-->
+            <!--<div class="limit-words theme-gray">{{ editor1TextLength }}/{{ 200 }}</div>-->
+          <!--</div>-->
+            <div class="editor-container quill-editor-box">
+              <quill-editor
+                v-model.trim="onePartForm.activityRules"
+                ref="myQuillEditor1"
+                :options="editorOption1"
+                @change="onTextChange1($event)"></quill-editor>
+            </div>
 
-          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/200）限制字数200</span></el-form-item>
+          <span class="theme-gray fl rules-length">（{{editor1TextLength}}/200）限制字数200</span></el-form-item>
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
@@ -67,6 +76,7 @@
               end-placeholder="结束日期"
               placeholder="选择日期"
               type="datetimerange"
+              :default-time="['00:00:00', '23:59:59']"
               align="left"></el-date-picker>
           </div>
           <div class="date-text-wrapper">
@@ -117,7 +127,7 @@
             <el-col :span="8">
               <el-form-item prop="winningTimes">
                 <h3 class="text-title second-form-title">每人最大允许中奖数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数" :maxlength="6"></el-input>
+                <el-input class="width220px" :maxlength="3" v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -126,13 +136,13 @@
             <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -158,7 +168,7 @@
                   <el-input
                     :maxlength="4"
                     :autofocus="true"
-                    v-model="scope.row.quantity"
+                    v-model.trim="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
                   <div v-if="scope.row.validate">
@@ -177,7 +187,7 @@
                   <el-input
                     :autofocus="true"
                     :maxlength="3"
-                    v-model="scope.row.probability"
+                    v-model.trim="scope.row.probability"
                     @input.native="handleInputProbability(scope.row.probability, scope.row.id)"
                   ></el-input>
                   <div v-if="scope.row.probabilityValidate">
@@ -302,10 +312,7 @@
         <el-form-item label="展示端" label-width="100px" prop="displayTerminal">
           <template>
             <el-checkbox-group v-model="threePartForm.displayTerminal">
-              <!--<el-checkbox label="小程序"></el-checkbox>-->
-              <!--<el-checkbox label="APP IOS端"></el-checkbox>-->
-              <!--<el-checkbox label="APP 安卓端"></el-checkbox>-->
-              <el-checkbox :label="item.name" value="item.id" v-for="item in threePartForm.terminalList" :key="item.id"></el-checkbox>
+              <el-checkbox :disabled="item.disabled" :label="item.name" value="item.id" v-for="item in threePartForm.terminalList" :key="item.id"></el-checkbox>
             </el-checkbox-group>
           </template>
         </el-form-item>
@@ -321,6 +328,7 @@
             :clearable="false"
             v-model="threePartForm.activityDisplayStart"
             :picker-options="orderSortDate"
+            default-time="00:00:00"
             placeholder="选择开始日期"
             type="datetime"
             @change="displayStart"
@@ -340,6 +348,7 @@
             @change="displayEnd"
             format="yyyy-MM-dd HH:mm"
             value-format="yyyy-MM-dd HH:mm"
+            default-time="23:59:59"
             type="datetime"
             align="left"></el-date-picker>
           <i class="el-icon-warning theme-light-gray date-warnning ml10"></i>
@@ -393,6 +402,7 @@ import addMixins from './com.mixins'
 import upload from '@/components/upload'
 import pageTab from './components/page-tab'
 import commonMixins from './common.mixins'
+import { quillEditor } from 'vue-quill-editor'
 import { deepCopyObj } from '@/config/utils'
 import { platformActivityAdd, platformActivityDetail, findUsableCouponByType, platformActivityEdit } from '@/service/market'
 
@@ -400,7 +410,8 @@ export default {
   mixins: [addMixins, commonMixins],
   components: {
     [pageTab.name]: pageTab,
-    [upload.name]: upload
+    [upload.name]: upload,
+    quillEditor
   },
   data () {
     return {
@@ -410,7 +421,7 @@ export default {
       orderSortDate: {
         disabledDate(time) {
           // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
-          return time.getTime() < Date.now()
+          return time.getTime() < Date.now() - 3600 * 1000 * 24
         }
       }, // 日期选择范围
       uploadText: false, // 上传图片提示文字
@@ -504,7 +515,7 @@ export default {
               let ded = e.getDate() >= 10 ? e.getDate() : '0' + e.getDate()
               let deH = e.getHours() >= 10 ? e.getHours() : '0' + e.getHours()
               let deM = e.getMinutes() >= 10 ? e.getMinutes() : '0' + e.getMinutes()
-              this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
+              this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':59'
               this.submitObject.showDate = this.threePartForm.displayStartSubmit // 展示日期
               this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit // 隐藏日期
               this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
@@ -832,7 +843,7 @@ export default {
       eH = eH >= 10 ? eH : '0' + eH
       eM = eM >= 10 ? eM : '0' + eM
       this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':00'
+      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
     },
 
     /**
@@ -874,7 +885,7 @@ export default {
       let ded = ed >= 10 ? ed : '0' + ed
       let deH = eH >= 10 ? eH : '0' + eH
       let deM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
+      this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':59'
     },
     // 确定添加奖品
     sureAddPrize () {
@@ -945,11 +956,13 @@ export default {
         if (this.prizeList.length > 0) {
           if (this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
             this.dialogVisible = true
+            this.couponTypeChange()
           } else {
             this.$message.info('请确认奖品信息填写无误')
           }
         } else {
           this.dialogVisible = true
+          this.couponTypeChange()
         }
       } else {
         this.setMsg('最多只能添加20个奖品')
@@ -1037,7 +1050,17 @@ export default {
   .el-dialog {
     min-width: 510px;
   }
-
+  .editor-container {
+    height: 100%;
+    width: 45%;
+    min-width: 500px;
+  }
+  .quill-editor-box {
+    margin-bottom: 0;
+  }
+  .ql-container.ql-snow {
+    min-height: 180px;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -1115,6 +1138,9 @@ export default {
   }
   .display-activity {
     margin-left: 0;
+  }
+  .rules-length {
+    margin-top: -25px;
   }
 }
 </style>
