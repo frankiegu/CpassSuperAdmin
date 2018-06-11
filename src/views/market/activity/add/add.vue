@@ -63,6 +63,7 @@
               @change="dateChange"
               :clearable="false"
               :picker-options="orderSortDate"
+              :default-time="['00:00:00', '23:59:59']"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               placeholder="选择日期"
@@ -321,6 +322,7 @@
             :clearable="false"
             v-model="threePartForm.activityDisplayStart"
             :picker-options="orderSortDate"
+            :default-time="['00:00:00', '23:59:59']"
             placeholder="选择开始日期"
             type="datetime"
             @change="displayStart"
@@ -336,6 +338,7 @@
             :clearable="false"
             v-model="threePartForm.activityDisplayEnd"
             :picker-options="orderSortDate"
+            :default-time="['00:00:00', '23:59:59']"
             placeholder="选择结束日期"
             @change="displayEnd"
             format="yyyy-MM-dd HH:mm"
@@ -409,8 +412,7 @@ export default {
       titleName: '',
       orderSortDate: {
         disabledDate(time) {
-          // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
-          return time.getTime() < Date.now()
+          return (time.getTime() < Date.now() - 3600 * 1000 * 24)
         }
       }, // 日期选择范围
       uploadText: false, // 上传图片提示文字
