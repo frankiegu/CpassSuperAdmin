@@ -312,10 +312,7 @@
         <el-form-item label="展示端" label-width="100px" prop="displayTerminal">
           <template>
             <el-checkbox-group v-model="threePartForm.displayTerminal">
-              <!--<el-checkbox label="小程序"></el-checkbox>-->
-              <!--<el-checkbox label="APP IOS端"></el-checkbox>-->
-              <!--<el-checkbox label="APP 安卓端"></el-checkbox>-->
-              <el-checkbox :label="item.name" value="item.id" v-for="item in threePartForm.terminalList" :key="item.id"></el-checkbox>
+              <el-checkbox :disabled="item.disabled" :label="item.name" value="item.id" v-for="item in threePartForm.terminalList" :key="item.id"></el-checkbox>
             </el-checkbox-group>
           </template>
         </el-form-item>

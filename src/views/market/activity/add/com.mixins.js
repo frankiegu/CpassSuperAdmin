@@ -193,15 +193,18 @@ export default {
         terminalList: [
           {
             name: '小程序',
-            id: 1
+            id: 1,
+            disabled: false
           },
           {
             name: 'APP IOS端',
-            id: 2
+            id: 2,
+            disabled: true
           },
           {
             name: 'APP 安卓端',
-            id: 3
+            id: 3,
+            disabled: true
           }
         ]
       },
