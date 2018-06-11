@@ -28,14 +28,54 @@
       </el-form>
     </div>
 
-    <div class="lh-card-main card-padding">
+    <div class="lh-card-main">
       <!-- 漏斗图 -->
+      <div class="senior-title">漏斗图</div>
+      <div class="card-body">
+        <el-row :gutter="20" class="funnel-data-container">
+          <el-col :span="8">
+            <div class="funnel-cont">
+              <div class="total">100%</div>
+              <div class="receive">{{funnelDetail.receiveNum / funnelDetail.totalNum * 100}}%</div>
+              <div class="used">{{funnelDetail.usedNum / funnelDetail.totalNum * 100}}%</div>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="funnel-detail">总数（张）<span>{{funnelDetail.totalNum}}</span></div>
+            <div class="funnel-detail">领取（张）<span>{{funnelDetail.receiveNum}}</span></div>
+            <div class="funnel-detail">使用（张）<span>{{funnelDetail.usedNum}}</span></div>
+          </el-col>
+          <el-col :span="8">
+            <div class="total-conversion-rate">
+              整体转化率
+              <div class="font-bold theme-blue fz20">
+                {{(funnelDetail.usedNum / funnelDetail.totalNum * 100).toFixed(2)}}%
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <!-- 详细数据 -->
+      <div class="senior-title">详细数据</div>
+      <div class="card-body">
+        <el-button @click="exportExcel" class="lh-btn-export fr mb18">
+          <lh-svg icon-class="icon-download" />导出
+        </el-button>
+        <el-table :data="tableData" :loading="tableLoading">
+          <el-table-column label="步骤" prop="step"></el-table-column>
+          <el-table-column label="用户数" prop="userNum"></el-table-column>
+          <el-table-column label="张数" prop="pieceNum"></el-table-column>
+          <el-table-column label="转化率" prop="turnRate"></el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { getDateStr } from '@/config/utils'
+  import { getDateStr, downloadFile } from '@/config/utils'
+  import { API_PATH } from '@/config/env'
   export default {
     name: '',
     data() {
@@ -106,7 +146,14 @@
           disabledDate(time) {
             return time.getTime() > new Date(getDateStr(-1)).getTime()
           }
-        }
+        },
+        funnelDetail: {
+          totalNum: 1000,
+          receiveNum: 20,
+          usedNum: 10
+        },
+        tableData: [],
+        tableLoading: true
       }
     },
     mounted() {
@@ -136,11 +183,97 @@
             this.isSelectAll = true
           }
         }
+      },
+
+      // TODO 导出
+      exportExcel() {
+        if (!this.tableData.length) {
+          return this.setMsg('暂无数据')
+        }
+        // const funnelForm = this.funnelForm
+        const downParams = this.funnelForm
+        let url = API_PATH + '/supervisor/customer/exportExcel'
+        downloadFile(url, downParams)
       }
     }
   }
 </script>
 
+<style lang="scss" scoped>
+  @import 'src/styles/variables';
+  .forwarding-funnel {
+    .funnel-data-container {
+      text-align: center;
+
+      .funnel-cont {
+        position: relative;
+        margin: 0 auto;
+        width: 350px;
+        height: 270px;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          height: 0;
+          width: 0;
+          border: 175px solid #ffffff;
+          border-top-width: 270px;
+          border-bottom-width: 0;
+          border-top-color: transparent;
+        }
+
+        >div {
+          position: relative;
+          z-index: 1;
+          height: calc((100% - 12px) / 3);
+          line-height: 86px;
+          color: #ffffff;
+          font-family: 'PingFangSC-Medium';
+          font-size: 28px;
+          @for $i from 1 through 3 {
+            &:nth-child(#{$i}){
+              @if $i != 3 {
+                margin-bottom: 6px;
+              }
+              opacity: 0;
+              animation: shift .1s linear both .3s * (1 - ($i - 2));
+              background-color: rgba($theme-blue, 1 - $i * .2);
+            }
+          }
+        }
+      }
+
+      .funnel-detail {
+        line-height: 86px;
+        /*text-align: left;*/
+
+        & + .funnel-detail {
+          margin-top: 6px;
+        }
+
+        >span {
+          display: inline-block;
+          margin-left: 30px;
+          min-width: 200px;
+          font-family: 'PingFangSC-Medium';
+        }
+      }
+
+      .total-conversion-rate {
+        margin: 110px 0;
+      }
+    }
+  }
+  @keyframes shift {
+    to {
+      opacity: 1;
+    }
+  }
+</style>
 <style lang="scss">
   .forwarding-funnel {
     .lh-form-box {
