@@ -103,7 +103,7 @@
           <div class="mt10 bgcfff">
             <div class="card-body-title">活动规则</div>
             <div class="card-body-info">
-              <lh-item label=""  label-width="0px">{{ regulation }}</lh-item>
+              <lh-item label=""  label-width="0px" v-html="regulation"></lh-item>
             </div>
 
             <div class="card-body-title">活动内容</div>
