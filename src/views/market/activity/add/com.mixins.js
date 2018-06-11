@@ -1,22 +1,9 @@
-import { checkPhone } from '@/config/utils'
-import { FIXPHONEREG, POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
+import { POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
 import { activityIsUnique, findUsableCouponByType } from '@/service/market'
 
 export default {
   data () {
     // 需要用到this，要放在data里面
-    const validateTel = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入您的联系方式'));
-      }
-      if (this.telLineSelected === '0' && !checkPhone(value)) {
-        callback(new Error('请输入正确的电话'));
-      }
-      if (this.telLineSelected === '1' && !FIXPHONEREG.test(value)) {
-        callback(new Error('固定电话号码格式不正确。例：020-88888888'))
-      }
-      callback();
-    };
     const validateActivityName = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入活动名称'));
@@ -47,9 +34,31 @@ export default {
         callback(new Error('请选择活动有效期'));
       } else if (value && value.length > 0) {
         if (new Date(value[0]) < new Date()) {
-          return callback(new Error('起始时间需大于当前时间'))
+          callback(new Error('起始时间需大于当前时间'))
+        } else if (new Date(value[0]) >= new Date(value[1])) {
+          callback(new Error('结束时间需大于开始时间'))
+        } else {
+          callback();
         }
-        callback()
+      }
+      callback();
+    };
+    // 验证活动展示时间
+    const validateDispalyS = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择活动展示时间'));
+      } else if (new Date(value[0]) < new Date()) {
+        callback(new Error('活动展示时间需大于当前时间'));
+      }
+      callback();
+    };
+    // 验证活动隐藏时间
+    const validateDispalyE = (rule, value, callback) => {
+      console.log('display', [this.threePartForm.displayStartSubmit, new Date(value)])
+      if (!value) {
+        callback(new Error('请选择活动隐藏时间'));
+      } else if (value && new Date(this.threePartForm.displayStartSubmit) >= new Date(value)) {
+        callback(new Error('活动展示时间需大于隐藏时间'))
       }
       callback();
     };
@@ -203,9 +212,10 @@ export default {
         ]
       },
       threePartFormRule: {
-        contactName: [{ required: true, message: '请填写场地联系人姓名', trigger: ['blur', 'change'] }],
-        contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
+        // contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
         displayTerminal: [{ required: true, validator: validateTerminal, trigger: ['blur', 'change'] }],
+        activityDisplayStart: [{ required: true, validator: validateDispalyS, trigger: ['blur', 'change'] }],
+        activityDisplayEnd: [{ required: true, validator: validateDispalyE, trigger: ['blur', 'change'] }],
         tipsBeforeStart: [{ required: true, message: '请输入活动未开始提示', trigger: ['blur', 'change'] }],
         tipsEnd: [{ required: true, message: '请输入活动结束提示', trigger: ['blur', 'change'] }]
       }
@@ -270,7 +280,8 @@ export default {
     },
     // 验证添加的奖品的中奖概率的输入
     handleInputProbability(probability, id) {
-      let max = 100
+      let temp = probability.replace(/\./g, '')
+      let totalProbability = 0
       let feeTarget = this.prizeList.find(target => {
         return target.id === id
       })
@@ -280,18 +291,28 @@ export default {
           tempObj = v
           index = i
         }
+        totalProbability += (v.probability - 1 + 1)
       })
+      if (probability.indexOf('.') < 0) {
+        feeTarget.maxLength = 3
+      } else {
+        feeTarget.maxLength = 4
+      }
       if (!probability) {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!POSITIVE_INTEGER.test(probability)) {
+      if (!NATURAL_NUM.test(temp)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
+        tempObj.probabilityValidate = true
+        this.prizeList.splice(index, 1, tempObj)
+      } else if (temp - 1 + 1 <= 0) {
         tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
-        if (feeTarget.probability - 1 + 1 > max) {
-          tempObj.prizeProbabilityWarning = '中奖概率不能超过100%'
+        if (totalProbability > 100) {
+          tempObj.prizeProbabilityWarning = '所有奖品的中奖概率不能超过100%'
           tempObj.probabilityValidate = true
           this.prizeList.splice(index, 1, tempObj)
         } else if (feeTarget.probability - 1 + 1 < 0) {
