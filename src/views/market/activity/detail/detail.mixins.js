@@ -40,6 +40,8 @@ export default {
       // 活动统计
       lookPlayer: 0, // 查看人数
       lotteryCount: 0, // 参与次数
+      sharePlayerCount: 0, // 分享人数
+      shareTotalCount: 0, // 分享次数
 
       platformActivityGiftList: [], // 奖品
       platformActivityShowConfigList: [], // 展示设置
@@ -148,6 +150,11 @@ export default {
           if (this.tableData.length === 0) {
             this.tableEmpty = '暂时无数据'
           }
+          this.tableData.forEach(v => {
+            // sharePlayerCount shareTotalCount
+            this.sharePlayerCount = this.sharePlayerCount + v.sharePlayer
+            this.shareTotalCount = this.shareTotalCount + v.shareCount
+          })
         } else {
           this.setMsg('error', res.msg)
         }
