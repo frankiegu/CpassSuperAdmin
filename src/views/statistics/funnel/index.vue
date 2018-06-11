@@ -118,7 +118,7 @@
         funnelForm: {
           matter: '1',
           pickerDate: [getDateStr(-30), getDateStr(-1)],
-          statisticalRange: []
+          statisticalRange: [0]
         },
         pickerOptions: {
           shortcuts: [{
@@ -157,7 +157,7 @@
       }
     },
     mounted() {
-      this.statisticalRangeList = [this.allRange, this.partRange]
+      this.statisticalRangeList = [this.allRange]
     },
     methods: {
       // 统计范围选择事件
