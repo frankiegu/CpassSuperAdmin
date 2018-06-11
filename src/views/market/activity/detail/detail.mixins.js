@@ -97,7 +97,7 @@ export default {
               this.lotteryInitTime = res.info.platformActivity.lotteryInitTime
               this.winningMaxTime = res.info.platformActivity.winningMaxTime
 
-              if (this.status === 2) {
+              if (this.status === 1 || this.status === 2) {
                 this.isOpen = 1
               } else if (this.status === 0 || this.status === 1 || this.status === 3 || this.status === 4) {
                 this.isOpen = 0
