@@ -259,7 +259,7 @@ export default {
     .info-box{
       display: inline-block;
       width: calc(100% - 260px);
-      height: 140px;
+      /*height: 140px;*/
       margin-left: 20px;
 
       .info-title{
@@ -342,4 +342,13 @@ export default {
     padding: 0px 24px 36px 24px;
   }
 }
+</style>
+<style lang="scss">
+  .detail-item{
+    ol{
+      li{
+        list-style: decimal !important;
+      }
+    }
+  }
 </style>
