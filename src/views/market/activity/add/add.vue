@@ -154,7 +154,7 @@
               :data="prizeList"
               v-loading="orderLoading"
               :rules="prizeTableRules"
-              style="width: 860px; margin-bottom: 22px;">
+              style="width: 1000px; margin-bottom: 22px;">
               <el-table-column label="奖品" prop="prizeName" width="200px"></el-table-column>
               <el-table-column label="类型" prop="type">
                 <template slot-scope="scope">
@@ -162,7 +162,7 @@
                   <span v-if="scope.row.type === 2">微信红包</span>
                 </template>
               </el-table-column>
-              <el-table-column label="数量" prop="quantity" width="240px">
+              <el-table-column label="数量" prop="quantity" width="260px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
                   <el-input
@@ -181,12 +181,13 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="中奖概率 （%）" prop="probability" width="240px">
+              <el-table-column label="中奖概率 （%）" prop="probability" width="260px">
                 <template slot-scope="scope">
                   <!--<span v-if="!isEditFee">{{ scope.row.actualPrice }}</span>-->
+                  <!--:maxlength="scope.row.probability.indexOf('.') < 0 && scope.row.probability.length > 3 ? 3 : 4"-->
                   <el-input
                     :autofocus="true"
-                    :maxlength="3"
+                    :maxlength="scope.row.maxLength"
                     v-model.trim="scope.row.probability"
                     @input.native="handleInputProbability(scope.row.probability, scope.row.id)"
                   ></el-input>
@@ -323,7 +324,7 @@
           </template>
         </el-form-item>
 
-        <el-form-item label="显示时间" label-width="100px">
+        <el-form-item label="显示时间" label-width="100px" prop="activityDisplayStart">
           <el-date-picker
             :clearable="false"
             v-model="threePartForm.activityDisplayStart"
@@ -339,7 +340,7 @@
           <span class="warnning-text display-activity">活动将在该时间自动在客户端显示</span>
         </el-form-item>
 
-        <el-form-item label="隐藏时间" label-width="100px">
+        <el-form-item label="隐藏时间" label-width="100px" prop="activityDisplayEnd">
           <el-date-picker
             :clearable="false"
             v-model="threePartForm.activityDisplayEnd"
@@ -843,7 +844,9 @@ export default {
       eH = eH >= 10 ? eH : '0' + eH
       eM = eM >= 10 ? eM : '0' + eM
       this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
+      this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
       this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
+      this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
     },
 
     /**
@@ -923,6 +926,9 @@ export default {
             redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
           }
           this.prizeList.push(prize)
+          this.prizeList.forEach(v => {
+            this.totalProbability = this.totalProbability + (v.probability - 1 + 1)
+          })
           console.log('456', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
@@ -1060,6 +1066,7 @@ export default {
   }
   .ql-container.ql-snow {
     min-height: 180px;
+    padding-bottom: 20px;
   }
 }
 </style>
