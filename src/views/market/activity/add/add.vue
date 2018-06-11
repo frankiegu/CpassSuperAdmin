@@ -410,7 +410,7 @@ export default {
       orderSortDate: {
         disabledDate(time) {
           // return (time.getTime() < Date.now() - 3600 * 1000 * 24)
-          return time.getTime() < Date.now()
+          return time.getTime() < Date.now() - 3600 * 1000 * 24
         }
       }, // 日期选择范围
       uploadText: false, // 上传图片提示文字
