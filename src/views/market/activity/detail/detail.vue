@@ -99,7 +99,7 @@
       <!-- tab标签 -->
       <el-tabs v-model="activeTab">
         <!-- 领取方式标签页 -->
-        <el-tab-pane label="卡券信息" name="couponInformation" class="coupon-detail-info">
+        <el-tab-pane label="活动详情" name="couponInformation" class="coupon-detail-info">
           <div class="mt10 bgcfff">
             <div class="card-body-title">活动规则</div>
             <div class="card-body-info">
@@ -150,7 +150,7 @@
           </div>
         </el-tab-pane>
         <!--领券详情标签页-->
-        <el-tab-pane label="领券详情" name="receiveRecord" class="receive-list">
+        <el-tab-pane label="活动统计" name="receiveRecord" class="receive-list">
           <div class="mt10 bgcfff">
             <div class="card-body-title">整体统计</div>
 
