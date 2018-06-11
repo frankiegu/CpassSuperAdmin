@@ -402,6 +402,8 @@ const checkWinningTimes = (rule, value, callback) => {
     callback(new Error('请输入每人最大允许中奖数'));
   } else if (!POSITIVE_INTEGER.test(value)) {
     callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('初始抽奖次数不得大于999'));
   } else {
     callback();
   }
@@ -412,6 +414,8 @@ const checkOriginalTimes = (rule, value, callback) => {
     callback(new Error('请输入初始可抽奖次数'));
   } else if (!POSITIVE_INTEGER.test(value)) {
     callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('每人最大允许中奖数不得大于999'));
   } else {
     callback();
   }
@@ -421,7 +425,9 @@ const checkShareAddTimes = (rule, value, callback) => {
   if (!value && value !== 0) {
     callback(new Error('请输入分享成功后额外抽奖次数'));
   } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+    callback(new Error('请输入0—999内的整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('分享成功后额外抽奖次数不得大于999'));
   } else {
     callback();
   }

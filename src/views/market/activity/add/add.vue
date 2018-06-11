@@ -127,7 +127,7 @@
             <el-col :span="8">
               <el-form-item prop="winningTimes">
                 <h3 class="text-title second-form-title">每人最大允许中奖数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数" :maxlength="6"></el-input>
+                <el-input class="width220px" :maxlength="3" v-model.trim="twoPartForm.winningTimes" placeholder="请输入每人最大允许中奖数"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -136,13 +136,13 @@
             <el-col :span="4" style="min-width: 240px;">
               <el-form-item prop="originalTimes">
                 <h3 class="text-title second-form-title">初始抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.originalTimes" placeholder="请输入初始可抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="6"></el-input>
+                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
