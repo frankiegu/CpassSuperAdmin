@@ -45,6 +45,11 @@ export default {
     const validateActivityDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请选择活动有效期'));
+      } else if (value && value.length > 0) {
+        if (new Date(value[0]) < new Date()) {
+          return callback(new Error('起始时间需大于当前时间'))
+        }
+        callback()
       }
       callback();
     };
