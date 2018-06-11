@@ -107,14 +107,8 @@ export default {
         bannerPic: '' // 活动banner
       },
       onePartFormRule: {
-        type: [{ required: true, trigger: 'click', validator: checkType }],
         activityName: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityName }],
         activityRules: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityRules }],
-        fieldName: [{ required: true, message: '请填写场地名称', trigger: ['blur', 'change'] }],
-        storeId: [{ required: true, trigger: 'selected', validator: checkStore }],
-        maxAdmissibleNum: [{ required: true, trigger: ['blur', 'change'], validator: checkMaxAdmissibleNum }],
-        area: [{ required: true, trigger: ['blur', 'change'], validator: checkArea }],
-        stationNum: [{ required: true, validator: validateStationNum, trigger: ['blur', 'change'] }],
         rangeDate: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityDate }],
         bannerPic: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityBanner }]
       },
@@ -466,48 +460,3 @@ const validateRedEnvelopeAmount = (rule, value, callback) => {
   }
 }
 
-/**
- * other
- */
-const checkStore = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请选择门店'));
-  } else {
-    callback();
-  }
-};
-const checkType = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请选择场地类型'));
-  } else {
-    callback();
-  }
-};
-const checkMaxAdmissibleNum = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请填写最大容纳人数'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
-  } else {
-    callback();
-  }
-};
-const checkArea = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请填写场地面积'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
-  } else {
-    callback();
-  }
-};
-const validateStationNum = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请输入工位数量'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    /* 产品要求 */
-    callback(new Error('请输入1-999间的整数'));
-  } else {
-    callback();
-  }
-};
