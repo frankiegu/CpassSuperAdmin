@@ -67,6 +67,7 @@
               end-placeholder="结束日期"
               placeholder="选择日期"
               type="datetimerange"
+              :default-time="['00:00:00', '23:59:59']"
               align="left"></el-date-picker>
           </div>
           <div class="date-text-wrapper">
@@ -340,6 +341,7 @@
             @change="displayEnd"
             format="yyyy-MM-dd HH:mm"
             value-format="yyyy-MM-dd HH:mm"
+            default-time="23:59:59"
             type="datetime"
             align="left"></el-date-picker>
           <i class="el-icon-warning theme-light-gray date-warnning ml10"></i>
@@ -504,7 +506,7 @@ export default {
               let ded = e.getDate() >= 10 ? e.getDate() : '0' + e.getDate()
               let deH = e.getHours() >= 10 ? e.getHours() : '0' + e.getHours()
               let deM = e.getMinutes() >= 10 ? e.getMinutes() : '0' + e.getMinutes()
-              this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
+              this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':59'
               this.submitObject.showDate = this.threePartForm.displayStartSubmit // 展示日期
               this.submitObject.hiddenDate = this.threePartForm.displayEndSubmit // 隐藏日期
               this.submitObject.notBeginPrompt = this.threePartForm.tipsBeforeStart // 未开始提示
@@ -832,7 +834,7 @@ export default {
       eH = eH >= 10 ? eH : '0' + eH
       eM = eM >= 10 ? eM : '0' + eM
       this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':00'
+      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
     },
 
     /**
@@ -874,7 +876,7 @@ export default {
       let ded = ed >= 10 ? ed : '0' + ed
       let deH = eH >= 10 ? eH : '0' + eH
       let deM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':00'
+      this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':59'
     },
     // 确定添加奖品
     sureAddPrize () {
