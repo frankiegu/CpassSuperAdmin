@@ -27,18 +27,27 @@
 
         <!-- 标题文字不要换行，因为会多一个空格，就不对齐了 -->
         <el-form-item prop="activityRules" label="活动规则 " label-width="120px" class="mt40">
-          <el-input
-            type="textarea"
-            resize="none"
-            class="activity-name fl"
-            v-model.trim="onePartForm.activityRules"
-            :maxlength="200"
-            :rows="7"
-            placeholder="请填写活动规则"
-          >
-          </el-input>
+          <!--<el-input-->
+            <!--type="textarea"-->
+            <!--resize="none"-->
+            <!--class="activity-name fl"-->
+            <!--v-model.trim="onePartForm.activityRules"-->
+            <!--:maxlength="200"-->
+            <!--:rows="7"-->
+            <!--placeholder="请填写活动规则"-->
+          <!--&gt;</el-input>-->
+          <!--<div class="limit-words-in">-->
+            <!--<div class="limit-words theme-gray">{{ editor1TextLength }}/{{ 200 }}</div>-->
+          <!--</div>-->
+            <div class="editor-container quill-editor-box">
+              <quill-editor
+                v-model.trim="onePartForm.activityRules"
+                ref="myQuillEditor1"
+                :options="editorOption1"
+                @change="onTextChange1($event)"></quill-editor>
+            </div>
 
-          <span class="theme-gray fl">&nbsp;&nbsp;（{{onePartForm.activityRules.length}}/200）限制字数200</span></el-form-item>
+          <span class="theme-gray fl rules-length">（{{editor1TextLength}}/200）限制字数200</span></el-form-item>
 
         <el-form-item prop="activityType" label="活动类型" label-width="120px" class="mt40">
           <template>
@@ -395,6 +404,7 @@ import addMixins from './com.mixins'
 import upload from '@/components/upload'
 import pageTab from './components/page-tab'
 import commonMixins from './common.mixins'
+import { quillEditor } from 'vue-quill-editor'
 import { deepCopyObj } from '@/config/utils'
 import { platformActivityAdd, platformActivityDetail, findUsableCouponByType, platformActivityEdit } from '@/service/market'
 
@@ -402,7 +412,8 @@ export default {
   mixins: [addMixins, commonMixins],
   components: {
     [pageTab.name]: pageTab,
-    [upload.name]: upload
+    [upload.name]: upload,
+    quillEditor
   },
   data () {
     return {
@@ -1041,7 +1052,17 @@ export default {
   .el-dialog {
     min-width: 510px;
   }
-
+  .editor-container {
+    height: 100%;
+    width: 45%;
+    min-width: 500px;
+  }
+  .quill-editor-box {
+    margin-bottom: 0;
+  }
+  .ql-container.ql-snow {
+    min-height: 180px;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -1119,6 +1140,9 @@ export default {
   }
   .display-activity {
     margin-left: 0;
+  }
+  .rules-length {
+    margin-top: -25px;
   }
 }
 </style>

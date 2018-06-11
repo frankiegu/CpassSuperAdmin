@@ -83,6 +83,17 @@ export default {
       loadingOnePart: false,
       loadingTwoPart: false,
       loadingThreePart: false,
+      editorOption1: {
+        modules: {
+          toolbar: [
+            [{ 'list': 'ordered' }]
+          ]
+        },
+        placeholder: '请填写活动规则',
+        theme: 'snow'  // or 'bubble'
+      }, // 富文本编辑器
+      editor1TextLength: 0,
+      quillLenght: 200,
 
       // part 1
       onePartForm: {
@@ -330,6 +341,20 @@ export default {
           this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
         }
       })
+    },
+    // 富文本编辑器
+    onTextChange1(editor) {
+      // 针对只是列表的可以满足需求，但是复杂就不好做字数限制了
+      let formartObject
+      formartObject = this.$refs.myQuillEditor1.quill.getFormat(0, this.$refs.myQuillEditor1.quill.getLength())
+      this.editor1TextLength = this.$refs.myQuillEditor1.quill.getLength() - 1
+
+      // console.log('text-change111', this.$refs.myQuillEditor1.quill.getLength())
+      if (this.$refs.myQuillEditor1.quill.getLength() > this.quillLenght + 1) {
+        this.$refs.myQuillEditor1.quill.setText(this.$refs.myQuillEditor1.quill.getText().substring(0, this.quillLenght))
+        this.$refs.myQuillEditor1.quill.formatText(0, this.$refs.myQuillEditor1.quill.getLength(), formartObject)
+      }
+      // console.log('text-change1112222222', this.$refs.myQuillEditor1.quill.getLength())
     }
   },
   watch: {
