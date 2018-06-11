@@ -69,7 +69,7 @@ export default {
       } else {
         this.orderBy = ''
       }
-      this.getPageData()
+      this.getPageData(1)
     },
     // 获取活动详情
     getActivityDetail () {
