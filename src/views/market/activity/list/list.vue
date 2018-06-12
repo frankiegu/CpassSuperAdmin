@@ -89,7 +89,7 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <router-link v-if="scope.row.status === 0 || scope.row.status === 1" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
+            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
