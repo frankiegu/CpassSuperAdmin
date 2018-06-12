@@ -11,6 +11,49 @@ export default [{
   component: layout,
   icon: 'icon-order',
   children: [
+    // 场地统计
+    {
+      name: '场地统计',
+      path: '/site-statistics',
+      redirect: '/site-statistics/statistics-site',
+      component: _import('statistics/site-statistics/site-statistics'),
+      children: [{
+        name: '场地统计',
+        path: 'statistics-site',
+        hidden: true,
+        component: _import('statistics/site-statistics/statistics-site')
+      }, {
+        name: '浏览统计',
+        path: 'statistics-browsing',
+        hidden: true,
+        component: _import('statistics/site-statistics/statistics-browsing')
+      }, {
+        name: '地区分析',
+        path: 'statistics-area',
+        hidden: true,
+        component: _import('statistics/site-statistics/statistics-area')
+      }]
+    },
+
+    // C-PASS订单统计
+    {
+      name: 'C-PASS订单统计',
+      path: '/order-statistics',
+      redirect: '/order-statistics/statistics-order',
+      component: _import('statistics/order-statistics/order-statistics'),
+      children: [{
+        name: '场地订单统计',
+        path: 'statistics-order',
+        hidden: true,
+        component: _import('statistics/order-statistics/statistics-order')
+      }, {
+        name: '参观预约统计',
+        path: 'statistics-visit',
+        hidden: true,
+        component: _import('statistics/order-statistics/statistics-visit')
+      }]
+    },
+
     // 转发漏斗
     {
       name: '转发漏斗',
