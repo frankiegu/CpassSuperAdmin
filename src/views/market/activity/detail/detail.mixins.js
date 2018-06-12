@@ -40,8 +40,8 @@ export default {
       // 活动统计
       lookPlayer: 0, // 查看人数
       lotteryCount: 0, // 参与次数
-      sharePlayerCount: 0, // 分享人数
-      shareTotalCount: 0, // 分享次数
+      sharePlayer: 0, // 分享人数
+      shareCount: 0, // 分享次数
 
       platformActivityGiftList: [], // 奖品
       platformActivityShowConfigList: [], // 展示设置
@@ -138,8 +138,8 @@ export default {
           if (res.info.activityStatisticsVO) {
             this.lookPlayer = res.info.activityStatisticsVO.lookPlayer || 0
             this.lotteryCount = res.info.activityStatisticsVO.lotteryCount || 0
-            this.sharePlayerCount = res.info.activityStatisticsVO.sharePlayerCount || 0
-            this.shareTotalCount = res.info.activityStatisticsVO.shareTotalCount || 0
+            this.sharePlayer = res.info.activityStatisticsVO.sharePlayer || 0
+            this.shareCount = res.info.activityStatisticsVO.shareCount || 0
           }
 
           let data = res.info.statisticsList
