@@ -18,7 +18,12 @@
         <el-row>
           <el-col :span="24">
             <el-row :gutter="20" class="mb6">
-              <h1 class="info-title ml10">{{ name }}</h1>
+              <el-tooltip class="item" effect="dark" :content="name" placement="top-start">
+                <div class="info-title">
+                  <h1 class="info-title ml10">{{ name }}</h1>
+                </div>
+              </el-tooltip>
+
               <el-tag class="info-title-tag ml12 mt2" v-if="status === 0">未发布</el-tag>
               <el-tag class="info-title-tag ml12 mt2" v-if="status === 1">未开始</el-tag>
               <el-tag type="success" class="info-title-tag ml12 mt2" v-if="status === 2">进行中</el-tag>
@@ -268,6 +273,7 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        cursor: pointer;
       }
       .info-title-tag{
         vertical-align: top;
