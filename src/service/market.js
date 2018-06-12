@@ -95,3 +95,34 @@ export const platformVerifierPage = (obj) => fetch(API_PATH + '/supervisor/platf
 
 // 分页查询核销记录
 export const platformVerifyRecordPage = (obj) => fetch(API_PATH + '/supervisor/platformVerifyRecord/page', obj, 'POST')
+
+/**
+ * 活动管理
+ */
+
+// 分页查询活动列表
+export const platformActivityList = (obj) => fetch(API_PATH + '/supervisor/platformActivity/list', obj, 'POST')
+
+// 查询活动详情
+export const platformActivityDetail = (obj) => fetch(API_PATH + '/supervisor/platformActivity/detail', obj, 'POST')
+
+// 检验活动名称重复
+export const activityIsUnique = (obj) => fetch(API_PATH + '/supervisor/platformActivity/isUnique', obj, 'POST')
+
+// 活动奖品选择优惠券
+export const findUsableCouponByType = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/findUsableCouponByType', obj, 'POST')
+
+// 删除活动
+export const platformActivityDelete = (obj) => fetch(API_PATH + '/supervisor/platformActivity/delete', obj, 'POST')
+
+// 活动统计列表
+export const platformActivityStatisticsList = (obj) => fetch(API_PATH + '/supervisor/platformActivity/statisticsList', obj, 'POST')
+
+// 发布/暂停活动
+export const platformActivityChangeStatus = (obj) => fetch(API_PATH + '/supervisor/platformActivity/changeStatus', obj, 'POST')
+
+// 添加活动
+export const platformActivityAdd = (obj) => fetch(API_PATH + '/supervisor/platformActivity/add', obj, 'POST')
+
+// 编辑活动
+export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platformActivity/update', obj, 'POST')

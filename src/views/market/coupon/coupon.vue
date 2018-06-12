@@ -219,7 +219,7 @@
       sortCoupon (sort) {
         console.log('sort', sort)
         this.orderBy = sort.order === 'ascending' ? 0 : 1
-        this.getPageData()
+        this.getPageData(1)
       },
       // 筛选触发动作
       filterChange (filters) {

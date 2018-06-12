@@ -20,6 +20,8 @@ const FIXPHONEREG = /^\d{3}-\d{7,8}|\d{4}-\d{7,8}$/
 const EMAILREG = /^\w+([-+.´]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
 // 检验正整数
 const POSITIVE_INTEGER = /^[1-9]\d*$/
+// 自然数
+const NATURAL_NUM = /^[0-9]\d*$/
 // 匹配IP地址
 const IP_REG = /^(25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?[1-9]))\.((25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?\d))\.){2}(25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?\d))$/
 const PWD_RRGULAR = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/
@@ -34,6 +36,7 @@ export {
   FIXPHONEREG,
   EMAILREG,
   POSITIVE_INTEGER,
+  NATURAL_NUM,
   IP_REG,
   PWD_RRGULAR
 }

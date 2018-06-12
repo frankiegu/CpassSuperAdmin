@@ -53,5 +53,24 @@ export default [{
       hidden: true,
       component: _import('market/write-off/write-off-record')
     }]
+  },
+
+  // 活动添加
+  {
+    name: '活动列表',
+    path: '/activity',
+    component: _import('market/activity/list/list')
+  },
+  {
+    name: '添加/编辑/复制活动',
+    path: '/activity/add',
+    hidden: true,
+    component: _import('market/activity/add/add')
+  },
+  {
+    name: '活动详情',
+    path: '/activity/detail',
+    hidden: true,
+    component: _import('market/activity/detail/detail')
   }]
 }]
