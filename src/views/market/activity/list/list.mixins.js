@@ -47,7 +47,7 @@ export default {
       } else {
         this.orderBy = ''
       }
-      this.getPageData()
+      this.getPageData(1)
     },
     getPageData(page) {
       this.currentPage = page || this.currentPage
