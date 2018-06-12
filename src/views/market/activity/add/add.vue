@@ -476,6 +476,7 @@ export default {
               break;
             case '2':
               // ajaxParams.step = 2
+              this.checkPrize()
               this.validatePartTwo = true
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 this.tabSwitch = 3      // add field 打开第三道门
@@ -483,11 +484,14 @@ export default {
                 this.loadingTwoPart = false
               } else if (this.prizeList.length <= 0) {
                 this.$message.info('请至少添加一个奖品')
+              } else if (!this.prizeList.every(this.checkPrizeQuantity) || !this.prizeList.every(this.checkPrizeProbability)) {
+                this.$message.info('请确定奖品信息填写无误')
               }
               break;
             case '3':
               // ajaxParams.step = 3
               // threePartForm
+              this.checkPrize()
               this.validatePartThree = true
               let terminals = []
               for (let i = 0; i < this.threePartForm.terminalList.length; i++) {
@@ -568,56 +572,65 @@ export default {
               if (giftCouponTwo.length > 0) this.submitObject.giftCouponArray = giftCouponTwo // 优惠券数组
               if (giftRedpacketTwo.length > 0) this.submitObject.giftRedpacketArray = giftRedpacketTwo // 红包数组
 
-              console.log('this.threePartForm.displayStartSubmit', [this.threePartForm.displayStartSubmit, this.threePartForm.displayEndSubmit])
               // 请求接口
-              if (!this.activityId) {
-                platformActivityAdd(this.submitObject).then(res => {
-                  if (res.status === 'true') {
-                    this.$router.push('/activity/detail?id=' + res.info.id)
-                  } else {
-                    this.setMsg('error', res.msg)
-                  }
-                })
-              } else if (this.activityId) {
-                this.submitObject.id = this.activityId
-                if (this.submitObject.giftCouponArray.length > 0) {
-                  this.submitObject.giftCouponArray.forEach(v => {
-                    if (v.isRepeat) {
-                      v.isRepeat = 1
-                    } else {
-                      v.isRepeat = 0
-                    }
-                  })
-                }
-                if (this.submitObject.giftRedpacketArray.length > 0) {
-                  this.submitObject.giftRedpacketArray.forEach(v => {
-                    if (v.isRepeat) {
-                      v.isRepeat = 1
-                    } else {
-                      v.isRepeat = 0
-                    }
-                  })
-                }
-                if (this.type === 'edit') {
-                  platformActivityEdit(this.submitObject).then(res => {
-                    if (res.status === 'true') {
-                      this.setMsg('success', '更新成功')
-                      this.$router.push('/activity/detail?id=' + this.activityId)
-                    } else {
-                      this.setMsg('error', res.msg)
-                    }
-                  })
-                } else if (this.type === 'copy') {
-                  this.submitObject.id = ''
+              if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
+                if (!this.activityId) {
                   platformActivityAdd(this.submitObject).then(res => {
                     if (res.status === 'true') {
-                      this.setMsg('success', res.msg)
                       this.$router.push('/activity/detail?id=' + res.info.id)
                     } else {
                       this.setMsg('error', res.msg)
                     }
                   })
+                } else if (this.activityId) {
+                  this.submitObject.id = this.activityId
+                  if (this.submitObject.giftCouponArray.length > 0) {
+                    this.submitObject.giftCouponArray.forEach(v => {
+                      if (v.isRepeat) {
+                        v.isRepeat = 1
+                      } else {
+                        v.isRepeat = 0
+                      }
+                    })
+                  }
+                  if (this.submitObject.giftRedpacketArray.length > 0) {
+                    this.submitObject.giftRedpacketArray.forEach(v => {
+                      if (v.isRepeat) {
+                        v.isRepeat = 1
+                      } else {
+                        v.isRepeat = 0
+                      }
+                    })
+                  }
+                  if (this.type === 'edit') {
+                    platformActivityEdit(this.submitObject).then(res => {
+                      if (res.status === 'true') {
+                        this.setMsg('success', '更新成功')
+                        this.$router.push('/activity/detail?id=' + this.activityId)
+                      } else {
+                        this.setMsg('error', res.msg)
+                      }
+                    })
+                  } else if (this.type === 'copy') {
+                    this.submitObject.id = ''
+                    if (!this.onePartForm.activityName) {
+                      this.setMsg('error', '请输入活动名称')
+                    } else {
+                      platformActivityAdd(this.submitObject).then(res => {
+                        if (res.status === 'true') {
+                          this.setMsg('success', res.msg)
+                          this.$router.push('/activity/detail?id=' + res.info.id)
+                        } else {
+                          this.setMsg('error', res.msg)
+                        }
+                      })
+                    }
+                  }
                 }
+              } else if (!this.onePartForm.activityName) {
+                this.setMsg('error', '请输入活动名称')
+              } else {
+                this.setMsg('error', '请确认奖品信息填写无误')
               }
               break;
           }
@@ -807,6 +820,9 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
+          if (this.type) {
+            this.checkPrize()
+          }
         }
       })
     },
@@ -906,7 +922,6 @@ export default {
           }
           if (this.addPrizeForm.addPrizeType - 1 + 1 === 2) {
             couponRest = 9999
-            console.log(1234)
           }
           let prize = {
             type: this.addPrizeForm.addPrizeType - 1 + 1,
@@ -929,7 +944,6 @@ export default {
           this.prizeList.forEach(v => {
             this.totalProbability = this.totalProbability + (v.probability - 1 + 1)
           })
-          console.log('456', this.prizeList)
           this.dialogVisible = false
           this.addPrizeForm = {
             addPrizeType: '1',
@@ -989,6 +1003,35 @@ export default {
     // 判断prizeList所有元素的中奖概率输入验证是否都通过
     checkPrizeProbability (item) {
       return item.probabilityValidate === false
+    },
+    // 复制和编辑时查询奖品剩余数量
+    checkPrize () {
+      let couponRest
+      findUsableCouponByType().then(res => {
+        if (res.status === 'true') {
+          couponRest = res.info
+          let allCouponIds = []
+          // 奖品数组
+          for (let i = 0; i < couponRest.length; i++) {
+            allCouponIds.push(couponRest[i].id)
+            for (let j = 0; j < this.prizeList.length; j++) {
+              if (this.prizeList[j].id === couponRest[i].id) {
+                if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
+                  let temp = this.prizeList[j]
+                  temp.validate = true
+                  temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
+                  this.prizeList.splice(j, temp)
+                } else {
+                  this.prizeList[j].validate = false
+                }
+              } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
+                this.prizeList[j].validate = true
+                this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+              }
+            }
+          }
+        }
+      })
     }
   }
 }

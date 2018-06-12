@@ -33,9 +33,10 @@ export default {
       if (!value) {
         callback(new Error('请选择活动有效期'));
       } else if (value && value.length > 0) {
-        if (new Date(value[0]) < new Date()) {
+        if (new Date(value[0]) < new Date() && this.type !== 'edit') {
           callback(new Error('起始时间需大于当前时间'))
         } else if (new Date(value[0]) >= new Date(value[1])) {
+          console.log('13r3', value)
           callback(new Error('结束时间需大于开始时间'))
         } else {
           callback();
