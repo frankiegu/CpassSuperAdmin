@@ -102,6 +102,10 @@
               <span v-if="scope.row.type === 1">{{ scope.row.subtractHour }}小时</span>
               <!--礼品券-->
               <span v-if="scope.row.type === 3">{{ scope.row.benefit }}</span>
+              <!--满减券  有门槛-->
+              <span v-if="scope.row.type === 2 && scope.row.isConditional === 1">满{{ scope.row.applyLowerLimit }}减{{ scope.row.amount }}</span>
+              <!--满减券  无门槛-->
+              <span v-if="scope.row.type === 2 && scope.row.isConditional === 0">{{ scope.row.amount }}元无门槛</span>
             </template>
           </el-table-column>
 
