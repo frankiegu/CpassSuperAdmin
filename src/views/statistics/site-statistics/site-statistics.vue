@@ -12,8 +12,16 @@
             </div>
             <div class="modular-item-right">
               <span class="right-site">
-                近7天新增
-                <span></span>
+                <span class="right-site-title">近7天新增</span>
+                <span class="right-site-count">990</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近30天新增</span>
+                <span class="right-site-count">2780</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近60天新增</span>
+                <span class="right-site-count">6350</span>
               </span>
             </div>
           </div>
@@ -88,13 +96,23 @@
       }
       .modular-item-right{
         display: inline-block;
-        width: 150px;
+        width: 130px;
         float: right;
 
         .right-site{
           display: inline-block;
           width: 100%;
           margin-bottom: 8px;
+
+          .right-site-title{
+            text-align: left;
+            float: left;
+            margin-right: 20px;
+          }
+          .right-site-count{
+            text-align: right;
+            line-height: 19px;
+          }
         }
         .right-site:last-child{
           margin-bottom: 0px;
