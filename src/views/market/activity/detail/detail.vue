@@ -82,11 +82,11 @@
               </div>
               <div class="label-box">
                 <span class="label-title">分享人数：</span>
-                <span class="label-info">{{sharePlayerCount}}</span>
+                <span class="label-info">{{sharePlayer}}</span>
               </div>
               <div class="label-box">
                 <span class="label-title">分享次数：</span>
-                <span class="label-info">{{shareTotalCount}}</span>
+                <span class="label-info">{{shareCount}}</span>
               </div>
             </el-row>
           </el-col>
