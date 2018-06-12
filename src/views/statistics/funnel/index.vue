@@ -33,25 +33,27 @@
       <div class="senior-title">漏斗图</div>
       <div class="card-body">
         <el-row :gutter="20" class="funnel-data-container">
-          <el-col :span="8">
+          <el-col :span="8" style="width: 370px">
             <div class="funnel-cont">
               <div class="total">100%</div>
               <div class="receive">{{funnelDetail.receiveNum / funnelDetail.totalNum * 100}}%</div>
               <div class="used">{{funnelDetail.usedNum / funnelDetail.totalNum * 100}}%</div>
             </div>
           </el-col>
-          <el-col :span="8">
-            <div class="funnel-detail">总数（张）<span>{{funnelDetail.totalNum}}</span></div>
-            <div class="funnel-detail">领取（张）<span>{{funnelDetail.receiveNum}}</span></div>
-            <div class="funnel-detail">使用（张）<span>{{funnelDetail.usedNum}}</span></div>
-          </el-col>
-          <el-col :span="8">
-            <div class="total-conversion-rate">
-              整体转化率
-              <div class="font-bold theme-blue fz20">
-                {{(funnelDetail.usedNum / funnelDetail.totalNum * 100).toFixed(2)}}%
+          <el-col style="width: calc(100% - 370px)">
+            <el-col :span="12">
+              <div class="funnel-detail">总数（张）<span>{{funnelDetail.totalNum}}</span></div>
+              <div class="funnel-detail">领取（张）<span>{{funnelDetail.receiveNum}}</span></div>
+              <div class="funnel-detail">使用（张）<span>{{funnelDetail.usedNum}}</span></div>
+            </el-col>
+            <el-col :span="12">
+              <div class="total-conversion-rate">
+                整体转化率
+                <div class="font-bold theme-blue fz20">
+                  {{(funnelDetail.usedNum / funnelDetail.totalNum * 100).toFixed(2)}}%
+                </div>
               </div>
-            </div>
+            </el-col>
           </el-col>
         </el-row>
       </div>
@@ -118,7 +120,7 @@
         funnelForm: {
           matter: '1',
           pickerDate: [getDateStr(-30), getDateStr(-1)],
-          statisticalRange: []
+          statisticalRange: [0]
         },
         pickerOptions: {
           shortcuts: [{
@@ -157,7 +159,7 @@
       }
     },
     mounted() {
-      this.statisticalRangeList = [this.allRange, this.partRange]
+      this.statisticalRangeList = [this.allRange]
     },
     methods: {
       // 统计范围选择事件
@@ -235,12 +237,12 @@
           font-family: 'PingFangSC-Medium';
           font-size: 28px;
           @for $i from 1 through 3 {
-            &:nth-child(#{$i}){
+            &:nth-child(#{$i}) {
               @if $i != 3 {
                 margin-bottom: 6px;
               }
               opacity: 0;
-              animation: shift .1s linear both .3s * (1 - ($i - 2));
+              animation: bubble .1s linear both .3s * (1 - ($i - 2));
               background-color: rgba($theme-blue, 1 - $i * .2);
             }
           }
@@ -249,7 +251,6 @@
 
       .funnel-detail {
         line-height: 86px;
-        /*text-align: left;*/
 
         & + .funnel-detail {
           margin-top: 6px;
@@ -261,6 +262,12 @@
           min-width: 200px;
           font-family: 'PingFangSC-Medium';
         }
+
+        @media screen and (max-width: 1306px) {
+          >span {
+            min-width: auto;
+          }
+        }
       }
 
       .total-conversion-rate {
@@ -268,7 +275,7 @@
       }
     }
   }
-  @keyframes shift {
+  @keyframes bubble {
     to {
       opacity: 1;
     }

@@ -786,8 +786,8 @@ export default {
           }
           this.threePartForm.activityStart = partOne.startDate
           this.threePartForm.activityEnd = partOne.endDate
-          this.threePartForm.displayStartSubmit = partOne.startDate
-          this.threePartForm.displayEndSubmit = partOne.endDate
+          this.threePartForm.displayStartSubmit = res.info.platformActivityShowConfigList[0].showDate
+          this.threePartForm.displayEndSubmit = res.info.platformActivityShowConfigList[0].hiddenDate
           // 活动展示时间
           let startS = new Date(res.info.platformActivityShowConfigList[0].showDate)
           let syS = startS.getFullYear()
