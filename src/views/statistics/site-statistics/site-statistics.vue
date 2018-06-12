@@ -6,34 +6,8 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <div class="modular-item">
-            <div class="i-head">
-              <span class="icon-text">门店</span>
-            </div>
-            <div class="i-main">
-              <span class="con-num">1</span>
-              <span class="con-unit">个</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="modular-item">
-            <div class="i-head">
-              <span class="icon-text">门店</span>
-            </div>
-            <div class="i-main">
-              <span class="con-num">1</span>
-              <span class="con-unit">个</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="modular-item">
-            <div class="i-head">
-              <span class="icon-text">门店</span>
-            </div>
-            <div class="i-main">
-              <span class="con-num">1</span>
-              <span class="con-unit">个</span>
+            <div class="modular-item-left">
+
             </div>
           </div>
         </el-col>
