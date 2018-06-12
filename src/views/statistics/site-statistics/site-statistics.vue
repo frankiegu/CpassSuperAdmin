@@ -12,7 +12,51 @@
             </div>
             <div class="modular-item-right">
               <span class="right-site">
-                <span class="right-site-title">近7天新增</span>
+                <span class="right-site-title right-site-title-first">近7天新增</span>
+                <span class="right-site-count">990</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近30天新增</span>
+                <span class="right-site-count">2780</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近60天新增</span>
+                <span class="right-site-count">6350</span>
+              </span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="modular-item">
+            <div class="modular-item-left">
+              <span class="left-title">空间总数</span>
+              <div class="left-count">80</div>
+            </div>
+            <div class="modular-item-right">
+              <span class="right-site">
+                <span class="right-site-title right-site-title-first">近7天新增</span>
+                <span class="right-site-count">990</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近30天新增</span>
+                <span class="right-site-count">2780</span>
+              </span>
+              <span class="right-site">
+                <span class="right-site-title">近60天新增</span>
+                <span class="right-site-count">6350</span>
+              </span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="modular-item">
+            <div class="modular-item-left">
+              <span class="left-title">场地总数</span>
+              <div class="left-count">120</div>
+            </div>
+            <div class="modular-item-right">
+              <span class="right-site">
+                <span class="right-site-title right-site-title-first">近7天新增</span>
                 <span class="right-site-count">990</span>
               </span>
               <span class="right-site">
@@ -96,7 +140,7 @@
       }
       .modular-item-right{
         display: inline-block;
-        width: 130px;
+        width: 140px;
         float: right;
 
         .right-site{
@@ -108,6 +152,9 @@
             text-align: left;
             float: left;
             margin-right: 20px;
+          }
+          .right-site-title-first{
+            margin-right: 27px !important;
           }
           .right-site-count{
             text-align: right;
