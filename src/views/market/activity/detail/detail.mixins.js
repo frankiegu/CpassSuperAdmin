@@ -40,6 +40,8 @@ export default {
       // 活动统计
       lookPlayer: 0, // 查看人数
       lotteryCount: 0, // 参与次数
+      sharePlayerCount: 0, // 分享人数
+      shareTotalCount: 0, // 分享次数
 
       platformActivityGiftList: [], // 奖品
       platformActivityShowConfigList: [], // 展示设置
@@ -95,11 +97,6 @@ export default {
               this.lotteryInitTime = res.info.platformActivity.lotteryInitTime
               this.winningMaxTime = res.info.platformActivity.winningMaxTime
 
-              if (res.info.platformActivity.activityStatistics) {
-                this.lookPlayer = res.info.platformActivity.activityStatistics.lookPlayer || 0
-                this.lotteryCount = res.info.platformActivity.activityStatistics.lotteryCount || 0
-              }
-
               if (this.status === 2) {
                 this.isOpen = 1
               } else if (this.status === 0 || this.status === 1 || this.status === 3 || this.status === 4) {
@@ -138,7 +135,14 @@ export default {
 
       platformActivityStatisticsList(paramsObj).then(res => {
         if (res.status === 'true') {
-          let data = res.info
+          if (res.info.activityStatisticsVO) {
+            this.lookPlayer = res.info.activityStatisticsVO.lookPlayer || 0
+            this.lotteryCount = res.info.activityStatisticsVO.lotteryCount || 0
+            this.sharePlayerCount = res.info.activityStatisticsVO.sharePlayerCount || 0
+            this.shareTotalCount = res.info.activityStatisticsVO.shareTotalCount || 0
+          }
+
+          let data = res.info.statisticsList
           if (data) {
             this.pageTotal = data.total
             this.tableData = data.result

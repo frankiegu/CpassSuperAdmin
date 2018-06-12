@@ -67,7 +67,7 @@
       beforeAvatarUpload(file) {
         const isLt1M = file.size / 1024 / 1024 < 1;
         if (!isLt1M) {
-          this.setMsg('上传头像图片大小不能超过 1MB!');
+          this.setMsg('上传图片大小不能超过 1MB!');
           return false
         }
 
@@ -76,7 +76,7 @@
           return true
         }
 
-        this.setMsg('上传头像图片只能是 JPG和PNG 格式!');
+        this.setMsg('上传图片只能是 JPG和PNG 格式!');
         return false
       },
       handleAvatarSuccess(res, file) {

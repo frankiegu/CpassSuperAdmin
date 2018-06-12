@@ -1,22 +1,9 @@
-import { checkPhone } from '@/config/utils'
-import { FIXPHONEREG, POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
+import { POSITIVE_INTEGER, NATURAL_NUM } from '@/config/env'
 import { activityIsUnique, findUsableCouponByType } from '@/service/market'
 
 export default {
   data () {
     // 需要用到this，要放在data里面
-    const validateTel = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入您的联系方式'));
-      }
-      if (this.telLineSelected === '0' && !checkPhone(value)) {
-        callback(new Error('请输入正确的电话'));
-      }
-      if (this.telLineSelected === '1' && !FIXPHONEREG.test(value)) {
-        callback(new Error('固定电话号码格式不正确。例：020-88888888'))
-      }
-      callback();
-    };
     const validateActivityName = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入活动名称'));
@@ -45,6 +32,33 @@ export default {
     const validateActivityDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请选择活动有效期'));
+      } else if (value && value.length > 0) {
+        if (new Date(value[0]) < new Date()) {
+          callback(new Error('起始时间需大于当前时间'))
+        } else if (new Date(value[0]) >= new Date(value[1])) {
+          callback(new Error('结束时间需大于开始时间'))
+        } else {
+          callback();
+        }
+      }
+      callback();
+    };
+    // 验证活动展示时间
+    const validateDispalyS = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择活动展示时间'));
+      } else if (new Date(value[0]) < new Date()) {
+        callback(new Error('活动展示时间需大于当前时间'));
+      }
+      callback();
+    };
+    // 验证活动隐藏时间
+    const validateDispalyE = (rule, value, callback) => {
+      console.log('display', [this.threePartForm.displayStartSubmit, new Date(value)])
+      if (!value) {
+        callback(new Error('请选择活动隐藏时间'));
+      } else if (value && new Date(this.threePartForm.displayStartSubmit) >= new Date(value)) {
+        callback(new Error('活动展示时间需大于隐藏时间'))
       }
       callback();
     };
@@ -78,6 +92,17 @@ export default {
       loadingOnePart: false,
       loadingTwoPart: false,
       loadingThreePart: false,
+      editorOption1: {
+        modules: {
+          toolbar: [
+            [{ 'list': 'ordered' }]
+          ]
+        },
+        placeholder: '请填写活动规则',
+        theme: 'snow'  // or 'bubble'
+      }, // 富文本编辑器
+      editor1TextLength: 0,
+      quillLenght: 200,
 
       // part 1
       onePartForm: {
@@ -91,14 +116,8 @@ export default {
         bannerPic: '' // 活动banner
       },
       onePartFormRule: {
-        type: [{ required: true, trigger: 'click', validator: checkType }],
         activityName: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityName }],
         activityRules: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityRules }],
-        fieldName: [{ required: true, message: '请填写场地名称', trigger: ['blur', 'change'] }],
-        storeId: [{ required: true, trigger: 'selected', validator: checkStore }],
-        maxAdmissibleNum: [{ required: true, trigger: ['blur', 'change'], validator: checkMaxAdmissibleNum }],
-        area: [{ required: true, trigger: ['blur', 'change'], validator: checkArea }],
-        stationNum: [{ required: true, validator: validateStationNum, trigger: ['blur', 'change'] }],
         rangeDate: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityDate }],
         bannerPic: [{ required: true, trigger: ['blur', 'change'], validator: validateActivityBanner }]
       },
@@ -177,22 +196,26 @@ export default {
         terminalList: [
           {
             name: '小程序',
-            id: 1
+            id: 1,
+            disabled: false
           },
           {
             name: 'APP IOS端',
-            id: 2
+            id: 2,
+            disabled: true
           },
           {
             name: 'APP 安卓端',
-            id: 3
+            id: 3,
+            disabled: true
           }
         ]
       },
       threePartFormRule: {
-        contactName: [{ required: true, message: '请填写场地联系人姓名', trigger: ['blur', 'change'] }],
-        contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
+        // contactTel: [{ required: true, validator: validateTel, trigger: ['blur', 'change'] }],
         displayTerminal: [{ required: true, validator: validateTerminal, trigger: ['blur', 'change'] }],
+        activityDisplayStart: [{ required: true, validator: validateDispalyS, trigger: ['blur', 'change'] }],
+        activityDisplayEnd: [{ required: true, validator: validateDispalyE, trigger: ['blur', 'change'] }],
         tipsBeforeStart: [{ required: true, message: '请输入活动未开始提示', trigger: ['blur', 'change'] }],
         tipsEnd: [{ required: true, message: '请输入活动结束提示', trigger: ['blur', 'change'] }]
       }
@@ -257,7 +280,8 @@ export default {
     },
     // 验证添加的奖品的中奖概率的输入
     handleInputProbability(probability, id) {
-      let max = 100
+      let temp = probability.replace(/\./g, '')
+      let totalProbability = 0
       let feeTarget = this.prizeList.find(target => {
         return target.id === id
       })
@@ -267,18 +291,28 @@ export default {
           tempObj = v
           index = i
         }
+        totalProbability += (v.probability - 1 + 1)
       })
+      if (probability.indexOf('.') < 0) {
+        feeTarget.maxLength = 3
+      } else {
+        feeTarget.maxLength = 4
+      }
       if (!probability) {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
-      if (!NATURAL_NUM.test(probability)) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为自然数'
+      if (!NATURAL_NUM.test(temp)) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
+        tempObj.probabilityValidate = true
+        this.prizeList.splice(index, 1, tempObj)
+      } else if (temp - 1 + 1 <= 0) {
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
-        if (feeTarget.probability - 1 + 1 > max) {
-          tempObj.prizeProbabilityWarning = '中奖概率不能超过100%'
+        if (totalProbability > 100) {
+          tempObj.prizeProbabilityWarning = '所有奖品的中奖概率不能超过100%'
           tempObj.probabilityValidate = true
           this.prizeList.splice(index, 1, tempObj)
         } else if (feeTarget.probability - 1 + 1 < 0) {
@@ -325,6 +359,20 @@ export default {
           this.couponList = this.couponList.filter(v => v.notUseQuantity > 0 && v)
         }
       })
+    },
+    // 富文本编辑器
+    onTextChange1(editor) {
+      // 针对只是列表的可以满足需求，但是复杂就不好做字数限制了
+      let formartObject
+      formartObject = this.$refs.myQuillEditor1.quill.getFormat(0, this.$refs.myQuillEditor1.quill.getLength())
+      this.editor1TextLength = this.$refs.myQuillEditor1.quill.getLength() - 1
+
+      // console.log('text-change111', this.$refs.myQuillEditor1.quill.getLength())
+      if (this.$refs.myQuillEditor1.quill.getLength() > this.quillLenght + 1) {
+        this.$refs.myQuillEditor1.quill.setText(this.$refs.myQuillEditor1.quill.getText().substring(0, this.quillLenght))
+        this.$refs.myQuillEditor1.quill.formatText(0, this.$refs.myQuillEditor1.quill.getLength(), formartObject)
+      }
+      // console.log('text-change1112222222', this.$refs.myQuillEditor1.quill.getLength())
     }
   },
   watch: {
@@ -367,8 +415,10 @@ const checkNum = (rule, value, callback) => {
 const checkWinningTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入每人最大允许中奖数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('初始抽奖次数不得大于999'));
   } else {
     callback();
   }
@@ -377,18 +427,22 @@ const checkWinningTimes = (rule, value, callback) => {
 const checkOriginalTimes = (rule, value, callback) => {
   if (!value) {
     callback(new Error('请输入初始可抽奖次数'));
-  } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+  } else if (!POSITIVE_INTEGER.test(value)) {
+    callback(new Error('请输入大于0的正整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('每人最大允许中奖数不得大于999'));
   } else {
     callback();
   }
 };
 // 分享后获得的抽奖次数
 const checkShareAddTimes = (rule, value, callback) => {
-  if (!value) {
+  if (!value && value !== 0) {
     callback(new Error('请输入分享成功后额外抽奖次数'));
   } else if (!NATURAL_NUM.test(value)) {
-    callback(new Error('请输入数字'));
+    callback(new Error('请输入0—999内的整数'));
+  } else if (POSITIVE_INTEGER.test(value) && value > 999) {
+    callback(new Error('分享成功后额外抽奖次数不得大于999'));
   } else {
     callback();
   }
@@ -427,48 +481,3 @@ const validateRedEnvelopeAmount = (rule, value, callback) => {
   }
 }
 
-/**
- * other
- */
-const checkStore = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请选择门店'));
-  } else {
-    callback();
-  }
-};
-const checkType = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请选择场地类型'));
-  } else {
-    callback();
-  }
-};
-const checkMaxAdmissibleNum = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请填写最大容纳人数'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
-  } else {
-    callback();
-  }
-};
-const checkArea = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请填写场地面积'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    callback(new Error('请输入大于0的正整数'));
-  } else {
-    callback();
-  }
-};
-const validateStationNum = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请输入工位数量'));
-  } else if (!POSITIVE_INTEGER.test(value)) {
-    /* 产品要求 */
-    callback(new Error('请输入1-999间的整数'));
-  } else {
-    callback();
-  }
-};

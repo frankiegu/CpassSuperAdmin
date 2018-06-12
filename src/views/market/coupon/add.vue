@@ -394,7 +394,7 @@
           voucherReduce: [
             { required: true, message: '请输入减金额', trigger: ['blur', 'change'] },
             { validator: checkAmount, trigger: ['blur', 'change'] },
-            { validator: checkReduce, trigger: ['blur', 'change'] },
+            { validator: checkReduce, trigger: ['blur', 'change'] }
           ],
           fieldType: [
             { required: true, message: '至少选择一个项目', trigger: ['blur', 'change'] }
