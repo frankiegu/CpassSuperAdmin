@@ -1025,8 +1025,12 @@ export default {
                   this.prizeList[j].validate = false
                 }
               } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
-                this.prizeList[j].validate = true
-                this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                if (this.type === 'copy') {
+                  this.prizeList[j].validate = true
+                  this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                } else if (this.type === 'edit') {
+                  this.prizeList[j].maxQuantity = this.prizeList[j].quantity
+                }
               }
             }
           }
