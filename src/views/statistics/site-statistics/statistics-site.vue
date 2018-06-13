@@ -17,18 +17,209 @@
             :key="item.val"></el-option>
         </el-select>
       </div>
-      <div class="show-box"></div>
+      <div class="site-profile clearfix mb16">
+        <div class="profile-box">
+          <span class="profile-title">全部场地</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">自由工位(天)</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">时租工位(时)</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">会议室</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">路演厅</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">办公室</span>
+          <span class="profile-count">100</span>
+        </div>
+        <div class="profile-box">
+          <span class="profile-title">多功能室</span>
+          <span class="profile-count">100</span>
+        </div>
+      </div>
+
+      <div class="card-body-title">新增统计</div>
+      <div class="select-type mt10 mb10 clearfix">
+        <el-date-picker
+          class="fr"
+          v-model="formData.date"
+          @change="getPageData(1)"
+          type="daterange"
+          align="right"
+          clearable
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          placeholder="选择提交日期"
+          :picker-options="pickerOptions"></el-date-picker>
+        <div class="select-period mr16">
+          <div class="period-site" :class="{'period-site-select' : periodId === 1}" @click="changePeriod(1)">
+            日
+          </div>
+          <div class="period-site" :class="{'period-site-select' : periodId === 2}" @click="changePeriod(2)">
+            周
+          </div>
+          <div class="period-site" :class="{'period-site-select' : periodId === 3}" @click="changePeriod(3)">
+            月
+          </div>
+        </div>
+      </div>
+
+      <!--统计图-->
+      <div class="echarts-box">
+        <span style="font-size: 200px; text-align: center"></span>
+      </div>
+
+      <div class="select-type mt10 mb10">
+        <span class="lh32">统计明细</span>
+        <el-button @click="exportExcel" class="lh-btn-export fr">
+          <lh-svg icon-class="icon-download" />导出
+        </el-button>
+      </div>
+
+      <!--统计表格-->
+      <div>
+        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
+          <el-table-column label="日期" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="新增品牌数" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="新增空间数" prop="contact" align="left"></el-table-column>
+          <el-table-column label="新增场地总数" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="移动工位" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="时租工位" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="会议室" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="路演厅" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="办公室" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="多功能室" prop="contactTel" align="left" ></el-table-column>
+        </el-table>
+
+        <el-pagination
+          :total="pageTotal"
+          :layout="layoutArr"
+          :page-size="pageSize"
+          :page-sizes="pageSizeArr"
+          :current-page="currentPage"
+          class="pagination-container"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          background></el-pagination>
+      </div>
     </div>
+
+    <!--新增品牌Dialog-->
+    <el-dialog
+      title="新增品牌"
+      :visible.sync="brandDialogVisible"
+      width="700px">
+      <div>
+        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
+          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="品牌创建时间" prop="moduleName" align="left"></el-table-column>
+        </el-table>
+
+        <el-pagination
+          :total="pageTotal"
+          :layout="layoutArr"
+          :page-size="pageSize"
+          :page-sizes="pageSizeArr"
+          :current-page="currentPage"
+          class="pagination-container"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          background></el-pagination>
+      </div>
+    </el-dialog>
+
+    <!--新增空间Dialog-->
+    <el-dialog
+      title="新增空间"
+      :visible.sync="spaceDialogVisible"
+      width="700px">
+      <div>
+        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
+          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
+        </el-table>
+
+        <el-pagination
+          :total="pageTotal"
+          :layout="layoutArr"
+          :page-size="pageSize"
+          :page-sizes="pageSizeArr"
+          :current-page="currentPage"
+          class="pagination-container"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          background></el-pagination>
+      </div>
+    </el-dialog>
+
+    <!--新增场地Dialog-->
+    <el-dialog
+      title="新增场地"
+      :visible.sync="fieldDialogVisible"
+      width="900px">
+      <div>
+        <!--场地类型筛选-->
+        <div>
+          <el-select
+            v-model="formData.fieldTyoe"
+            @change="getPageData(1)"
+            filterable
+            placeholder="请选择状态"
+            class="width150px fl mb16"
+            clearable>
+            <el-option
+              v-for="item in fieldList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </div>
+        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
+          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="场地名称" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="场地类型" prop="moduleName" align="left"></el-table-column>
+          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
+        </el-table>
+
+        <el-pagination
+          :total="pageTotal"
+          :layout="layoutArr"
+          :page-size="pageSize"
+          :page-sizes="pageSizeArr"
+          :current-page="currentPage"
+          class="pagination-container"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          background></el-pagination>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import siteStatisticsMixin from './site-statistics.mixin'
+  import statisticsSiteMixin from './statistics-site.mixin'
+  import option from '@/components/option'
+  import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
 
   export default {
-    mixins: [tableMixins, siteStatisticsMixin],
-    components: {},
+    mixins: [tableMixins, statisticsSiteMixin, pickerOptions],
+    components: {
+      [option.name]: option
+    },
     data () {
       return {
       }
@@ -36,6 +227,9 @@
     mounted () {
     },
     methods: {
+      changePeriod (id) {
+        this.periodId = id
+      }
     }
   }
 </script>
@@ -49,6 +243,73 @@
     .select-type{
       width: 100%;
       height: 32px;
+
+      .select-period{
+        display: block;
+        width: 152px;
+        border: 1px solid rgb(220, 223, 230);
+        border-radius: 4px;
+        text-align: center;
+        float: right;
+
+
+        .period-site{
+          width: 50px;
+          height: 30px;
+          line-height: 30px;
+          float: left;
+          border-right: 1px solid rgb(220, 223, 230);
+          color: rgba(0, 0, 0, 0.65);
+          cursor: pointer;
+        }
+        .period-site-select{
+          background: rgba(220, 223, 230, 0.65);
+        }
+        .period-site:last-child{
+          border-right: none;
+        }
+      }
+    }
+    .site-profile{
+      width: 100%;
+      padding: 24px 0px;
+      box-sizing: border-box;
+
+      .profile-box{
+        display: block;
+        width: 12%;
+        box-shadow: 0 1px 4px 0 rgba(0, 21, 41, 0.12);
+        cursor: pointer;
+        position: relative;
+        background-color: #fff;
+        border-radius: 2px;
+        padding: 15px;
+        box-sizing: border-box;
+        text-align: center;
+        margin-right: 2.66%;
+        float: left;
+
+        .profile-title{
+          display: inline-block;
+          width: 100%;
+          color: rgba(0, 0, 0, 0.85);
+          margin-bottom: 15px;
+          cursor: pointer;
+        }
+        .profile-count{
+          display: inline-block;
+          width: 100%;
+          color: #000;
+          font-size: 24px;
+        }
+      }
+      .profile-box:last-child{
+        margin-right: 0px;
+      }
+    }
+    .echarts-box{
+      width: 100%;
+      height: 300px;
     }
   }
 </style>

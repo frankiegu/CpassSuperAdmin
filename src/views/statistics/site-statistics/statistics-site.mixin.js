@@ -1,4 +1,6 @@
 import tableMixins from '@/mixins/table'
+import { API_PATH } from '@/config/env'
+import { downloadFile } from '@/config/utils'
 import { platformActivityList } from '@/service/market'
 
 export default {
@@ -10,13 +12,28 @@ export default {
         { val: 1, text: '普通活动' },
         { val: 2, text: '互动游戏' }
       ],
+      fieldList: [
+        { val: 1, text: '全部' },
+        { val: 2, text: '自由工位' },
+        { val: 3, text: '时租工位' },
+        { val: 4, text: '会议室' },
+        { val: 5, text: '路演厅' },
+        { val: 6, text: '办公室' },
+        { val: 7, text: '多功能办公室' }
+      ],
       formData: {
-        type: ''
-      }
+        type: '',
+        date: '',
+        fieldTyoe: ''
+      },
+      brandDialogVisible: false, // 新增品牌dialog
+      spaceDialogVisible: false, // 新增空间dialog
+      fieldDialogVisible: false, // 新增场地dialog
+      periodId: 1 // 周期  1日 2周 3月
     }
   },
   mounted () {
-    this.getPageData()
+    // this.getPageData()
   },
   methods: {
     getPageData(page) {
@@ -44,6 +61,20 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    // 导出数据
+    exportExcel() {
+      if (!this.receiveList.length) {
+        return this.setMsg('暂无数据')
+      }
+      const downParams = {
+        couponType: this.couponBaseInfo.type,
+        couponId: this.couponId,
+        customerName: this.searchName,
+        useStatus: this.statusType + ''
+      }
+      let url = API_PATH + '/supervisor/platformCouponCustomer/export'
+      downloadFile(url, downParams)
     }
   }
 }
