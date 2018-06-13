@@ -691,14 +691,27 @@
 
             switch (platformCoupon.type) {
               case 1: // 小时券
-                let platformHourCoupon = res.info.platformHourCoupon
-                let platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
-                let storeList = res.info.storeList
-                couponForm.subtractHour = platformHourCoupon.subtractHour
-                platformHourCouponFieldTypeList.forEach(item => {
+              case 2: // 代金券
+                let platformCouponContent = res.info.platformHourCoupon || res.info.platformCashCoupon
+                let platformCouponFieldTypeList = res.info.platformHourCouponFieldTypeList ||
+                  res.info.cashCouponFieldTypeList
+                let storeList = res.info.storeList || res.info.cashCouponStoreList
+
+                if (platformCoupon.type === 1) couponForm.subtractHour = platformCouponContent.subtractHour
+                if (platformCoupon.type === 2) {
+                  couponForm.voucherType = platformCouponContent.isConditional
+                  if (couponForm.voucherType === 0) {
+                    couponForm.voucherAmount = platformCouponContent.amount
+                  } else {
+                    couponForm.voucherFull = platformCouponContent.applyLowerLimit
+                    couponForm.voucherReduce = platformCouponContent.amount
+                  }
+                }
+
+                platformCouponFieldTypeList.forEach(item => {
                   couponForm.fieldType.push(item.type)
                 })
-                couponForm.isAllStore = platformHourCoupon.storeType
+                couponForm.isAllStore = platformCouponContent.storeType
                 // 详情中的门店列表映射回树形门店的选中
                 if (storeList.length > 0) {
                   let nodeKeys = []
@@ -800,6 +813,7 @@
                   } else {
                     this.$message.error('条件触发的起始时间需大于当前时间')
                     dateValid = false
+                    return
                   }
                   if (new Date(item.endTime) <= new Date(this.couponForm.expireDate[1])) {
                     dateValid = true
