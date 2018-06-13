@@ -95,7 +95,7 @@
 
             <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
               <el-button type="text"
-                         class="operate-btn" :class="{'ml45' : scope.row.status !== 0 && scope.row.status !== 1 }">复制</el-button>
+                         class="operate-btn" :class="{'ml45' : scope.row.status !== 0}">复制</el-button>
             </router-link>
           </template>
         </el-table-column>

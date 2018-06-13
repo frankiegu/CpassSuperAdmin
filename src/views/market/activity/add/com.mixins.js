@@ -59,7 +59,7 @@ export default {
       if (!value) {
         callback(new Error('请选择活动隐藏时间'));
       } else if (value && new Date(this.threePartForm.displayStartSubmit) >= new Date(value)) {
-        callback(new Error('活动展示时间需大于隐藏时间'))
+        callback(new Error('活动隐藏时间需大于展示时间'))
       }
       callback();
     };
@@ -297,18 +297,18 @@ export default {
       if (probability.indexOf('.') < 0) {
         feeTarget.maxLength = 3
       } else {
-        feeTarget.maxLength = 4
+        feeTarget.maxLength = probability.indexOf('.') + 3
       }
       if (!probability) {
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       }
       if (!NATURAL_NUM.test(temp)) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
+        tempObj.prizeProbabilityWarning = '中奖概率必须1-100间的数字'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else if (temp - 1 + 1 <= 0) {
-        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的整数'
+        tempObj.prizeProbabilityWarning = '中奖概率必须为1-100间的数字'
         tempObj.probabilityValidate = true
         this.prizeList.splice(index, 1, tempObj)
       } else {
