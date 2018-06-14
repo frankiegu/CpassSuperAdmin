@@ -49,15 +49,17 @@
         <el-col :span="24">
           <el-row :gutter="20">
             <el-col>
-              <p v-if="couponBaseInfo.description">卡券说明: {{couponBaseInfo.description}}</p>
-              <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: {{couponDiscountContent.worth}}元</p>
+              <p v-if="couponBaseInfo.description">卡券说明: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.description}}</p>
+              <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: &nbsp;&nbsp;&nbsp;{{couponDiscountContent.worth}}元</p>
             </el-col>
           </el-row>
 
           <el-row :gutter="20" class="mt20">
             <el-col>
-              <lh-item label="优惠内容：" label-width="87px">
+              <lh-item label="优惠内容：" label-width="76px">
                 <span v-if="couponBaseInfo.type === 1">减免场地订单{{couponDiscountContent.subtractHour}}小时的费用</span>
+                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.applyLowerLimit">满{{platformCashCoupon.applyLowerLimit}}减{{platformCashCoupon.amount}}元</span>
+                <span v-if="couponBaseInfo.type === 2 && (!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === '')">无门槛减{{platformCashCoupon.amount}}元</span>
                 <span v-if="couponBaseInfo.type === 3">{{couponDiscountContent.benefit}}</span>
               </lh-item>
             </el-col>
@@ -106,25 +108,16 @@
                   <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
                       <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
-                      <!--<el-tooltip-->
-                        <!--:content="item.couponStatus ? '生效中' : '未生效'"-->
-                        <!--placement="top"-->
-                        <!--class="margin-lr6">-->
-                        <!--<el-switch-->
-                          <!--class=""-->
-                          <!--v-model="item.couponStatus"-->
-                          <!--active-text=""-->
-                          <!--inactive-text=""-->
-                          <!--:disabled="true"-->
-                          <!--:active-color="switchActiveColor"></el-switch>-->
-                      <!--</el-tooltip>-->
                       <el-button type="primary" v-if="item.couponStatus">生效中</el-button>
                       <el-button type="info" v-if="!item.couponStatus">未生效</el-button>
                     </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 2">
                     <!--<lh-item label="支持手动领取" label-width="120px"></lh-item>-->
-                    <p class="pb16">支持手动领取</p>
+                    <!--<p class="pb16">支持手动领取</p>-->
+                    <lh-item label="支持手动领取" label-width="120px">
+                      <span class="mr15" v-if="item.receiveConditionStartTime && item.receiveConditionEndTime">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
+                    </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 3">
                     <!--<lh-item label="支持手动下发" label-width="120px"></lh-item>-->
@@ -164,9 +157,9 @@
                           :slot="tableEmpty"
                           v-loading="tableLoading"
                           class="width50" border>
-                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="礼品商" align="left" prop="name" v-if="couponBaseInfo.type === 3"></el-table-column>
-                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>
                         </el-table>
                         <span v-else>全部门店</span>
@@ -318,7 +311,8 @@
         couponStatus: '',
         receiveOrderBy: '', // 领取列表排序
         sortFileName: '使用状态', // 领取列表状态筛选
-        statusType: '' // 领取列表按状态筛选
+        statusType: '', // 领取列表按状态筛选
+        platformCashCoupon: '' // 满减门槛
       }
     },
     methods: {
@@ -362,6 +356,9 @@
             if (this.couponBaseInfo.type === 1) {
               this.couponDiscountContent = res.info.platformHourCoupon
               this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 2) {
+              this.platformCashCoupon = res.info.platformCashCoupon
+              this.storeList = res.info.cashCouponStoreList
             } else if (this.couponBaseInfo.type === 3) {
               this.couponDiscountContent = res.info.platformGiftCoupon
               this.storeList = res.info.verifyStationList
