@@ -4,7 +4,7 @@
 
     <div class="lh-form-box">
       <el-form :inline="true" :model="citySort" @submit.native.prevent>
-        <el-button type="primary" class="fl">添加城市</el-button>
+        <el-button type="primary" class="fl" @click="isVisible = true">添加城市</el-button>
         <el-form-item>
           <el-input v-model.trim="citySort.name" @keyup.native.enter="getPageData(1)" placeholder="请输入内容">
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -23,10 +23,19 @@
         <el-table :data="tableData" :loading="tableLoading">
           <el-table-column label="城市展示图" prop="imgUrl"></el-table-column>
           <el-table-column label="国家" prop="countryName"></el-table-column>
-          <el-table-column label="省份" prop="provinceName"></el-table-column>
+          <el-table-column :label="citySort.country === '1' ? '省份' : '州市'" prop="provinceName"></el-table-column>
           <el-table-column label="城市" prop="cityName"></el-table-column>
           <el-table-column label="空间数" prop="spaceNum"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" class="fl">编辑</el-button>
+              <el-button type="text" v-if="scope.$index === 1" class="ml0">置顶</el-button>
+              <el-tooltip content="hello" placement="top" class="fr">
+                <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+                  :active-color="switchActiveColor" class="mt6"></el-switch>
+              </el-tooltip>
+            </template>
+          </el-table-column>
         </el-table>
 
         <el-pagination
@@ -43,7 +52,7 @@
     </div>
 
     <!-- 添加城市弹窗 -->
-    <el-dialog :visible.sync="isVisible" title="添加城市">
+    <el-dialog :visible.sync="isVisible" title="添加城市" :before-close="closeDialog">
       <el-form :model="addCityForm" label-width="100px" ref="addCityForm">
         <el-form-item label="所属国家" prop="country" required>
           <el-select v-model="addCityForm.country" class="width340px">
@@ -89,7 +98,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="isVisible = false">取 消</el-button>
+        <el-button @click="closeDialog">取 消</el-button>
         <el-button type="primary" @click="submitForm">保 存</el-button>
       </div>
     </el-dialog>
@@ -141,6 +150,15 @@
             this.$message.error('请确认表单填写正确')
           }
         })
+      },
+      closeDialog() {
+        this.$confirm('确认关闭？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isVisible = false
+        }).catch(() => {})
       }
     }
   }
