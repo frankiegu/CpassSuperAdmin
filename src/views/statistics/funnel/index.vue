@@ -192,7 +192,6 @@
         if (!this.tableData.length) {
           return this.setMsg('暂无数据')
         }
-        // const funnelForm = this.funnelForm
         const downParams = this.funnelForm
         let url = API_PATH + '/supervisor/customer/exportExcel'
         downloadFile(url, downParams)
