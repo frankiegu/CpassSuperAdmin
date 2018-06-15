@@ -14,5 +14,10 @@ export default [{
     name: '会员列表',
     path: 'list',
     component: _import('member/list')
+  }, {
+    name: '会员详情',
+    path: 'detail',
+    hidden: true,
+    component: _import('member/detail')
   }]
 }]

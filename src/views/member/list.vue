@@ -3,8 +3,56 @@
     <lh-title title="会员列表"></lh-title>
 
     <div class="card-padding">
+      <member-rate :memberRateData="memberRateData"></member-rate>
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
+        <!-- 选择提交日期 -->
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.logInDate"
+            @change="getPageData(1)"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="提交开始日期"
+            end-placeholder="提交结束日期"
+            placeholder="选择提交日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
 
+        <!--选择预约日期-->
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.registerDate"
+            @change="getPageData(1)"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="预约开始日期"
+            end-placeholder="预约结束日期"
+            placeholder="选择预约日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+
+        <!--会员等级-->
+        <el-form-item>
+          <el-select v-model="formData.grade" placeholder="会员等级" clearable class="width120px" @change="getPageData(1)">
+            <el-option
+              v-for="(value, key) in gradeList"
+              :label="value"
+              :value="key"
+              :key="key"></el-option>
+          </el-select>
+        </el-form-item>
+        <!--会员状态-->
+        <el-form-item>
+          <el-select v-model="formData.status" placeholder="会员等级" clearable class="width120px" @change="getPageData(1)">
+            <el-option
+              v-for="(value, key) in statusList"
+              :label="value"
+              :value="key"
+              :key="key"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
@@ -30,30 +78,58 @@
         :slot="tableEmpty"
         v-loading="tableLoading" border>
 
-        <el-table-column label="会员名称" align="center">
+        <el-table-column label="ID" align="center">
           <template slot-scope="scope">
-            {{ scope.row.nickname }}
+         <router-link class="table-link" to="/member/detail">
+           {{ scope.row.nickname }}
+         </router-link>
           </template>
         </el-table-column>
-
-        <el-table-column label="联系电话" prop="mobile" align="center">
+        <el-table-column label="手机号" prop="mobile" align="center">
           <template slot-scope="scope">
             {{ scope.row.mobile ? scope.row.mobile : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="注册渠道" prop="registerName" align="center">
+        <el-table-column label="邮箱" prop="mobile" align="center">
           <template slot-scope="scope">
-            {{ scope.row.registerName ? scope.row.registerName : '-' }}
+            {{ scope.row.mobile ? scope.row.mobile : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="注册日期" prop="createDate" align="center"></el-table-column>
-        <el-table-column label="累计场地订单" prop="fieldOrderCount" align="center">
+        <el-table-column label="昵称" align="center">
           <template slot-scope="scope">
-            {{ scope.row.fieldOrderCount ? scope.row.fieldOrderCount : 0 }}
+            {{ scope.row.nickname }}
           </template>
         </el-table-column>
-        <el-table-column label="上一次登录" prop="lastLogin" align="center"></el-table-column>
-
+        <el-table-column label="性别" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.nickname }}
+          </template>
+        </el-table-column>
+        <el-table-column label="职业" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.nickname }}
+          </template>
+        </el-table-column>
+        <el-table-column label="生日" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.nickname }}
+          </template>
+        </el-table-column>
+        <el-table-column label="注册时间" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="最后一次登录时间" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="会员等级" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="有效期" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="状态" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="订单" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="积分" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="优惠券" prop="createDate" align="center"></el-table-column>
+        <el-table-column label="操作" prop="registerName" align="center">
+          <template slot-scope="scope">
+            <span>详情</span>
+            <span>启用</span>
+            <!--<span>停用</span>-->
+          </template>
+        </el-table-column>
       </el-table>
 
       <el-pagination
