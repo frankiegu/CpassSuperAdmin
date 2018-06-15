@@ -13,7 +13,7 @@ export default [{
   children: [
     // 场地统计
     {
-      name: '场地统计',
+      name: '场地统计 ',
       path: '/site-statistics',
       redirect: '/site-statistics/statistics-site',
       component: _import('statistics/site-statistics/site-statistics'),

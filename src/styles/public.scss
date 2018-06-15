@@ -374,16 +374,6 @@
 .qr-code img {
   border-radius: 4px;
 }
-.limit-words-in {
-  position: relative;
-  width: 180px;
-
-  .limit-words {
-    position: absolute;
-    top: 40px;
-    right: 20px;
-  }
-}
 .align-bottom {
   position: relative;
 
@@ -395,15 +385,6 @@
 // 页面主内容容器样式
 .main-content {
   //padding-top: 30px;
-}
-// 富文本编辑器
-.quill-editor-box {
-  min-height: 150px;
-  margin-bottom: 54px;
-
-  .quill-editor {
-    // height: 300px;
-  }
 }
 .grid-title{
   font-size: 16px;
@@ -590,5 +571,33 @@
   .success-tip {
     font-size: 18px;
     margin-bottom: 12px;
+  }
+}
+
+/* 富文本编辑器
+-------------------------- */
+.quill-editor-box {
+  min-height: 250px;
+  padding-bottom: 54px;
+  // overflow: hidden;
+
+  .quill-editor {
+    height: 300px;
+  }
+  .ql-container {
+    font-size: 14px;
+    color: $theme-gray;
+  }
+}
+/* 富文本编辑器左侧字数限制 */
+.limit-words-in {
+  position: relative;
+  width: 180px;
+
+  .limit-words {
+    position: absolute;
+    top: 40px;
+    right: 13px;
+    text-align: right;
   }
 }
