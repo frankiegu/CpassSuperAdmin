@@ -2,7 +2,7 @@
   <div class="statistics-order">
     <div class="card-padding">
 
-      <div class="card-body-title">场地概况</div>
+      <div class="card-body-title">场地订单统计</div>
       <div class="select-type mt10 mb10 clearfix">
         <el-date-picker
           class="fr"
@@ -133,6 +133,12 @@
         statisticsChart: '', // charts
         screenWidth: document.body.clientWidth, // 屏幕宽度
         option: {
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
           legend: {
             data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
           },
