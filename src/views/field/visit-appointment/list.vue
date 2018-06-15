@@ -1,0 +1,162 @@
+<template>
+  <div class="service-list main-content">
+    <lh-title></lh-title>
+
+    <div class="card-padding">
+      <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
+        <!-- 选择提交日期 -->
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.submitDate"
+            @change="getPageData(1)"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="提交开始日期"
+            end-placeholder="提交结束日期"
+            placeholder="选择提交日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+
+        <!--选择预约日期-->
+        <el-form-item>
+          <el-date-picker
+            v-model="formData.bookDate"
+            @change="getPageData(1)"
+            type="daterange"
+            align="right"
+            clearable
+            start-placeholder="预约开始日期"
+            end-placeholder="预约结束日期"
+            placeholder="选择预约日期"
+            :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="formData.reservationType" placeholder="预约状态" clearable class="width120px" @change="getPageData(1)">
+            <el-option
+              v-for="(value, key) in reservationList"
+              :label="value"
+              :value="key"
+              :key="key"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model.trim="formData.content"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入预约人姓名/电话"
+            class="width180px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item class="fr">
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
+      </el-form>
+
+      <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+                style="width: 100%">
+        <el-table-column label="预约日期" prop="bookDate"></el-table-column>
+        <el-table-column label="预约时间" prop="bookTime"></el-table-column>
+        <el-table-column label="预约品牌">
+          <template slot-scope="scope">
+            {{ scope.row.spaceName || '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="预约门店">
+          <template slot-scope="scope">
+            {{ scope.row.storeName || '-' }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="预约人" prop="reservator"></el-table-column>
+        <el-table-column label="联系电话" prop="mobile" ></el-table-column>
+        <el-table-column label="提交时间" prop="createDate"></el-table-column>
+        <el-table-column label="预约状态" prop="statusName"></el-table-column>
+
+        <el-table-column label="参观目的">
+          <template slot-scope="scope">
+            {{ scope.row.visitTypeName || '-' }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="意向" fixed="right" prop="isExistNote">
+          <template slot-scope="scope">
+            <span v-if="!scope.row.isExistNote">未填写</span>
+            <span v-else class="view" @click="viewDetail(scope.row.id)">查看</span>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-pagination
+        :total="pageTotal"
+        :layout="layoutArr"
+        :page-size="pageSize"
+        :page-sizes="pageSizeArr"
+        :current-page="currentPage"
+        class="pagination-container"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        background></el-pagination>
+    </div>
+
+    <el-dialog
+      title="参观意向"
+      :visible.sync="dialogVisible"
+      width="35%">
+      <div class="detail-info">
+        {{ content }}
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  import reservationList from './list.mixins'
+  export default {
+    mixins: [reservationList],
+    components: {
+    },
+    data() {
+      return {
+        dialogVisible: false
+      }
+    },
+    methods: {
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  @import "../../../../src/styles/config";
+  .service-list {
+    .operate-btn {
+      padding: 6px;
+    }
+    .content{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .view{
+      color: #5E80E5;
+      cursor: pointer;
+    }
+    .detail-info{
+      clear: both;
+      .label{
+        width: 80px;
+        float: left;
+      }
+      .label-con{
+        float: left;
+        width: calc(100% - 80px);
+        margin-bottom: 10px;
+      }
+    }
+  }
+</style>
