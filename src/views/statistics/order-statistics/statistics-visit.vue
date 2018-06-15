@@ -29,9 +29,7 @@
       </div>
 
       <!--统计图-->
-      <div class="echarts-box">
-        <span style="font-size: 200px; text-align: center"></span>
-      </div>
+      <div id="myChart" class="mt30 mb30" style="width: 100%;height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">统计明细</span>
@@ -61,7 +59,6 @@
           background></el-pagination>
       </div>
 
-
     </div>
   </div>
 </template>
@@ -71,6 +68,11 @@
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
+  // 引入echarts
+  import echarts from 'echarts'
+  import Vue from 'vue'
+  import 'echarts/theme/macarons.js'
+  Vue.prototype.$echarts = echarts
 
   export default {
     mixins: [tableMixins, statisticsVisitMixin, pickerOptions],
@@ -79,13 +81,93 @@
     },
     data () {
       return {
+        statisticsChart: '', // charts
+        option: {
+          title: {
+            text: ''
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['邮件营销', '联盟广告', '视频广告']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: '邮件营销',
+              type: 'line',
+              stack: '总量',
+              data: [120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+              name: '联盟广告',
+              type: 'line',
+              stack: '总量',
+              data: [220, 182, 191, 234, 290, 330, 310]
+            },
+            {
+              name: '视频广告',
+              type: 'line',
+              stack: '总量',
+              data: [150, 232, 201, 154, 190, 330, 410]
+            }
+          ]
+        },
+        screenWidth: document.body.clientWidth // 屏幕宽度
       }
     },
     mounted () {
+      this.drawLine();
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.screenWidth = document.body.clientWidth
+          that.screenWidth = window.screenWidth
+        })()
+      }
     },
     methods: {
       changePeriod (id) {
         this.periodId = id
+      },
+      drawLine () {
+        let self = this
+        // 基于准备好的dom，初始化echarts实例
+        self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
+        // 绘制图表
+        self.statisticsChart.setOption(this.option);
+      }
+    },
+    watch: {
+      screenWidth (val) {
+        if (!this.timer) {
+          this.screenWidth = val
+          this.timer = true
+          let that = this
+          setTimeout(function () {
+            that.timer = false
+            that.statisticsChart.resize()
+            that.drawLine()
+          }, 400)
+        }
       }
     }
   }

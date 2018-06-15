@@ -50,33 +50,31 @@
           <span class="profile-count">2</span>
         </div>
       </div>
-      <div class="area-profile-count clearfix mb16">
-        <div class="profile-count yd-bor" :class="{'profile-count-select' : true}">
-          <span class="count-left">移动工位订单</span>
-          <span class="count-right fr">10</span>
-        </div>
-        <div class="profile-count sz-bor">
-          <span class="count-left">时租工位订单</span>
-          <span class="count-right fr">10</span>
-        </div>
-        <div class="profile-count hys-bor">
-          <span class="count-left">会议室订单</span>
-          <span class="count-right fr">10</span>
-        </div>
-        <div class="profile-count lyt-bor">
-          <span class="count-left">路演厅订单</span>
-          <span class="count-right fr">10</span>
-        </div>
-        <div class="profile-count dgn-bor">
-          <span class="count-left">多功能订单</span>
-          <span class="count-right fr">10</span>
-        </div>
-      </div>
+      <!--<div class="area-profile-count clearfix mb16">-->
+        <!--<div class="profile-count yd-bor" :class="{'profile-count-select' : true}">-->
+          <!--<span class="count-left">移动工位订单</span>-->
+          <!--<span class="count-right fr">10</span>-->
+        <!--</div>-->
+        <!--<div class="profile-count sz-bor">-->
+          <!--<span class="count-left">时租工位订单</span>-->
+          <!--<span class="count-right fr">10</span>-->
+        <!--</div>-->
+        <!--<div class="profile-count hys-bor">-->
+          <!--<span class="count-left">会议室订单</span>-->
+          <!--<span class="count-right fr">10</span>-->
+        <!--</div>-->
+        <!--<div class="profile-count lyt-bor">-->
+          <!--<span class="count-left">路演厅订单</span>-->
+          <!--<span class="count-right fr">10</span>-->
+        <!--</div>-->
+        <!--<div class="profile-count dgn-bor">-->
+          <!--<span class="count-left">多功能订单</span>-->
+          <!--<span class="count-right fr">10</span>-->
+        <!--</div>-->
+      <!--</div>-->
 
       <!--统计图-->
-      <div class="echarts-box">
-        <span style="font-size: 200px; text-align: center"></span>
-      </div>
+      <div id="myChart" style="width: 100%; height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">品牌浏览量统计明细</span>
@@ -119,6 +117,11 @@
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
+  // 引入echarts
+  import echarts from 'echarts'
+  import Vue from 'vue'
+  import 'echarts/theme/macarons.js'
+  Vue.prototype.$echarts = echarts
 
   export default {
     mixins: [tableMixins, statisticsOrderMixin, pickerOptions],
@@ -127,13 +130,124 @@
     },
     data () {
       return {
+        statisticsChart: '', // charts
+        screenWidth: document.body.clientWidth, // 屏幕宽度
+        option: {
+          legend: {
+            data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          yAxis: {
+            type: 'value'
+          },
+          xAxis: {
+            type: 'category',
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          },
+          series: [
+            {
+              name: '直接访问',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: [320, 302, 301, 334, 390, 330, 320]
+            },
+            {
+              name: '邮件营销',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: [120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+              name: '联盟广告',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: [220, 182, 191, 234, 290, 330, 310]
+            },
+            {
+              name: '视频广告',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: [150, 212, 201, 154, 190, 330, 410]
+            },
+            {
+              name: '搜索引擎',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: [820, 832, 901, 934, 1290, 1330, 1320]
+            }
+          ]
+        }
       }
     },
     mounted () {
+      this.drawLine();
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.screenWidth = document.body.clientWidth
+          that.screenWidth = window.screenWidth
+        })()
+      }
     },
     methods: {
       changePeriod (id) {
         this.periodId = id
+      },
+      drawLine () {
+        let self = this
+        // 基于准备好的dom，初始化echarts实例
+        self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
+        // 绘制图表
+        self.statisticsChart.setOption(this.option);
+      }
+    },
+    watch: {
+      screenWidth (val) {
+        if (!this.timer) {
+          this.screenWidth = val
+          this.timer = true
+          let that = this
+          setTimeout(function () {
+            that.timer = false
+            that.statisticsChart.resize()
+            that.drawLine()
+          }, 400)
+        }
       }
     }
   }
