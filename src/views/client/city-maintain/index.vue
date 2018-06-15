@@ -22,7 +22,7 @@
         <el-table :data="tableData" :loading="tableLoading">
           <el-table-column label="城市展示图" prop="url">
             <template slot-scope="scope">
-              <img :src="scope.row.url + zoomImgSize(50)" alt="">
+              <img :src="scope.row.url + zoomImgSize(80)" alt="">
             </template>
           </el-table-column>
 
@@ -39,7 +39,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" class="fl" @click="openEditDialog(scope.row.id)">编辑</el-button>
-              <el-button type="text" v-if="scope.$index !== 0" class="ml0">置顶</el-button>
+              <el-button type="text" v-if="scope.row.sort !== 1" @click="setTopCity(scope.row.id)" class="ml0">置顶</el-button>
               <el-tooltip :content="scope.row.status === 1 ? '点击关闭城市' : '点击开启城市'" placement="top" class="fr">
                 <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
                   @change="changeCityStatus(scope.row.id, scope.row.status)"
@@ -209,37 +209,6 @@
 
       // 城市列表
       getPageData(page) {
-        this.tableData = [{
-          id: 1,
-          regionCode: '10181018',
-          cityCode: '10181018',
-          provinceCode: '1018',
-          url: 'http://shared-office.oss-cn-shenzhen.aliyuncs.com/shared-office/img/20170921/20170921202804135Sd7.jpg',
-          countryId: 44,
-          countryName: '中国',
-          provinceName: '广东省',
-          cityName: '广州市',
-          status: 1,
-          cityAliasName: '广州',
-          longitude: 23.1955,
-          latitude: 113.3009,
-          sort: 1
-        }, {
-          id: 2,
-          regionCode: '10001000',
-          cityCode: '10001000',
-          provinceCode: '1000',
-          url: 'http://shared-office.oss-cn-shenzhen.aliyuncs.com/shared-office/img/20170921/20170921202804135Sd7.jpg',
-          countryId: 44,
-          countryName: '中国',
-          provinceName: '北京',
-          cityName: '北京市',
-          status: 1,
-          cityAliasName: '北京的',
-          longitude: 23.1955,
-          latitude: 113.3009,
-          sort: 1
-        }]
         this.tableLoading = true
         this.currentPage = page || this.currentPage
         let params = Object.assign({
@@ -321,6 +290,18 @@
         this.city = []
         this.$nextTick(() => {
           this.$refs['addCityForm'].clearValidate()
+        })
+      },
+
+      // 置顶城市
+      setTopCity(id) {
+        topCity({ regionInfoId: id }).then(res => {
+          if (res.status === 'true') {
+            this.$message.success('置顶成功！')
+            this.getPageData()
+          } else {
+            this.$message.error(res.msg)
+          }
         })
       },
 
