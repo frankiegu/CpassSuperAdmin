@@ -43,8 +43,7 @@
             @current-change="handleCurrentChange"
             background></el-pagination>
         </div>
-        <div class="space-echart">
-        </div>
+        <div id="myChart1" class="space-echart" style="width: 32%; height: 400px;"></div>
       </div>
 
       <div class="card-body-title">场地地区分布</div>
@@ -119,8 +118,7 @@
             @current-change="handleCurrentChange"
             background></el-pagination>
         </div>
-        <div class="space-echart">
-        </div>
+        <div id="myChart2" style="width: 32%; height: 400px;"></div>
       </div>
 
     </div>
@@ -130,17 +128,93 @@
 <script>
   import statisticsAreaMixin from './statistics-area.mixin'
   import tableMixins from '@/mixins/table'
+  // 引入echarts
+  import echarts from 'echarts'
+  import Vue from 'vue'
+  import 'echarts/theme/macarons.js'
+  Vue.prototype.$echarts = echarts
 
   export default {
     mixins: [tableMixins, statisticsAreaMixin],
     components: {},
     data () {
       return {
+        statisticsChart1: '', // charts
+        screenWidth: document.body.clientWidth, // 屏幕宽度
+        option1: {
+          title: {
+            text: '天气情况统计',
+            subtext: '虚构数据',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c} ({d}%)'
+          },
+          legend: {
+            // orient: 'vertical',
+            // top: 'middle',
+            bottom: 10,
+            left: 'center',
+            data: ['西凉', '益州', '兖州', '荆州', '幽州']
+          },
+          series: [
+            {
+              type: 'pie',
+              radius: '65%',
+              center: ['50%', '50%'],
+              selectedMode: 'single',
+              data: [
+                { value: 1548, name: '幽州' },
+                { value: 555, name: '荆州' },
+                { value: 510, name: '兖州' },
+                { value: 634, name: '益州' },
+                { value: 735, name: '西凉' }
+              ],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        }
       }
     },
     mounted () {
+      this.drawLine1();
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.screenWidth = document.body.clientWidth
+          that.screenWidth = window.screenWidth
+        })()
+      }
     },
     methods: {
+      drawLine1 () {
+        let self = this
+        // 基于准备好的dom，初始化echarts实例
+        self.statisticsChart1 = echarts.init(document.getElementById('myChart1'), 'macarons')
+        // 绘制图表
+        self.statisticsChart1.setOption(this.option1);
+      }
+    },
+    watch: {
+      screenWidth (val) {
+        if (!this.timer) {
+          this.screenWidth = val
+          this.timer = true
+          let that = this
+          setTimeout(function () {
+            that.timer = false
+            that.statisticsChart1.resize()
+            that.drawLine1()
+          }, 400)
+        }
+      }
     }
   }
 </script>

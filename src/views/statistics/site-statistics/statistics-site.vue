@@ -210,10 +210,11 @@
   import statisticsSiteMixin from './statistics-site.mixin'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
-  import Vue from 'vue'
   import tableMixins from '@/mixins/table'
   // 引入echarts
   import echarts from 'echarts'
+  import Vue from 'vue'
+  import 'echarts/theme/macarons.js'
   Vue.prototype.$echarts = echarts
 
   export default {
@@ -295,7 +296,7 @@
       drawLine () {
         let self = this
         // 基于准备好的dom，初始化echarts实例
-        self.statisticsChart = echarts.init(document.getElementById('myChart'))
+        self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
         // 绘制图表
         self.statisticsChart.setOption(this.option);
       }

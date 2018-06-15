@@ -29,9 +29,7 @@
       </div>
 
       <!--统计图-->
-      <div class="echarts-box">
-        <span style="font-size: 200px; text-align: center"></span>
-      </div>
+      <div id="myChart" class="mt30 mb30" style="width: 100%;height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">品牌浏览量统计明细</span>
@@ -51,7 +49,6 @@
           <el-table-column label="累计订单数" prop="contactTel" align="left" ></el-table-column>
           <el-table-column label="累计参观数" prop="contactTel" align="left" ></el-table-column>
         </el-table>
-
         <el-pagination
           :total="pageTotal"
           :layout="layoutArr"
@@ -73,19 +70,112 @@
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
+  // 引入echarts
+  import echarts from 'echarts'
+  import Vue from 'vue'
+  import 'echarts/theme/macarons.js'
+  Vue.prototype.$echarts = echarts
+
   export default {
     mixins: [statisticsBrowsingMixin, tableMixins, pickerOptions],
-    components: {},
+    components: {
+      [option.name]: option
+    },
     data () {
       return {
-        [option.name]: option
+        statisticsChart: '', // charts
+        screenWidth: document.body.clientWidth, // 屏幕宽度
+        option: {
+          barWidth: '',
+          legend: {
+            selectedMode: 'single',
+            data: ['品牌', '空间', '场地']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          yAxis: {
+            type: 'value'
+          },
+          xAxis: {
+            type: 'category',
+            data: ['A空间', 'B空间', 'C空间', 'D空间', 'E空间', 'F空间', 'G空间', 'H空间', 'I空间', 'J空间']
+          },
+          series: [
+            {
+              name: '品牌',
+              type: 'bar',
+              stack: '总量',
+              data: [320, 120, 301, 220, 500, 400, 320, 191, 302, 200]
+            },
+            {
+              name: '空间',
+              type: 'bar',
+              stack: '总量',
+              data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101]
+            },
+            {
+              name: '场地',
+              type: 'bar',
+              stack: '总量',
+              data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191]
+            }
+          ]
+        }
       }
     },
     mounted () {
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.screenWidth = document.body.clientWidth
+          that.screenWidth = window.screenWidth
+        })()
+      }
+      if (that.screenWidth < 1100) {
+        this.option.barWidth = 40
+      } else if (that.screenWidth < 1400) {
+        this.option.barWidth = 50
+      } else {
+        this.option.barWidth = 60
+      }
+      that.drawLine()
     },
     methods: {
       changePeriod (id) {
         this.periodId = id
+      },
+      drawLine () {
+        let self = this
+        // 基于准备好的dom，初始化echarts实例
+        self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
+        // 绘制图表
+        self.statisticsChart.setOption(this.option);
+      }
+    },
+    watch: {
+      screenWidth (val) {
+        // 柱形宽度随着屏幕宽度变化
+        if (val < 1100) {
+          this.option.barWidth = 40
+        } else if (val < 1400) {
+          this.option.barWidth = 50
+        } else {
+          this.option.barWidth = 60
+        }
+        if (!this.timer) {
+          this.screenWidth = val
+          this.timer = true
+          let that = this
+          setTimeout(function () {
+            that.timer = false
+            that.statisticsChart.resize()
+            that.drawLine()
+          }, 400)
+        }
       }
     }
   }
@@ -126,10 +216,6 @@
           border-right: none;
         }
       }
-    }
-    .echarts-box{
-      width: 100%;
-      height: 300px;
     }
   }
 </style>
