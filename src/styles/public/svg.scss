@@ -2,6 +2,10 @@
 
 /* svg颜色
 -------------------------- */
+.fill-blue {
+  fill: $theme-blue !important;
+  opacity: 1;
+}
 .fill-black {
   fill: $theme-black !important;
   opacity: 1;
@@ -33,6 +37,10 @@
 .svg20 {
   width: 20px;
   height: 20px;
+}
+.svg18 {
+  width: 18px !important;
+  height: 18px !important;
 }
 // @#注意：有些svg透明度0.65，hover:1
 .opacity65 {
