@@ -42,6 +42,7 @@
               <el-button type="text" v-if="scope.$index !== 0" class="ml0">置顶</el-button>
               <el-tooltip :content="scope.row.status === 1 ? '点击关闭城市' : '点击开启城市'" placement="top" class="fr">
                 <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+                  @change="changeCityStatus(scope.row.id, scope.row.status)"
                   :active-color="switchActiveColor" class="mt6"></el-switch>
               </el-tooltip>
             </template>
@@ -120,7 +121,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import upload from '@/components/upload'
-  import { listCountry, listCity, listCityTree, addCity, updateCity } from '@/service/city-maintain'
+  import { listCountry, listCity, listCityTree, addCity, updateCity, switchCity, topCity } from '@/service/city-maintain'
   export default {
     name: '',
     mixins: [tableMixins],
@@ -256,7 +257,7 @@
         })
       },
 
-      // 添加或编辑城市
+      // 添加/编辑城市
       submitForm() {
         this.$refs['addCityForm'].validate(valid => {
           if (valid) {
@@ -320,6 +321,39 @@
         this.city = []
         this.$nextTick(() => {
           this.$refs['addCityForm'].clearValidate()
+        })
+      },
+
+      // 切换城市开关
+      changeCityStatus(id, val) {
+        let target = this.tableData.find(item => item.id === id)
+        let params = {
+          regionInfoId: id,
+          status: val
+        }
+        if (val === 0) { // 关闭城市
+          this.$confirm('确认关闭该城市？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            this.handleSwitchCity(params)
+          }).catch(() => {
+            this.$message.info('已取消操作')
+            target.status = 1
+          })
+        } else { // 开启城市
+          this.handleSwitchCity(params)
+        }
+      },
+
+      // 城市开启/关闭
+      handleSwitchCity(obj) {
+        switchCity(obj).then(res => {
+          if (res.status === 'true') {
+            this.$message.success('修改成功！')
+          } else {
+            this.$message.error(res.msg)
+            this.getPageData()
+          }
         })
       },
 
