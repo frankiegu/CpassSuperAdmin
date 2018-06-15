@@ -126,6 +126,22 @@
     color: $theme-gray;
   }
 }
+@mixin table-link {
+  display: inline-block;
+  color: $theme-blue;
+  height: 32px;
+  line-height: 32px;
+  vertical-align: middle;
+  cursor: pointer;
+
+  &.theme-gray {
+    color: $theme-gray;
+  }
+}
+.lh-table-btn {
+  padding: 0 4px;
+  @include table-link;
+}
 
 /* 分页 */
 .pagination-container {

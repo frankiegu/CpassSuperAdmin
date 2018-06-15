@@ -7,10 +7,22 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '营销管理',
   path: '/market',
-  redirect: '/market/coupon',
+  redirect: '/market/c-pass',
   component: layout,
   icon: 'icon-Site',
   children: [{
+    name: 'C-PASS精选',
+    path: 'c-pass',
+    component: _import('market/c-pass/list')
+  }, {
+    name: ' ',
+    path: 'c-pass/com',
+    hidden: true,
+    component: _import('market/c-pass/com')
+  },
+
+  // 优惠券
+  {
     name: '优惠券',
     path: 'coupon',
     component: _import('market/coupon/coupon')
