@@ -7,6 +7,25 @@ export default {
   mixins: [tableMixins],
   data () {
     return {
+      orderTypeList: [
+        {
+          label: '总订单数',
+          number: 100
+        }, {
+          label: '待使用',
+          number: 20
+        }, {
+          label: '已使用',
+          number: 60
+        }, {
+          label: '待退款',
+          number: 10
+        }, {
+          label: '已退款/已取消',
+          number: 10
+        }
+      ],
+      currentIndex: 0, // 当前选中
       formData: {
         type: '',
         date: '',

@@ -3,9 +3,10 @@ import { CUSTOMER_LIST } from '@/service/member'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
 import memberRate from './components/memberRate'
+import pickerOptions from '@/mixins/pickerOptions'
 
 export default {
-  mixins: [tableMixins],
+  mixins: [tableMixins, pickerOptions],
   components: { memberRate },
   data () {
     return {
@@ -18,33 +19,6 @@ export default {
       },
       gradeList: [],
       statusList: [],
-      pickerOptions: {
-        shortcuts: [{
-          text: '一周内',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '一个月内',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '三个月内',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
       memberRateData: ['100', '3', '-43', '+313'] // 会员变化率
     }
   },
