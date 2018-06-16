@@ -41,10 +41,12 @@
       <!--统计表格-->
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-          <el-table-column label="日期" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="参观预约数" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="明细" prop="contact" align="left">
-            <span class="table-link">查看明细</span>
+          <el-table-column label="日期" prop="created" align="left" ></el-table-column>
+          <el-table-column label="参观预约数" prop="winningMaxTime" align="left"></el-table-column>
+          <el-table-column label="明细" align="left">
+            <template slot-scope="scope">
+              <span class="table-link" @click="dialogVisible=true">查看明细</span>
+            </template>
           </el-table-column>
         </el-table>
         <el-pagination
@@ -58,6 +60,28 @@
           @current-change="handleCurrentChange"
           background></el-pagination>
       </div>
+
+      <el-dialog
+        title="X月X日参观预约明细"
+        :visible.sync="dialogVisible"
+        :before-close="handleClose">
+        <el-table :data="reservationDetail" empty-text="暂无数据" v-loading="reservationLoading" border style="width: 100%">
+          <el-table-column label="提交时间" prop="created" align="left" ></el-table-column>
+          <el-table-column label="参观空间" prop="winningMaxTime" align="left"></el-table-column>
+          <el-table-column label="参观事由" prop="winningMaxTime" align="left"></el-table-column>
+          <el-table-column label="提交人" prop="winningMaxTime" align="left"></el-table-column>
+        </el-table>
+        <el-pagination
+          :total="pageTotalExtra"
+          :layout="layoutArrExtra"
+          :page-size="pageSizeExtra"
+          :page-sizes="pageSizeArrExtra"
+          :current-page="currentPageExtra"
+          class="pagination-container"
+          @size-change="handleSizeChangeExtra"
+          @current-change="handleCurrentChangeExtra"
+          background></el-pagination>
+      </el-dialog>
 
     </div>
   </div>

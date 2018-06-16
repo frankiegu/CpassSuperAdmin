@@ -7,6 +7,16 @@ export default {
   mixins: [tableMixins],
   data () {
     return {
+      dialogVisible: false,
+      reservationDetail: [],
+      reservationLoading: false,
+
+      // 分页器配置
+      pageSizeArrExtra: [20, 40, 80, 100],
+      layoutArrExtra: 'total, sizes, prev, pager, next, jumper',
+      currentPageExtra: 1,
+      pageSizeExtra: 20,
+      pageTotalExtra: 0,
       formData: {
         type: '',
         date: '',
@@ -16,7 +26,7 @@ export default {
     }
   },
   mounted () {
-    // this.getPageData()
+    this.getPageData()
   },
   methods: {
     getPageData(page) {
@@ -58,6 +68,15 @@ export default {
       }
       let url = API_PATH + '/supervisor/platformCouponCustomer/export'
       downloadFile(url, downParams)
+    },
+    handleSizeChangeExtra(val) {
+      this.currentPage = 1
+      this.pageSize = val
+      this.getPageData()
+    },
+    handleCurrentChangeExtra(val) {
+      this.currentPage = val
+      this.getPageData()
     }
   }
 }
