@@ -103,7 +103,7 @@
             :imgUrl="addCityForm.url"
             class="fl"
             @uploadImg="val => addCityForm.url = val"></lh-upload>
-          <i class="el-icon-question fl theme-light-gray ml10 mt8 mr5" @click="uploadText = true"></i>
+          <i class="el-icon-question fl theme-light-gray mt8 mr5" @click="uploadText = true"></i>
           <div v-if="uploadText" class="fl">
             <p>建议尺寸： 600PX * 460PX<br>支持格式： JPG / PNG</p>
           </div>
