@@ -29,25 +29,9 @@
       </div>
 
       <div class="area-profile clearfix mb16">
-        <div class="profile-box">
-          <span class="profile-title">总订单数</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">待使用</span>
-          <span class="profile-count">0</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">已使用</span>
-          <span class="profile-count">58</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">待退款</span>
-          <span class="profile-count">20</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">已退款/已取消</span>
-          <span class="profile-count">2</span>
+        <div class="profile-box" :class="{'activeClass': currentIndex === index}" @click="currentIndex=index" v-for="(item, index) in orderTypeList" :key="index">
+          <span class="profile-title">{{item.label}}</span>
+          <span class="profile-count">{{item.number}}</span>
         </div>
       </div>
       <!--<div class="area-profile-count clearfix mb16">-->
@@ -112,7 +96,6 @@
           background></el-pagination>
       </div>
 
-
     </div>
 
   </div>
@@ -147,7 +130,7 @@
             }
           },
           legend: {
-            data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+            data: ['移动工位订单', '时租工位订单', '会议室订单', '路演厅订单', '多功能场地订单']
           },
           grid: {
             left: '3%',
@@ -160,11 +143,11 @@
           },
           xAxis: {
             type: 'category',
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            data: ['05-01', '05-02', '05-03', '05-04', '05-05', '05-06', '05-06']
           },
           series: [
             {
-              name: '直接访问',
+              name: '移动工位订单',
               type: 'bar',
               stack: '总量',
               label: {
@@ -176,7 +159,7 @@
               data: [320, 302, 301, 334, 390, 330, 320]
             },
             {
-              name: '邮件营销',
+              name: '时租工位订单',
               type: 'bar',
               stack: '总量',
               label: {
@@ -188,7 +171,7 @@
               data: [120, 132, 101, 134, 90, 230, 210]
             },
             {
-              name: '联盟广告',
+              name: '会议室订单',
               type: 'bar',
               stack: '总量',
               label: {
@@ -200,7 +183,7 @@
               data: [220, 182, 191, 234, 290, 330, 310]
             },
             {
-              name: '视频广告',
+              name: '路演厅订单',
               type: 'bar',
               stack: '总量',
               label: {
@@ -212,7 +195,7 @@
               data: [150, 212, 201, 154, 190, 330, 410]
             },
             {
-              name: '搜索引擎',
+              name: '多功能场地订单',
               type: 'bar',
               stack: '总量',
               label: {
@@ -247,8 +230,6 @@
         self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
         // 绘制图表
         self.statisticsChart.setOption(this.option);
-
-
         fieldOrderList().then(res => {
           if (res.status === 'true') {
             console.log('res', res)
@@ -411,6 +392,10 @@
       width: 100%;
       height: 300px;
     }
-
+    .activeClass {
+      span {
+        color: #5A72F6 !important;
+      }
+    }
   }
 </style>
