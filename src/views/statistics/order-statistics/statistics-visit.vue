@@ -1,5 +1,5 @@
 <template>
-  <div class="statistics-order">
+  <div class="statistics-visit">
     <div class="card-padding">
 
       <div class="card-body-title">参观预约统计</div>
@@ -198,8 +198,10 @@
 
 <style lang="scss" scoped>
   @import "src/styles/config";
-  .statistics-order{
-
+  .statistics-visit{
+    .card-body-title{
+      font-size: 16px;
+    }
     .select-type{
       width: 100%;
       height: 32px;

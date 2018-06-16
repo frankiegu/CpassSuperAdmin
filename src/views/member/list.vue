@@ -7,16 +7,17 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择提交日期 -->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.logInDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="提交开始日期"
-            end-placeholder="提交结束日期"
-            placeholder="选择提交日期"
-            :picker-options="pickerOptions"></el-date-picker>
+            <span class="datePicker-prependTxt">最后登录时间</span>
+            <el-date-picker
+              v-model="formData.logInDate"
+              @change="getPageData(1)"
+              type="daterange"
+              align="right"
+              clearable
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              placeholder="选择日期"
+              :picker-options="pickerOptions"></el-date-picker>
         </el-form-item>
 
         <!--选择预约日期-->
@@ -27,9 +28,9 @@
             type="daterange"
             align="right"
             clearable
-            start-placeholder="预约开始日期"
-            end-placeholder="预约结束日期"
-            placeholder="选择预约日期"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            placeholder="选择日期"
             :picker-options="pickerOptions"></el-date-picker>
         </el-form-item>
 
@@ -45,7 +46,7 @@
         </el-form-item>
         <!--会员状态-->
         <el-form-item>
-          <el-select v-model="formData.status" placeholder="会员等级" clearable class="width120px" @change="getPageData(1)">
+          <el-select v-model="formData.status" placeholder="状态" clearable class="width120px" @change="getPageData(1)">
             <el-option
               v-for="(value, key) in statusList"
               :label="value"
@@ -152,6 +153,12 @@
     .svg-icon {
       color: $theme-blue;
       margin: 0 7px;
+    }
+    .datePicker-prependTxt {
+      display: inline-block;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      padding: 0 5px;
     }
   }
 </style>

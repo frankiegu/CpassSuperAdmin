@@ -25,7 +25,9 @@
 
       <el-row :gutter="20">
         <el-col :span="8">
-          <lh-item class="nowrap" label="会员等级" label-width="80px">联盟会员</lh-item>
+          <lh-item class="nowrap" label="会员等级" label-width="80px">
+            <el-tag>联盟会员</el-tag>
+          </lh-item>
         </el-col>
         <el-col :span="8">
           <lh-item class="nowrap" label="付费记录" label-width="80px">2018-3-20  20:50:15</lh-item>
@@ -97,8 +99,11 @@
   .member-detail {
     .page-title {
       &>h1 {
-        width: 100px;
+        width: 140px;
         line-height: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .detail-tab {

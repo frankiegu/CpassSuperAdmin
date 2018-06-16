@@ -1,6 +1,6 @@
 <template>
   <div class="order-page">
-    <el-row :gutter="20" class="number">
+    <el-row :gutter="20" class="number pl24">
       <el-col :span="5">
         <lh-item class="nowrap" label="当前积分" label-width="80px">
           <span class="num-style table-link" @click="getPageData(1)">12</span>
