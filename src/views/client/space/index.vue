@@ -7,18 +7,40 @@
       <div class="senior-title">明星空间</div>
       <div class="card-body">
         <el-table :data="starSpaceList">
-          <el-table-column label="展示图" prop="imgUrl"></el-table-column>
-          <el-table-column label="所属品牌" prop="brandName"></el-table-column>
-          <el-table-column label="空间名称" prop="spaceName"></el-table-column>
-          <el-table-column label="场地数" prop="fieldNum">
+          <el-table-column label="展示图" prop="showImg">
             <template slot-scope="scope">
-              <router-link to="/field/list" class="table-link">{{scope.row.fieldNum}}</router-link>
+              <img :src="scope.row.showImg + zoomImgSize(80)" alt="">
             </template>
           </el-table-column>
-          <el-table-column label="空间描述" prop="spaceDesc"></el-table-column>
-          <el-table-column label="地址" prop="address"></el-table-column>
-          <el-table-column label="空间介绍" prop="spaceIntro"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+
+          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip />
+          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
+          <el-table-column label="场地数" prop="fieldCount">
+            <template slot-scope="scope">
+              <router-link to="/field/list" class="table-link">{{scope.row.fieldCount}}</router-link>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip />
+
+          <el-table-column label="地址" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.provinceName + '·' + scope.row.cityName + '·' + scope.row.districtName}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间介绍" prop="brief" show-overflow-tooltip />
+
+          <el-table-column label="操作" width="140" align="left" header-align="center">
+            <template slot-scope="scope">
+              <el-tooltip placement="top" content="点击取消该明星空间">
+                <lh-svg icon-class="icon-like" class="ph4 svg18 fill-blue table-link"></lh-svg>
+              </el-tooltip>
+
+              <el-button type="text" class="lh-table-btn">编辑</el-button>
+              <el-button type="text" @click="" v-if="!scope.row.topTime" class="lh-table-btn ml0">置顶</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -28,13 +50,49 @@
           <el-form-item class="mb0">
             <el-input placeholder="请输入品牌名称/空间名称" v-model.trim="spaceSort.name"
               @keyup.native.enter="getPageData(1)">
-              <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+              <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
             </el-input>
           </el-form-item>
         </el-form>
       </div>
       <div class="card-body">
-        <el-table :data="spaceList"></el-table>
+        <el-table :data="spaceList">
+          <el-table-column label="展示图" prop="showImg">
+            <template slot-scope="scope">
+              <img :src="scope.row.showImg + zoomImgSize(80)" alt="">
+            </template>
+          </el-table-column>
+
+          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip />
+          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
+          <el-table-column label="场地数" prop="fieldCount">
+            <template slot-scope="scope">
+              <router-link to="/field/list" class="table-link">{{scope.row.fieldCount}}</router-link>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip />
+
+          <el-table-column label="地址" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.provinceName + '·' + scope.row.cityName + '·' + scope.row.districtName}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间介绍" prop="brief" show-overflow-tooltip />
+
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-tooltip placement="top">
+                <p slot="content">{{starSpaceList.length < 5 ? '点击设置为明星空间' : '最多允许设置5个明星空间'}}</p>
+                <lh-svg icon-class="icon-like" :class="['ph4', 'svg18', {'table-link': starSpaceList.length < 5}]"></lh-svg>
+              </el-tooltip>
+
+              <el-button type="text" class="lh-table-btn">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
         <el-pagination
           :total="pageTotal"
           :layout="layoutArr"
@@ -52,7 +110,7 @@
     <el-dialog :visible.sync="isVisible" title="推荐描述">
       <el-form :model="spaceForm" label-width="100px" ref="spaceForm">
         <el-form-item label="空间名称">{{spaceForm.spaceName}}</el-form-item>
-        <el-form-item label="空间简介">{{spaceForm.spaceIntro}}</el-form-item>
+        <el-form-item label="空间简介">{{spaceForm.brief}}</el-form-item>
         <el-form-item label="空间描述" prop="description" :rules="[
           { required: true, message: '请输入空间描述', trigger: ['blur', 'change'] },
           { max: 30, message: '最大允许输入30字', trigger: ['blur', 'change'] }]">
@@ -81,6 +139,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import upload from '@/components/upload'
+  import { listShowcase, listSpace } from '@/service/space'
   export default {
     name: '',
     mixins: [tableMixins],
@@ -99,17 +158,47 @@
         // 推荐描述
         isVisible: false,
         spaceForm: {
-          spaceName: '七客创联·海草社区',
-          spaceIntro: '七客创联·海草社区七客创联·海草社区七客创联·海草社区七客创联·海草社区七客创联·海草社区七客创联·海草社区',
+          spaceName: '',
+          brief: '',
           description: '',
           imgUrl: ''
         },
         uploadText: false
       }
     },
-    mounted() {},
+    mounted() {
+      // 获取明星空间列表
+      this.getStarSpaceList()
+      // 获取空间列表
+      this.getPageData()
+    },
     methods: {
-      getPageData(page) {},
+      // 明星空间列表
+      getStarSpaceList() {
+        listShowcase().then(res => {
+          if (res.status === 'true') {
+            this.starSpaceList = res.info
+          }
+        })
+      },
+
+      // 空间列表
+      getPageData(page) {
+        this.currentPage = page || this.currentPage
+        let params = Object.assign({
+          pageSize: this.pageSize,
+          pageNum: this.currentPage
+        }, this.spaceSort)
+        listSpace(params).then(res => {
+          if (res.status === 'true' && res.info) {
+            this.pageTotal = res.info.total
+            this.spaceList = res.info.result
+          } else {
+            this.$message.info(res.msg || '暂无数据')
+          }
+        })
+      },
+
       // 保存推荐描述
       submitForm() {
         this.$refs['spaceForm'].validate(valid => {
