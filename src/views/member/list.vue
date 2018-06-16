@@ -7,31 +7,12 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择提交日期 -->
         <el-form-item>
-            <span class="datePicker-prependTxt">最后登录时间</span>
-            <el-date-picker
-              v-model="formData.logInDate"
-              @change="getPageData(1)"
-              type="daterange"
-              align="right"
-              clearable
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              placeholder="选择日期"
-              :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="最后登录时间" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--选择预约日期-->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.registerDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            placeholder="选择日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="注册时间" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--会员等级-->

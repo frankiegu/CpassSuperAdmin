@@ -52,6 +52,18 @@ export default {
         }
       })
     },
+    // 承接datePicker
+    datePickerChange (page, dateRange, dateType) {
+      const self = this
+      switch (dateType) {
+        case 1:
+          self.formData.logInDate = dateRange
+          break;
+        case 2:
+          self.formData.registerDate = dateRange
+      }
+      self.getPageData(1)
+    },
     exportExcel() {
       if (!this.tableData.length) {
         return this.setMsg('暂无数据')

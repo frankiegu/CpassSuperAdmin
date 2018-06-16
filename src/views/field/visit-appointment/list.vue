@@ -6,30 +6,12 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择提交日期 -->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.submitDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="提交开始日期"
-            end-placeholder="提交结束日期"
-            placeholder="选择提交日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="提交日期" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--选择预约日期-->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.bookDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="预约开始日期"
-            end-placeholder="预约结束日期"
-            placeholder="选择预约日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
         <el-form-item>
           <el-select v-model="formData.reservationType" placeholder="预约状态" clearable class="width120px" @change="getPageData(1)">
