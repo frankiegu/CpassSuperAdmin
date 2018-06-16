@@ -53,6 +53,12 @@ export default [{
         component: _import('statistics/order-statistics/statistics-visit')
       }]
     },
+    {
+      name: 'C-PASS订单明细',
+      path: 'C-PASS-order',
+      hidden: true,
+      component: _import('statistics/order-statistics/order-detail')
+    },
 
     // 转发漏斗
     {

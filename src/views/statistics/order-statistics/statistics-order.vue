@@ -77,7 +77,7 @@
       <div id="myChart" style="width: 100%; height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
-        <span class="lh32">品牌浏览量统计明细</span>
+        <span class="lh32">统计明细</span>
         <el-button @click="exportExcel" class="lh-btn-export fr">
           <lh-svg icon-class="icon-download" />导出
         </el-button>
@@ -86,7 +86,13 @@
       <!--统计表格-->
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-          <el-table-column label="日期" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="日期" prop="created" align="left" >
+            <template slot-scope="scope">
+              <router-link class="table-link" tag="a" target="_blank" to="/statistics/C-PASS-order">
+                {{scope.row.created}}
+              </router-link>
+            </template>
+          </el-table-column>
           <el-table-column label="总订单数" prop="moduleName" align="left"></el-table-column>
           <el-table-column label="总成交金额(元)" prop="contact" align="left"></el-table-column>
           <el-table-column label="单均金额(元)" prop="contactTel" align="left" ></el-table-column>
@@ -117,6 +123,7 @@
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
+  import { fieldOrderList } from '@/service/order'
   // 引入echarts
   import echarts from 'echarts'
   import Vue from 'vue'
@@ -240,6 +247,24 @@
         self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
         // 绘制图表
         self.statisticsChart.setOption(this.option);
+
+
+        fieldOrderList().then(res => {
+          if (res.status === 'true') {
+            console.log('res', res)
+            let data = res.info
+            if (data) {
+              this.pageTotal = data.total
+              this.tableData = data.result
+            }
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
       }
     },
     watch: {
