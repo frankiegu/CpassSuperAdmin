@@ -63,8 +63,7 @@
 
       <el-dialog
         title="X月X日参观预约明细"
-        :visible.sync="dialogVisible"
-        :before-close="handleClose">
+        :visible.sync="dialogVisible">
         <el-table :data="reservationDetail" empty-text="暂无数据" v-loading="reservationLoading" border style="width: 100%">
           <el-table-column label="提交时间" prop="created" align="left" ></el-table-column>
           <el-table-column label="参观空间" prop="winningMaxTime" align="left"></el-table-column>
