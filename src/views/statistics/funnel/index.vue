@@ -242,7 +242,7 @@
               }
               opacity: 0;
               animation: bubble .1s linear both .3s * (1 - ($i - 2));
-              background-color: rgba($theme-blue, 1 - $i * .2);
+              background-color: rgba($theme-blue, 1 - ($i - 1) * .2);
             }
           }
         }
