@@ -831,7 +831,11 @@
               if (res.status === 'true') {
                 let tipTxt = this.$route.query.id ? '修改成功！' : '创建成功！'
                 this.$message.success(tipTxt)
-                this.$router.replace('/market/coupon')
+                if (this.$route.query.id) {
+                  this.$router.replace('/market/coupon-detail?id=' + this.$route.query.id)
+                } else {
+                  this.$router.replace('/market/coupon')
+                }
               } else {
                 this.$message.error(res.msg)
               }
