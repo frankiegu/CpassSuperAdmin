@@ -3,21 +3,7 @@
     <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" @submit.native.prevent>
-        <el-form-item>
-          <el-select
-            v-model="formData.status"
-            @change="getPageData(1)"
-            placeholder="请选择订单状态"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="item in statusList"
-              :label="item.text"
-              :value="item.val"
-              :key="item.val"></el-option>
-          </el-select>
-        </el-form-item>
+      <el-form class="text-right mr-10" :model="formData" :inline="true" @submit.native.prevent>
 
         <el-form-item>
           <lh-datePicker label="生成日期" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
@@ -28,17 +14,32 @@
         </el-form-item>
 
         <el-form-item>
+          <el-select
+            v-model="formData.status"
+            @change="getPageData(1)"
+            placeholder="订单状态"
+            class="width120px"
+            clearable>
+            <el-option
+              v-for="item in statusList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入订单编号"
-            class="width210px">
+            class="width180px">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <el-form-item>
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
