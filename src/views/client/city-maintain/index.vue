@@ -34,7 +34,7 @@
           </el-table-column>
 
           <el-table-column label="城市名称" prop="cityAliasName"></el-table-column>
-          <el-table-column label="空间数" prop="spaceNum"></el-table-column>
+          <el-table-column label="空间数" prop="storeCount"></el-table-column>
 
           <el-table-column label="操作">
             <template slot-scope="scope">
