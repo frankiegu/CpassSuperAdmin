@@ -1,4 +1,5 @@
 import { pickerOptions2 } from '@/mixins/head/data-picker'
+import { getDateStr } from '@/config/utils'
 export default {
   data() {
     return {
@@ -11,7 +12,7 @@ export default {
   },
   mounted() {
     // 前一个月
-    this.dateRange = [new Date().getTime() - 3600 * 1000 * 24 * 30, new Date().getTime() - 3600 * 1000 * 24]
+    this.dateRange = [getDateStr(-30), getDateStr(-1)]
   },
   methods: {
     dateChange() {

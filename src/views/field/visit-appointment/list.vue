@@ -64,7 +64,7 @@
         <el-table-column label="提交时间" prop="createDate"></el-table-column>
         <el-table-column label="预约状态" prop="statusName"></el-table-column>
 
-        <el-table-column label="参观目的">
+        <el-table-column label="参观目的" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.visitTypeName || '-' }}
           </template>

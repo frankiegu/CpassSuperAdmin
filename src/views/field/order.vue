@@ -10,7 +10,7 @@
         </el-form-item>
 
         <el-form-item>
-          <lh-datePicker label="预定日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
+          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <el-form-item>

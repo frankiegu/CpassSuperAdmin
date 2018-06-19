@@ -17,6 +17,7 @@
 </template>
 <script>
   import pickerOptions from '@/mixins/pickerOptions'
+  import { getDateStr } from '@/config/utils'
   export default {
     name: 'LhDatePicker',
     mixins: [pickerOptions],
@@ -29,6 +30,14 @@
     computed: {
     },
     mounted () {
+      // 规定当日期选择器为生成日期或者提交日期时候，dateType = 1
+      if (this.dateType == 1) {
+        this.pickerOptions = {
+          disabledDate: function(time) {
+            return time.getTime() > new Date(getDateStr(0)).getTime();
+          }
+        }
+      }
     },
     methods: {
       handleChange(dateRange, dateType) {
