@@ -31,7 +31,6 @@ export default {
   computed: {},
   methods: {
     change(sort) {
-      console.log(sort)
       if (sort.prop === 'created') {
         this.sortField = 1
       } else if (sort.prop === 'bookingPeriod') {
@@ -76,7 +75,6 @@ export default {
       }
       fieldOrderList(paramsObj).then(res => {
         if (res.status === 'true') {
-          console.log('res', res)
           let data = res.info
           if (data) {
             this.pageTotal = data.total
@@ -101,6 +99,18 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    // 承接datePicker
+    datePickerChange (page, dateRange, dateType) {
+      const self = this
+      switch (dateType) {
+        case 1:
+          self.formData.bookDate = dateRange
+          break;
+        case 2:
+          self.formData.orderDate = dateRange
+      }
+      self.getPageData(1)
     },
     exportExcel() {
       if (!this.tableData.length) {

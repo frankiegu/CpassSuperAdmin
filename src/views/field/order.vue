@@ -3,7 +3,7 @@
     <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
+      <el-form :model="formData" :inline="true" @submit.native.prevent>
         <el-form-item>
           <el-select
             v-model="formData.status"
@@ -20,29 +20,11 @@
         </el-form-item>
 
         <el-form-item>
-          <el-date-picker
-            v-model="formData.orderDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="生成开始日期"
-            end-placeholder="生成结束日期"
-            placeholder="选择生成日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="生成日期" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <el-form-item>
-          <el-date-picker
-            v-model="formData.bookDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="预定开始日期"
-            end-placeholder="预定结束日期"
-            placeholder="选择预定日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="预定日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <el-form-item>
@@ -84,15 +66,7 @@
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
         <el-table-column label="生成时间" prop="created" align="left" width="155" sortable="custom"></el-table-column>
 
-        <el-table-column label="场地类型" align="left">
-          <template slot-scope="scope">
-            <span v-if="scope.row.type === 3">工位</span>
-            <span v-else-if="scope.row.type === 1">会议室</span>
-            <span v-else-if="scope.row.type === 2">路演厅</span>
-            <span v-else-if="scope.row.type === 4">多功能场地</span>
-            <span v-else-if="scope.row.type === 5">办公室</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="场地类型" prop="typeText" align="left"></el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
         <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable="custom"></el-table-column>
