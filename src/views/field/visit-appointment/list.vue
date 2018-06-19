@@ -93,6 +93,7 @@
     <el-dialog
       title="参观意向"
       :visible.sync="dialogVisible"
+      custom-class="dialogClass"
       width="35%">
       <div class="detail-info">
         {{ content }}
@@ -116,7 +117,13 @@
     }
   }
 </script>
-
+<style lang="scss">
+  .service-list {
+    .dialogClass {
+      min-height: 40% !important;
+    }
+  }
+</style>
 <style lang="scss" scoped>
   @import "../../../../src/styles/config";
   .service-list {
@@ -132,17 +139,6 @@
       color: #5E80E5;
       cursor: pointer;
     }
-    .detail-info{
-      clear: both;
-      .label{
-        width: 80px;
-        float: left;
-      }
-      .label-con{
-        float: left;
-        width: calc(100% - 80px);
-        margin-bottom: 10px;
-      }
-    }
+
   }
 </style>
