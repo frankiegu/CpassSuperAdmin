@@ -141,6 +141,8 @@
                   v.fieldTypeText = '多功能场地'
                 } else if (v.fieldType === 5) {
                   v.fieldTypeText = '办公室'
+                } else if (v.fieldType === 6) {
+                  v.fieldTypeText = '时租工位'
                 }
               })
             }

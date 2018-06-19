@@ -82,7 +82,7 @@ export default {
             // 支付状态payStatus, 10=未支付, 20=已支付, 30=已经退款
             this.tableData.forEach(v => {
               v.formatPrice = '￥ ' + v.orderAmount
-              if (v.type === 1 || v.type === 2 || v.type === 4) {
+              if (v.type === 1 || v.type === 2 || v.type === 4 || v.type === 6) {
                 v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
               } else {
                 v.bookDate = '-'

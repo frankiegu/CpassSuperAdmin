@@ -34,7 +34,7 @@
           </el-table-column>
 
           <el-table-column label="城市名称" prop="cityAliasName"></el-table-column>
-          <el-table-column label="空间数" prop="spaceNum"></el-table-column>
+          <el-table-column label="空间数" prop="storeCount"></el-table-column>
 
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -66,7 +66,7 @@
     <el-dialog :visible.sync="isVisible" title="添加城市" :before-close="closeEditDialog">
       <el-form :model="addCityForm" label-width="100px" ref="addCityForm">
         <el-form-item label="所属国家" prop="countryId" required>
-          <el-select v-model="addCityForm.countryId" class="width340px">
+          <el-select v-model="addCityForm.countryId" class="width340px" @change="getCityTree">
             <el-option v-for="item in countryList" :value="item.id" :key="item.cnName"
               :label="item.cnName"></el-option>
           </el-select>
@@ -176,7 +176,7 @@
     },
     mounted() {
       // 获取树状城市列表
-      // this.getCityTree()
+      this.getCityTree()
       // 获取国家列表
       this.getCountryList()
       // 获取城市列表
@@ -185,9 +185,11 @@
     methods: {
       // 树状城市列表
       getCityTree() {
-        listCityTree().then(res => {
+        listCityTree({
+          countryId: this.addCityForm.countryId
+        }).then(res => {
           if (res.status === 'true' && res.info) {
-            this.cityTree = res.info.children
+            this.cityTree = res.info.children || []
           }
         })
       },
