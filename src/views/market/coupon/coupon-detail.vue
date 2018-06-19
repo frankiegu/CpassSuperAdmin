@@ -318,20 +318,40 @@
     methods: {
       // 删除优惠券
       deleteCoupon () {
-        couponDelete({ id: this.couponId }).then(res => {
-          if (res.status === 'true') {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-            this.$router.push('/market/coupon')
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.msg
-            });
-          }
-        })
+        this.$confirm('此操作将永久删除该优惠券, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          couponDelete({ id: this.couponId }).then(res => {
+            if (res.status === 'true') {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+
+              console.log('store', this.$store.state.tagsView.visitedViews)
+              let currentPath
+              this.$store.state.tagsView.visitedViews.forEach(v => {
+                if (v.id === this.$route.query.id && v.path === this.$route.path) {
+                  currentPath = v
+                }
+              })
+              this.$store.dispatch('delVisitedViews', currentPath)
+              this.$router.replace('/market/coupon')
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
