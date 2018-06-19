@@ -5,11 +5,11 @@
       :key="index"
       :span="6">
 
-      <div class="statistics-item">
-        <div class="font-size-16px nowrap" v-if="index === 0">会员总数</div>
-        <div class="font-size-16px nowrap" v-if="index === 1">本日变化</div>
-        <div class="font-size-16px nowrap" v-if="index === 2">本周变化</div>
-        <div class="font-size-16px nowrap" v-if="index === 3">本月变化</div>
+      <div class="statistics-item font-size-16px nowrap">
+        <div v-if="index === 0">会员总数</div>
+        <div v-else-if="index === 1">本日变化</div>
+        <div v-else-if="index === 2">本周变化</div>
+        <div v-else-if="index === 3">本月变化</div>
         <span class="item-num theme-blue">
           {{ item }}
         </span>
@@ -40,6 +40,7 @@
       border-radius: 4px;
       background-color: #ffffff;
       box-sizing: border-box;
+      cursor: pointer;
 
       &.operate-grid {
         padding-top: 42px;
