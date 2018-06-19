@@ -1,3 +1,4 @@
+import { typeList } from '@/mixins/data'
 export default {
   data () {
     return {
@@ -20,14 +21,7 @@ export default {
       // 跟场地的开放状态不同
       openSettingStatus: false,
 
-      typeList: [
-        { key: '0', label: '全部' },
-        { key: '1', label: '会议室' },
-        { key: '2', label: '路演厅' },
-        { key: '3', label: '工位' },
-        { key: '5', label: '办公室' },
-        { key: '4', label: '多功能场地' }
-      ],
+      typeList,
 
       openData: [],
 
