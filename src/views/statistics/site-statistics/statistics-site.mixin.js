@@ -14,7 +14,7 @@ export default {
       ],
       fieldList: [
         { val: 1, text: '全部' },
-        { val: 2, text: '自由工位' },
+        { val: 2, text: '移动工位' },
         { val: 3, text: '时租工位' },
         { val: 4, text: '会议室' },
         { val: 5, text: '路演厅' },
