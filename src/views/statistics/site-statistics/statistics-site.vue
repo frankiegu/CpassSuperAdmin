@@ -86,16 +86,16 @@
       <!--统计表格-->
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-          <el-table-column label="日期" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="新增品牌数" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="新增空间数" prop="contact" align="left"></el-table-column>
-          <el-table-column label="新增场地总数" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="移动工位" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="时租工位" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="会议室" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="路演厅" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="办公室" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="多功能室" prop="contactTel" align="left" ></el-table-column>
+          <el-table-column label="日期" prop="created" align="left" ></el-table-column>
+          <el-table-column label="新增品牌数" prop="id" align="left"></el-table-column>
+          <el-table-column label="新增空间数" prop="lotteryExtraTime" align="left"></el-table-column>
+          <el-table-column label="新增场地总数" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="移动工位" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="时租工位" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="会议室" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="路演厅" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="办公室" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="多功能室" prop="lotteryExtraTime" align="left" ></el-table-column>
         </el-table>
 
         <el-pagination
