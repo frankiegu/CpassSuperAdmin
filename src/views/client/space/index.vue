@@ -17,7 +17,9 @@
           <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
-              <router-link to="/field/list" class="table-link">{{scope.row.fieldCount}}</router-link>
+              <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
+                {{scope.row.fieldCount}}
+              </router-link>
             </template>
           </el-table-column>
 
@@ -72,7 +74,9 @@
           <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
-              <router-link to="/field/list" class="table-link">{{scope.row.fieldCount}}</router-link>
+              <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
+                {{scope.row.fieldCount}}
+              </router-link>
             </template>
           </el-table-column>
 

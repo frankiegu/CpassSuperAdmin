@@ -121,7 +121,8 @@
           pageSize: this.pageSize,
           pageNum: this.currentPage,
           bookNumSort: this.bookNumSort,
-          fieldName: this.formData.name
+          fieldName: this.formData.name,
+          storeId: this.$route.query.storeId
         }
         fieldList(paramsObj).then(res => {
           if (res.status === 'true') {
