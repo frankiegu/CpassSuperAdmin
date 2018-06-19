@@ -305,7 +305,7 @@
           if (res.status === 'true' && res.info) {
             this.$message.success('设置成功！')
             this.starSpaceList = res.info
-            this.getPageData()
+            this.getPageData(1)
           } else {
             this.$message.error(res.msg)
           }

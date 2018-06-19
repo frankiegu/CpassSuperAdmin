@@ -1,7 +1,7 @@
 <template>
   <div class="page-field-detail">
     <lh-title :title="titleName">
-      <span class="mr12">
+      <span class="ml12">
         <el-tag v-if="isOpen === 1" type="success" size="mini">开放中</el-tag>
         <el-tag v-else="isOpen === 0" type="danger" size="mini">未开放</el-tag>
       </span>
@@ -66,7 +66,7 @@
 
     <!-- 预约设置 -->
     <lh-card
-      :cardTitle="fieldType === '1' || fieldType === '2' || fieldType === '4' ? '预约设置' : '开放时段'">
+      :cardTitle="fieldType === '3' || fieldType === '5' ? '开放时段' : '预约设置'">
       <h3 class="text-title fz16 mb6 mt0 no-required">基本价格</h3>
 
       <!-- 非办公室 -->
@@ -100,7 +100,7 @@
 
         <el-table-column label="收费标准">
           <template slot-scope="scope">
-            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === '1' || fieldType === '2' || fieldType === '4' ? '元/小时' : '元/天') : '-' }}
+            {{ scope.row.price || scope.row.price === 0 ? scope.row.price + (fieldType === '3' || fieldType === '5' ? '元/天' : '元/小时') : '-' }}
           </template>
         </el-table-column>
       </el-table>
@@ -205,6 +205,7 @@
 </template>
 
 <script>
+import { typeList } from '@/mixins/data'
 import { fieldDetail, setFieldStatus } from '@/service/field'
 import detaillMixins from './detail.mixins'
 
@@ -504,6 +505,14 @@ export default {
           }
 
           switch (this.fieldType) {
+            case '6':
+              this.stationNum = resInfo.fieldHourStation.maxAdmissibleNum
+              this.turnOpenData(resInfo.fieldHourStation)
+              this.setOpenPrice(resInfo.fieldPriceList)
+
+              this.getOpenStatus()
+              this.toggleWeek()
+              break;
             case '1':
               this.stationNum = resInfo.fieldMeeting.maxAdmissibleNum
               this.turnOpenData(resInfo.fieldMeeting)
@@ -573,7 +582,7 @@ export default {
     },
     setPageTitle(type) {
       for (let item of this.typeList) {
-        if (this.fieldType === item.key) {
+        if (this.fieldType === (item.key + '')) {
           this.titleName = this.field.fieldName + '（' + item.label + '）'
           document.title = this.titleName
         }

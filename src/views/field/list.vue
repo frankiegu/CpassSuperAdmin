@@ -37,7 +37,7 @@
 
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
-        <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
+        <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
 
         <el-table-column label="历史预定数" prop="bookNum" sortable="custom" align="left" width="115"></el-table-column>
 
@@ -130,21 +130,6 @@
             if (data) {
               this.pageTotal = data.total
               this.tableData = data.result
-              this.tableData.forEach(v => {
-                if (v.fieldType === 1) {
-                  v.fieldTypeText = '会议室'
-                } else if (v.fieldType === 3) {
-                  v.fieldTypeText = '工位'
-                } else if (v.fieldType === 2) {
-                  v.fieldTypeText = '路演厅'
-                } else if (v.fieldType === 4) {
-                  v.fieldTypeText = '多功能场地'
-                } else if (v.fieldType === 5) {
-                  v.fieldTypeText = '办公室'
-                } else if (v.fieldType === 6) {
-                  v.fieldTypeText = '时租工位'
-                }
-              })
             }
 
             this.tableLoading = false

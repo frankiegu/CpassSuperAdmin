@@ -1,10 +1,11 @@
 import tableMixins from '@/mixins/table'
+import radioPicker from '@/mixins/radio-datePicker'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
 import { platformActivityList } from '@/service/market'
 
 export default {
-  mixins: [tableMixins],
+  mixins: [tableMixins, radioPicker],
   data () {
     return {
       dialogVisible: false,

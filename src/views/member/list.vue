@@ -135,12 +135,6 @@
       color: $theme-blue;
       margin: 0 7px;
     }
-    .datePicker-prependTxt {
-      display: inline-block;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      padding: 0 5px;
-    }
   }
 </style>
 

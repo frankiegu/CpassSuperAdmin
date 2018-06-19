@@ -13,3 +13,11 @@ export const pickerOptions1 = {
     return time.getTime() < new Date(getDateStr(-1)).getTime();
   }
 }
+
+// 禁止--大于今天
+export const pickerOptions2 = {
+  disabledDate: function(time) {
+    return time.getTime() > new Date(getDateStr(-1)).getTime();
+  }
+}
+

@@ -72,7 +72,7 @@
           <span class="profile-count">100</span>
         </div>
         <div class="profile-box">
-          <span class="profile-title">自由工位(天)</span>
+          <span class="profile-title">移动工位(天)</span>
           <span class="profile-count">100</span>
         </div>
         <div class="profile-box">

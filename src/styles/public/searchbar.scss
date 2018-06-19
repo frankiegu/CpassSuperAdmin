@@ -217,6 +217,9 @@
     &.is-top:nth-child(2) {
       padding-left: 0 !important;
     }
+    &.is-top:last-child {
+      padding-right: 0 !important;
+    }
     &:hover {
       color: $theme-blue;
     }
@@ -240,7 +243,7 @@
     color: $theme-blue !important;
   }
   .el-tabs__active-bar {
-    bottom: -10px; // 不要下横线，隐藏
+    bottom: -8px; // 不要下横线，隐藏
   }
   .el-tabs__nav-wrap::after {
     height: 1px;
