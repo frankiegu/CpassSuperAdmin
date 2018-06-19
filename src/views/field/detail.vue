@@ -1,7 +1,7 @@
 <template>
   <div class="page-field-detail">
     <lh-title :title="titleName">
-      <span class="mr12">
+      <span class="ml12">
         <el-tag v-if="isOpen === 1" type="success" size="mini">开放中</el-tag>
         <el-tag v-else="isOpen === 0" type="danger" size="mini">未开放</el-tag>
       </span>

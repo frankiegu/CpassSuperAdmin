@@ -40,7 +40,11 @@
         </el-form-item>
       </el-form>
 
-      <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border
+      <el-table :data="tableData"
+                :empty-text="tableEmpty"
+                :slot="tableEmpty"
+                v-loading="tableLoading"
+                border
                 style="width: 100%">
         <el-table-column label="预约日期" prop="bookDate"></el-table-column>
         <el-table-column label="预约时间" prop="bookTime"></el-table-column>

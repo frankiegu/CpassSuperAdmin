@@ -37,7 +37,7 @@
 
         <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
         <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
-        <el-table-column label="场地类型" prop="fieldTypeText" align="left"></el-table-column>
+        <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
 
         <el-table-column label="历史预定数" prop="bookNum" sortable="custom" align="left" width="115"></el-table-column>
 
