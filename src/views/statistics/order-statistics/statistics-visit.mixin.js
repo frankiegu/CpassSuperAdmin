@@ -20,17 +20,76 @@ export default {
       pageTotalExtra: 0,
       formData: {
         type: '',
-        date: '',
-        fieldTyoe: ''
+        date: ''
       },
-      periodId: 1 // 周期  1日 2周 3月
+      xAxisData: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+      seriesData: [
+        {
+          labelArray: [120, 132, 101, 134, 90, 230, 210]
+        }
+      ]
+    }
+  },
+  computed: {
+    option() {
+      let that = this
+      var series = [];
+      that.seriesData.forEach(item => {
+        series.push({
+          type: 'line',
+          stack: '总量',
+          data: item.labelArray
+        })
+      })
+      let obj = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: that.xAxisData
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: series
+      }
+      return obj
     }
   },
   mounted () {
-    this.getPageData()
+    // this.getPageData()
   },
   methods: {
     getPageData(page) {
+      // Echart 的加载，避免出现空白
+      this.myChart.showLoading({
+        maskColor: 'rgba(255, 255, 255, 0.8)',
+        text: '正在加载~',
+        textColor: '#5A72F6',
+        color: '#5A72F6'
+      })
+      this.myChart.clear()
+      this.xAxisData = ['3月', '4月', '5月', '6月']
+      this.seriesData = [
+        {
+          labelArray: [120, 322, 57, 43]
+        }
+      ]
+      this.myChart.hideLoading();
+      this.myChart.setOption(this.option)
+
       this.currentPage = page || this.currentPage
       const paramsObj = {
         pageSize: this.pageSize,

@@ -23,7 +23,7 @@
       </div>
 
       <!--统计图-->
-      <div id="myChart" class="mt30 mb30" style="width: 100%;height: 500px;"></div>
+      <div id="myChart" ref="mychart" class="mt30 mb30" style="width: 100%;height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">统计明细</span>
@@ -84,54 +84,19 @@
   import statisticsVisitMixin from './statistics-visit.mixin'
   // 引入echarts
   import echarts from 'echarts'
-  import Vue from 'vue'
   import 'echarts/theme/macarons.js'
-  Vue.prototype.$echarts = echarts
 
   export default {
     mixins: [statisticsVisitMixin],
     components: {},
     data () {
       return {
-        statisticsChart: '', // charts
-        option: {
-          title: {
-            text: ''
-          },
-          tooltip: {
-            trigger: 'axis'
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          toolbox: {
-            feature: {
-            }
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-          },
-          yAxis: {
-            type: 'value'
-          },
-          series: [
-            {
-              type: 'line',
-              stack: '总量',
-              data: [120, 132, 101, 134, 90, 230, 210]
-            }
-          ]
-        },
+        myChart: '', // charts
         screenWidth: document.body.clientWidth // 屏幕宽度
       }
     },
     mounted () {
-      this.drawLine();
+      this.setEchart();
       const that = this
       window.onresize = () => {
         return (() => {
@@ -141,15 +106,11 @@
       }
     },
     methods: {
-      changePeriod (id) {
-        this.periodId = id
-      },
-      drawLine () {
-        let self = this
-        // 基于准备好的dom，初始化echarts实例
-        self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
-        // 绘制图表
-        self.statisticsChart.setOption(this.option);
+      setEchart () {
+        let dom = this.$refs.mychart;
+        this.myChart = echarts.init(dom, 'macarons');
+        this.myChart.setOption(this.option);
+        // let self = this
       }
     },
     watch: {
