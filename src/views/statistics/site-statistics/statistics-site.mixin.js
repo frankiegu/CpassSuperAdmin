@@ -1,10 +1,11 @@
 import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
+import radioPicker from '@/mixins/radio-datePicker'
 import { platformActivityList } from '@/service/market'
 
 export default {
-  mixins: [tableMixins],
+  mixins: [tableMixins, radioPicker],
   data () {
     return {
       typeList: [
@@ -29,7 +30,9 @@ export default {
       brandDialogVisible: false, // 新增品牌dialog
       spaceDialogVisible: false, // 新增空间dialog
       fieldDialogVisible: false, // 新增场地dialog
-      periodId: 1 // 周期  1日 2周 3月
+      periodId: 1, // 周期  1日 2周 3月
+
+      dialogDate: '' // 弹窗上的日期
     }
   },
   mounted () {

@@ -52,26 +52,20 @@
       <div class="select-type mt10 mb10 clearfix">
         <el-date-picker
           class="fr"
-          v-model="formData.date"
-          @change="getPageData(1)"
+          v-model="dateRange"
+          @change="dateChange"
           type="daterange"
           align="right"
-          clearable
+          :clearable="false"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions"></el-date-picker>
-        <div class="select-period mr16">
-          <div class="period-site" :class="{'period-site-select' : periodId === 1}" @click="changePeriod(1)">
-            日
-          </div>
-          <div class="period-site" :class="{'period-site-select' : periodId === 2}" @click="changePeriod(2)">
-            周
-          </div>
-          <div class="period-site" :class="{'period-site-select' : periodId === 3}" @click="changePeriod(3)">
-            月
-          </div>
-        </div>
+          :picker-options="pickerOptions2"></el-date-picker>
+        <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
+          <el-radio-button :label="1">日</el-radio-button>
+          <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>
+          <el-radio-button :label="3" :disabled="canMonthClick">月</el-radio-button>
+        </el-radio-group>
       </div>
 
       <!--统计图-->
@@ -86,16 +80,56 @@
       <!--统计表格-->
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-          <el-table-column label="日期" prop="created" align="left" ></el-table-column>
-          <el-table-column label="新增品牌数" prop="id" align="left"></el-table-column>
-          <el-table-column label="新增空间数" prop="lotteryExtraTime" align="left"></el-table-column>
-          <el-table-column label="新增场地总数" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="移动工位" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="时租工位" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="会议室" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="路演厅" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="办公室" prop="lotteryExtraTime" align="left" ></el-table-column>
-          <el-table-column label="多功能室" prop="lotteryExtraTime" align="left" ></el-table-column>
+          <el-table-column label="日期" align="left" width="170">
+            <template slot-scope="scope">
+              <span>{{ scope.row.created }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="新增品牌数" align="left">
+            <template slot-scope="scope">
+              <span class="table-link" @click="showDialog(1, scope.row.id, scope.row.created)">{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="新增空间数" align="left">
+            <template slot-scope="scope">
+              <span class="table-link" @click="showDialog(2, scope.row.id, scope.row.created)">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="新增场地总数" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link" @click="showDialog(3, scope.row.id, scope.row.created)">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="移动工位" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="时租工位" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="会议室" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="路演厅" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="办公室" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="多功能室" align="left" >
+            <template slot-scope="scope">
+              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+            </template>
+          </el-table-column>
         </el-table>
 
         <el-pagination
@@ -113,7 +147,7 @@
 
     <!--新增品牌Dialog-->
     <el-dialog
-      title="新增品牌"
+      :title="dialogDate + '新增品牌'"
       :visible.sync="brandDialogVisible"
       width="700px">
       <div>
@@ -126,10 +160,9 @@
           :total="pageTotal"
           :layout="layoutArr"
           :page-size="pageSize"
-          :page-sizes="pageSizeArr"
+          :page-sizes="[10]"
           :current-page="currentPage"
           class="pagination-container"
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           background></el-pagination>
       </div>
@@ -137,9 +170,9 @@
 
     <!--新增空间Dialog-->
     <el-dialog
-      title="新增空间"
+      :title="dialogDate + '新增空间'"
       :visible.sync="spaceDialogVisible"
-      width="700px">
+      width="800px">
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
           <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
@@ -162,9 +195,9 @@
 
     <!--新增场地Dialog-->
     <el-dialog
-      title="新增场地"
+      :title="dialogDate + '新增场地'"
       :visible.sync="fieldDialogVisible"
-      width="900px">
+      width="80%">
       <div>
         <!--场地类型筛选-->
         <div>
@@ -297,6 +330,19 @@
         self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
         // 绘制图表
         self.statisticsChart.setOption(this.option);
+      },
+      showDialog (type, id, date) {
+        var month = date.substr(5, 2).substr(0, 1) === '0' ? date.substr(6, 1) : date.substr(5, 2)
+        var day = date.substr(8, 2).substr(0, 1) === '0' ? date.substr(9, 1) : date.substr(8, 2)
+        this.dialogDate = month + '月' + day + '日'
+
+        if (type === 1) {
+          this.brandDialogVisible = true
+        } else if (type === 2) {
+          this.spaceDialogVisible = true
+        } else if (type === 3) {
+          this.fieldDialogVisible = true
+        }
       }
     },
     watch: {
