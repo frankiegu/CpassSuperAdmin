@@ -33,17 +33,22 @@
     margin-bottom: 20px;
 
     .statistics-item {
+      width: 100%;
       height: 110px;
-      box-shadow: 0 1px 4px 0 rgba(0, 21, 41, 0.12);
-      padding: 20px 32px;
+      /*box-shadow: 0 1px 4px 0 rgba(0, 21, 41, 0.12);*/
+      /*padding: 20px 32px;*/
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
       text-align: center;
       border-radius: 4px;
       background-color: #ffffff;
       box-sizing: border-box;
       cursor: pointer;
-
-      &.operate-grid {
-        padding-top: 42px;
+      &>div {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        background: #5A72F6;
+        color: #fff;
       }
 
       .item-num {
@@ -55,9 +60,6 @@
 
         span {
           display: inline-block;
-        }
-        img {
-          margin-left: -15px;
         }
       }
     }

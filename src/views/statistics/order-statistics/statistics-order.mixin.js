@@ -26,20 +26,111 @@ export default {
           number: 10
         }
       ],
+      legend: ['移动工位订单', '时租工位订单', '会议室订单', '路演厅订单', '多功能场地订单'],
+      xAxisData: ['05-01', '05-02', '05-03', '05-04', '05-05', '05-06', '05-07'],
+      seriesData: [
+        {
+          labelArray: [320, 302, 301, 334, 390, 330, 320]
+        },
+        {
+          labelArray: [120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+          labelArray: [220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+          labelArray: [150, 212, 201, 154, 190, 330, 410]
+        },
+        {
+          labelArray: [820, 832, 901, 934, 1290, 1330, 1320]
+        }
+      ],
       currentIndex: 0, // 当前选中
       formData: {
         type: '',
-        date: '',
-        fieldTyoe: ''
-      },
-      periodId: 1 // 周期  1日 2周 3月
+        date: ''
+      }
     }
   },
   mounted () {
     // this.getPageData()
   },
+  computed: {
+    option() {
+      let that = this
+      var series = [];
+      that.seriesData.forEach((item, index) => {
+        series.push({
+          name: that.legend[index],
+          type: 'bar',
+          stack: '总量',
+          label: {
+            normal: {
+              show: true,
+              position: 'insideRight'
+            }
+          },
+          data: item.labelArray
+        })
+      })
+      let obj = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        legend: {
+          data: that.legend
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        yAxis: {
+          type: 'value'
+        },
+        xAxis: {
+          type: 'category',
+          data: that.xAxisData
+        },
+        series: series
+      }
+      return obj;
+    }
+  },
   methods: {
     getPageData(page) {
+      // Echart 的加载，避免出现空白
+      this.myChart.showLoading({
+        maskColor: 'rgba(255, 255, 255, 0.8)',
+        text: '正在加载~',
+        textColor: '#5A72F6',
+        color: '#5A72F6'
+      })
+      this.myChart.clear()
+      this.xAxisData = ['3月', '4月', '5月', '6月']
+      this.seriesData = [
+        {
+          labelArray: [120, 322, 57, 43]
+        },
+        {
+          labelArray: [405, 23, 54, 33]
+        },
+        {
+          labelArray: [220, 34, 55, 66]
+        },
+        {
+          labelArray: [150, 97, 64, 32]
+        },
+        {
+          labelArray: [234, 345, 424, 453]
+        }
+      ]
+      this.myChart.hideLoading();
+      this.myChart.setOption(this.option)
       // 日期选择器
       this.currentPage = page || this.currentPage
       const paramsObj = {
@@ -65,6 +156,10 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    sortByStatus(index) {
+      this.currentIndex = index
+      this.getPageData()
     },
     // 导出数据
     exportExcel() {

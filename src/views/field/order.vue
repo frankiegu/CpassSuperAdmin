@@ -6,7 +6,7 @@
       <el-form class="text-right mr-10" :model="formData" :inline="true" @submit.native.prevent>
 
         <el-form-item>
-          <lh-datePicker label="生成日期" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
+          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <el-form-item>
