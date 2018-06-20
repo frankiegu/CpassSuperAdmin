@@ -99,7 +99,7 @@
         </el-table-column>
         <el-table-column label="注册时间" prop="created" align="center"></el-table-column>
         <el-table-column label="最后一次登录时间" prop="lastLogin" align="center"></el-table-column>
-        <el-table-column label="会员等级" prop="levelName" align="center">
+        <el-table-column label="会员等级" width="100" prop="levelName" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.levelName || '普通会员' }}</el-tag>
           </template>

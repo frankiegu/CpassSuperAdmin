@@ -95,7 +95,12 @@
               </el-select>
             </el-col>
           </el-row>
-          <el-table :data="orderList" empty-text="暂无数据" v-loading="orderLoading" border style="width: 100%">
+          <el-table :data="orderList"
+                    empty-text="暂无数据"
+                    v-loading="orderLoading"
+                    border
+                    max-height="400"
+                    style="width: 100%">
             <el-table-column label="单号" prop="contactTel" align="left" ></el-table-column>
             <el-table-column label="下单时间" prop="moduleName" align="left"></el-table-column>
             <el-table-column label="下单会员" prop="contact" align="left"></el-table-column>
