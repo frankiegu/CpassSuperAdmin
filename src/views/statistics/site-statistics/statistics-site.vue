@@ -147,65 +147,41 @@
 
     <!--新增品牌Dialog-->
     <el-dialog
-      :title="dialogDate + '新增品牌'"
-      :visible.sync="brandDialogVisible"
-      width="700px">
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      :width="dialogWidth"
+      :lock-scroll="true">
       <div>
-        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
-          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="品牌创建时间" prop="moduleName" align="left"></el-table-column>
+        <el-table
+          v-if="dialogType === 1"
+          :data="diatableData"
+          :empty-text="tableEmpty"
+          :slot="tableEmpty"
+          border style="width: 100%"
+          max-height="400">
+          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
+          <el-table-column label="品牌创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
-        <el-pagination
-          :total="pageTotal"
-          :layout="layoutArr"
-          :page-size="pageSize"
-          :page-sizes="[10]"
-          :current-page="currentPage"
-          class="pagination-container"
-          @current-change="handleCurrentChange"
-          background></el-pagination>
-      </div>
-    </el-dialog>
-
-    <!--新增空间Dialog-->
-    <el-dialog
-      :title="dialogDate + '新增空间'"
-      :visible.sync="spaceDialogVisible"
-      width="800px">
-      <div>
-        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
-          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="空间名称" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
+        <el-table
+          v-if="dialogType === 2"
+          :data="diatableData"
+          :empty-text="tableEmpty"
+          :slot="tableEmpty" border
+          style="width: 100%"
+          max-height="400">
+          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
-        <el-pagination
-          :total="pageTotal"
-          :layout="layoutArr"
-          :page-size="pageSize"
-          :page-sizes="pageSizeArr"
-          :current-page="currentPage"
-          class="pagination-container"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          background></el-pagination>
-      </div>
-    </el-dialog>
-
-    <!--新增场地Dialog-->
-    <el-dialog
-      :title="dialogDate + '新增场地'"
-      :visible.sync="fieldDialogVisible"
-      width="80%">
-      <div>
         <!--场地类型筛选-->
-        <div>
+        <div v-if="dialogType === 3">
           <el-select
             v-model="formData.fieldTyoe"
-            @change="getPageData(1)"
+            @change="diahandleCurrentChange(1)"
             filterable
-            placeholder="请选择状态"
+            placeholder="请选择场地类型"
             class="width150px fl mb16"
             clearable>
             <el-option
@@ -215,27 +191,32 @@
               :key="item.val"></el-option>
           </el-select>
         </div>
-        <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" border style="width: 100%">
-          <el-table-column label="品牌名称" prop="contactTel" align="left" ></el-table-column>
-          <el-table-column label="空间名称" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="场地名称" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="场地类型" prop="moduleName" align="left"></el-table-column>
-          <el-table-column label="空间创建时间" prop="moduleName" align="left"></el-table-column>
+        <el-table
+          v-if="dialogType === 3"
+          :data="diatableData"
+          :empty-text="tableEmpty"
+          :slot="tableEmpty" border
+          style="width: 100%"
+          max-height="400">
+          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="场地名称" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="场地类型" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
         <el-pagination
-          :total="pageTotal"
+          :total="diapageTotal"
           :layout="layoutArr"
-          :page-size="pageSize"
+          :page-size="diapageSize"
           :page-sizes="pageSizeArr"
-          :current-page="currentPage"
+          :current-page="diacurrentPage"
           class="pagination-container"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @current-change="diahandleCurrentChange"
           background></el-pagination>
       </div>
     </el-dialog>
+
   </div>
 </template>
 
@@ -257,6 +238,12 @@
     },
     data () {
       return {
+        // dialog分页器设置
+        diapageTotal: 0,
+        pageSizeArr: [20, 40, 80, 100],
+        diapageSize: 20,
+        diacurrentPage: 1,
+
         statisticsChart: '', // charts
         option: {
           title: {
@@ -335,14 +322,27 @@
         var month = date.substr(5, 2).substr(0, 1) === '0' ? date.substr(6, 1) : date.substr(5, 2)
         var day = date.substr(8, 2).substr(0, 1) === '0' ? date.substr(9, 1) : date.substr(8, 2)
         this.dialogDate = month + '月' + day + '日'
+        this.dialogType = type
+        this.dialogId = id
 
+        // 设置弹窗宽度、标题
         if (type === 1) {
-          this.brandDialogVisible = true
+          this.dialogWidth = 700 + 'px'
+          this.dialogTitle = this.dialogDate + '新增品牌'
         } else if (type === 2) {
-          this.spaceDialogVisible = true
+          this.dialogWidth = 800 + 'px'
+          this.dialogTitle = this.dialogDate + '新增空间'
         } else if (type === 3) {
-          this.fieldDialogVisible = true
+          this.dialogWidth = 80 + '%'
+          this.dialogTitle = this.dialogDate + '新增场地'
         }
+
+        // 初始化分液器配置、打开弹窗
+        this.diapageTotal = 0
+        this.diapageSize = 20
+        this.diacurrentPage = 0
+        this.dialogVisible = true
+        this.diahandleCurrentChange()
       }
     },
     watch: {

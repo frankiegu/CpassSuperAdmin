@@ -44,7 +44,7 @@
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
           <el-table-column label="日期" prop="created" align="left" >
             <template slot-scope="scope">
-              <router-link class="table-link" tag="a" target="_blank" to="/statistics/C-PASS-order">
+              <router-link class="table-link" to="/statistics/C-PASS-order">
                 {{scope.row.created}}
               </router-link>
             </template>
