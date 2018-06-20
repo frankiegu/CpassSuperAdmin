@@ -76,6 +76,10 @@
         <div class="member-cont">
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
+            <el-radio-group v-model="memberSort.source" size="small" class="fl">
+              <el-radio-button label="mp">小程序</el-radio-button>
+              <el-radio-button label="app">App</el-radio-button>
+            </el-radio-group>
             <el-form-item>
               <el-select v-model="memberSort.registerWay" placeholder="请选择注册渠道" @change="getPageData(1)"
                 filterable clearable>
@@ -183,8 +187,12 @@
             nodeKey: 2,
             children: []
           }, {
-            name: '礼品券',
+            name: '代金券',
             nodeKey: 3,
+            children: []
+          }, {
+            name: '礼品券',
+            nodeKey: 4,
             children: []
           }]
         }],
@@ -199,6 +207,7 @@
         maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
         memberSort: {
+          source: 'mp', // 切换来源：app和小程序mp
           registerWay: '',
           registerDate: [],
           nickname: ''
@@ -278,10 +287,12 @@
             } else {
               couponList.forEach((item, index) => {
                 item.nodeKey = item.name + index
-                if (item.type === 1) {
+                if (item.type === 1) { // 小时券
                   this.treeData[0].children[0]['children'].push(item)
-                } else if (item.type === 3) {
+                } else if (item.type === 2) { // 代金券
                   this.treeData[0].children[1]['children'].push(item)
+                } else if (item.type === 3) { // 礼品券
+                  this.treeData[0].children[2]['children'].push(item)
                 }
               })
               this.loadingTree = false
@@ -430,6 +441,9 @@
     }
     .sort-form-bar .el-form-item__content {
       line-height: 28px;
+    }
+    .el-radio-button--small .el-radio-button__inner {
+      padding: 8px 15px;
     }
     .step-cont {
       margin-top: 24px;
