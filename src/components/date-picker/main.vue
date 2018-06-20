@@ -21,7 +21,7 @@
   export default {
     name: 'LhDatePicker',
     mixins: [pickerOptions],
-    props: ['label', 'dateType'], // dateType,一个页面出现多次使用时，利用dateType区分
+    props: ['label', 'dateType', 'optionType'], // dateType,一个页面出现多次使用时，利用dateType区分
     data () {
       return {
         dateRange: null
@@ -30,8 +30,8 @@
     computed: {
     },
     mounted () {
-      // 规定当日期选择器为生成日期或者提交日期时候，dateType = 1
-      if (this.dateType == 1) {
+      // 规定当日期选择器为生成日期或者提交日期时候，optionType = true
+      if (this.optionType == true) {
         this.pickerOptions = {
           disabledDate: function(time) {
             return time.getTime() > new Date(getDateStr(0)).getTime();

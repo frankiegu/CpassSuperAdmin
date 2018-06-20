@@ -6,7 +6,7 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择提交日期 -->
         <el-form-item>
-          <lh-datePicker label="提交日期" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
+          <lh-datePicker label="提交日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--选择预约日期-->

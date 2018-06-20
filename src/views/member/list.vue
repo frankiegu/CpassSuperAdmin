@@ -7,12 +7,12 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择提交日期 -->
         <el-form-item>
-          <lh-datePicker label="最后登录时间" :dateType="1" @datePickerChange="datePickerChange"></lh-datePicker>
+          <lh-datePicker label="最后登录时间" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--选择预约日期-->
         <el-form-item>
-          <lh-datePicker label="注册时间" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
+          <lh-datePicker label="注册时间" :dateType="2" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--会员等级-->
@@ -115,7 +115,7 @@
         <el-table-column label="优惠券" prop="couponNum" align="center"></el-table-column>
         <el-table-column label="操作" prop="registerName" align="center" width="100">
           <template slot-scope="scope">
-            <router-link class="table-link" to="/member/detail">详情</router-link>
+            <router-link class="table-link" :to="'/member/detail?id='+scope.row.id">详情</router-link>
             <span v-if="scope.row.status === 0" class="table-link">启用</span>
             <span v-else class="table-link" style="color: #ff5661;">停用</span>
           </template>
