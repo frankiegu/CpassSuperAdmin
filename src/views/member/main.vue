@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <lh-title title="会员管理">
+  <div class="member-list">
+    <lh-title title="会员列表">
     </lh-title>
     <div class="select-box">
       <lh-tab :tabList="tabList"/>
@@ -22,10 +22,19 @@
     }
   }
 </script>
+<style lang="scss">
+  .member-list {
+    .page-title {
+      border-bottom: 1px solid #f2f2f8;
+    }
+  }
+</style>
 <style lang="scss" scoped>
-  .select-box{
-    width: 100%;
-    height: 45px;
-    background: #fff;
+  .member-list {
+    .select-box{
+      width: 100%;
+      height: 45px;
+      background: #fff;
+    }
   }
 </style>
