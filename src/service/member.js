@@ -9,3 +9,6 @@ export const CUSTOMER_LIST = (obj) => fetch(API_PATH + '/supervisor/appCustomer/
 
 // app会员变化
 export const memberStatistics = (obj) => fetch(API_PATH + '/supervisor/appCustomer/statistics', obj, 'POST')
+
+// app会员列表
+export const APP_CUSTOMER_LIST = (obj) => fetch(API_PATH + '/supervisor/appCustomer/load', obj, 'POST')
