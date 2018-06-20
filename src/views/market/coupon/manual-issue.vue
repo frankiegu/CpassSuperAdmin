@@ -70,7 +70,13 @@
         </lh-item>
 
         <lh-item label="最大可选会员数" label-width="120px">{{maxSelection}}
-          <span class="ml20">已选 <span class="theme-blue ml20"> {{submitData.customerIds.length}}</span></span>
+          <span class="ml20">已选
+            <span class="theme-blue ml20"> {{submitData.customerIds.length}}</span>
+            <span class="ml20 theme-light-gray font-size-12px">
+              <i class="el-icon-warning theme-red"></i>
+              代金券暂时只能下发给app会员，请注意切换会员来源
+            </span>
+          </span>
         </lh-item>
 
         <div class="member-cont">
