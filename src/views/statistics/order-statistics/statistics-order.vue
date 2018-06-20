@@ -23,7 +23,7 @@
       </div>
 
       <div class="area-profile clearfix mb16">
-        <div class="profile-box" :class="{'activeClass': currentIndex === index}" @click="currentIndex=index" v-for="(item, index) in orderTypeList" :key="index">
+        <div class="profile-box selectedBox" :class="{'activeClass': currentIndex === index}" @click="currentIndex=index" v-for="(item, index) in orderTypeList" :key="index">
           <span class="profile-title">{{item.label}}</span>
           <span class="profile-count">{{item.number}}</span>
         </div>
