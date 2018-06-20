@@ -105,10 +105,10 @@ export default {
       const self = this
       switch (dateType) {
         case 1:
-          self.formData.bookDate = dateRange
+          self.formData.orderDate = dateRange
           break;
         case 2:
-          self.formData.orderDate = dateRange
+          self.formData.bookDate = dateRange
       }
       self.getPageData(1)
     },

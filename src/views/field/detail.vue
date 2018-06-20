@@ -205,7 +205,6 @@
 </template>
 
 <script>
-import { typeList } from '@/mixins/data'
 import { fieldDetail, setFieldStatus } from '@/service/field'
 import detaillMixins from './detail.mixins'
 

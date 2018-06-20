@@ -62,9 +62,7 @@
 
         <el-table-column label="ID" align="center">
           <template slot-scope="scope">
-         <router-link class="table-link" to="/member/detail">
-           {{ scope.row.nickname }}
-         </router-link>
+            {{ scope.row.nickname }}
           </template>
         </el-table-column>
         <el-table-column label="手机号" prop="mobile" align="center">
@@ -105,10 +103,10 @@
         <el-table-column label="订单" prop="createDate" align="center"></el-table-column>
         <el-table-column label="积分" prop="createDate" align="center"></el-table-column>
         <el-table-column label="优惠券" prop="createDate" align="center"></el-table-column>
-        <el-table-column label="操作" prop="registerName" align="center">
+        <el-table-column label="操作" prop="registerName" align="center" width="100">
           <template slot-scope="scope">
-            <span>详情</span>
-            <span>启用</span>
+            <router-link class="table-link" to="/member/detail">详情</router-link>
+            <span class="table-link">启用</span>
             <!--<span>停用</span>-->
           </template>
         </el-table-column>

@@ -42,7 +42,7 @@
               <el-table-column label="下单会员" prop="lotteryCount" align="left"></el-table-column>
               <el-table-column label="联系人" prop="sharePlayer" align="left"></el-table-column>
               <el-table-column label="联系方式" prop="shareCount" align="left"></el-table-column>
-              <el-table-column label="预订内容" prop="shareCount" align="left"></el-table-column>
+              <el-table-column label="预订内容" prop="shareCount" align="left" show-overflow-tooltip></el-table-column>
               <el-table-column label="订单原价" prop="shareCount" align="left"></el-table-column>
               <el-table-column label="订单折扣" prop="shareCount" align="left"></el-table-column>
               <el-table-column label="实付金额" prop="shareCount" align="left"></el-table-column>

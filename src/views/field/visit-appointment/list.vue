@@ -64,7 +64,7 @@
         <el-table-column label="提交时间" prop="createDate"></el-table-column>
         <el-table-column label="预约状态" prop="statusName"></el-table-column>
 
-        <el-table-column label="参观目的">
+        <el-table-column label="参观目的" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.visitTypeName || '-' }}
           </template>
@@ -93,6 +93,7 @@
     <el-dialog
       title="参观意向"
       :visible.sync="dialogVisible"
+      custom-class="dialogClass"
       width="35%">
       <div class="detail-info">
         {{ content }}
@@ -116,7 +117,13 @@
     }
   }
 </script>
-
+<style lang="scss">
+  .service-list {
+    .dialogClass {
+      min-height: 40% !important;
+    }
+  }
+</style>
 <style lang="scss" scoped>
   @import "../../../../src/styles/config";
   .service-list {
@@ -132,17 +139,6 @@
       color: #5E80E5;
       cursor: pointer;
     }
-    .detail-info{
-      clear: both;
-      .label{
-        width: 80px;
-        float: left;
-      }
-      .label-con{
-        float: left;
-        width: calc(100% - 80px);
-        margin-bottom: 10px;
-      }
-    }
+
   }
 </style>
