@@ -44,9 +44,9 @@
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
           <el-table-column label="日期" prop="created" align="left" >
             <template slot-scope="scope">
-              <router-link class="table-link" tag="a" target="_blank" to="/statistics/C-PASS-order">
-                {{scope.row.created}}
-              </router-link>
+              <!--<router-link class="table-link" tag="a" target="_blank" to="/statistics/C-PASS-order">-->
+              <!--</router-link>-->
+              <span class="table-link" @click="viewOrderDetail()">{{scope.row.created}}</span>
             </template>
           </el-table-column>
           <el-table-column label="总订单数" prop="moduleName" align="left"></el-table-column>
@@ -66,6 +66,61 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           background></el-pagination>
+
+        <el-dialog
+          title="X月X日订单明细"
+          width="80%"
+          :visible.sync="dialogVisible">
+          <el-row class="mb16" :gutter="20">
+            <el-col :span="6">
+              <span class="mr12">场地类型</span>
+              <el-select v-model="fieldType" placeholder="全部" clearable class="width100px" @change="getPageData(1)">
+                <el-option
+                  v-for="item in fieldTypeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="6">
+              <span class="mr12">订单类型</span>
+              <el-select v-model="orderType" placeholder="全部" clearable class="width100px" @change="getPageData(1)">
+                <el-option
+                  v-for="item in orderStatusList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <el-table :data="orderList" empty-text="暂无数据" v-loading="orderLoading" border style="width: 100%">
+            <el-table-column label="单号" prop="contactTel" align="left" ></el-table-column>
+            <el-table-column label="下单时间" prop="moduleName" align="left"></el-table-column>
+            <el-table-column label="下单会员" prop="contact" align="left"></el-table-column>
+            <el-table-column label="联系人" prop="contactTel" align="left" ></el-table-column>
+            <el-table-column label="联系方式" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="场地" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="使用时间" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="使用时长" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="订单原价" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="订单折扣" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="实付金额" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="订单状态" prop="contactTel" align="left"></el-table-column>
+            <el-table-column label="优惠券使用情况" prop="contactTel" width="120" align="left"></el-table-column>
+          </el-table>
+          <el-pagination
+            :total="pageTotalExtra"
+            :layout="layoutArrExtra"
+            :page-size="pageSizeExtra"
+            :page-sizes="pageSizeArrExtra"
+            :current-page="currentPageExtra"
+            class="pagination-container"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            background></el-pagination>
+        </el-dialog>
       </div>
 
     </div>

@@ -8,6 +8,33 @@ export default {
   mixins: [tableMixins, radioPicker],
   data () {
     return {
+      dialogVisible: false,
+      orderList: [],
+      orderLoading: false,
+
+      // 分页器配置
+      pageSizeArrExtra: [20, 40, 80, 100],
+      layoutArrExtra: 'total, sizes, prev, pager, next, jumper',
+      currentPageExtra: 1,
+      pageSizeExtra: 20,
+      pageTotalExtra: 0,
+      tableEmpty: '暂无数据',
+      fieldType: '',
+      fieldTypeList: [{
+        value: '1',
+        label: '会议室'
+      }, {
+        value: '2',
+        label: '多功能场地'
+      }],
+      orderType: '',
+      orderStatusList: [{
+        value: '1',
+        label: '待使用'
+      }, {
+        value: '2',
+        label: '已使用'
+      }],
       orderTypeList: [
         {
           label: '总订单数',
@@ -174,6 +201,19 @@ export default {
       }
       let url = API_PATH + '/supervisor/platformCouponCustomer/export'
       downloadFile(url, downParams)
+    },
+    // 查看统计明细
+    viewOrderDetail() {
+      this.dialogVisible = true
+    },
+    handleSizeChangeExtra(val) {
+      this.currentPage = 1
+      this.pageSize = val
+      this.getPageData()
+    },
+    handleCurrentChangeExtra(val) {
+      this.currentPage = val
+      this.getPageData()
     }
   }
 }
