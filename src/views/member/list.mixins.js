@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { CUSTOMER_LIST, memberStatistics } from '@/service/member'
+import { appMemberList, memberStatistics } from '@/service/member'
 import { loadConstant } from '@/service/common'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
@@ -65,7 +65,7 @@ export default {
         search: formData.name
       }
 
-      CUSTOMER_LIST(paramsObj).then(res => {
+      appMemberList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
