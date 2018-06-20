@@ -13,11 +13,23 @@ export default [{
   children: [{
     name: '会员列表',
     path: 'list',
-    component: _import('member/list')
-  }, {
-    name: '会员详情',
-    path: 'detail',
-    hidden: true,
-    component: _import('member/detail')
+    redirect: '/member/list/app-list',
+    component: _import('member/main'),
+    children: [{
+      name: 'APP会员列表',
+      path: 'app-list',
+      hidden: true,
+      component: _import('member/app-list')
+    }, {
+      name: '会员详情',
+      path: 'detail',
+      hidden: true,
+      component: _import('member/app-detail')
+    }, {
+      name: '小程序会员列表',
+      path: 'wechat-list',
+      hidden: true,
+      component: _import('member/list')
+    }]
   }]
 }]
