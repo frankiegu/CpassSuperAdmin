@@ -33,7 +33,7 @@ export default {
     }
   },
   mounted () {
-    // this.getPageData()
+    this.getPageData()
   },
   methods: {
     getPageData(page) {
