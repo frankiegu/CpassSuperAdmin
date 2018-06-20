@@ -1,5 +1,6 @@
 import tableMixins from '@/mixins/table'
-import { CUSTOMER_LIST } from '@/service/member'
+import { CUSTOMER_LIST, memberStatistics } from '@/service/member'
+import { loadConstant } from '@/service/common'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
 import memberRate from './components/memberRate'
@@ -19,20 +20,49 @@ export default {
       },
       gradeList: [],
       statusList: [],
-      memberRateData: ['100', '3', '-43', '+313'] // 会员变化率
+      memberRateData: ['100', '3', '43', '313'] // 会员变化率
     }
   },
   mounted () {
+    this.getMemberStatistics()
+    this.getStatusList()
     this.getPageData()
   },
   methods: {
+    // 会员变化
+    getMemberStatistics () {
+      const self = this
+      memberStatistics().then(res => {
+        if (res.status === 'true') {
+          self.memberRateData = [res.info.total, res.info.todayChange, res.info.weekChange, res.info.monthChange]
+        } else {
+          self.setMsg('error', res.msg)
+        }
+      })
+    },
+    // 会员状态常量
+    getStatusList () {
+      loadConstant('appCustomer.status').then(res => {
+        if (res.status === 'true') {
+          this.statusList = res.info
+        } else {
+          self.setMsg('error', res.msg)
+        }
+      })
+    },
     getPageData(page) {
       this.currentPage = page || this.currentPage
       const formData = this.formData
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        nickname: formData.name
+        lastLoginStart: formData.logInDate ? formData.logInDate[0] : null,
+        lastLoginEnd: formData.logInDate ? formData.logInDate[1] : null,
+        registerStart: formData.registerDate ? formData.registerDate[0] : null,
+        registerEnd: formData.registerDate ? formData.registerDate[1] : null,
+        levelId: formData.grade,
+        status: formData.status,
+        search: formData.name
       }
 
       CUSTOMER_LIST(paramsObj).then(res => {
