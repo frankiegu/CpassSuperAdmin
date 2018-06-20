@@ -60,8 +60,9 @@
 
               <el-form-item label="指定项目" prop="fieldType">
                 <el-checkbox-group v-model="couponForm.fieldType">
-                  <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" v-if="key !== '3' && key !== '6'" :label="parseInt(key)">
-                    {{value}}
+                  <el-checkbox v-for="item in fieldTypeList" :key="item.name"
+                    v-if="item.key !== 3 && item.key !== 6" :label="parseInt(item.key)">
+                    {{item.name}}
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
@@ -100,8 +101,8 @@
 
               <el-form-item label="指定项目" prop="fieldType">
                 <el-checkbox-group v-model="couponForm.fieldType">
-                  <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" :label="parseInt(key)">
-                    {{value}}
+                  <el-checkbox v-for="item in fieldTypeList" :key="item.name" :label="parseInt(item.key)">
+                    {{item.name}}
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
@@ -323,14 +324,14 @@
       }
       return {
         filterText: '',
-        // 指定项目列表 前端暂时写死
-        fieldTypeList: {
-          1: '会议室',
-          2: '路演厅',
-          3: '移动工位',
-          4: '多功能场地',
-          6: '时租工位'
-        },
+        // 指定项目列表 前端暂时写死。v-for对象通过Object.keys()遍历，它对于key为数字的会进行大小排序，顺序不符合预想，改用数组
+        fieldTypeList: [
+          { key: 1, name: '会议室' },
+          { key: 2, name: '路演厅' },
+          { key: 6, name: '时租工位' },
+          { key: 3, name: '移动工位' },
+          { key: 4, name: '多功能场地' }
+        ],
         // 卡券类型列表
         couponTypeList: [],
         canChangeType: true, // 编辑时不可更改卡券类型
