@@ -33,8 +33,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item prop="title" label="场地标题" :maxlength="30" label-width="77px">
-        <el-input v-model.trim="dialogData.title" placeholder="请输入场地标题"></el-input>
+      <el-form-item prop="title" label="场地描述" label-width="77px">
+        <el-input v-model.trim="dialogData.title" placeholder="请输入场地描述"></el-input>
       </el-form-item>
 
       <el-form-item prop="avator" label="展示图" label-width="77px" class="lh-form-item0">
@@ -87,7 +87,7 @@ export default {
       dialogDataRule: {
         name: [{ required: true, trigger: ['blur', 'change'], message: '所属空间不能为空' }],
         work: [{ required: true, trigger: ['blur', 'change'], message: '场地不能为空' }],
-        title: [{ required: true, trigger: ['blur', 'change'], message: '场地标题不能为空' }],
+        title: [{ required: true, trigger: ['blur', 'change'], message: '场地描述不能为空' }],
         avator: [{ required: true, trigger: ['blur', 'change'], message: '展示图不能为空' }]
       },
       options: [{
