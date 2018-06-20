@@ -76,11 +76,13 @@
         <div class="member-cont">
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
-            <el-radio-group v-model="memberSort.source" size="small" class="fl">
-              <el-radio-button label="mp">小程序</el-radio-button>
-              <el-radio-button label="app">App</el-radio-button>
+            <el-radio-group v-model="memberSort.source" size="small" class="fl" @change="changeMemberSource">
+              <el-radio-button label="mp">小程序会员</el-radio-button>
+              <el-radio-button label="app">App会员</el-radio-button>
             </el-radio-group>
-            <el-form-item>
+
+            <!-- app会员暂时没有注册渠道，若有注册渠道，下拉框数据可能需要更新 -->
+            <el-form-item v-if="memberSort.source === 'mp'">
               <el-select v-model="memberSort.registerWay" placeholder="请选择注册渠道" @change="getPageData(1)"
                 filterable clearable>
                 <el-option v-for="item in channels" :key="item.id" :value="item.registerWay"
@@ -113,7 +115,10 @@
             </el-table-column>
             <el-table-column label="注册日期">
               <template slot-scope="scope">
-                <span>{{scope.row.createDate ? scope.row.createDate.slice(0, 10) : '-'}}</span>
+                <span v-if="memberSort.source === 'mp'">
+                  {{scope.row.createDate ? scope.row.createDate.slice(0, 10) : '-'}}
+                </span>
+                <span v-else>{{scope.row.created ? scope.row.created.slice(0, 10) : '-'}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -166,7 +171,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import { CUSTOMER_LIST } from '@/service/member'
+  import { CUSTOMER_LIST, APP_CUSTOMER_LIST } from '@/service/member'
   import { channelList, findUsableCoupon, manualCoupon } from '@/service/market'
   export default {
     name: 'manual-issue',
@@ -354,6 +359,15 @@
           this.submitData.customerIds.push(item.id)
         })
       },
+      // step 2 切换会员来源 app和小程序mp
+      changeMemberSource(val) {
+        if (val === 'app') { // app会员暂时没有注册渠道，若有注册渠道，此条件下需要更新注册渠道数据
+          this.memberSort.registerWay = ''
+          this.memberSort.nickname = ''
+          this.memberSort.registerDate = []
+        }
+        this.getPageData(1)
+      },
       // step 2 获取会员列表
       getPageData(page) {
         this.currentPage = page || this.currentPage
@@ -366,7 +380,8 @@
           startDate: startDate,
           endDate: endDate
         }
-        CUSTOMER_LIST(params).then(res => {
+        let promise = this.memberSort.source === 'mp' ? CUSTOMER_LIST(params) : APP_CUSTOMER_LIST(params)
+        promise.then(res => {
           if (res.status === 'true' && res.info) {
             this.memberList = res.info.result
             this.pageTotal = res.info.total
