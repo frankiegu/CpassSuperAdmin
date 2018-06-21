@@ -744,14 +744,12 @@ export default {
                 redEnvelopeType: v.type + '',
                 redEnvelopeAmount: v.amount
               }
-              this.prizeList.push(prize)
-            })
-            this.prizeList.forEach(v => {
-              if (this.type === 'edit' && v.type === 1) {
-                v.disabled = true
+              if (this.type === 'edit' && prize.type === 1) {
+                prize.disabled = true
               } else {
-                v.disabled = false
+                prize.disabled = false
               }
+              this.prizeList.push(prize)
             })
             findUsableCouponByType().then(res => {
               if (res.status === 'true') {
@@ -948,7 +946,8 @@ export default {
             // useExplain: this.addPrizeForm.showRedEnvelope ? this.addPrizeForm.redEnvelopeInstruction : this.addPrizeForm.useInstruction, // 奖品使用说明
             useExplain: this.addPrizeForm.useInstruction, // 奖品使用说明
             redEnvelopeType: this.addPrizeForm.redEnvelopeType, // 红包类型
-            redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
+            redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount, // 红包金额
+            disabled: false
           }
           this.prizeList.push(prize)
           this.prizeList.forEach(v => {
