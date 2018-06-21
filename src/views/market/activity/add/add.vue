@@ -168,6 +168,7 @@
                   <el-input
                     :maxlength="4"
                     :autofocus="true"
+                    :disabled="type === 'edit'"
                     v-model.trim="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
@@ -1018,10 +1019,12 @@ export default {
               for (let j = 0; j < this.prizeList.length; j++) {
                 if (this.prizeList[j].id === couponRest[i].id) {
                   if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
-                    let temp = this.prizeList[j]
-                    temp.validate = true
-                    temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
-                    this.prizeList.splice(j, temp)
+                    if (this.type === 'copy') {
+                      let temp = this.prizeList[j]
+                      temp.validate = true
+                      temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
+                      this.prizeList.splice(j, temp)
+                    }
                   } else {
                     this.prizeList[j].validate = false
                   }
