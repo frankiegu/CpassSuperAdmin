@@ -1038,13 +1038,16 @@ export default {
           } else {
             if (this.type === 'copy') {
               this.prizeList.forEach(v => {
-                v.validate = true
-                v.prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                if (v.type === 1) {
+                  v.validate = true
+                  v.prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                }
               })
             }
           }
         }
       })
+      console.log('this.prizeList', this.prizeList)
     }
   }
 }
