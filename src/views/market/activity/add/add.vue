@@ -168,7 +168,7 @@
                   <el-input
                     :maxlength="4"
                     :autofocus="true"
-                    :disabled="type === 'edit'"
+                    :disabled="scope.row.disabled"
                     v-model.trim="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
@@ -474,6 +474,8 @@ export default {
               this.activityTab = 2
               this.loadingOnePart = false
               this.validatePartOne = true
+              document.documentElement.scrollTop = 0
+              document.body.scrollTop = 0
               break;
             case '2':
               // ajaxParams.step = 2
@@ -488,6 +490,8 @@ export default {
               } else if (!this.prizeList.every(this.checkPrizeQuantity) || !this.prizeList.every(this.checkPrizeProbability)) {
                 this.$message.info('请确定奖品信息填写无误')
               }
+              document.documentElement.scrollTop = 0
+              document.body.scrollTop = 0
               break;
             case '3':
               // ajaxParams.step = 3
@@ -635,8 +639,6 @@ export default {
               }
               break;
           }
-        } else {
-          // return
         }
       });
     },
@@ -743,6 +745,13 @@ export default {
                 redEnvelopeAmount: v.amount
               }
               this.prizeList.push(prize)
+            })
+            this.prizeList.forEach(v => {
+              if (this.type === 'edit' && v.type === 1) {
+                v.disabled = true
+              } else {
+                v.disabled = false
+              }
             })
             findUsableCouponByType().then(res => {
               if (res.status === 'true') {
