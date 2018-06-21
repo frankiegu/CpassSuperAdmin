@@ -5,7 +5,7 @@
       <div class="select-type mt16 mb16 clearfix">
         <el-select
           v-model="formData.spaceType"
-          @change="getPageData(1)"
+          @change="getSpaceData(1)"
           filterable
           placeholder="请选择状态"
           class="width150px fl"
@@ -17,7 +17,7 @@
             :key="item.val"></el-option>
         </el-select>
 
-        <el-button @click="exportExcel" class="lh-btn-export fr">
+        <el-button @click="exportSpaceExcel" class="lh-btn-export fr">
           <lh-svg icon-class="icon-download" />导出
         </el-button>
       </div>
@@ -25,11 +25,15 @@
       <!--空间地区分布图表-->
       <div class="space-detail clearfix mb32">
         <div class="space-table">
-          <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-            <el-table-column label="排名" prop="contactTel" align="left" ></el-table-column>
-            <el-table-column label="城市" prop="moduleName" align="left"></el-table-column>
-            <el-table-column label="已开通空间数" prop="contact" align="left"></el-table-column>
-            <el-table-column label="占比" prop="contactTel" align="left" ></el-table-column>
+          <el-table :data="spaceData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
+            <el-table-column label="排名" prop="id" align="left" ></el-table-column>
+            <el-table-column label="城市" prop="statusName" align="left"></el-table-column>
+            <el-table-column label="已开通空间数" prop="lotteryExtraTime" align="left"></el-table-column>
+            <el-table-column label="占比" align="left" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.id + '%' }}</span>
+              </template>
+            </el-table-column>
           </el-table>
 
           <el-pagination
@@ -50,7 +54,7 @@
       <div class="select-type mt16 clearfix">
         <el-select
           v-model="formData.fieldType"
-          @change="getPageData(1)"
+          @change="getFieldData(1)"
           filterable
           placeholder="请选择状态"
           class="width150px fl"
@@ -62,63 +66,44 @@
             :key="item.val"></el-option>
         </el-select>
 
-        <el-button @click="exportExcel" class="lh-btn-export fr">
+        <el-button @click="exportFieldExcel" class="lh-btn-export fr">
           <lh-svg icon-class="icon-download" />导出
         </el-button>
       </div>
+
       <div class="area-profile clearfix mb16">
-        <div class="profile-box">
-          <span class="profile-title">全部场地</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">移动工位(天)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">时租工位(时)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">会议室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">路演厅</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">办公室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">多功能室</span>
-          <span class="profile-count">100</span>
+        <div class="profile-box selectedBox" :class="{'activeClass': currentIndex === index}" @click="sortByStatus(index)" v-for="(item, index) in orderTypeList" :key="index">
+          <span class="profile-title">{{item.label}}</span>
+          <span class="profile-count">{{item.number}}</span>
         </div>
       </div>
 
       <!--场地地区分布图表-->
       <div class="space-detail clearfix mb24">
         <div class="space-table">
-          <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-            <el-table-column label="排名" prop="contactTel" align="left" ></el-table-column>
-            <el-table-column label="城市" prop="moduleName" align="left"></el-table-column>
-            <el-table-column label="已开通空间数" prop="contact" align="left"></el-table-column>
-            <el-table-column label="占比" prop="contactTel" align="left" ></el-table-column>
+          <el-table :data="fieldData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
+            <el-table-column label="排名" prop="id" align="left" ></el-table-column>
+            <el-table-column label="城市" prop="statusName" align="left"></el-table-column>
+            <el-table-column label="已开通场地数" prop="lotteryExtraTime" align="left"></el-table-column>
+            <el-table-column label="占比" align="left" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.id + '%' }}</span>
+              </template>
+            </el-table-column>
           </el-table>
 
           <el-pagination
-            :total="pageTotal"
+            :total="fieldPageTotal"
             :layout="layoutArr"
-            :page-size="pageSize"
-            :page-sizes="pageSizeArr"
-            :current-page="currentPage"
+            :page-size="fieldPageSize"
+            :page-sizes="fieldPageSizeArr"
+            :current-page="fieldCurrentPage"
             class="pagination-container"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="fieldHandleSizeChange"
+            @current-change="fieldHandleCurrentChange"
             background></el-pagination>
         </div>
-        <div id="myChart2" style="width: 32%; height: 400px;"></div>
+        <div id="myChart2" class="space-echart" style="width: 32%; height: 400px;"></div>
       </div>
 
     </div>
@@ -140,6 +125,7 @@
     data () {
       return {
         statisticsChart1: '', // charts
+        statisticsChart2: '', // charts
         screenWidth: document.body.clientWidth, // 屏幕宽度
         option1: {
           title: {
@@ -180,11 +166,57 @@
               }
             }
           ]
-        }
+        },
+        option2: {
+          title: {
+            text: '天气情况统计',
+            subtext: '虚构数据',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c} ({d}%)'
+          },
+          legend: {
+            // orient: 'vertical',
+            // top: 'middle',
+            bottom: 10,
+            left: 'center',
+            data: ['西凉', '益州', '兖州', '荆州', '幽州']
+          },
+          series: [
+            {
+              type: 'pie',
+              radius: '65%',
+              center: ['50%', '50%'],
+              selectedMode: 'single',
+              data: [
+                { value: 1548, name: '幽州' },
+                { value: 555, name: '荆州' },
+                { value: 510, name: '兖州' },
+                { value: 634, name: '益州' },
+                { value: 735, name: '西凉' }
+              ],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        },
+
+        fieldPageTotal: 0,
+        fieldPageSize: 20,
+        fieldPageSizeArr: [20, 40, 80, 100],
+        fieldCurrentPage: 1
       }
     },
     mounted () {
       this.drawLine1();
+      this.drawLine2();
       const that = this
       window.onresize = () => {
         return (() => {
@@ -200,6 +232,22 @@
         self.statisticsChart1 = echarts.init(document.getElementById('myChart1'), 'macarons')
         // 绘制图表
         self.statisticsChart1.setOption(this.option1);
+      },
+      drawLine2 () {
+        let self = this
+        // 基于准备好的dom，初始化echarts实例
+        self.statisticsChart1 = echarts.init(document.getElementById('myChart2'), 'macarons')
+        // 绘制图表
+        self.statisticsChart1.setOption(this.option1);
+      },
+      fieldHandleSizeChange (val) {
+        this.fieldPageSize = val
+        this.fieldCurrentPage = 1
+        this.getFieldData()
+      },
+      fieldHandleCurrentChange (val) {
+        this.fieldCurrentPage = val
+        this.getFieldData()
       }
     },
     watch: {
@@ -239,7 +287,6 @@
       }
       .space-echart{
         width: 32%;
-        height: 200px;
         float: left;
       }
     }
@@ -278,6 +325,11 @@
       }
       .profile-box:last-child{
         margin-right: 0px;
+      }
+    }
+    .activeClass {
+      span {
+        color: #5A72F6 !important;
       }
     }
   }
