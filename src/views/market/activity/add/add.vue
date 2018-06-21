@@ -1010,28 +1010,37 @@ export default {
       findUsableCouponByType().then(res => {
         if (res.status === 'true') {
           couponRest = res.info
-          let allCouponIds = []
-          // 奖品数组
-          for (let i = 0; i < couponRest.length; i++) {
-            allCouponIds.push(couponRest[i].id)
-            for (let j = 0; j < this.prizeList.length; j++) {
-              if (this.prizeList[j].id === couponRest[i].id) {
-                if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
-                  let temp = this.prizeList[j]
-                  temp.validate = true
-                  temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
-                  this.prizeList.splice(j, temp)
-                } else {
-                  this.prizeList[j].validate = false
-                }
-              } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
-                if (this.type === 'copy') {
-                  this.prizeList[j].validate = true
-                  this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
-                } else if (this.type === 'edit') {
-                  this.prizeList[j].maxQuantity = this.prizeList[j].quantity
+          if (couponRest.length > 0) {
+            let allCouponIds = []
+            // 奖品数组
+            for (let i = 0; i < couponRest.length; i++) {
+              allCouponIds.push(couponRest[i].id)
+              for (let j = 0; j < this.prizeList.length; j++) {
+                if (this.prizeList[j].id === couponRest[i].id) {
+                  if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
+                    let temp = this.prizeList[j]
+                    temp.validate = true
+                    temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
+                    this.prizeList.splice(j, temp)
+                  } else {
+                    this.prizeList[j].validate = false
+                  }
+                } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
+                  if (this.type === 'copy') {
+                    this.prizeList[j].validate = true
+                    this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                  } else if (this.type === 'edit') {
+                    this.prizeList[j].maxQuantity = this.prizeList[j].quantity
+                  }
                 }
               }
+            }
+          } else {
+            if (this.type === 'copy') {
+              this.prizeList.forEach(v => {
+                v.validate = true
+                v.prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+              })
             }
           }
         }
