@@ -23,7 +23,7 @@
       </div>
 
       <!--统计图-->
-      <div id="myChart" class="mt30 mb30" style="width: 100%;height: 500px;"></div>
+      <div id="myChart" class="mt30 mb30" @click="showVis" style="width: 100%;height: 500px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">品牌浏览量统计明细</span>
@@ -145,6 +145,9 @@
         self.statisticsChart = echarts.init(document.getElementById('myChart'), 'macarons')
         // 绘制图表
         self.statisticsChart.setOption(this.option);
+      },
+      showVis (params) {
+        console.log(this.statisticsChart)
       }
     },
     watch: {
