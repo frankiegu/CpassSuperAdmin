@@ -31,7 +31,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间介绍" prop="brief" show-overflow-tooltip />
+          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip />
 
           <el-table-column label="操作" width="140" align="left" header-align="center">
             <template slot-scope="scope">
@@ -88,7 +88,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间介绍" prop="brief" show-overflow-tooltip />
+          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip />
 
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -121,7 +121,7 @@
     <el-dialog :visible.sync="isVisible" title="推荐描述" :before-close="closeEditDialog">
       <el-form :model="spaceForm" label-width="100px" ref="spaceForm">
         <el-form-item label="空间名称">{{spaceForm.storeName}}</el-form-item>
-        <el-form-item label="空间简介">{{spaceForm.brief || '暂无'}}</el-form-item>
+        <el-form-item label="空间简介">{{spaceForm.storeIntroduction || '暂无'}}</el-form-item>
         <el-form-item label="空间描述" prop="recommendDescription" :rules="[
           { required: true, message: '请输入空间描述', trigger: ['blur', 'change'] },
           { max: 30, message: '最大允许输入30字', trigger: ['blur', 'change'] }]">
@@ -171,7 +171,7 @@
         isVisible: false,
         spaceForm: {
           storeName: '',
-          brief: '',
+          storeIntroduction: '',
           recommendDescription: '',
           showImg: ''
         },
@@ -218,7 +218,7 @@
           storeId: space.storeId,
           isWellChosen: space.isWellChosen,
           storeName: space.storeName,
-          brief: space.brief,
+          storeIntroduction: space.storeIntroduction,
           recommendDescription: space.recommendDescription,
           showImg: space.showImg
         })
@@ -241,7 +241,7 @@
       resetForm() {
         this.spaceForm = {
           storeName: '',
-          brief: '',
+          storeIntroduction: '',
           recommendDescription: '',
           showImg: ''
         }
