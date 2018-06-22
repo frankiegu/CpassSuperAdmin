@@ -69,7 +69,7 @@
           <el-table-column label="步骤" prop="title"></el-table-column>
           <el-table-column label="用户数" prop="userTotal">
             <template slot-scope="scope">
-              <span>{{scope.row.userTotal ? scope.row.userTotal : '-'}}</span>
+              <span>{{scope.row.userTotal != null ? scope.row.userTotal : '-'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="张数" prop="couponTotal"></el-table-column>
@@ -249,13 +249,22 @@
         })
       },
 
-      // TODO 导出
+      // 导出
       exportExcel() {
         if (!this.tableData.length) {
           return this.setMsg('暂无数据')
         }
-        const downParams = this.funnelForm
-        let url = API_PATH + '/supervisor/customer/exportExcel'
+        let [startDate, endDate] = this.funnelForm.pickerDate ? this.funnelForm.pickerDate : []
+        let downParams = {
+          couponType: this.funnelForm.matter,
+          startDate: startDate,
+          endDate: endDate
+        }
+        // 选中全部时，不传couponIds
+        if (this.funnelForm.statisticalRange[0] !== 0) {
+          downParams.couponIds = this.funnelForm.statisticalRange
+        }
+        let url = API_PATH + '/supervisor/platformCouponStatistics/export'
         downloadFile(url, downParams)
       }
     }
