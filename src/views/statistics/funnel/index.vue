@@ -66,10 +66,14 @@
           <lh-svg icon-class="icon-download" />导出
         </el-button>
         <el-table :data="tableData" v-loading="tableLoading">
-          <el-table-column label="步骤" prop="step"></el-table-column>
-          <el-table-column label="用户数" prop="userNum"></el-table-column>
-          <el-table-column label="张数" prop="pieceNum"></el-table-column>
-          <el-table-column label="转化率" prop="turnRate"></el-table-column>
+          <el-table-column label="步骤" prop="title"></el-table-column>
+          <el-table-column label="用户数" prop="userTotal">
+            <template slot-scope="scope">
+              <span>{{scope.row.userTotal ? scope.row.userTotal : '-'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="张数" prop="couponTotal"></el-table-column>
+          <el-table-column label="转化率" prop="percent"></el-table-column>
         </el-table>
       </div>
     </div>
@@ -237,6 +241,8 @@
         listPlatformCoupon(params).then(res => {
           if (res.status === 'true') {
             [this.totalDetail, this.receiveDetail, this.usedDetail] = res.info
+            this.tableData = res.info
+            this.tableLoading = false
           } else {
             this.$message.error(res.msg)
           }
