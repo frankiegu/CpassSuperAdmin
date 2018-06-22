@@ -6,22 +6,23 @@
     <div class="lh-form-box">
       <el-form :model="funnelForm" label-width="80px" :inline="true" @submit.native.prevent>
         <el-form-item label="统计事项">
-          <el-select v-model="funnelForm.matter">
+          <el-select v-model="funnelForm.matter" @change="getPartRange">
             <el-option v-for="(value, key) in statisticalList" :value="key" :key="key" :label="value"></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="统计日期">
-          <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-            start-placeholder="开始日期" end-placeholder="结束日期" type="daterange"
+          <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="getFunnelDetail"
+            start-placeholder="开始日期" end-placeholder="结束日期" type="daterange" :clearable="false"
             :picker-options="pickerOptions" v-model="funnelForm.pickerDate">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="统计范围">
-          <el-select v-model="funnelForm.statisticalRange" multiple @change="changeRange" collapse-tags>
+          <el-select v-model="funnelForm.statisticalRange" multiple @change="changeRange"
+            @visible-change="handleVisibleChange" collapse-tags>
             <el-option-group v-for="(group, index) in statisticalRangeList" :key="'范围' + index" :label="group.label">
-              <el-option v-for="item in group.options" :label="item.label" :value="item.value" :key="item.value" />
+              <el-option v-for="item in group.options" :label="item.name" :value="item.id" :key="item.id" />
             </el-option-group>
           </el-select>
         </el-form-item>
@@ -35,22 +36,22 @@
         <el-row :gutter="20" class="funnel-data-container">
           <el-col :span="8" style="width: 370px">
             <div class="funnel-cont">
-              <div class="total">100%</div>
-              <div class="receive">{{funnelDetail.receiveNum / funnelDetail.totalNum * 100}}%</div>
-              <div class="used">{{funnelDetail.usedNum / funnelDetail.totalNum * 100}}%</div>
+              <div class="total">{{totalDetail.percent}}</div>
+              <div class="receive">{{receiveDetail.percent}}</div>
+              <div class="used">{{usedDetail.percent}}</div>
             </div>
           </el-col>
           <el-col style="width: calc(100% - 370px)">
             <el-col :span="12">
-              <div class="funnel-detail">总数（张）<span>{{funnelDetail.totalNum}}</span></div>
-              <div class="funnel-detail">领取（张）<span>{{funnelDetail.receiveNum}}</span></div>
-              <div class="funnel-detail">使用（张）<span>{{funnelDetail.usedNum}}</span></div>
+              <div class="funnel-detail">总数（张）<span>{{totalDetail.couponTotal}}</span></div>
+              <div class="funnel-detail">领取（张）<span>{{receiveDetail.couponTotal}}</span></div>
+              <div class="funnel-detail">使用（张）<span>{{usedDetail.couponTotal}}</span></div>
             </el-col>
             <el-col :span="12">
               <div class="total-conversion-rate">
                 整体转化率
                 <div class="font-bold theme-blue fz20">
-                  {{(funnelDetail.usedNum / funnelDetail.totalNum * 100).toFixed(2)}}%
+                  {{usedDetail.percent}}
                 </div>
               </div>
             </el-col>
@@ -64,7 +65,7 @@
         <el-button @click="exportExcel" class="lh-btn-export fr mb18">
           <lh-svg icon-class="icon-download" />导出
         </el-button>
-        <el-table :data="tableData" :loading="tableLoading">
+        <el-table :data="tableData" v-loading="tableLoading">
           <el-table-column label="步骤" prop="step"></el-table-column>
           <el-table-column label="用户数" prop="userNum"></el-table-column>
           <el-table-column label="张数" prop="pieceNum"></el-table-column>
@@ -78,67 +79,57 @@
 <script>
   import { getDateStr, downloadFile } from '@/config/utils'
   import { API_PATH } from '@/config/env'
+  import { loadConstant } from '@/service/common'
+  import { issuePlatformCoupon, listPlatformCoupon } from '@/service/funnel'
+
   export default {
     name: '',
     data() {
       return {
         // 统计事项下拉列表
-        statisticalList: {
-          1: '小时券使用漏斗',
-          2: '礼品券使用漏斗'
-        },
+        statisticalList: {},
         // 统计范围下拉列表
+        isVisibleChange: false,
+        isSelectedChange: false,
         statisticalRangeList: [],
-        // 选择全部范围
+        // 全部范围
         allRange: {
           label: '',
           options: [{
-            value: 0,
-            label: '全部'
+            id: 0,
+            name: '全部'
           }]
         },
+        // 部分范围
         partRange: {
           label: '',
-          options: [{
-            value: 1,
-            label: '黄金礼品券'
-          }, {
-            value: 2,
-            label: '肥肥3小时兑换券'
-          }, {
-            value: 3,
-            label: '满100减10代金券'
-          }, {
-            value: 4,
-            label: '满300减30代金券'
-          }, {
-            value: 5,
-            label: '满500减50代金券'
-          }]
+          options: []
         },
         isSelectAll: false,
+
         funnelForm: {
           matter: '1',
           pickerDate: [getDateStr(-30), getDateStr(-1)],
           statisticalRange: [0]
         },
+
         pickerOptions: {
           shortcuts: [{
-            text: '最近一周',
+            text: '最近7天',
             onClick(picker) {
               const end = new Date(getDateStr(-1))
               const start = new Date(getDateStr(-7))
               picker.$emit('pick', [start, end])
             }
           }, {
-            text: '最近一个月',
+            text: '最近30天',
             onClick(picker) {
               const end = new Date(getDateStr(-1))
               const start = new Date(getDateStr(-30))
               picker.$emit('pick', [start, end])
             }
           }, {
-            text: '最近三个月',
+            text: '最近90天',
             onClick(picker) {
               const end = new Date(getDateStr(-1))
               const start = new Date(getDateStr(-90))
@@ -149,21 +140,53 @@
             return time.getTime() > new Date(getDateStr(-1)).getTime()
           }
         },
-        funnelDetail: {
-          totalNum: 1000,
-          receiveNum: 20,
-          usedNum: 10
-        },
+        totalDetail: {},
+        receiveDetail: {},
+        usedDetail: {},
         tableData: [],
         tableLoading: true
       }
     },
     mounted() {
+      // 获取统计事项
+      loadConstant('statisticalConsiderations').then(res => {
+        if (res.status === 'true') {
+          this.statisticalList = res.info
+        }
+      })
+
+      // 统计范围初始化为'全部'，并获取小时券卡券列表
       this.statisticalRangeList = [this.allRange]
+      this.getPartRange(1)
     },
     methods: {
+      /**
+       * 统计事项改变时要完成三件事
+       * 1.重置其他两个筛选条件
+       * 2.获取新的统计范围
+       * 3.刷新统计详情数据
+       */
+      getPartRange(type) {
+        // 重置筛选条件
+        this.funnelForm.pickerDate = [getDateStr(-30), getDateStr(-1)]
+        this.funnelForm.statisticalRange = [0]
+        this.statisticalRangeList = [this.allRange]
+
+        issuePlatformCoupon({
+          couponType: type
+        }).then(res => {
+          if (res.status === 'true') {
+            this.partRange.options = res.info
+          }
+        })
+
+        // 刷新统计数据详情
+        this.getFunnelDetail()
+      },
+
       // 统计范围选择事件
       changeRange(val) {
+        this.isSelectedChange = true
         if (val && val.some(value => value === 0)) {
           this.isSelectAll = true
         } else {
@@ -185,6 +208,39 @@
             this.isSelectAll = true
           }
         }
+        // 统计范围下拉框隐藏，但选中值改变时，刷新统计详情数据
+        if (!this.isVisibleChange) this.getFunnelDetail()
+      },
+
+      // 统计范围下拉框切换事件
+      handleVisibleChange (isVisible) {
+        this.isVisibleChange = isVisible
+        // 选中值改变且下拉框隐藏时刷新统计详情数据
+        if (this.isSelectedChange && !isVisible) {
+          this.getFunnelDetail()
+        }
+        this.isSelectedChange = false
+      },
+
+      // 获取统计详情
+      getFunnelDetail() {
+        let [startDate, endDate] = this.funnelForm.pickerDate ? this.funnelForm.pickerDate : []
+        let params = {
+          couponType: this.funnelForm.matter,
+          startDate: startDate,
+          endDate: endDate
+        }
+        // 选中全部时，不传couponIds
+        if (this.funnelForm.statisticalRange[0] !== 0) {
+          params.couponIds = this.funnelForm.statisticalRange
+        }
+        listPlatformCoupon(params).then(res => {
+          if (res.status === 'true') {
+            [this.totalDetail, this.receiveDetail, this.usedDetail] = res.info
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
 
       // TODO 导出
@@ -234,7 +290,7 @@
           line-height: 86px;
           color: #ffffff;
           font-family: 'PingFangSC-Medium';
-          font-size: 28px;
+          font-size: 18px;
           @for $i from 1 through 3 {
             &:nth-child(#{$i}) {
               @if $i != 3 {
