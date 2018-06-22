@@ -6,26 +6,20 @@
       <div class="select-type mt10 mb10 clearfix">
         <el-date-picker
           class="fr"
-          v-model="formData.date"
-          @change="getPageData(1)"
+          v-model="dateRange"
+          @change="dateChange"
           type="daterange"
           align="right"
-          clearable
+          :clearable="false"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions"></el-date-picker>
-        <div class="select-period mr16">
-          <div class="period-site" :class="{'period-site-select' : periodId === 1}" @click="changePeriod(1)">
-            日
-          </div>
-          <div class="period-site" :class="{'period-site-select' : periodId === 2}" @click="changePeriod(2)">
-            周
-          </div>
-          <div class="period-site" :class="{'period-site-select' : periodId === 3}" @click="changePeriod(3)">
-            月
-          </div>
-        </div>
+          :picker-options="pickerOptions2"></el-date-picker>
+        <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
+          <el-radio-button :label="1">日</el-radio-button>
+          <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>
+          <el-radio-button :label="3" :disabled="canMonthClick">月</el-radio-button>
+        </el-radio-group>
       </div>
 
       <!--统计图-->
@@ -67,8 +61,6 @@
 
 <script>
   import statisticsBrowsingMixin from './statistics-browsing.mixin'
-  import option from '@/components/option'
-  import pickerOptions from '@/mixins/pickerOptions'
   import tableMixins from '@/mixins/table'
   // 引入echarts
   import echarts from 'echarts'
@@ -77,9 +69,8 @@
   Vue.prototype.$echarts = echarts
 
   export default {
-    mixins: [statisticsBrowsingMixin, tableMixins, pickerOptions],
+    mixins: [statisticsBrowsingMixin, tableMixins],
     components: {
-      [option.name]: option
     },
     data () {
       return {

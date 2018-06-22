@@ -1,10 +1,11 @@
 import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
+import radioPicker from '@/mixins/radio-datePicker'
 import { platformActivityList } from '@/service/market'
 
 export default {
-  mixins: [tableMixins],
+  mixins: [tableMixins, radioPicker],
   data () {
     return {
       formData: {
@@ -12,6 +13,7 @@ export default {
         date: '',
         fieldTyoe: ''
       },
+      dateRange: '', // 日期
       periodId: 1 // 周期  1日 2周 3月
     }
   },

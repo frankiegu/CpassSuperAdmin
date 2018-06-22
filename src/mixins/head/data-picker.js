@@ -20,4 +20,3 @@ export const pickerOptions2 = {
     return time.getTime() > new Date(getDateStr(-1)).getTime();
   }
 }
-

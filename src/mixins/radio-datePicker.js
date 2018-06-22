@@ -13,6 +13,7 @@ export default {
   mounted() {
     // 前一个月
     this.dateRange = [getDateStr(-30), getDateStr(-1)]
+    console.log(this.dateRange)
   },
   methods: {
     dateChange() {
