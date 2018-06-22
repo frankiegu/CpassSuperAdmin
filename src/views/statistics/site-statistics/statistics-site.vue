@@ -178,7 +178,7 @@
         <!--场地类型筛选-->
         <div v-if="dialogType === 3">
           <el-select
-            v-model="formData.fieldTyoe"
+            v-model="formData.fieldType"
             @change="diahandleCurrentChange(1)"
             filterable
             placeholder="请选择场地类型"
@@ -341,6 +341,7 @@
         this.diapageTotal = 0
         this.diapageSize = 20
         this.diacurrentPage = 0
+        this.formData.fieldType = ''
         this.dialogVisible = true
         this.diahandleCurrentChange()
       }

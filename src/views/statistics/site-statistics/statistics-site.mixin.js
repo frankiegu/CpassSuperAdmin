@@ -30,6 +30,7 @@ export default {
       dialogVisible: false, // 新增场地dialog
       periodId: 1, // 周期  1日 2周 3月
 
+      diatableData: [], // 弹窗分页请求
       diapageTotal: 0, // 弹窗分页器显示的总数
       dialogTitle: '', // 弹窗标题
       dialogId: '', // 弹窗显示的Id
@@ -83,8 +84,8 @@ export default {
       downloadFile(url, downParams)
     },
     // 弹窗内容分页请求
-    diahandleCurrentChange (page) {
-      this.diacurrentPage = page || this.diacurrentPage
+    diahandleCurrentChange (val) {
+      this.diacurrentPage = val || this.diacurrentPage
       const paramsObj = {
         pageSize: this.diapageSize,
         pageNum: this.diacurrentPage,
