@@ -140,6 +140,7 @@
 </template>
 
 <script>
+  import { typeList } from '@/mixins/data'
   import { fieldOrderDetail } from '@/service/order'
   import fieldDetailMixins from './order-detail.mixins'
 
@@ -150,6 +151,7 @@
       return {
         orderId: this.$route.query.id,
         dialogStatus: false,
+        typeList,
         type: '',
         order: {}, // 订单基本信息
         station: {}, // 工位基本信息
@@ -200,20 +202,23 @@
               res.info.platformOrderDetail.platformOrderPay.payTypeText = '微信支付'
             }
             this.tableData.push(res.info.platformOrderDetail.platformOrderPay)
+
+            for (let item of this.typeList) {
+              if (this.fieldInfo.type === item.key) {
+                this.fieldInfo.typeName = item.label
+              }
+            }
+
             if (this.fieldInfo.type === 1) {
-              this.fieldInfo.typeName = '会议室'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderField
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
             } else if (this.fieldInfo.type === 2) {
-              this.fieldInfo.typeName = '路演厅'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderRoadshowHall
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderRoadshowHall.bookDate
             } else if (this.fieldInfo.type === 3) {
-              this.fieldInfo.typeName = '工位'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderStation
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderStation.bookStartDate + '～' + res.info.platformOrderDetail.platformOrderStation.bookEndDate
             } else if (this.fieldInfo.type === 4) {
-              this.fieldInfo.typeName = '多功能场地'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderOther
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderOther.bookDate
             }

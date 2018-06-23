@@ -65,6 +65,9 @@
   padding-top: 16px;
   @include text-title;
 }
+.lh-text-title {
+  @include text-title;
+}
 
 /* old兼容 - 页面标题样式 */
 // .page-title {

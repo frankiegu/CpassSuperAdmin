@@ -4,7 +4,7 @@ export default {
     return {
       pickerOptions: {
         shortcuts: [{
-          text: '一周内到期',
+          text: '一周内',
           onClick(picker) {
             const end = new Date()
             const start = new Date()
@@ -12,7 +12,7 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: '一个月内到期',
+          text: '一个月内',
           onClick(picker) {
             const end = new Date()
             const start = new Date()
@@ -20,7 +20,7 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: '三个月内到期',
+          text: '三个月内',
           onClick(picker) {
             const end = new Date()
             const start = new Date()

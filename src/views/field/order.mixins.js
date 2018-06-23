@@ -31,7 +31,6 @@ export default {
   computed: {},
   methods: {
     change(sort) {
-      console.log(sort)
       if (sort.prop === 'created') {
         this.sortField = 1
       } else if (sort.prop === 'bookingPeriod') {
@@ -76,7 +75,6 @@ export default {
       }
       fieldOrderList(paramsObj).then(res => {
         if (res.status === 'true') {
-          console.log('res', res)
           let data = res.info
           if (data) {
             this.pageTotal = data.total
@@ -84,7 +82,7 @@ export default {
             // 支付状态payStatus, 10=未支付, 20=已支付, 30=已经退款
             this.tableData.forEach(v => {
               v.formatPrice = '￥ ' + v.orderAmount
-              if (v.type === 1 || v.type === 2 || v.type === 4) {
+              if (v.type === 1 || v.type === 2 || v.type === 4 || v.type === 6) {
                 v.bookingPeriod = v.bookStartTime + '～' + v.bookEndTime
               } else {
                 v.bookDate = '-'
@@ -101,6 +99,18 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    // 承接datePicker
+    datePickerChange (page, dateRange, dateType) {
+      const self = this
+      switch (dateType) {
+        case 1:
+          self.formData.orderDate = dateRange
+          break;
+        case 2:
+          self.formData.bookDate = dateRange
+      }
+      self.getPageData(1)
     },
     exportExcel() {
       if (!this.tableData.length) {

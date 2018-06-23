@@ -50,7 +50,7 @@ module.exports = {
     'curly': [1, 'multi-line'],
     'dot-location': [1, 'property'],
     'eol-last': 1,
-    'eqeqeq': [1, 'allow-null'],
+    'eqeqeq': 0,
     'generator-star-spacing': 0,
     'handle-callback-err': [1, '^(err|error)$'],
     'jsx-quotes': [1, 'prefer-single'],

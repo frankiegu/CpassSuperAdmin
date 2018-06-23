@@ -3,13 +3,22 @@
     <lh-title></lh-title>
 
     <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
+      <el-form class="text-right mr-10" :model="formData" :inline="true" @submit.native.prevent>
+
+        <el-form-item>
+          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
+        <el-form-item>
+          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
         <el-form-item>
           <el-select
             v-model="formData.status"
             @change="getPageData(1)"
-            placeholder="请选择订单状态"
-            class="width150px"
+            placeholder="订单状态"
+            class="width120px"
             clearable>
             <el-option
               v-for="item in statusList"
@@ -20,43 +29,17 @@
         </el-form-item>
 
         <el-form-item>
-          <el-date-picker
-            v-model="formData.orderDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="生成开始日期"
-            end-placeholder="生成结束日期"
-            placeholder="选择生成日期"
-            :picker-options="pickerOptions"></el-date-picker>
-        </el-form-item>
-
-        <el-form-item>
-          <el-date-picker
-            v-model="formData.bookDate"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="预定开始日期"
-            end-placeholder="预定结束日期"
-            placeholder="选择预定日期"
-            :picker-options="pickerOptions"></el-date-picker>
-        </el-form-item>
-
-        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入订单编号"
-            class="width210px">
+            class="width180px">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <el-form-item>
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -84,15 +67,7 @@
         <!--<el-table-column label="生成时间" :formatter="formatTime" align="left" width="155" sortable></el-table-column>-->
         <el-table-column label="生成时间" prop="created" align="left" width="155" sortable="custom"></el-table-column>
 
-        <el-table-column label="场地类型" align="left">
-          <template slot-scope="scope">
-            <span v-if="scope.row.type === 3">工位</span>
-            <span v-else-if="scope.row.type === 1">会议室</span>
-            <span v-else-if="scope.row.type === 2">路演厅</span>
-            <span v-else-if="scope.row.type === 4">多功能场地</span>
-            <span v-else-if="scope.row.type === 5">办公室</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="场地类型" prop="typeText" align="left"></el-table-column>
 
         <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
         <el-table-column label="预约时段" prop="bookingPeriod" align="left" sortable="custom"></el-table-column>

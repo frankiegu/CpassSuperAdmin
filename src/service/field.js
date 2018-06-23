@@ -12,3 +12,9 @@ export const setFieldStatus = (obj) => fetch(API_PATH + '/supervisor/field/open'
 
 // 场地详情
 export const fieldDetail = (obj) => fetch(API_PATH + '/supervisor/field/findFieldDetail', obj, 'GET')
+
+// 参观预约列表
+export const reservationList = (obj) => fetch(API_PATH + '/supervisor/visitReservation/list', obj, 'POST')
+
+// 参观预约详情
+export const reservationDetail = (obj) => fetch(API_PATH + '/supervisor/visitReservation/detail', obj, 'POST')

@@ -2,7 +2,7 @@
   <div class="client-list main-content">
     <lh-title title="客户列表"></lh-title>
 
-    <div class="card-padding">
+    <div class="lh-form-box">
       <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
@@ -82,7 +82,9 @@
           </el-button>
         </el-form-item>
       </el-form>
+    </div>
 
+    <div class="card-padding">
       <el-table
         :data="tableData"
         :empty-text="tableEmpty"
