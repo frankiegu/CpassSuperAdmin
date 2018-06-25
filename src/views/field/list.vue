@@ -48,7 +48,7 @@
         <el-table-column label="状态" fixed="right" align="left">
           <template slot-scope="scope">
             <el-tooltip
-              :content="scope.row.isOpen === 1 ? '点击停用会员' : '点击启用会员'"
+              :content="scope.row.isOpen === 1 ? '点击停用场地' : '点击启用场地'"
               placement="top"
               class="margin-lr6">
 

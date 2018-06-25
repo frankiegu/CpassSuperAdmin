@@ -1,8 +1,8 @@
 <template>
   <div class="member-tab-pane">
-    <order-record v-if="activeTab === '1'"></order-record>
-    <integral v-else-if="activeTab === '2'"></integral>
-    <coupon v-else-if="activeTab === '3'"></coupon>
+    <order-record v-if="activeTab === '1'" :id="id"></order-record>
+    <integral v-else-if="activeTab === '2'" :id="id"></integral>
+    <coupon v-else-if="activeTab === '3'" :id="id"></coupon>
   </div>
 </template>
 <script>
@@ -14,6 +14,9 @@
       activeTab: {
         type: String,
         default: '1'
+      },
+      id: {
+        type: String
       }
     },
     components: {
@@ -41,7 +44,7 @@
       color: #5A72F6;
       font-weight: 600;
     }
-    .number {
+    .numberCount {
       width: 100%;
       height: 60px;
       line-height: 60px;
