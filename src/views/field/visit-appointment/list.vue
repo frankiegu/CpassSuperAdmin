@@ -46,31 +46,31 @@
                 v-loading="tableLoading"
                 border
                 style="width: 100%">
-        <el-table-column label="预约日期" prop="bookDate"></el-table-column>
-        <el-table-column label="预约时间" prop="bookTime"></el-table-column>
-        <el-table-column label="预约品牌">
+        <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
+        <el-table-column label="预约时间" prop="bookTime" align="left"></el-table-column>
+        <el-table-column label="预约品牌" align="left">
           <template slot-scope="scope">
             {{ scope.row.spaceName || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="预约门店">
+        <el-table-column label="预约门店" align="left">
           <template slot-scope="scope">
             {{ scope.row.storeName || '-' }}
           </template>
         </el-table-column>
 
-        <el-table-column label="预约人" prop="reservator"></el-table-column>
-        <el-table-column label="联系电话" prop="mobile" ></el-table-column>
-        <el-table-column label="提交时间" prop="createDate"></el-table-column>
-        <el-table-column label="预约状态" prop="statusName"></el-table-column>
+        <el-table-column label="预约人" prop="reservator" align="left"></el-table-column>
+        <el-table-column label="联系电话" prop="mobile" align="left"></el-table-column>
+        <el-table-column label="提交时间" prop="createDate" align="left"></el-table-column>
+        <el-table-column label="预约状态" prop="statusName" align="left"></el-table-column>
 
-        <el-table-column label="参观目的" show-overflow-tooltip>
+        <el-table-column label="参观目的" show-overflow-tooltip align="left">
           <template slot-scope="scope">
             {{ scope.row.visitTypeName || '-' }}
           </template>
         </el-table-column>
 
-        <el-table-column label="意向" fixed="right" prop="isExistNote">
+        <el-table-column label="意向" fixed="right" prop="isExistNote" align="left">
           <template slot-scope="scope">
             <span v-if="!scope.row.isExistNote">未填写</span>
             <span v-else class="view" @click="viewDetail(scope.row.id)">查看</span>

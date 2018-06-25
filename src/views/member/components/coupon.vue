@@ -29,28 +29,28 @@
             <el-table :data="tableData" empty-text="暂时无数据" v-loading="tableLoading" border
                       style="width: 100%">
 
-              <el-table-column label="名称" prop="platformCouponName"></el-table-column>
-              <el-table-column label="券类" prop="lookPlayer">
+              <el-table-column label="名称" prop="platformCouponName" align="left"></el-table-column>
+              <el-table-column label="券类" prop="lookPlayer" align="left">
                 <template slot-scope="scope">
                   <span v-if="scope.row.platformCouponType === 1">小时券</span>
                   <span v-else-if="scope.row.platformCouponType === 2">代金券</span>
                   <span v-else-if="scope.row.platformCouponType === 3">礼品券</span>
                 </template>
               </el-table-column>
-              <el-table-column label="适用范围">
+              <el-table-column label="适用范围" align="left">
                 <template slot-scope="scope">
                   <!--礼品券-->
                   <span v-if="scope.row.platformCouponType === 3">{{scope.row.verifyStationType === 1 ? '全部核销点' : '部分核销点'}}</span>
                   <span v-else>{{scope.row.storeType === 1 ? '全部门店' : '部分门店'}}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="有效期" width="180">
-                <template slot-scope="scope">
+              <el-table-column label="有效期" width="180" align="left">
+                <template slot-scope="scope" align="left">
                   {{scope.row.startDate}} <br> 至 <br> {{scope.row.endDate}}
                 </template>
               </el-table-column>
-              <el-table-column label="获取途径" prop="receiveName"></el-table-column>
-              <el-table-column label="获取时间" prop="receiveTime" width="180"></el-table-column>
+              <el-table-column label="获取途径" prop="receiveName" align="left"></el-table-column>
+              <el-table-column label="获取时间" prop="receiveTime" width="180" align="left"></el-table-column>
             </el-table>
 
             <el-pagination

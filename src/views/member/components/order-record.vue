@@ -37,34 +37,42 @@
             <el-table :data="tableData" empty-text="暂时无数据" v-loading="tableLoading" border
                       style="width: 100%">
 
-              <el-table-column label="单号" prop="orderNum"></el-table-column>
-              <el-table-column label="下单时间" prop="created"></el-table-column>
-              <el-table-column label="联系人" prop="contactName">
+              <el-table-column label="单号" prop="orderNum" align="left"></el-table-column>
+              <el-table-column label="下单时间" prop="created" align="left"></el-table-column>
+              <el-table-column label="联系人" prop="contactName" align="left">
                 <template slot-scope="scope">
                   {{scope.row.contactName || '-'}}
                 </template>
               </el-table-column>
-              <el-table-column label="联系方式" prop="contactTelephone">
+              <el-table-column label="联系方式" prop="contactTelephone" align="left">
                 <template slot-scope="scope">
                   {{scope.row.contactTelephone || '-'}}
                 </template>
               </el-table-column>
-              <el-table-column label="预订内容" prop="bookContent" width="120" show-overflow-tooltip></el-table-column>
-              <el-table-column label="订单原价" prop="orderAmount"></el-table-column>
-              <el-table-column label="订单折扣">
+              <el-table-column label="预订内容" prop="bookContent" width="120" show-overflow-tooltip align="left"></el-table-column>
+              <el-table-column label="订单原价" align="left">
                 <template slot-scope="scope">
-                  {{scope.row.discountAmount || '-'}}
+                  ¥{{scope.row.orderAmount}}
                 </template>
               </el-table-column>
-              <el-table-column label="实付金额" prop="payAmount"></el-table-column>
-              <el-table-column label="订单状态">
+              <el-table-column label="订单折扣" align="left">
                 <template slot-scope="scope">
-                  <el-tag :type="scope.row.status === 10 ? '' : (scope.row.status === 20 ? 'info' : 'danger')">{{scope.row.statusName}}</el-tag>
+                  - ¥{{scope.row.discountAmount || '0'}}
                 </template>
               </el-table-column>
-              <el-table-column label="优惠券使用情况" width="120">
+              <el-table-column label="实付金额" align="left">
                 <template slot-scope="scope">
-                  {{scope.row.useCouponName || '-'}}
+                  <span class="theme-red">¥{{scope.row.payAmount || '-'}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="订单状态" align="left">
+                <template slot-scope="scope">
+                  <el-tag :type="scope.row.status === 10 ? '' : 'info'">{{scope.row.statusName}}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="优惠券使用情况" width="120" align="left">
+                <template slot-scope="scope">
+                  {{scope.row.useCouponName || '无'}}
                 </template>
               </el-table-column>
 
