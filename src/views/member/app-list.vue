@@ -112,16 +112,18 @@
         </el-table-column>
         <el-table-column label="订单" prop="orderNum" align="left"></el-table-column>
         <el-table-column label="优惠券" prop="couponNum" align="left"></el-table-column>
-        <el-table-column label="操作" prop="registerName" align="left" width="100" fixed="right">
+        <el-table-column label="操作" prop="registerName" align="left" width="120" fixed="right">
           <template slot-scope="scope">
-            <router-link class="table-link" :to="'/member/list/app-detail?id='+scope.row.id">详情</router-link>
+            <router-link :to="'/member/list/app-detail?id='+scope.row.id">
+              <el-button type="text" class="lh-table-btn">详情</el-button>
+            </router-link>
             <el-tooltip
               :content="scope.row.status === 1 ? '点击停用会员' : '点击启用会员'"
               placement="top"
               class="margin-lr6">
 
-              <span v-if="scope.row.status === 0" class="table-link" @click="changeStatus(scope.row.id, scope.row.status)">启用</span>
-              <span v-else class="table-link" style="color: #ff5661;" @click="changeStatus(scope.row.id, scope.row.status)">停用</span>
+              <el-button type="text" v-if="scope.row.status === 0" class="lh-table-btn" @click="changeStatus(scope.row.id, scope.row.status)">启用</el-button>
+              <el-button type="text" v-else class="lh-table-btn" style="color: #ff5661;" @click="changeStatus(scope.row.id, scope.row.status)">停用</el-button>
             </el-tooltip>
 
           </template>

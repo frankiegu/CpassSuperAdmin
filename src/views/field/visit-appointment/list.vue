@@ -46,7 +46,7 @@
                 v-loading="tableLoading"
                 border
                 style="width: 100%">
-        <el-table-column label="预约日期" prop="bookDate" align="left"></el-table-column>
+        <el-table-column label="预约日期" prop="bookDate" align="left" width="100"></el-table-column>
         <el-table-column label="预约时间" prop="bookTime" align="left"></el-table-column>
         <el-table-column label="预约品牌" align="left">
           <template slot-scope="scope">
@@ -73,7 +73,7 @@
         <el-table-column label="意向" fixed="right" prop="isExistNote" align="left">
           <template slot-scope="scope">
             <span v-if="!scope.row.isExistNote">未填写</span>
-            <span v-else class="view" @click="viewDetail(scope.row.id)">查看</span>
+            <el-button type="text" v-else class="lh-table-btn" @click="viewDetail(scope.row.id)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -135,10 +135,5 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .view{
-      color: #5E80E5;
-      cursor: pointer;
-    }
-
   }
 </style>
