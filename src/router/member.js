@@ -21,8 +21,8 @@ export default [{
       hidden: true,
       component: _import('member/app-list')
     }, {
-      name: '会员详情',
-      path: 'detail',
+      name: 'APP会员详情',
+      path: 'app-detail',
       hidden: true,
       component: _import('member/app-detail')
     }, {

@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { appMemberList, memberStatistics } from '@/service/member'
+import { appMemberList, memberStatistics, appChangeStatus } from '@/service/member'
 import { loadConstant } from '@/service/common'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
@@ -46,7 +46,7 @@ export default {
         if (res.status === 'true') {
           this.statusList = res.info
         } else {
-          self.setMsg('error', res.msg)
+          this.setMsg('error', res.msg)
         }
       })
     },
@@ -93,6 +93,22 @@ export default {
           self.formData.registerDate = dateRange
       }
       self.getPageData(1)
+    },
+    // 停用或启用app会员
+    changeStatus (id, currentStatus) {
+      const status = currentStatus === 0 ? 1 : 0
+      const JSON = {
+        appCustomerId: id,
+        status: status
+      }
+      appChangeStatus(JSON).then(res => {
+        if (res.status === 'true') {
+          this.setMsg('success', status === 0 ? '停用成功' : '启用成功')
+          this.getPageData()
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
     },
     exportExcel() {
       if (!this.tableData.length) {

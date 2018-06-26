@@ -1,8 +1,8 @@
 <template>
   <div class="member-list">
-    <lh-title title="会员列表">
+    <lh-title title="会员列表" v-if="isShow">
     </lh-title>
-    <div class="select-box">
+    <div v-if="isShow" class="select-box">
       <lh-tab :tabList="tabList"/>
     </div>
     <router-view></router-view>
@@ -14,10 +14,19 @@
     components: { lhTab },
     data() {
       return {
+        isShow: true,
         tabList: [
           { type: 1, text: 'APP会员', name: '/member/list/app-list' },
           { type: 2, text: '小程序会员', name: '/member/list/wechat-list' }
         ]
+      }
+    },
+    mounted() {
+      // 如果是APP会员详情
+      if (this.$route.path === '/member/list/app-detail') {
+        this.isShow = false
+      } else {
+        this.isShow = true
       }
     }
   }
