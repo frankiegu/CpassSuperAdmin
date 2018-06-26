@@ -5,7 +5,7 @@
       <div class="select-type mt10 mb10">
         <el-select
           v-model="formData.type"
-          @change="getPageData(1)"
+          @change="getOverviewData"
           filterable
           placeholder="请选择状态"
           class="width150px fr"
@@ -18,33 +18,9 @@
         </el-select>
       </div>
       <div class="site-profile clearfix mb16">
-        <div class="profile-box">
-          <span class="profile-title">全部场地</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">移动工位(天)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">时租工位(时)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">会议室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">路演厅</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">办公室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">多功能室</span>
-          <span class="profile-count">100</span>
+        <div class="profile-box selectedBox" v-for="(item, index) in orderTypeList" :key="index">
+          <span class="profile-title">{{item.label}}</span>
+          <span class="profile-count">{{item.number}}</span>
         </div>
       </div>
 
@@ -60,7 +36,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions2"></el-date-picker>
+          :picker-options="pickerOptions3"></el-date-picker>
         <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
           <el-radio-button :label="1">日</el-radio-button>
           <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>
@@ -253,7 +229,7 @@
             trigger: 'axis'
           },
           legend: {
-            data: ['邮件营销', '联盟广告', '视频广告']
+            data: ['品牌', '空间', '场地']
           },
           grid: {
             left: '3%',
@@ -275,19 +251,19 @@
           },
           series: [
             {
-              name: '邮件营销',
+              name: '品牌',
               type: 'line',
               stack: '总量',
               data: [120, 132, 101, 134, 90, 230, 210]
             },
             {
-              name: '联盟广告',
+              name: '空间',
               type: 'line',
               stack: '总量',
               data: [220, 182, 191, 234, 290, 330, 310]
             },
             {
-              name: '视频广告',
+              name: '场地',
               type: 'line',
               stack: '总量',
               data: [150, 232, 201, 154, 190, 330, 410]

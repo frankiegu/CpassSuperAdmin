@@ -14,7 +14,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions2"></el-date-picker>
+          :picker-options="pickerOptions3"></el-date-picker>
         <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
           <el-radio-button :label="1">日</el-radio-button>
           <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>

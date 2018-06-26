@@ -8,20 +8,20 @@
           <div class="modular-item">
             <div class="modular-item-left">
               <span class="left-title">今日场地订单数</span>
-              <div class="left-count">60</div>
+              <div class="left-count">{{orderObj.today}}</div>
             </div>
             <div class="modular-item-right">
               <span class="right-site">
                 <span class="right-site-title right-site-title-first">近7天总数</span>
-                <span class="right-site-count">990</span>
+                <span class="right-site-count">{{orderObj.pastSevenDays}}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近30天总数</span>
-                <span class="right-site-count">2780</span>
+                <span class="right-site-count">{{orderObj.pastThirtyDays}}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近60天总数</span>
-                <span class="right-site-count">6350</span>
+                <span class="right-site-count">{{orderObj.pastSixtyDays}}</span>
               </span>
             </div>
           </div>
@@ -30,20 +30,20 @@
           <div class="modular-item">
             <div class="modular-item-left">
               <span class="left-title">今日参观预约数</span>
-              <div class="left-count">80</div>
+              <div class="left-count">{{visitObj.today}}</div>
             </div>
             <div class="modular-item-right">
               <span class="right-site">
                 <span class="right-site-title right-site-title-first">近7天总数</span>
-                <span class="right-site-count">990</span>
+                <span class="right-site-count">{{visitObj.pastSevenDays}}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近30天总数</span>
-                <span class="right-site-count">2780</span>
+                <span class="right-site-count">{{visitObj.pastThirtyDays}}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近60天总数</span>
-                <span class="right-site-count">6350</span>
+                <span class="right-site-count">{{visitObj.pastSixtyDays}}</span>
               </span>
             </div>
           </div>
@@ -58,12 +58,15 @@
 </template>
 
 <script>
+  import { orderSummary } from '@/service/statistics'
   import lhTab from '@/components/tab'
 
   export default {
     mixins: [],
     data() {
       return {
+        orderObj: {},
+        visitObj: {},
         tabList: [
           { type: 1, text: '场地订单统计', name: '/order-statistics/statistics-order' },
           { type: 2, text: '参观预约统计', name: '/order-statistics/statistics-visit' }
@@ -73,11 +76,25 @@
     props: {},
     components: { lhTab },
     mounted() {
+      this.getOrderSummary()
     },
     watch: {},
     computed: {},
     filters: {},
-    methods: {}
+    methods: {
+      getOrderSummary () {
+        orderSummary().then(res => {
+          if (res.status === 'true') {
+            if (res.info.order && res.info.visit) {
+              this.orderObj = res.info.order
+              this.visitObj = res.info.visit
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      }
+    }
   }
 </script>
 

@@ -1,8 +1,9 @@
 import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
-import { downloadFile } from '@/config/utils'
+import { downloadFile, formatTimeString } from '@/config/utils'
 import radioPicker from '@/mixins/radio-datePicker'
 import { platformActivityList } from '@/service/market'
+import { fieldStatisticsNew } from '@/service/statistics'
 
 export default {
   mixins: [tableMixins, radioPicker],
@@ -10,8 +11,8 @@ export default {
     return {
       typeList: [
         { val: 5, text: '全部' },
-        { val: 1, text: '普通活动' },
-        { val: 2, text: '互动游戏' }
+        { val: 1, text: '已对C-PASS展示' },
+        { val: 0, text: '未对C-PASS展示' }
       ],
       fieldList: [
         { val: 1, text: '全部' },
@@ -22,11 +23,36 @@ export default {
         { val: 6, text: '办公室' },
         { val: 7, text: '多功能办公室' }
       ],
+      orderTypeList: [
+        {
+          label: '全部',
+          number: ''
+        }, {
+          label: '自由工位(天)',
+          number: ''
+        }, {
+          label: '时租工位(时)',
+          number: ''
+        }, {
+          label: '会议室',
+          number: ''
+        }, {
+          label: '路演厅',
+          number: ''
+        }, {
+          label: '办公室',
+          number: ''
+        }, {
+          label: '多功能室',
+          number: ''
+        }
+      ],
       formData: {
         type: '',
         date: '',
         fieldTyoe: ''
       },
+      dateRange: '', // 日期选择器
       dialogVisible: false, // 新增场地dialog
       periodId: 1, // 周期  1日 2周 3月
 
@@ -41,29 +67,46 @@ export default {
   },
   mounted () {
     this.getPageData()
+    this.getOverviewData()
   },
   methods: {
+    // 场地概况
+    getOverviewData() {
+      const paramsObj = {
+        isPlatformOpen: this.formData.type === 5 ? '' : this.formData.type,
+        dayType: 1,
+        startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
+        endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null,
+        fieldType: 5
+      }
+      fieldStatisticsNew(paramsObj).then(res => {
+        if (res.status === 'true') {
+          this.orderTypeList[0].number = res.info.fieldGeneralSituation.allFieldCount || 0
+          this.orderTypeList[1].number = res.info.fieldGeneralSituation.stationCount || 0
+          this.orderTypeList[2].number = res.info.fieldGeneralSituation.hourStationCount || 0
+          this.orderTypeList[3].number = res.info.fieldGeneralSituation.meetingCount || 0
+          this.orderTypeList[4].number = res.info.fieldGeneralSituation.roadshowHallCount || 0
+          this.orderTypeList[5].number = res.info.fieldGeneralSituation.officeCount || 0
+          this.orderTypeList[6].number = res.info.fieldGeneralSituation.otherCount || 0
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
+    },
+    // 新增统计
     getPageData(page) {
       this.currentPage = page || this.currentPage
       const paramsObj = {
-        pageSize: this.pageSize,
-        pageNum: this.currentPage,
-        type: this.formData.type === 5 ? '' : this.formData.type,
-        status: this.formData.status === 5 ? '' : this.formData.status
+        isPlatformOpen: this.formData.type === 5 ? '' : this.formData.type,
+        dayType: this.selectedPeriod,
+        startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
+        endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null,
+        fieldType: 5
       }
-
-      platformActivityList(paramsObj).then(res => {
+      fieldStatisticsNew(paramsObj).then(res => {
         if (res.status === 'true') {
-          let data = res.info
-          if (data) {
-            this.pageTotal = data.total
-            this.tableData = data.result
-          }
-
-          this.tableLoading = false
-          if (this.tableData.length === 0) {
-            this.tableEmpty = '暂时无数据'
-          }
+          res.info.pageList.result.forEach(item => {
+          })
         } else {
           this.setMsg('error', res.msg)
         }

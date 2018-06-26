@@ -471,7 +471,7 @@
     },
 
     methods: {
-      // 切换卡券类型
+      // 切换卡券类型重置数据
       changeType() {
         this.selectedRange = []
         this.couponForm.range = []
@@ -561,7 +561,11 @@
           }
         }
       },
-      // 移除选中的节点
+
+      /**
+       * 移除选中的节点
+       * @param {string} [nodeKey] - 可选的节点key值
+       */
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
         if (!nodeKey) {
