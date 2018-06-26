@@ -49,7 +49,7 @@
                   {{scope.row.contactTelephone || '-'}}
                 </template>
               </el-table-column>
-              <el-table-column label="预订内容" prop="bookContent" width="120" show-overflow-tooltip align="left"></el-table-column>
+              <el-table-column label="预订内容" prop="bookContent" min-width="120" show-overflow-tooltip align="left"></el-table-column>
               <el-table-column label="订单原价" align="left">
                 <template slot-scope="scope">
                   ¥{{scope.row.orderAmount}}

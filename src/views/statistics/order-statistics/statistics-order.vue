@@ -167,7 +167,7 @@
         // let self = this
         fieldOrderList().then(res => {
           if (res.status === 'true') {
-            console.log('res', res)
+            // console.log('res', res)
             let data = res.info
             if (data) {
               this.pageTotal = data.total
