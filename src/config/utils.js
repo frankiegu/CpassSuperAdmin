@@ -2,12 +2,23 @@ import store from '@/store'
 import router from '@/router'
 import { PHONEREG } from './env'
 
-// 对象深拷贝
+/**
+ * @description 对象深拷贝
+ *
+ * @param {Object} obj 传递一个待拷贝的对象
+ * @return {Object} 返回一个深拷贝的对象
+ */
 export function deepCopyObj(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
 
-// 返回开始时间-结束时间之间的时长
+/**
+ * @description 返回开始时间-结束时间之间的时长
+ *
+ * @param {String} startTime 开始时间HH:mm
+ * @param {String} endTime 开始时间HH:mm
+ * @return {String | number} 返回时长
+ */
 export function calcLongTime(startTime, endTime) {
   let handleStartTime = startTime.split(/:/)
   let handleEndTime = endTime.split(/:/)
@@ -17,7 +28,12 @@ export function calcLongTime(startTime, endTime) {
   return ((point === 30) ? hour + '.5' : hour)
 }
 
-// 选择起始结束时间组合，返回结束时间的开始时间点
+/**
+ * @description 选择起始结束时间组合，返回结束时间的开始时间点
+ *
+ * @param {String} time 开始时间HH:mm
+ * @return {String} 返回下一个时间的起始点
+ */
 export function getEndStartTime(time) {
   let handle
   handle = time.split(/:/)
@@ -45,7 +61,10 @@ export function getEndStartTime(time) {
   return (d + ':' + c)
 }
 
-// logout no token
+/**
+ * @description logout no token
+ * 退出登录并跳转至登录页
+ */
 export function logoutNoToken() {
   store.commit('SET_TOKEN', '')
   store.commit('SET_RESOURCES', 'no')
@@ -58,7 +77,12 @@ export function logoutNoToken() {
   })
 }
 
-// 是否有权限
+/**
+ * @description 是否有权限
+ *
+ * @param {String | Array} params 接口或者接口列表
+ * @return {Boolean} 返回权限判断结果
+ */
 export const hasPermissions = (params) => {
   let totalPermissions = store.getters.getPermissions || []
   let paramsData = params
@@ -75,7 +99,12 @@ export const hasPermissions = (params) => {
   }
 }
 
-// js获取当前时间前后N天前后日期的方法
+/**
+ * @description js获取当前时间前后N天前后日期的方法
+ *
+ * @param {number} AddDayCount 前后的天数
+ * @return {String} 返回当前时间前后的日期
+ */
 export const getDateStr = (AddDayCount) => {
   let dd = new Date()
   dd.setDate(dd.getDate() + AddDayCount) // 获取AddDayCount天后的日期
@@ -86,7 +115,12 @@ export const getDateStr = (AddDayCount) => {
   return y + '-' + m + '-' + d
 }
 
-// 校验是否合法手机号
+/**
+ * @description 校验是否合法手机号
+ *
+ * @param {number | String} phone 用户输入的号码
+ * @return {Boolean} 返回号码是否合法的判断结果
+ */
 export const checkPhone = (phone) => {
   if (PHONEREG.test(phone)) {
     return true
@@ -95,7 +129,13 @@ export const checkPhone = (phone) => {
   }
 }
 
-// 获取 url 参数
+/**
+ * @description 获取 url 参数
+ *
+ * @param {String} name 参数名
+ * @param {String} link url
+ * @return {String} 返回url中指定参数名的值
+ */
 export const getUrlKey = (name, link = location.href) => {
   const reg = new RegExp(`(?:^|&)${name}=([^&]*)(?:&|$)`)
   const r = link.substring(link.indexOf('?') + 1).match(reg)
@@ -105,7 +145,13 @@ export const getUrlKey = (name, link = location.href) => {
   return ''
 }
 
-// 时间格式化
+/**
+ * @description 时间格式化
+ *
+ * @param {String} time 日期时间字符串
+ * @param {String} format 格式化形式
+ * @return {String} 返回给定格式化形式的日期时间
+ */
 export const formatTimeString = (time, format) => {
   var format1 = format || 'yyyy-MM-dd'
   var t = new Date(time)
@@ -132,6 +178,7 @@ export const formatTimeString = (time, format) => {
 
 /**
  * @description url拼接参数，已经携带了token,用于使用get请求下载文件
+ *
  * @param {String} url - url 是一个绝对的请求地址，不是相对地址
  * @param {Object} params - 所需要拼接的查询参数组成的对象，{key: value}
  */
