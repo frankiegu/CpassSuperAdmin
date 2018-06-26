@@ -14,7 +14,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions2"></el-date-picker>
+          :picker-options="pickerOptions3"></el-date-picker>
         <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
           <el-radio-button :label="1">日</el-radio-button>
           <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>
@@ -150,20 +150,19 @@
       }
     },
     mounted () {
-      this.setEchart();
+      let dom = this.$refs.mychart;
+      this.myChart = echarts.init(dom, 'macarons');
+      this.myChart.setOption(this.option);
+
       const that = this
-      window.onresize = () => {
-        return (() => {
-          window.screenWidth = document.body.clientWidth
-          that.screenWidth = window.screenWidth
-        })()
-      }
+      window.addEventListener('resize', () => {
+        that.myChart.resize()
+      })
+
+      this.setEchart();
     },
     methods: {
       setEchart () {
-        let dom = this.$refs.mychart;
-        this.myChart = echarts.init(dom, 'macarons');
-        this.myChart.setOption(this.option);
         // let self = this
         fieldOrderList().then(res => {
           if (res.status === 'true') {
@@ -181,20 +180,6 @@
             this.setMsg('error', res.msg)
           }
         })
-      }
-    },
-    watch: {
-      screenWidth (val) {
-        if (!this.timer) {
-          this.screenWidth = val
-          this.timer = true
-          let that = this
-          setTimeout(function () {
-            that.timer = false
-            that.statisticsChart.resize()
-            that.drawLine()
-          }, 400)
-        }
       }
     }
   }
