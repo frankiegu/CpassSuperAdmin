@@ -18,3 +18,9 @@ export const findAddStoreDetail = (obj) => fetch(API_PATH + '/supervisor/fieldSt
 
 // 场地统计-查询新增场地详情列表
 export const findAddFieldDetail = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/findAddFieldDetail', obj, 'POST')
+
+// 地区分析-空间地区分布
+export const storeDistributeByArea = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/storeDistributeByArea', obj, 'POST')
+
+// 地区分析-场地地区分布
+export const fieldDistributeByArea = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/fieldDistributeByArea', obj, 'POST')

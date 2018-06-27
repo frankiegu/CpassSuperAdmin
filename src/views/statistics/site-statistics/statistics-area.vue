@@ -26,26 +26,11 @@
       <div class="space-detail clearfix mb32">
         <div class="space-table">
           <el-table :data="spaceData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-            <el-table-column label="排名" prop="id" align="left" ></el-table-column>
-            <el-table-column label="城市" prop="statusName" align="left"></el-table-column>
-            <el-table-column label="已开通空间数" prop="lotteryExtraTime" align="left"></el-table-column>
-            <el-table-column label="占比" align="left" >
-              <template slot-scope="scope">
-                <span>{{ scope.row.id + '%' }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="排名" prop="sort" align="left" ></el-table-column>
+            <el-table-column label="城市" prop="cityName" align="left"></el-table-column>
+            <el-table-column label="已开通空间数" prop="storeCount" align="left"></el-table-column>
+            <el-table-column label="占比" prop="percent" align="left" ></el-table-column>
           </el-table>
-
-          <el-pagination
-            :total="pageTotal"
-            :layout="layoutArr"
-            :page-size="pageSize"
-            :page-sizes="pageSizeArr"
-            :current-page="currentPage"
-            class="pagination-container"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            background></el-pagination>
         </div>
         <div id="myChart1" class="space-echart" style="width: 32%; height: 400px;"></div>
       </div>
@@ -72,7 +57,7 @@
       </div>
 
       <div class="area-profile clearfix mb16">
-        <div class="profile-box selectedBox" :class="{'activeClass': currentIndex === index}" @click="sortByStatus(index)" v-for="(item, index) in orderTypeList" :key="index">
+        <div class="profile-box selectedBox" :class="{'activeClass': currentIndex === index}" @click="sortByStatus(index, item.key)" v-for="(item, index) in orderTypeList" :key="index">
           <span class="profile-title">{{item.label}}</span>
           <span class="profile-count">{{item.number}}</span>
         </div>
@@ -82,26 +67,11 @@
       <div class="space-detail clearfix mb24">
         <div class="space-table">
           <el-table :data="fieldData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-            <el-table-column label="排名" prop="id" align="left" ></el-table-column>
-            <el-table-column label="城市" prop="statusName" align="left"></el-table-column>
-            <el-table-column label="已开通场地数" prop="lotteryExtraTime" align="left"></el-table-column>
-            <el-table-column label="占比" align="left" >
-              <template slot-scope="scope">
-                <span>{{ scope.row.id + '%' }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="排名" prop="sort" align="left" ></el-table-column>
+            <el-table-column label="城市" prop="cityName" align="left"></el-table-column>
+            <el-table-column label="已开通场地数" prop="fieldCount" align="left"></el-table-column>
+            <el-table-column label="占比" prop="percent" align="left" ></el-table-column>
           </el-table>
-
-          <el-pagination
-            :total="fieldPageTotal"
-            :layout="layoutArr"
-            :page-size="fieldPageSize"
-            :page-sizes="fieldPageSizeArr"
-            :current-page="fieldCurrentPage"
-            class="pagination-container"
-            @size-change="fieldHandleSizeChange"
-            @current-change="fieldHandleCurrentChange"
-            background></el-pagination>
         </div>
         <div id="myChart2" class="space-echart" style="width: 32%; height: 400px;"></div>
       </div>
@@ -129,8 +99,8 @@
         screenWidth: document.body.clientWidth, // 屏幕宽度
         option1: {
           title: {
-            text: '天气情况统计',
-            subtext: '虚构数据',
+            text: '空间地区统计',
+            subtext: '',
             left: 'center'
           },
           tooltip: {
@@ -142,21 +112,15 @@
             // top: 'middle',
             bottom: 10,
             left: 'center',
-            data: ['西凉', '益州', '兖州', '荆州', '幽州']
+            data: []
           },
           series: [
             {
               type: 'pie',
-              radius: '65%',
+              radius: '60%',
               center: ['50%', '50%'],
               selectedMode: 'single',
-              data: [
-                { value: 1548, name: '幽州' },
-                { value: 555, name: '荆州' },
-                { value: 510, name: '兖州' },
-                { value: 634, name: '益州' },
-                { value: 735, name: '西凉' }
-              ],
+              data: [],
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -169,8 +133,8 @@
         },
         option2: {
           title: {
-            text: '天气情况统计',
-            subtext: '虚构数据',
+            text: '场地地区统计',
+            subtext: '',
             left: 'center'
           },
           tooltip: {
@@ -182,7 +146,7 @@
             // top: 'middle',
             bottom: 10,
             left: 'center',
-            data: ['西凉', '益州', '兖州', '荆州', '幽州']
+            data: []
           },
           series: [
             {
@@ -190,13 +154,7 @@
               radius: '65%',
               center: ['50%', '50%'],
               selectedMode: 'single',
-              data: [
-                { value: 1548, name: '幽州' },
-                { value: 555, name: '荆州' },
-                { value: 510, name: '兖州' },
-                { value: 634, name: '益州' },
-                { value: 735, name: '西凉' }
-              ],
+              data: [],
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -206,12 +164,7 @@
               }
             }
           ]
-        },
-
-        fieldPageTotal: 0,
-        fieldPageSize: 20,
-        fieldPageSizeArr: [20, 40, 80, 100],
-        fieldCurrentPage: 1
+        }
       }
     },
     mounted () {
@@ -236,18 +189,9 @@
       drawLine2 () {
         let self = this
         // 基于准备好的dom，初始化echarts实例
-        self.statisticsChart1 = echarts.init(document.getElementById('myChart2'), 'macarons')
+        self.statisticsChart2 = echarts.init(document.getElementById('myChart2'), 'macarons')
         // 绘制图表
-        self.statisticsChart1.setOption(this.option1);
-      },
-      fieldHandleSizeChange (val) {
-        this.fieldPageSize = val
-        this.fieldCurrentPage = 1
-        this.getFieldData()
-      },
-      fieldHandleCurrentChange (val) {
-        this.fieldCurrentPage = val
-        this.getFieldData()
+        self.statisticsChart2.setOption(this.option2);
       }
     },
     watch: {
@@ -281,12 +225,12 @@
       box-sizing: border-box;
 
       .space-table{
-        width: 65%;
-        margin-right: 3%;
+        width: 60%;
+        margin-right: 4%;
         float: left;
       }
       .space-echart{
-        width: 32%;
+        width: 36%;
         float: left;
       }
     }
