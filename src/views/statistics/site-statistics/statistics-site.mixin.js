@@ -2,8 +2,7 @@ import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
 import { downloadFile, formatTimeString } from '@/config/utils'
 import radioPicker from '@/mixins/radio-datePicker'
-import { platformActivityList } from '@/service/market'
-import { fieldStatisticsNew } from '@/service/statistics'
+import { fieldStatisticsNew, findAddSpaceDetail, findAddStoreDetail, findAddFieldDetail } from '@/service/statistics'
 
 export default {
   mixins: [tableMixins, radioPicker],
@@ -15,13 +14,13 @@ export default {
         { val: 0, text: '未对C-PASS展示' }
       ],
       fieldList: [
-        { val: 1, text: '全部' },
-        { val: 2, text: '移动工位' },
-        { val: 3, text: '时租工位' },
-        { val: 4, text: '会议室' },
-        { val: 5, text: '路演厅' },
-        { val: 6, text: '办公室' },
-        { val: 7, text: '多功能办公室' }
+        { val: 7, text: '全部' },
+        { val: 3, text: '移动工位' },
+        { val: 6, text: '时租工位' },
+        { val: 1, text: '会议室' },
+        { val: 2, text: '路演厅' },
+        { val: 5, text: '办公室' },
+        { val: 4, text: '多功能室' }
       ],
       orderTypeList: [
         {
@@ -56,6 +55,8 @@ export default {
       dialogVisible: false, // 新增场地dialog
       periodId: 1, // 周期  1日 2周 3月
 
+      startTime: '',
+      endTime: '',
       diatableData: [], // 弹窗分页请求
       diapageTotal: 0, // 弹窗分页器显示的总数
       dialogTitle: '', // 弹窗标题
@@ -67,32 +68,8 @@ export default {
   },
   mounted () {
     this.getPageData()
-    this.getOverviewData()
   },
   methods: {
-    // 场地概况
-    getOverviewData() {
-      const paramsObj = {
-        isPlatformOpen: this.formData.type === 5 ? '' : this.formData.type,
-        dayType: 1,
-        startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
-        endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null,
-        fieldType: 5
-      }
-      fieldStatisticsNew(paramsObj).then(res => {
-        if (res.status === 'true') {
-          this.orderTypeList[0].number = res.info.fieldGeneralSituation.allFieldCount || 0
-          this.orderTypeList[1].number = res.info.fieldGeneralSituation.stationCount || 0
-          this.orderTypeList[2].number = res.info.fieldGeneralSituation.hourStationCount || 0
-          this.orderTypeList[3].number = res.info.fieldGeneralSituation.meetingCount || 0
-          this.orderTypeList[4].number = res.info.fieldGeneralSituation.roadshowHallCount || 0
-          this.orderTypeList[5].number = res.info.fieldGeneralSituation.officeCount || 0
-          this.orderTypeList[6].number = res.info.fieldGeneralSituation.otherCount || 0
-        } else {
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
     // 新增统计
     getPageData(page) {
       this.currentPage = page || this.currentPage
@@ -101,46 +78,53 @@ export default {
         dayType: this.selectedPeriod,
         startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
         endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null,
-        fieldType: 5
+        fieldType: '',
+        pageSize: this.pageSize,
+        pageNum: this.currentPage
       }
       fieldStatisticsNew(paramsObj).then(res => {
         if (res.status === 'true') {
-          res.info.pageList.result.forEach(item => {
-          })
-        } else {
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
-    // 导出数据
-    exportExcel() {
-      if (!this.receiveList.length) {
-        return this.setMsg('暂无数据')
-      }
-      const downParams = {
-        couponType: this.couponBaseInfo.type,
-        couponId: this.couponId,
-        customerName: this.searchName,
-        useStatus: this.statusType + ''
-      }
-      let url = API_PATH + '/supervisor/platformCouponCustomer/export'
-      downloadFile(url, downParams)
-    },
-    // 弹窗内容分页请求
-    diahandleCurrentChange (val) {
-      this.diacurrentPage = val || this.diacurrentPage
-      const paramsObj = {
-        pageSize: this.diapageSize,
-        pageNum: this.diacurrentPage,
-        type: this.formData.fieldType === 1 ? '' : this.formData.fieldType
-      }
+          // 场地概况
+          this.orderTypeList[0].number = res.info.fieldGeneralSituation.allFieldCount || 0
+          this.orderTypeList[1].number = res.info.fieldGeneralSituation.stationCount || 0
+          this.orderTypeList[2].number = res.info.fieldGeneralSituation.hourStationCount || 0
+          this.orderTypeList[3].number = res.info.fieldGeneralSituation.meetingCount || 0
+          this.orderTypeList[4].number = res.info.fieldGeneralSituation.roadshowHallCount || 0
+          this.orderTypeList[5].number = res.info.fieldGeneralSituation.officeCount || 0
+          this.orderTypeList[6].number = res.info.fieldGeneralSituation.otherCount || 0
 
-      platformActivityList(paramsObj).then(res => {
-        if (res.status === 'true') {
-          let data = res.info
-          if (data) {
-            this.diapageTotal = data.total
-            this.diatableData = data.result
+          // 新增统计(echarts)
+          var date = []
+          var spaceDate = []
+          var storeDate = []
+          var fieldDate = []
+
+          // forEach遍历会慢一些
+          // res.info.viewList.forEach((item, index) => {
+          //   date[index] = item.relationDate
+          //   spaceDate[index] = item.newSpaceCount
+          //   storeDate[index] = item.newStoreCount
+          //   fieldDate[index] = item.newFieldCount
+          // })
+
+          // 用一个临时变量缓存数组长度，再用for循环，节省遍历时间
+          for (var j = 0, len = res.info.viewList.length; j < len; j++) {
+            date[j] = res.info.viewList[j].relationDate
+            spaceDate[j] = res.info.viewList[j].newSpaceCount
+            storeDate[j] = res.info.viewList[j].newStoreCount
+            fieldDate[j] = res.info.viewList[j].newFieldCount
+          }
+          this.option.xAxis.data = date
+          this.option.series[0].data = spaceDate
+          this.option.series[1].data = storeDate
+          this.option.series[2].data = fieldDate
+          // console.log(this.option.xAxis)
+          this.drawLine();
+
+          // 统计明细(表格)
+          if (res.info.pageList) {
+            this.pageTotal = res.info.pageList.total
+            this.tableData = res.info.pageList.result
           }
 
           this.tableLoading = false
@@ -151,6 +135,89 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    // 弹窗内容分页请求
+    diahandleCurrentChange (val) {
+      this.diacurrentPage = val || this.diacurrentPage
+
+      const paramsObj = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        pageSize: this.diapageSize,
+        pageNum: this.diacurrentPage
+      }
+
+      // 品牌
+      if (this.dialogType === 1) {
+        findAddSpaceDetail(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.diapageTotal = data.total
+              this.diatableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      } else if (this.dialogType === 2) {
+        findAddStoreDetail(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.diapageTotal = data.total
+              this.diatableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      } else if (this.dialogType === 3) {
+        paramsObj.fieldType = this.formData.fieldType === 7 ? '' : this.formData.fieldType
+        findAddFieldDetail(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.diapageTotal = data.total
+              this.diatableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      }
+    },
+    diahandleSizeChange (val) {
+      this.diapageSize = val
+      this.diahandleCurrentChange(1)
+    },
+    // 导出数据
+    exportExcel() {
+      if (!this.tableData.length) {
+        return this.setMsg('暂无数据')
+      }
+      const downParams = {
+        dayType: this.selectedPeriod,
+        startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
+        endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null
+      }
+      let url = API_PATH + '/supervisor/fieldStatistics/exportFieldAddStatistics'
+      downloadFile(url, downParams)
     }
   }
 }
