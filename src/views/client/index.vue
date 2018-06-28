@@ -3,7 +3,7 @@
     <lh-title title="客户列表"></lh-title>
 
     <div class="lh-form-box">
-      <el-form :model="formData" :inline="true" class="lh-card-head" @submit.native.prevent>
+      <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">
@@ -53,17 +53,21 @@
 
         <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.reg_date"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            placeholder="选择下单日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="到期时间" :optionType="false" @datePickerChange="pickerChange"></lh-datePicker>
         </el-form-item>
+
+        <!--<el-form-item>-->
+          <!--<el-date-picker-->
+            <!--v-model="formData.reg_date"-->
+            <!--@change="getPageData(1)"-->
+            <!--type="daterange"-->
+            <!--align="right"-->
+            <!--clearable-->
+            <!--start-placeholder="开始日期"-->
+            <!--end-placeholder="结束日期"-->
+            <!--placeholder="选择下单日期"-->
+            <!--:picker-options="pickerOptions"></el-date-picker>-->
+        <!--</el-form-item>-->
 
         <el-form-item>
           <el-input
@@ -190,6 +194,12 @@
       formatTime(time) {
         return !time ? '' : time.replace(/:\d{2}$/, '')
       },
+
+      pickerChange(page = 1, dateRange) {
+        this.formData.reg_date = dateRange
+        this.getPageData(page)
+      },
+
       getPageData(page) {
         this.currentPage = page || this.currentPage
         const formData = this.formData
