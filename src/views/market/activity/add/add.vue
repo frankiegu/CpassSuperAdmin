@@ -204,7 +204,7 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span style="cursor: pointer;" @click="deletePrize(scope.row.id)">删除</span>
+                  <span style="cursor: pointer;" @click="deletePrize(scope.row.index)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -764,7 +764,8 @@ export default {
                 let giftCouponArray = [] // 红包数组
                 let giftRedpacketArray = [] // 红包数组
                 // 奖品数组
-                this.prizeList.forEach(v => {
+                this.prizeList.forEach((v, i) => {
+                  v.index = i
                   let tempCoupon, tempReEvenlope
                   if (v.type === 1) {
                     // 优惠券
@@ -828,6 +829,7 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
+          console.log('getData', this.prizeList)
           if (this.type) {
             this.checkPrize()
           }
@@ -950,8 +952,9 @@ export default {
             disabled: false
           }
           this.prizeList.push(prize)
-          this.prizeList.forEach(v => {
+          this.prizeList.forEach((v, i) => {
             this.totalProbability = this.totalProbability + (v.probability - 1 + 1)
+            v.index = i
           })
           this.dialogVisible = false
           this.addPrizeForm = {
@@ -998,11 +1001,15 @@ export default {
       }
     },
     // 删除奖品
-    deletePrize (id) {
+    deletePrize (index) {
       this.prizeList.forEach((v, i) => {
-        if (v.id === id) {
+        if (index === i) {
           this.prizeList.splice(i, 1)
         }
+      })
+      // 重新排序
+      this.prizeList.forEach((v, i) => {
+        v.index = i
       })
     },
     // 判断prizeList所有元素的数量输入验证是否都通过
@@ -1058,7 +1065,6 @@ export default {
           }
         }
       })
-      console.log('this.prizeList', this.prizeList)
     }
   }
 }
