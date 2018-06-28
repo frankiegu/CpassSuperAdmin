@@ -53,7 +53,7 @@
 
         <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
-          <lh-datePicker label="到期时间" :optionType="false" @datePickerChange="pickerChange"></lh-datePicker>
+          <lh-datePicker ref="lhDatePicker" label="到期时间" :optionType="false" @datePickerChange="pickerChange"></lh-datePicker>
         </el-form-item>
 
         <!--<el-form-item>-->
@@ -187,6 +187,7 @@
       changeStatus(page) {
         if (this.formData.reg_date && this.formData.productStatus === 2) {
           this.formData.reg_date = null
+          this.$refs['lhDatePicker'].dateRange = null
         }
 
         this.getPageData(page)
