@@ -10,7 +10,7 @@ export default {
       typeList: [
         { val: 5, text: '全部' },
         { val: 1, text: '已对C-PASS展示' },
-        { val: 0, text: '未对C-PASS展示' }
+        { val: '0', text: '未对C-PASS展示' }
       ],
       formData: {
         spaceType: '',
@@ -145,13 +145,13 @@ export default {
     // 导出空间数据
     exportSpaceExcel() {
       const self = this
-      console.log(self.formData.spaceType)
       if (!self.spaceData.length) {
         return self.setMsg('暂无数据')
       }
       const downParams = {
         isPlatformOpen: self.formData.spaceType === 5 ? '' : self.formData.spaceType
       }
+      console.log(downParams)
       let url = API_PATH + '/supervisor/fieldStatistics/exportStoreDistributeByArea'
       downloadFile(url, downParams)
     },
@@ -165,6 +165,7 @@ export default {
         isPlatformOpen: self.formData.fieldType === 5 ? '' : self.formData.fieldType,
         fieldType: self.fieldType
       }
+      console.log(downParams)
       let url = API_PATH + '/supervisor/fieldStatistics/exportFieldDistributeByArea'
       downloadFile(url, downParams)
     }
