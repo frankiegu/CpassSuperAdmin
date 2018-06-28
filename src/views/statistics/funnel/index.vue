@@ -181,6 +181,8 @@
         }).then(res => {
           if (res.status === 'true') {
             this.partRange.options = res.info
+          } else {
+            this.partRange.options = []
           }
         })
 

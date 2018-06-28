@@ -45,11 +45,11 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
-          <el-button @click="exportExcel" class="lh-btn-export">
-            <lh-svg icon-class="icon-download" />导出
-          </el-button>
-        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<el-button @click="exportExcel" class="lh-btn-export">-->
+            <!--<lh-svg icon-class="icon-download" />导出-->
+          <!--</el-button>-->
+        <!--</el-form-item>-->
 
       </el-form>
 
@@ -59,27 +59,27 @@
         :slot="tableEmpty"
         v-loading="tableLoading" border>
 
-        <el-table-column label="ID" align="center">
+        <el-table-column label="ID" align="left" width="100">
           <template slot-scope="scope">
-            {{ scope.row.id }}
+            {{ scope.row.customerCode }}
           </template>
         </el-table-column>
-        <el-table-column label="手机号" prop="telephone" align="center">
+        <el-table-column label="手机号" prop="telephone" align="left" width="120">
           <template slot-scope="scope">
             {{ scope.row.telephone ? scope.row.telephone : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="邮箱" prop="email" align="center">
+        <el-table-column label="邮箱" prop="email" align="left">
           <template slot-scope="scope">
             {{ scope.row.email ? scope.row.email : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="昵称" align="center">
+        <el-table-column label="昵称" align="left">
           <template slot-scope="scope">
             {{ scope.row.nickname || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="性别" align="center">
+        <el-table-column label="性别" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.sex">
                {{ scope.row.sex === 1 ? '男' : '女' }}
@@ -87,36 +87,45 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="职业" align="center">
+        <el-table-column label="职业" align="left">
           <template slot-scope="scope">
             {{ scope.row.tagName || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="生日" align="center">
+        <el-table-column label="生日" align="left">
           <template slot-scope="scope">
             {{ scope.row.birthday || '-'}}
           </template>
         </el-table-column>
-        <el-table-column label="注册时间" prop="created" align="center"></el-table-column>
-        <el-table-column label="最后一次登录时间" prop="lastLogin" align="center"></el-table-column>
-        <el-table-column label="会员等级" width="100" prop="levelName" align="center">
+        <el-table-column label="注册时间" prop="created" align="left"></el-table-column>
+        <el-table-column label="最后一次登录时间" prop="lastLogin" align="left"></el-table-column>
+        <el-table-column label="会员等级" width="100" prop="levelName" align="left">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.levelName || '普通会员' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="有效期" prop="indate" align="center"></el-table-column>
-        <el-table-column label="状态" prop="status" align="center">
+        <el-table-column label="有效期" prop="indate" align="left"></el-table-column>
+        <el-table-column label="状态" prop="status" align="left">
           <template slot-scope="scope">
-            <el-tag :class="{info: scope.row.status === 0}">{{ scope.row.status === 1 ? '正常' : '停用' }}</el-tag>
+            <el-tag :type="scope.row.status === 1 ? 'info' : 'danger'">{{ scope.row.status === 1 ? '正常' : '停用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="订单" prop="orderNum" align="center"></el-table-column>
-        <el-table-column label="优惠券" prop="couponNum" align="center"></el-table-column>
-        <el-table-column label="操作" prop="registerName" align="center" width="100">
+        <el-table-column label="订单" prop="orderNum" align="left"></el-table-column>
+        <el-table-column label="优惠券" prop="couponNum" align="left"></el-table-column>
+        <el-table-column label="操作" prop="registerName" align="left" width="120" fixed="right">
           <template slot-scope="scope">
-            <router-link class="table-link" :to="'/member/detail?id='+scope.row.id">详情</router-link>
-            <span v-if="scope.row.status === 0" class="table-link">启用</span>
-            <span v-else class="table-link" style="color: #ff5661;">停用</span>
+            <router-link :to="'/member/list/app-detail?id='+scope.row.id">
+              <el-button type="text" class="lh-table-btn">详情</el-button>
+            </router-link>
+            <el-tooltip
+              :content="scope.row.status === 1 ? '点击停用会员' : '点击启用会员'"
+              placement="top"
+              class="margin-lr6">
+
+              <el-button type="text" v-if="scope.row.status === 0" class="lh-table-btn" @click="changeStatus(scope.row.id, scope.row.status)">启用</el-button>
+              <el-button type="text" v-else class="lh-table-btn" style="color: #ff5661;" @click="changeStatus(scope.row.id, scope.row.status)">停用</el-button>
+            </el-tooltip>
+
           </template>
         </el-table-column>
       </el-table>

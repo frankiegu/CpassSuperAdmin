@@ -1,9 +1,9 @@
-import { pickerOptions2 } from '@/mixins/head/data-picker'
+import { pickerOptions3 } from '@/mixins/head/data-picker'
 import { getDateStr } from '@/config/utils'
 export default {
   data() {
     return {
-      pickerOptions2,
+      pickerOptions3,
       selectedPeriod: 1,
       canWeekClick: false,
       canMonthClick: true,
@@ -13,13 +13,14 @@ export default {
   mounted() {
     // 前一个月
     this.dateRange = [getDateStr(-30), getDateStr(-1)]
+    console.log(this.dateRange)
   },
   methods: {
     dateChange() {
       if (!this.dateRange) return;
       var startDate = this.dateRange[0]
       var endDate = this.dateRange[1]
-      var differenceDate = (new Date(endDate).getTime() - new Date(startDate).getTime()) / (3600 * 1000 * 24) + 1
+      var differenceDate = (new Date(endDate).getTime() - new Date(startDate).getTime()) / (3600 * 1000 * 24)
       if (differenceDate <= 7) {
         this.canWeekClick = true
         this.canMonthClick = true

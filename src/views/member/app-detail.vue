@@ -1,42 +1,42 @@
 <template>
   <div class="member-detail">
     <!-- 会员信息 -->
-    <lh-title title="刘奔明">
-      <lh-item class="ml12" label="ID" label-width="20px">424242</lh-item>
+    <lh-title :title="memberDetail.nickname || ('用户' + memberDetail.customerCode)">
+      <lh-item class="ml12" label="ID" label-width="20px">{{memberDetail.customerCode || '-'}}</lh-item>
       <el-row :gutter="20">
         <el-col :span="8">
-          <lh-item class="nowrap" label="手机号" label-width="80px">13684848484</lh-item>
+          <lh-item class="nowrap" label="手机号" label-width="80px">{{memberDetail.telephone || '-'}}</lh-item>
         </el-col>
         <el-col :span="8">
-          <lh-item class="nowrap" label="邮箱" label-width="60px">liubenming@wenben7.com</lh-item>
+          <lh-item class="nowrap" label="邮箱" label-width="60px">{{memberDetail.email || '-'}}</lh-item>
         </el-col>
         <el-col :span="8">
-          <lh-item class="nowrap" label="生日" label-width="60px">1968-10-10</lh-item>
+          <lh-item class="nowrap" label="生日" label-width="60px">{{memberDetail.birthday || '-'}}</lh-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
-          <lh-item class="nowrap" label="职业" label-width="80px">老司机</lh-item>
+          <lh-item class="nowrap" label="职业" label-width="80px">{{memberDetail.tagName || '-'}}</lh-item>
         </el-col>
         <el-col :span="8">
-          <lh-item class="nowrap" label="性别" label-width="60px">男</lh-item>
+          <lh-item class="nowrap" label="性别" label-width="60px">{{memberDetail.sex ? (memberDetail.sex === 1 ? '男' : '女') : '-'}}</lh-item>
         </el-col>
       </el-row>
 
       <el-row :gutter="20">
         <el-col :span="8">
           <lh-item class="nowrap" label="会员等级" label-width="80px">
-            <el-tag>联盟会员</el-tag>
+            <el-tag>{{memberDetail.levelName}}</el-tag>
           </lh-item>
         </el-col>
-        <el-col :span="8">
-          <lh-item class="nowrap" label="付费记录" label-width="80px">2018-3-20  20:50:15</lh-item>
+        <el-col :span="8" v-if="memberDetail.isNormal !== 1">
+          <lh-item class="nowrap" label="付费记录" label-width="80px">{{memberDetail.lastLogin || '-'}}</lh-item>
         </el-col>
-        <el-col :span="8">
-          <lh-item class="nowrap" label="金额" label-width="60px">¥399</lh-item>
+        <el-col :span="8" v-if="memberDetail.isNormal !== 1">
+          <lh-item class="nowrap" label="金额" label-width="60px">¥ 399</lh-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <el-row :gutter="20" v-if="memberDetail.isNormal !== 1">
         <el-col :span="8">
           <lh-item class="nowrap" label="购买项目" label-width="80px">联盟会员（一年有效）</lh-item>
         </el-col>
@@ -62,6 +62,7 @@
       <keep-alive>
         <tab-pane
           ref="tabPane"
+          :id="id"
           :activeTab="activeTab"></tab-pane>
       </keep-alive>
     </div>
@@ -70,11 +71,14 @@
 </template>
 
 <script>
+  import { appMemberDetail } from '@/service/member'
   import tabPane from './components/tab-pane'
   export default {
     mixins: [],
     data() {
       return {
+        id: this.$route.query.id,
+        memberDetail: {},
         activeTab: '1',
         tabList: [
           { type: '1', text: '订单记录' },
@@ -86,11 +90,22 @@
     props: {},
     components: { tabPane },
     mounted() {
+      this.getMemberDetail()
     },
     watch: {},
     computed: {},
     filters: {},
     methods: {
+      // 获取app会员详情
+      getMemberDetail() {
+        appMemberDetail({ appCustomerId: this.id }).then(res => {
+          if (res.status === 'true') {
+            this.memberDetail = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      }
     }
   }
 </script>

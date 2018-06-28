@@ -8,20 +8,20 @@
           <div class="modular-item">
             <div class="modular-item-left">
               <span class="left-title">品牌总数</span>
-              <div class="left-count">60</div>
+              <div class="left-count">{{ storeTotalStatistics.total || 0 }}</div>
             </div>
             <div class="modular-item-right">
               <span class="right-site">
                 <span class="right-site-title right-site-title-first">近7天新增</span>
-                <span class="right-site-count">990</span>
+                <span class="right-site-count">{{ storeTotalStatistics.totalStatisticsOne || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近30天新增</span>
-                <span class="right-site-count">2780</span>
+                <span class="right-site-count">{{ storeTotalStatistics.totalStatisticsTwo || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近60天新增</span>
-                <span class="right-site-count">6350</span>
+                <span class="right-site-count">{{ storeTotalStatistics.totalStatisticsThree || 0 }}</span>
               </span>
             </div>
           </div>
@@ -30,20 +30,20 @@
           <div class="modular-item">
             <div class="modular-item-left">
               <span class="left-title">空间总数</span>
-              <div class="left-count">80</div>
+              <div class="left-count">{{ spaceTotalStatistics.total || 0 }}</div>
             </div>
             <div class="modular-item-right">
               <span class="right-site">
                 <span class="right-site-title right-site-title-first">近7天新增</span>
-                <span class="right-site-count">990</span>
+                <span class="right-site-count">{{ spaceTotalStatistics.totalStatisticsOne || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近30天新增</span>
-                <span class="right-site-count">2780</span>
+                <span class="right-site-count">{{ spaceTotalStatistics.totalStatisticsTwo || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近60天新增</span>
-                <span class="right-site-count">6350</span>
+                <span class="right-site-count">{{ spaceTotalStatistics.totalStatisticsThree || 0 }}</span>
               </span>
             </div>
           </div>
@@ -52,20 +52,20 @@
           <div class="modular-item">
             <div class="modular-item-left">
               <span class="left-title">场地总数</span>
-              <div class="left-count">120</div>
+              <div class="left-count">{{ fieldTotalStatistics.total || 0 }}</div>
             </div>
             <div class="modular-item-right">
               <span class="right-site">
                 <span class="right-site-title right-site-title-first">近7天新增</span>
-                <span class="right-site-count">990</span>
+                <span class="right-site-count">{{ fieldTotalStatistics.totalStatisticsOne || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近30天新增</span>
-                <span class="right-site-count">2780</span>
+                <span class="right-site-count">{{ fieldTotalStatistics.totalStatisticsTwo || 0 }}</span>
               </span>
               <span class="right-site">
                 <span class="right-site-title">近60天新增</span>
-                <span class="right-site-count">6350</span>
+                <span class="right-site-count">{{ fieldTotalStatistics.totalStatisticsThree || 0 }}</span>
               </span>
             </div>
           </div>
@@ -81,6 +81,7 @@
 
 <script>
   import lhTab from '@/components/tab'
+  import { fieldTotalStatistics } from '@/service/statistics'
 
   export default {
     mixins: [],
@@ -90,17 +91,33 @@
           { type: 1, text: '场地统计', name: '/site-statistics/statistics-site' },
           { type: 2, text: '浏览统计', name: '/site-statistics/statistics-browsing' },
           { type: 3, text: '地区分析', name: '/site-statistics/statistics-area' }
-        ]
+        ],
+        storeTotalStatistics: '', // 品牌总数
+        spaceTotalStatistics: '', // 空间总数
+        fieldTotalStatistics: '' // 场地总数
       }
     },
     props: {},
     components: { lhTab },
-    mounted() {
-    },
     watch: {},
     computed: {},
     filters: {},
-    methods: {}
+    mounted () {
+      this.getTopData()
+    },
+    methods: {
+      getTopData () {
+        fieldTotalStatistics().then(res => {
+          if (res.status === 'true') {
+            this.storeTotalStatistics = res.info.storeTotalStatistics
+            this.spaceTotalStatistics = res.info.spaceTotalStatistics
+            this.fieldTotalStatistics = res.info.fieldTotalStatistics
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      }
+    }
   }
 </script>
 

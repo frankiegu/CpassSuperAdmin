@@ -1,33 +1,25 @@
 <template>
   <div class="order-page">
-    <el-row :gutter="20" class="number pl24">
+    <el-row :gutter="20" class="numberCount pl24">
       <el-col :span="5">
-        <lh-item class="nowrap" label="当前优惠券" label-width="80px">
-          <span class="num-style table-link" @click="getPageData(1)">12</span>
-        </lh-item>
-      </el-col>
-      <el-col :span="5">
-        <lh-item class="nowrap" label="未使用" label-width="80px">
-          <span class="num-style table-link" @click="getPageData(1)">3</span>
+        <lh-item class="nowrap" label="待使用" label-width="80px">
+          <span class="num-style table-link" @click="getPageData(1, '0')">{{couponStatisticsObj.notUsedTotal}}</span>
         </lh-item>
       </el-col>
       <el-col :span="5">
         <lh-item class="nowrap" label="已使用" label-width="80px">
-          <span class="num-style table-link" @click="getPageData(1)">4</span>
+          <span class="num-style table-link" @click="getPageData(1, '1')">{{couponStatisticsObj.usedTotal}}</span>
         </lh-item>
       </el-col>
       <el-col :span="5">
         <lh-item class="nowrap" label="已过期" label-width="80px">
-          <span class="num-style table-link" @click="getPageData(1)">4</span>
+          <span class="num-style table-link" @click="getPageData(1, '2')">{{couponStatisticsObj.expiredTotal}}</span>
         </lh-item>
       </el-col>
     </el-row>
 
     <el-row>
       <el-row :span="24">
-        <!--<el-button @click="exportExcel" class="lh-btn-export">-->
-          <!--<lh-svg icon-class="icon-download" />导出-->
-        <!--</el-button>-->
         <el-tabs @tab-click="getPageData(1)" class="el-col el-col-24" v-model="couponStatus">
           <el-tab-pane
             v-for="status in couponStatusList"
@@ -37,12 +29,28 @@
             <el-table :data="tableData" empty-text="暂时无数据" v-loading="tableLoading" border
                       style="width: 100%">
 
-              <el-table-column label="名称" prop="date" align="left"></el-table-column>
-              <el-table-column label="券类" prop="lookPlayer" align="left"></el-table-column>
-              <el-table-column label="适用范围" prop="lotteryCount" align="left"></el-table-column>
-              <el-table-column label="有效期" prop="sharePlayer" align="left"></el-table-column>
-              <el-table-column label="获取途径" prop="sharePlayer" align="left"></el-table-column>
-              <el-table-column label="获取时间" prop="sharePlayer" align="left"></el-table-column>
+              <el-table-column label="名称" prop="platformCouponName" align="left"></el-table-column>
+              <el-table-column label="券类" prop="lookPlayer" align="left">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.platformCouponType === 1">小时券</span>
+                  <span v-else-if="scope.row.platformCouponType === 2">代金券</span>
+                  <span v-else-if="scope.row.platformCouponType === 3">礼品券</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="适用范围" align="left">
+                <template slot-scope="scope">
+                  <!--礼品券-->
+                  <span v-if="scope.row.platformCouponType === 3">{{scope.row.verifyStationType === 1 ? '全部核销点' : '部分核销点'}}</span>
+                  <span v-else>{{scope.row.storeType === 1 ? '全部门店' : '部分门店'}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="有效期" width="180" align="left">
+                <template slot-scope="scope" align="left">
+                  {{scope.row.startDate}} <br> 至 <br> {{scope.row.endDate}}
+                </template>
+              </el-table-column>
+              <el-table-column label="获取途径" prop="receiveName" align="left"></el-table-column>
+              <el-table-column label="获取时间" prop="receiveTime" width="180" align="left"></el-table-column>
             </el-table>
 
             <el-pagination
@@ -64,16 +72,21 @@
 </template>
 <script>
   import tableMixins from '@/mixins/table'
-  import { API_PATH } from '@/config/env'
-  import { downloadFile } from '@/config/utils'
+  import { couponStatistics, appCouponList } from '@/service/member'
   export default {
     mixins: [tableMixins],
+    props: {
+      id: {
+        type: String
+      }
+    },
     data() {
       return {
+        couponStatisticsObj: {},
         couponStatus: '0',
         couponStatusList: [{
           type: '0',
-          label: '全部'
+          label: '待使用'
         }, {
           type: '1',
           label: '已使用'
@@ -85,45 +98,48 @@
     },
     mounted() {
       this.getPageData()
+      this.getCouponStatistics()
     },
     methods: {
-      getPageData(page) {
+      getPageData(page, status) {
         this.currentPage = page || this.currentPage
-        console.log('coupon')
-        // const formData = this.formData
-        // const paramsObj = {
-        //   pageSize: this.pageSize,
-        //   pageNum: this.currentPage,
-        //   nickname: formData.name
-        // }
+        // 点击数字时切换对应tab
+        if (status) {
+          this.couponStatus = status
+        }
+        const paramsObj = {
+          pageSize: this.pageSize,
+          pageNum: this.currentPage,
+          appCustomerId: this.id,
+          useStatus: status || this.couponStatus
+        }
 
-        // CUSTOMER_LIST(paramsObj).then(res => {
-        //   if (res.status === 'true') {
-        //     let data = res.info
-        //     if (data) {
-        //       this.pageTotal = data.total
-        //       this.tableData = data.result
-        //     }
-        //
-        //     this.tableLoading = false
-        //     if (this.tableData.length === 0) {
-        //       this.tableEmpty = '暂时无数据'
-        //     }
-        //   } else {
-        //     this.setMsg('error', res.msg)
-        //   }
-        // })
+        appCouponList(paramsObj).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            if (data) {
+              this.pageTotal = data.total
+              this.tableData = data.result
+            }
+
+            this.tableLoading = false
+            if (this.tableData.length === 0) {
+              this.tableEmpty = '暂时无数据'
+            }
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
       },
-      exportExcel() {
-        if (!this.tableData.length) {
-          return this.setMsg('暂无数据')
-        }
-        const formData = this.formData
-        const downParams = {
-          nickname: formData.name
-        }
-        let url = API_PATH + '/supervisor/customer/exportExcel'
-        downloadFile(url, downParams)
+      // app会员订单统计
+      getCouponStatistics() {
+        couponStatistics({ appCustomerId: this.id }).then(res => {
+          if (res.status === 'true') {
+            this.couponStatisticsObj = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
       }
     }
   }

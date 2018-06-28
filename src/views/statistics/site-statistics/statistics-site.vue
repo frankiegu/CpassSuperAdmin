@@ -18,33 +18,9 @@
         </el-select>
       </div>
       <div class="site-profile clearfix mb16">
-        <div class="profile-box">
-          <span class="profile-title">全部场地</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">移动工位(天)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">时租工位(时)</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">会议室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">路演厅</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">办公室</span>
-          <span class="profile-count">100</span>
-        </div>
-        <div class="profile-box">
-          <span class="profile-title">多功能室</span>
-          <span class="profile-count">100</span>
+        <div class="profile-box selectedBox" v-for="(item, index) in orderTypeList" :key="index">
+          <span class="profile-title">{{item.label}}</span>
+          <span class="profile-count">{{item.number}}</span>
         </div>
       </div>
 
@@ -60,7 +36,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           placeholder="选择提交日期"
-          :picker-options="pickerOptions2"></el-date-picker>
+          :picker-options="pickerOptions3"></el-date-picker>
         <el-radio-group class="fr mr16" v-model="selectedPeriod" @change="getPageData(1)">
           <el-radio-button :label="1">日</el-radio-button>
           <el-radio-button :label="2" :disabled="canWeekClick">周</el-radio-button>
@@ -80,54 +56,54 @@
       <!--统计表格-->
       <div>
         <el-table :data="tableData" :empty-text="tableEmpty" :slot="tableEmpty" v-loading="tableLoading" border style="width: 100%">
-          <el-table-column label="日期" align="left" width="170">
+          <el-table-column label="日期" align="left" width="190">
             <template slot-scope="scope">
-              <span>{{ scope.row.created }}</span>
+              <span>{{ scope.row.relationDate }}</span>
             </template>
           </el-table-column>
           <el-table-column label="新增品牌数" align="left">
             <template slot-scope="scope">
-              <span class="table-link" @click="showDialog(1, scope.row.id, scope.row.created)">{{ scope.row.id }}</span>
+              <span class="table-link" @click="showDialog(1, scope.row.id, scope.row.relationDate)">{{ scope.row.newSpaceCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="新增空间数" align="left">
             <template slot-scope="scope">
-              <span class="table-link" @click="showDialog(2, scope.row.id, scope.row.created)">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link" @click="showDialog(2, scope.row.id, scope.row.relationDate)">{{ scope.row.newStoreCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="新增场地总数" align="left" >
             <template slot-scope="scope">
-              <span class="table-link" @click="showDialog(3, scope.row.id, scope.row.created)">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link" @click="showDialog(3, scope.row.id, scope.row.relationDate)">{{ scope.row.newFieldCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="移动工位" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.stationCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="时租工位" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.hourStationCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="会议室" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.meetingCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="路演厅" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.roadshowHallCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="办公室" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.officeCount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="多功能室" align="left" >
             <template slot-scope="scope">
-              <span class="table-link">{{ scope.row.lotteryExtraTime }}</span>
+              <span class="table-link">{{ scope.row.otherCount }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -159,7 +135,7 @@
           :slot="tableEmpty"
           border style="width: 100%"
           max-height="400">
-          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
+          <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
           <el-table-column label="品牌创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
@@ -170,8 +146,8 @@
           :slot="tableEmpty" border
           style="width: 100%"
           max-height="400">
-          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
-          <el-table-column label="空间名称" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="storeName" align="left"></el-table-column>
           <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
@@ -198,10 +174,10 @@
           :slot="tableEmpty" border
           style="width: 100%"
           max-height="400">
-          <el-table-column label="品牌名称" prop="statusName" align="left" ></el-table-column>
-          <el-table-column label="空间名称" prop="typeName" align="left"></el-table-column>
-          <el-table-column label="场地名称" prop="typeName" align="left"></el-table-column>
-          <el-table-column label="场地类型" prop="typeName" align="left"></el-table-column>
+          <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
+          <el-table-column label="空间名称" prop="storeName" align="left"></el-table-column>
+          <el-table-column label="场地名称" prop="fieldName" align="left"></el-table-column>
+          <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
           <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
         </el-table>
 
@@ -212,6 +188,7 @@
           :page-sizes="pageSizeArr"
           :current-page="diacurrentPage"
           class="pagination-container"
+          @size-change="diahandleSizeChange"
           @current-change="diahandleCurrentChange"
           background></el-pagination>
       </div>
@@ -253,7 +230,7 @@
             trigger: 'axis'
           },
           legend: {
-            data: ['邮件营销', '联盟广告', '视频广告']
+            data: ['品牌', '空间', '场地']
           },
           grid: {
             left: '3%',
@@ -267,30 +244,30 @@
           },
           xAxis: {
             type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            boundaryGap: true,
+            data: []
           },
           yAxis: {
             type: 'value'
           },
           series: [
             {
-              name: '邮件营销',
+              name: '品牌',
               type: 'line',
               stack: '总量',
-              data: [120, 132, 101, 134, 90, 230, 210]
+              data: []
             },
             {
-              name: '联盟广告',
+              name: '空间',
               type: 'line',
               stack: '总量',
-              data: [220, 182, 191, 234, 290, 330, 310]
+              data: []
             },
             {
-              name: '视频广告',
+              name: '场地',
               type: 'line',
               stack: '总量',
-              data: [150, 232, 201, 154, 190, 330, 410]
+              data: []
             }
           ]
         },
@@ -298,8 +275,8 @@
       }
     },
     mounted () {
-      this.drawLine();
       const that = this
+      that.drawLine()
       window.onresize = () => {
         return (() => {
           window.screenWidth = document.body.clientWidth
@@ -308,9 +285,6 @@
       }
     },
     methods: {
-      changePeriod (id) {
-        this.periodId = id
-      },
       drawLine () {
         let self = this
         // 基于准备好的dom，初始化echarts实例
@@ -319,9 +293,29 @@
         self.statisticsChart.setOption(this.option);
       },
       showDialog (type, id, date) {
-        var month = date.substr(5, 2).substr(0, 1) === '0' ? date.substr(6, 1) : date.substr(5, 2)
-        var day = date.substr(8, 2).substr(0, 1) === '0' ? date.substr(9, 1) : date.substr(8, 2)
-        this.dialogDate = month + '月' + day + '日'
+        // dialog标题
+        var month = ''
+        var day = ''
+        if (this.selectedPeriod === 1) {
+          month = date.substr(5, 2).substr(0, 1) === '0' ? date.substr(6, 1) : date.substr(5, 2)
+          day = date.substr(8, 2).substr(0, 1) === '0' ? date.substr(9, 1) : date.substr(8, 2)
+          this.dialogDate = month + '月' + day + '日'
+          this.startTime = date
+          this.endTime = date
+        } else if (this.selectedPeriod === 2 || this.selectedPeriod === 3) {
+          month = date.substr(5, 2).substr(0, 1) === '0' ? date.substr(6, 1) : date.substr(5, 2)
+          day = date.substr(8, 2).substr(0, 1) === '0' ? date.substr(9, 1) : date.substr(8, 2)
+          var startDate = month + '月' + day + '日'
+
+          month = date.substr(16, 2).substr(0, 1) === '0' ? date.substr(17, 1) : date.substr(16, 2)
+          day = date.substr(19, 2).substr(0, 1) === '0' ? date.substr(20, 1) : date.substr(19, 2)
+          var endDate = month + '月' + day + '日'
+          this.dialogDate = startDate + '至' + endDate
+
+          this.startTime = date.substr(0, 10)
+          this.endTime = date.substr(11, 21)
+        }
+
         this.dialogType = type
         this.dialogId = id
 
@@ -340,10 +334,10 @@
         // 初始化分液器配置、打开弹窗
         this.diapageTotal = 0
         this.diapageSize = 20
-        this.diacurrentPage = 0
+        this.diacurrentPage = 1
         this.formData.fieldType = ''
         this.dialogVisible = true
-        this.diahandleCurrentChange()
+        this.diahandleCurrentChange(1)
       }
     },
     watch: {
