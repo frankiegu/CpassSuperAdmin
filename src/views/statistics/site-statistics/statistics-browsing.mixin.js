@@ -2,7 +2,7 @@ import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
 import { downloadFile, formatTimeString } from '@/config/utils'
 import radioPicker from '@/mixins/radio-datePicker'
-import { spaceAccessSituation, storeAccessSituation, fieldAccessSituation } from '@/service/statistics'
+import { spaceAccessSituation } from '@/service/statistics'
 
 export default {
   mixins: [tableMixins, radioPicker],
@@ -26,7 +26,7 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        type: this.formData.type === 5 ? '' : this.formData.type,
+        type: this.formData.type === 5 ? '' : this.formData.type
       }
 
       spaceAccessSituation(paramsObj).then(res => {
