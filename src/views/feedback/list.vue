@@ -62,7 +62,7 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <span class="view" @click="viewDetail(scope.row.id)">查看</span>
+            <el-button type="text" class="lh-table-btn" @click="viewDetail(scope.row.id)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,7 +92,7 @@
         <div class="label-con"><div class="intro-desc">{{ content }}</div></div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
@@ -128,10 +128,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .view{
-      color: #5E80E5;
-      cursor: pointer;
     }
     .detail-info{
       clear: both;

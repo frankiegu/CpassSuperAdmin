@@ -107,7 +107,7 @@
         <el-table-column label="有效期" prop="indate" align="left"></el-table-column>
         <el-table-column label="状态" prop="status" align="left">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.status === 1 ? 'info' : 'danger'">{{ scope.row.status === 1 ? '正常' : '停用' }}</el-tag>
+            <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '停用' }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="订单" prop="orderNum" align="left"></el-table-column>
