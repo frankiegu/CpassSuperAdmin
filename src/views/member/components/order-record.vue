@@ -102,7 +102,11 @@
   import { appOrderStatistics, appOrderList } from '@/service/member'
   export default {
     mixins: [tableMixins],
-    props: ['id'],
+    props: {
+      id: {
+        type: String
+      }
+    },
     data() {
       return {
         orderStatisticsObj: {}, // app会员订单统计
