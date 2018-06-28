@@ -840,39 +840,41 @@ export default {
      * part 1
      * */
     dateChange (val) {
-      let start = new Date(val[0])
-      let sy = start.getFullYear()
-      let sm = start.getMonth()
-      let sd = start.getDate()
-      let sH = start.getHours()
-      let sM = start.getMinutes()
-      let end = new Date(val[1])
-      let ey = end.getFullYear()
-      let em = end.getMonth()
-      let ed = end.getDate()
-      let eH = end.getHours()
-      let eM = end.getMinutes()
+      if (val) {
+        let start = new Date(val[0])
+        let sy = start.getFullYear()
+        let sm = start.getMonth()
+        let sd = start.getDate()
+        let sH = start.getHours()
+        let sM = start.getMinutes()
+        let end = new Date(val[1])
+        let ey = end.getFullYear()
+        let em = end.getMonth()
+        let ed = end.getDate()
+        let eH = end.getHours()
+        let eM = end.getMinutes()
 
-      // 活动展示时间
-      this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
-      // 活动隐藏时间
-      this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
-      // 活动开始/结束日期
-      sm = sm + 1
-      sm = sm >= 10 ? sm : '0' + sm
-      sd = sd >= 10 ? sd : '0' + sd
-      sH = sH >= 10 ? sH : '0' + sH
-      sM = sM >= 10 ? sM : '0' + sM
+        // 活动展示时间
+        this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+        // 活动隐藏时间
+        this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+        // 活动开始/结束日期
+        sm = sm + 1
+        sm = sm >= 10 ? sm : '0' + sm
+        sd = sd >= 10 ? sd : '0' + sd
+        sH = sH >= 10 ? sH : '0' + sH
+        sM = sM >= 10 ? sM : '0' + sM
 
-      em = em + 1
-      em = em >= 10 ? em : '0' + em
-      ed = ed >= 10 ? ed : '0' + ed
-      eH = eH >= 10 ? eH : '0' + eH
-      eM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-      this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
-      this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+        em = em + 1
+        em = em >= 10 ? em : '0' + em
+        ed = ed >= 10 ? ed : '0' + ed
+        eH = eH >= 10 ? eH : '0' + eH
+        eM = eM >= 10 ? eM : '0' + eM
+        this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
+        this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
+        this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
+        this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+      }
     },
 
     /**
@@ -1139,6 +1141,7 @@ export default {
   }
   .quill-editor-box {
     margin-bottom: 0;
+    padding-bottom: 45px;
   }
   .ql-container.ql-snow {
     min-height: 180px;
