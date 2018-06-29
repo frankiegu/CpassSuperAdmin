@@ -113,7 +113,7 @@ export default {
   },
   methods: {
     setPageTitle() {
-      this.title = this.noAllow ? '查看精选' : (this.fieldId ? '编辑精选' : '添加精选')
+      this.title = this.noAllow ? '精选详情' : (this.fieldId ? '编辑精选' : '添加精选')
       document.title = this.title
       this.$store.commit('NAV_CRUMB', this.title)
       this.$route.meta.title = this.title
