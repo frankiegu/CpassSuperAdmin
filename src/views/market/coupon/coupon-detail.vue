@@ -85,7 +85,7 @@
                 <span>&nbsp;{{receiveStatistics.used || 0}}/{{receiveStatistics.received || 0}}</span>
               </lh-item>
             </el-col>
-            <el-col :span="6" v-if="couponBaseInfo.type === 1">
+            <el-col :span="6" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
               <lh-item label="用券总成交额：" label-width="100px">
                 <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;</span>元
               </lh-item>
@@ -135,10 +135,10 @@
                 <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
-                        <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
+                      <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
+                        <span v-if="item.type === 1">{{fieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
                         <span v-if="item.type === 2">路演厅</span>
-                        <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                        <span v-if="item.type === 4">{{fieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
                       </p>
                     </lh-item>
                   </el-col>
@@ -290,7 +290,7 @@
         couponBaseInfo: {}, // 优惠券基本信息
         receiveStatistics: {}, // 优惠券领用情况
         couponDiscountContent: {}, // 优惠内容
-        platformHourCouponFieldTypeList: [], // 制定项目
+        fieldTypeList: [], // 制定项目
         conditionTrigger: [], // 触发条件
         storeList: [], // 卡券使用范围
         multipleSelection: [],
@@ -316,6 +316,49 @@
       }
     },
     methods: {
+      getPageData () {
+        couponDetail({ id: this.couponId }).then(res => {
+          if (res.status === 'true') {
+            this.couponBaseInfo = res.info.platformCoupon
+            this.getReceiveList()
+            this.couponTotalAmount = res.info.couponTotalAmount
+            this.receiveStatistics = res.info.statistics
+            this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
+            this.fieldTypeList = res.info.fieldTypeList
+            res.info.couponReceiveDetailList.forEach(v => {
+              if (v.receiveConditionStatus === 1) {
+                v.couponStatus = true
+              } else {
+                v.couponStatus = false
+              }
+            })
+            this.conditionTrigger = res.info.couponReceiveDetailList
+            if (this.couponBaseInfo.type === 1) {
+              this.couponDiscountContent = res.info.platformHourCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 2) {
+              this.platformCashCoupon = res.info.platformCashCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 3) {
+              this.couponDiscountContent = res.info.platformGiftCoupon
+              this.storeList = res.info.verifyStationList
+              this.storeList.forEach(v => {
+                v.useCouponAddress = v.cityName + v.districtName + v.address
+              })
+            }
+            if (res.info.platformCoupon.status === 1) {
+              this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
+              this.couponBaseInfo.controlStatus = true
+            } else if (res.info.platformCoupon.status === 3) {
+              this.couponBaseInfo.fizenStatusText = '点击启用优惠券'
+              this.couponBaseInfo.controlStatus = false
+            } else if (res.info.platformCoupon.status === 2) {
+              this.couponBaseInfo.fizenStatusText = '优惠券已过期'
+              this.couponBaseInfo.controlStatus = false
+            }
+          }
+        })
+      },
       // 删除优惠券
       deleteCoupon () {
         this.$confirm('此操作将永久删除该优惠券, 是否继续?', '提示', {
@@ -353,52 +396,6 @@
           });
         });
       },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      getPageData () {
-        couponDetail({ id: this.couponId }).then(res => {
-          if (res.status === 'true') {
-            this.couponBaseInfo = res.info.platformCoupon
-            this.getReceiveList()
-            this.couponTotalAmount = res.info.couponTotalAmount
-            this.receiveStatistics = res.info.statistics
-            this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
-            this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
-            res.info.couponReceiveDetailList.forEach(v => {
-              if (v.receiveConditionStatus === 1) {
-                v.couponStatus = true
-              } else {
-                v.couponStatus = false
-              }
-            })
-            this.conditionTrigger = res.info.couponReceiveDetailList
-            if (this.couponBaseInfo.type === 1) {
-              this.couponDiscountContent = res.info.platformHourCoupon
-              this.storeList = res.info.storeList
-            } else if (this.couponBaseInfo.type === 2) {
-              this.platformCashCoupon = res.info.platformCashCoupon
-              this.storeList = res.info.cashCouponStoreList
-            } else if (this.couponBaseInfo.type === 3) {
-              this.couponDiscountContent = res.info.platformGiftCoupon
-              this.storeList = res.info.verifyStationList
-              this.storeList.forEach(v => {
-                v.useCouponAddress = v.cityName + v.districtName + v.address
-              })
-            }
-            if (res.info.platformCoupon.status === 1) {
-              this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
-              this.couponBaseInfo.controlStatus = true
-            } else if (res.info.platformCoupon.status === 3) {
-              this.couponBaseInfo.fizenStatusText = '点击启用优惠券'
-              this.couponBaseInfo.controlStatus = false
-            } else if (res.info.platformCoupon.status === 2) {
-              this.couponBaseInfo.fizenStatusText = '优惠券已过期'
-              this.couponBaseInfo.controlStatus = false
-            }
-          }
-        })
-      },
       getReceiveList (page) {
         this.currentPage = page || this.currentPage
         let params = {
@@ -420,6 +417,9 @@
             })
           }
         })
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
       },
       handleSizeChange(val) {
         this.pageSize = val
