@@ -55,6 +55,79 @@
           background></el-pagination>
       </div>
 
+      <!--品牌浏览量统计明细Dialog-->
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="90%"
+        :lock-scroll="true">
+        <div>
+          <el-table
+            v-if="dialogType === 1"
+            :data="diatableData"
+            :empty-text="tableEmpty"
+            :slot="tableEmpty"
+            border style="width: 100%"
+            max-height="400">
+            <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
+            <el-table-column label="品牌创建时间" prop="created" align="left"></el-table-column>
+          </el-table>
+
+          <el-table
+            v-if="dialogType === 2"
+            :data="diatableData"
+            :empty-text="tableEmpty"
+            :slot="tableEmpty" border
+            style="width: 100%"
+            max-height="400">
+            <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
+            <el-table-column label="空间名称" prop="storeName" align="left"></el-table-column>
+            <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
+          </el-table>
+
+          <!--场地类型筛选-->
+          <div v-if="dialogType === 3">
+            <el-select
+              v-model="formData.fieldType"
+              @change="diahandleCurrentChange(1)"
+              filterable
+              placeholder="请选择场地类型"
+              class="width150px fl mb16"
+              clearable>
+              <el-option
+                v-for="item in fieldList"
+                :label="item.text"
+                :value="item.val"
+                :key="item.val"></el-option>
+            </el-select>
+          </div>
+          <el-table
+            v-if="dialogType === 3"
+            :data="diatableData"
+            :empty-text="tableEmpty"
+            :slot="tableEmpty" border
+            style="width: 100%"
+            max-height="400">
+            <el-table-column label="品牌名称" prop="spaceName" align="left" ></el-table-column>
+            <el-table-column label="空间名称" prop="storeName" align="left"></el-table-column>
+            <el-table-column label="场地名称" prop="fieldName" align="left"></el-table-column>
+            <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
+            <el-table-column label="空间创建时间" prop="created" align="left"></el-table-column>
+          </el-table>
+
+          <el-pagination
+            :total="diapageTotal"
+            :layout="layoutArr"
+            :page-size="diapageSize"
+            :page-sizes="pageSizeArr"
+            :current-page="diacurrentPage"
+            class="pagination-container"
+            @size-change="diahandleSizeChange"
+            @current-change="diahandleCurrentChange"
+            background></el-pagination>
+        </div>
+      </el-dialog>
+
     </div>
   </div>
 </template>
@@ -85,6 +158,7 @@
           },
           barWidth: '',
           legend: {
+            show: true,
             selectedMode: 'single',
             data: ['品牌', '空间', '场地']
           },
@@ -112,16 +186,23 @@
               name: '空间',
               type: 'bar',
               stack: '总量',
-              data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101]
+              data: []
             },
             {
               name: '场地',
               type: 'bar',
               stack: '总量',
-              data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191]
+              data: []
             }
           ]
-        }
+        },
+
+        // dialog分页器设置
+        dialogTitle: '',
+        diapageTotal: 0,
+        pageSizeArr: [20, 40, 80, 100],
+        diapageSize: 20,
+        diacurrentPage: 1
       }
     },
     mounted () {
@@ -152,12 +233,8 @@
         // 绘制图表
         self.statisticsChart.setOption(this.option);
       },
-      showVis () {
-        this.statisticsChart.dispatchAction({
-          type: 'dataZoom',
-          start: 20,
-          end: 30
-        });
+      showVis (param) {
+        console.log(this.statisticsChart)
       }
     },
     watch: {
