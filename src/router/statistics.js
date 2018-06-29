@@ -9,6 +9,7 @@ export default [{
   path: '/statistics',
   redirect: '/statistics/funnel',
   component: layout,
+  hidden: true,
   icon: 'icon-order',
   children: [
     // 场地统计
