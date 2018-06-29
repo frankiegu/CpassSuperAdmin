@@ -1,8 +1,8 @@
 import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
-import { downloadFile } from '@/config/utils'
+import { downloadFile, formatTimeString } from '@/config/utils'
 import radioPicker from '@/mixins/radio-datePicker'
-import { platformActivityList } from '@/service/market'
+import { spaceAccessSituation } from '@/service/statistics'
 
 export default {
   mixins: [tableMixins, radioPicker],
@@ -18,7 +18,7 @@ export default {
     }
   },
   mounted () {
-    // this.getPageData()
+    this.getPageData()
   },
   methods: {
     getPageData(page) {
@@ -26,16 +26,15 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        type: this.formData.type === 5 ? '' : this.formData.type,
-        status: this.formData.status === 5 ? '' : this.formData.status
+        type: this.formData.type === 5 ? '' : this.formData.type
       }
 
-      platformActivityList(paramsObj).then(res => {
+      spaceAccessSituation(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
-            this.pageTotal = data.total
-            this.tableData = data.result
+            this.pageTotal = data.pageList.total
+            this.tableData = data.pageList.result
           }
 
           this.tableLoading = false
@@ -49,16 +48,15 @@ export default {
     },
     // 导出数据
     exportExcel() {
-      if (!this.receiveList.length) {
+      if (!this.tableData.length) {
         return this.setMsg('暂无数据')
       }
       const downParams = {
-        couponType: this.couponBaseInfo.type,
-        couponId: this.couponId,
-        customerName: this.searchName,
-        useStatus: this.statusType + ''
+        exportType: 1,
+        startTime: this.dateRange ? formatTimeString(this.dateRange[0]) : null,
+        endTime: this.dateRange ? formatTimeString(this.dateRange[1]) : null
       }
-      let url = API_PATH + '/supervisor/platformCouponCustomer/export'
+      let url = API_PATH + '/supervisor/fieldStatistics/exportAccessStatistics'
       downloadFile(url, downParams)
     }
   }

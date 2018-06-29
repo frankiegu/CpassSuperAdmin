@@ -69,6 +69,11 @@ export default {
         }
       })
     },
+    // 承接datePicker
+    datePickerChange (page, dateRange) {
+      this.formData.reg_date = dateRange
+      this.getPageData(1)
+    },
     exportExcel() {
       if (!this.tableData.length) {
         return this.setMsg('暂无数据')

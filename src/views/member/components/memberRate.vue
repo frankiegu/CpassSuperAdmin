@@ -20,7 +20,11 @@
 
 <script>
   export default {
-    props: ['memberRateData'],
+    props: {
+      memberRateData: {
+        type: Array
+      }
+    },
     data () {
       return {
       }

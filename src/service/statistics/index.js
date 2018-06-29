@@ -18,3 +18,18 @@ export const findAddStoreDetail = (obj) => fetch(API_PATH + '/supervisor/fieldSt
 
 // 场地统计-查询新增场地详情列表
 export const findAddFieldDetail = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/findAddFieldDetail', obj, 'POST')
+
+// 地区分析-空间地区分布
+export const storeDistributeByArea = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/storeDistributeByArea', obj, 'POST')
+
+// 地区分析-场地地区分布
+export const fieldDistributeByArea = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/fieldDistributeByArea', obj, 'POST')
+
+// 场地统计-浏览统计-品牌
+export const spaceAccessSituation = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/spaceAccessSituation', obj, 'POST')
+
+// 场地统计-浏览统计-空间
+export const storeAccessSituation = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/storeAccessSituation', obj, 'POST')
+
+// 场地统计-浏览统计-场地
+export const fieldAccessSituation = (obj) => fetch(API_PATH + '/supervisor/fieldStatistics/fieldAccessSituation', obj, 'POST')

@@ -23,7 +23,7 @@
       </div>
 
       <!--统计图-->
-      <div id="myChart" class="mt30 mb30" @click="showVis" style="width: 100%;height: 500px;"></div>
+      <div id="myChart" class="mt30 mb30" @click="showVis" style="width: 100%;height: 600px;"></div>
 
       <div class="select-type mt10 mb10">
         <span class="lh32">品牌浏览量统计明细</span>
@@ -77,6 +77,12 @@
         statisticsChart: '', // charts
         screenWidth: document.body.clientWidth, // 屏幕宽度
         option: {
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
           barWidth: '',
           legend: {
             selectedMode: 'single',
@@ -146,8 +152,12 @@
         // 绘制图表
         self.statisticsChart.setOption(this.option);
       },
-      showVis (params) {
-        console.log(this.statisticsChart)
+      showVis () {
+        this.statisticsChart.dispatchAction({
+          type: 'dataZoom',
+          start: 20,
+          end: 30
+        });
       }
     },
     watch: {

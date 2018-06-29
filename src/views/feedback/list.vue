@@ -6,16 +6,7 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
-          <el-date-picker
-            v-model="formData.reg_date"
-            @change="getPageData(1)"
-            type="daterange"
-            align="right"
-            clearable
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            placeholder="选择提交日期"
-            :picker-options="pickerOptions"></el-date-picker>
+          <lh-datePicker label="提交日期" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
         <el-form-item>
@@ -62,7 +53,7 @@
 
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <span class="view" @click="viewDetail(scope.row.id)">查看</span>
+            <el-button type="text" class="lh-table-btn" @click="viewDetail(scope.row.id)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,7 +83,7 @@
         <div class="label-con"><div class="intro-desc">{{ content }}</div></div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
@@ -128,10 +119,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .view{
-      color: #5E80E5;
-      cursor: pointer;
     }
     .detail-info{
       clear: both;

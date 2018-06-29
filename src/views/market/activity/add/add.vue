@@ -168,6 +168,7 @@
                   <el-input
                     :maxlength="4"
                     :autofocus="true"
+                    :disabled="scope.row.disabled"
                     v-model.trim="scope.row.quantity"
                     @input.native="handleInputQuantity(scope.row.quantity, scope.row.id, scope.row.type, scope.row.maxQuantity)"
                   ></el-input>
@@ -203,7 +204,7 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span style="cursor: pointer;" @click="deletePrize(scope.row.id)">删除</span>
+                  <span style="cursor: pointer;" @click="deletePrize(scope.row.index)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -473,6 +474,8 @@ export default {
               this.activityTab = 2
               this.loadingOnePart = false
               this.validatePartOne = true
+              document.documentElement.scrollTop = 0
+              document.body.scrollTop = 0
               break;
             case '2':
               // ajaxParams.step = 2
@@ -487,6 +490,8 @@ export default {
               } else if (!this.prizeList.every(this.checkPrizeQuantity) || !this.prizeList.every(this.checkPrizeProbability)) {
                 this.$message.info('请确定奖品信息填写无误')
               }
+              document.documentElement.scrollTop = 0
+              document.body.scrollTop = 0
               break;
             case '3':
               // ajaxParams.step = 3
@@ -634,8 +639,6 @@ export default {
               }
               break;
           }
-        } else {
-          // return
         }
       });
     },
@@ -741,6 +744,11 @@ export default {
                 redEnvelopeType: v.type + '',
                 redEnvelopeAmount: v.amount
               }
+              if (this.type === 'edit' && prize.type === 1) {
+                prize.disabled = true
+              } else {
+                prize.disabled = false
+              }
               this.prizeList.push(prize)
             })
             findUsableCouponByType().then(res => {
@@ -756,7 +764,8 @@ export default {
                 let giftCouponArray = [] // 红包数组
                 let giftRedpacketArray = [] // 红包数组
                 // 奖品数组
-                this.prizeList.forEach(v => {
+                this.prizeList.forEach((v, i) => {
+                  v.index = i
                   let tempCoupon, tempReEvenlope
                   if (v.type === 1) {
                     // 优惠券
@@ -820,6 +829,7 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
+          console.log('getData', this.prizeList)
           if (this.type) {
             this.checkPrize()
           }
@@ -830,39 +840,41 @@ export default {
      * part 1
      * */
     dateChange (val) {
-      let start = new Date(val[0])
-      let sy = start.getFullYear()
-      let sm = start.getMonth()
-      let sd = start.getDate()
-      let sH = start.getHours()
-      let sM = start.getMinutes()
-      let end = new Date(val[1])
-      let ey = end.getFullYear()
-      let em = end.getMonth()
-      let ed = end.getDate()
-      let eH = end.getHours()
-      let eM = end.getMinutes()
+      if (val) {
+        let start = new Date(val[0])
+        let sy = start.getFullYear()
+        let sm = start.getMonth()
+        let sd = start.getDate()
+        let sH = start.getHours()
+        let sM = start.getMinutes()
+        let end = new Date(val[1])
+        let ey = end.getFullYear()
+        let em = end.getMonth()
+        let ed = end.getDate()
+        let eH = end.getHours()
+        let eM = end.getMinutes()
 
-      // 活动展示时间
-      this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
-      // 活动隐藏时间
-      this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
-      // 活动开始/结束日期
-      sm = sm + 1
-      sm = sm >= 10 ? sm : '0' + sm
-      sd = sd >= 10 ? sd : '0' + sd
-      sH = sH >= 10 ? sH : '0' + sH
-      sM = sM >= 10 ? sM : '0' + sM
+        // 活动展示时间
+        this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+        // 活动隐藏时间
+        this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+        // 活动开始/结束日期
+        sm = sm + 1
+        sm = sm >= 10 ? sm : '0' + sm
+        sd = sd >= 10 ? sd : '0' + sd
+        sH = sH >= 10 ? sH : '0' + sH
+        sM = sM >= 10 ? sM : '0' + sM
 
-      em = em + 1
-      em = em >= 10 ? em : '0' + em
-      ed = ed >= 10 ? ed : '0' + ed
-      eH = eH >= 10 ? eH : '0' + eH
-      eM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-      this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
-      this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+        em = em + 1
+        em = em >= 10 ? em : '0' + em
+        ed = ed >= 10 ? ed : '0' + ed
+        eH = eH >= 10 ? eH : '0' + eH
+        eM = eM >= 10 ? eM : '0' + eM
+        this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
+        this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
+        this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
+        this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+      }
     },
 
     /**
@@ -938,11 +950,13 @@ export default {
             // useExplain: this.addPrizeForm.showRedEnvelope ? this.addPrizeForm.redEnvelopeInstruction : this.addPrizeForm.useInstruction, // 奖品使用说明
             useExplain: this.addPrizeForm.useInstruction, // 奖品使用说明
             redEnvelopeType: this.addPrizeForm.redEnvelopeType, // 红包类型
-            redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount // 红包金额
+            redEnvelopeAmount: this.addPrizeForm.redEnvelopeAmount, // 红包金额
+            disabled: false
           }
           this.prizeList.push(prize)
-          this.prizeList.forEach(v => {
+          this.prizeList.forEach((v, i) => {
             this.totalProbability = this.totalProbability + (v.probability - 1 + 1)
+            v.index = i
           })
           this.dialogVisible = false
           this.addPrizeForm = {
@@ -989,11 +1003,15 @@ export default {
       }
     },
     // 删除奖品
-    deletePrize (id) {
+    deletePrize (index) {
       this.prizeList.forEach((v, i) => {
-        if (v.id === id) {
+        if (index === i) {
           this.prizeList.splice(i, 1)
         }
+      })
+      // 重新排序
+      this.prizeList.forEach((v, i) => {
+        v.index = i
       })
     },
     // 判断prizeList所有元素的数量输入验证是否都通过
@@ -1010,28 +1028,41 @@ export default {
       findUsableCouponByType().then(res => {
         if (res.status === 'true') {
           couponRest = res.info
-          let allCouponIds = []
-          // 奖品数组
-          for (let i = 0; i < couponRest.length; i++) {
-            allCouponIds.push(couponRest[i].id)
-            for (let j = 0; j < this.prizeList.length; j++) {
-              if (this.prizeList[j].id === couponRest[i].id) {
-                if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
-                  let temp = this.prizeList[j]
-                  temp.validate = true
-                  temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
-                  this.prizeList.splice(j, temp)
-                } else {
-                  this.prizeList[j].validate = false
-                }
-              } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
-                if (this.type === 'copy') {
-                  this.prizeList[j].validate = true
-                  this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
-                } else if (this.type === 'edit') {
-                  this.prizeList[j].maxQuantity = this.prizeList[j].quantity
+          if (couponRest.length > 0) {
+            let allCouponIds = []
+            // 奖品数组
+            for (let i = 0; i < couponRest.length; i++) {
+              allCouponIds.push(couponRest[i].id)
+              for (let j = 0; j < this.prizeList.length; j++) {
+                if (this.prizeList[j].id === couponRest[i].id) {
+                  if (this.prizeList[j].quantity > couponRest[i].notUseQuantity) {
+                    if (this.type === 'copy') {
+                      let temp = this.prizeList[j]
+                      temp.validate = true
+                      temp.prizeQuantityWarning = '奖品数量不能超过券剩余量'
+                      this.prizeList.splice(j, temp)
+                    }
+                  } else {
+                    this.prizeList[j].validate = false
+                  }
+                } else if (this.prizeList[j].id && allCouponIds.indexOf(this.prizeList[j].id) < 0) {
+                  if (this.type === 'copy') {
+                    this.prizeList[j].validate = true
+                    this.prizeList[j].prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                  } else if (this.type === 'edit') {
+                    this.prizeList[j].maxQuantity = this.prizeList[j].quantity
+                  }
                 }
               }
+            }
+          } else {
+            if (this.type === 'copy') {
+              this.prizeList.forEach(v => {
+                if (v.type === 1) {
+                  v.validate = true
+                  v.prizeQuantityWarning = '券剩余量为0,请删除并选择其他奖品'
+                }
+              })
             }
           }
         }
@@ -1110,6 +1141,7 @@ export default {
   }
   .quill-editor-box {
     margin-bottom: 0;
+    padding-bottom: 45px;
   }
   .ql-container.ql-snow {
     min-height: 180px;

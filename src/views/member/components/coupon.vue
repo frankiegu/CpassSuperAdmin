@@ -75,7 +75,11 @@
   import { couponStatistics, appCouponList } from '@/service/member'
   export default {
     mixins: [tableMixins],
-    props: ['id'],
+    props: {
+      id: {
+        type: String
+      }
+    },
     data() {
       return {
         couponStatisticsObj: {},
