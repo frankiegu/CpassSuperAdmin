@@ -84,7 +84,7 @@
       }
     },
     mounted() {
-      console.log('test', this.tipsWidth);
+      // console.log('test', this.tipsWidth);
     },
     methods: {
       clickUpload() {

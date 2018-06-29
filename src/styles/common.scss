@@ -87,6 +87,9 @@
 
 /* other
 -------------------------- */
+.mc, .margin-center {
+  margin: 0 auto;
+}
 .fz12, .font-size-12px {
   font-size: 12px;
 }
@@ -106,7 +109,7 @@
   font-size: 50px;
 }
 
-.cursor-pointer {
+.cp, cursor-pointer {
   cursor: pointer;
 }
 .outline-none {
@@ -231,6 +234,12 @@
 }
 .width105px {
   width: 105px !important;
+}
+.width110px {
+  width: 110px;
+}
+.width102px {
+  width: 102px;
 }
 .width100px {
   width: 100px !important;
