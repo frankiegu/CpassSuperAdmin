@@ -44,7 +44,7 @@ export default {
       formDataRule: {
         title: [{ required: true, trigger: ['blur', 'change'], message: '精选标题不能为空' }],
         subhead: [{ required: true, trigger: ['blur', 'change'], message: '副标题不能为空' }],
-        avator: [{ required: true, message: '请上传头像', trigger: ['blur', 'change'] }]
+        bannerPath: [{ required: true, message: '请上传头像', trigger: ['blur', 'change'] }]
       },
       // 是否可编辑
       // 富文本编辑器当前字数长度

@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item prop="subhead" label="副标题">
-        <el-input class="width300px" v-model.trim="formData.subhead" placeholder="请输入副标题"></el-input>
+        <el-input class="width300px" v-model.trim="formData.subhead" :disabled="noAllow" placeholder="请输入副标题"></el-input>
       </el-form-item>
 
       <el-form-item prop="bannerPath" label="活动banner">
@@ -23,6 +23,7 @@
           @uploadImg="val => formData.bannerPath = val"
           :imgUrl="formData.bannerPath"
           :tipsWidth="600"
+          :disabled="noAllow"
           :size="80"/>
       </el-form-item>
 
@@ -50,19 +51,20 @@
               v-model.trim="formData.content"
               @change="onTextChange($event)"
               :options="editorOption"
+              :disabled="noAllow"
               ref="myQuillEditor" />
           </div>
         </el-form-item>
       </div>
 
       <el-form-item label="精选列表">
-        <el-button @click="showTeamDialog('add')" type="primary" icon="el-icon-circle-plus" class="mb18">添加场地</el-button>
+        <el-button @click="showTeamDialog('add')" type="primary" :disabled="noAllow" icon="el-icon-circle-plus" class="mb18">添加场地</el-button>
         <el-table :data="teamsData" class="width100" max-height="295" border>
           <el-table-column label="所属品牌" prop="spaceName"></el-table-column>
           <el-table-column label="所属空间" prop="storeName"></el-table-column>
           <el-table-column label="场地名称" prop="fieldName"></el-table-column>
           <el-table-column label="操作">
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="!noAllow">
               <span @click="showTeamDialog('edit', scope.row, scope.$index)" class="lh-table-btn theme-blue">编辑</span>
               <span @click="deleteField(scope.$index)" class="lh-table-btn theme-gray">删除</span>
             </template>
@@ -71,7 +73,7 @@
       </el-form-item>
 
       <el-form-item class="lh-form-item0">
-        <el-button @click="submitForm('formData')" type="primary" class="lh-btn-mini">确认</el-button>
+        <el-button @click="submitForm('formData')" type="primary" class="lh-btn-mini">{{ noAllow ? '编辑' : '保存' }}</el-button>
       </el-form-item>
     </el-form>
 
@@ -102,8 +104,8 @@ export default {
   data () {
     return {
       fieldId: this.$route.query.fieldId,
-      title: this.$route.query.fieldId ? '编辑精选' : '添加精选',
-      noAllow: this.$route.query.noAllow
+      noAllow: Boolean(this.$route.query.noAllow),
+      title: ''
     }
   },
   mounted() {
@@ -111,6 +113,7 @@ export default {
   },
   methods: {
     setPageTitle() {
+      this.title = this.noAllow ? '精选详情' : (this.fieldId ? '编辑精选' : '添加精选')
       document.title = this.title
       this.$store.commit('NAV_CRUMB', this.title)
       this.$route.meta.title = this.title
@@ -178,37 +181,41 @@ export default {
     },
     getSubmitParam() {
       this.ajaxParam = {
+        id: this.formData.id,
+        title: this.formData.title,
+        subhead: this.formData.subhead,
+        bannerPath: this.formData.bannerPath,
+        content: this.formData.content,
         selectionFieldListParam: this.teamsData.map((item) => ({
           spaceId: item.spaceId,
           fieldName: item.fieldName,
           storeId: item.storeId,
           fieldId: item.fieldId,
           imgPath: item.imgPath
-        })),
-        platformSelection: {
-          id: this.formData.id,
-          title: this.formData.title,
-          subhead: this.formData.subhead,
-          bannerPath: this.formData.bannerPath,
-          content: this.formData.content
-        }
+        }))
       }
       // console.log('test', this.ajaxParam)
     },
     submitForm(formName) {
+      if (this.noAllow) {
+        this.noAllow = !this.noAllow
+        return
+      }
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.getSubmitParam()
 
           this.ajaxName(this.ajaxParam).then(res => {
             if (res.status === 'true') {
+              this.noAllow = !this.noAllow
+
               if (this.fieldId) {
                 this.setMsg('success', '更新精选成功')
               } else {
                 this.setMsg('success', '添加精选成功')
+                this.$router.replace({ path: '/market/c-pass' })
               }
-
-              // this.$router.replace({ path: '/market/c-pass' })
             } else {
               this.setMsg('error', res.msg)
             }

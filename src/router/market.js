@@ -15,7 +15,7 @@ export default [{
     path: 'c-pass',
     component: _import('market/c-pass/list')
   }, {
-    name: ' ',
+    name: '',
     path: 'c-pass/com',
     hidden: true,
     component: _import('market/c-pass/com')

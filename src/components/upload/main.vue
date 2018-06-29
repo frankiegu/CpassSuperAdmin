@@ -17,7 +17,8 @@
         v-if="imgUrl"
         :src="imgUrl + zoomImgSize(size, size)"
         class="avatar"
-        :style="imgSize" />
+        :style="imgSize"
+        :class="{'not-allowed': disabled}" />
 
       <i
         v-else

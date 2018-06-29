@@ -129,8 +129,8 @@
 @mixin table-link {
   display: inline-block;
   color: $theme-blue;
-  height: 32px;
-  line-height: 32px;
+  height: 22px;
+  line-height: 22px;
   vertical-align: middle;
   cursor: pointer;
 
@@ -141,6 +141,10 @@
 .lh-table-btn {
   padding: 0 4px;
   @include table-link;
+}
+.lh-table-switch {
+  margin-left: 3px;
+  margin-right: -6px;
 }
 
 /* 分页 */
