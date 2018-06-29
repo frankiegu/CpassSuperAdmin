@@ -5,14 +5,14 @@ import { _import } from '@/config/env'
 import layout from '@/views/layout/layout.vue'
 
 export default [{
-  name: '实例',
+  name: '小部件',
   path: '/examples',
   redirect: '/examples/counter',
+  icon: 'icon-Set',
   component: layout,
-  hidden: true,
+  hidden: process.env.NODE_ENV,
   children: [
     { name: 'counter', path: 'counter', component: _import('examples/counter') },
-    { name: 'menu', path: 'menu', component: _import('examples/menu') },
     { name: '图标', path: 'svgs', component: _import('examples/svg-icons/index') }
   ]
 }];

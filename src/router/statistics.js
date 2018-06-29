@@ -10,7 +10,7 @@ export default [{
   redirect: '/statistics/funnel',
   component: layout,
   hidden: true,
-  icon: 'icon-order',
+  icon: 'icon-Statistics',
   children: [
     // 场地统计
     {
