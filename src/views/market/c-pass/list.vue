@@ -4,7 +4,7 @@
 
     <el-form :inline="true" :model="formDate" class="lh-search-box" @submit.native.prevent>
       <router-link to="/market/c-pass/com" class="el-icon-circle-plus to-bottom-right lh-form-btn">&nbsp;添加精选</router-link>
-      <el-input v-model.trim="formDate.title" @keyup.native.nter="getPageData(1)" placeholder="请输入精选标题" class="lh-form-item">
+      <el-input v-model.trim="formDate.title" @keyup.native.enter="getPageData(1)"  placeholder="请输入精选标题" class="lh-form-item">
         <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
       </el-input>
     </el-form>
