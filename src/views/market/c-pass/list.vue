@@ -22,7 +22,7 @@
         </el-table-column>
         <el-table-column label="标题" >
           <template slot-scope="scope">
-            <router-link :to="'/market/c-pass/com?id=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
+            <router-link :to="'/market/c-pass/com?noAllow=true&fieldId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
           </template>
         </el-table-column>
         <el-table-column label="状态" >
@@ -61,7 +61,7 @@
         class="width100" border>
         <el-table-column label="标题" >
           <template slot-scope="scope">
-            <router-link :to="'/market/c-pass/com?noAllow=1&id=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
+            <router-link :to="'/market/c-pass/com?noAllow=true&fieldId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
           </template>
         </el-table-column>
 
@@ -90,8 +90,12 @@
               <lh-svg @click.native="setRelease(scope.row.id, 1, scope.row.status)" icon-class="icon-love" class="ph4 fill-grayish cp"></lh-svg>
             </el-tooltip>
 
-            <router-link :to="'/market/c-pass/com?noAllow=1&id=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+            <router-link :to="'/market/c-pass/com?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
             <span @click="deleteField(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
+
+            <el-tooltip :content="scope.row.status === 1 ? '点击关闭精选' : '点击开启精选'" placement="top">
+              <el-switch v-model="scope.row.status" @change="changeStatus(scope.row.id, scope.row.status)" class="lh-table-switch" :active-value="1" :inactive-value="0" :active-color="switchActiveColor"></el-switch>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -112,7 +116,7 @@
 
 <script>
 import listMixins from './list.mixins'
-import { cPassShowcaseList, cPassList, cPassDelWellChosen, cPassSetTop, cPassSetSelectionType } from '@/service/market'
+import { cPassShowcaseList, cPassList, cPassDelWellChosen, cPassSetTop, cPassSetSelectionType, cPassSetReleaseType } from '@/service/market'
 
 export default {
   mixins: [listMixins],
@@ -122,6 +126,34 @@ export default {
     this.getPageData()
   },
   methods: {
+    changeStatus(id, val) {
+      let target = this.tableData.find(item => item.id === id)
+      let ajaxParam = {
+        selectionId: id,
+        releaseType: val
+      }
+      if (val === 0) {
+        this.$confirm('确认关闭该精选？', '提示', { type: 'warning' }).then(() => {
+          this.handleSwitchStatus(ajaxParam)
+        }).catch(() => {
+          this.setMsg('已取消操作')
+          target.status = 1
+        })
+      } else {
+        this.handleSwitchStatus(ajaxParam)
+      }
+    },
+    // 精选 开启/关闭
+    handleSwitchStatus(ajaxParam) {
+      cPassSetReleaseType(ajaxParam).then(res => {
+        if (res.status === 'true') {
+          this.setMsg('success', '修改成功')
+        } else {
+          this.setMsg('error', res.msg)
+          this.getPageData()
+        }
+      })
+    },
     /**
      * 加精和取精
      * @param {[Numer]} id       [场地id]
