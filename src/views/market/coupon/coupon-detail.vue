@@ -132,7 +132,16 @@
             <h3 class="coupon-tab-title mb22">使用限制</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 2">
+                  <el-col>
+                    <lh-item label="使用门槛" label-width="120px">
+                      <span v-if="platformCashCoupon.applyLowerLimit">订单金额满{{platformCashCoupon.applyLowerLimit}}元可用</span>
+                      <span v-if="!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === ''">无门槛</span>
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
                       <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
