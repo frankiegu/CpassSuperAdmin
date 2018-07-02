@@ -257,14 +257,14 @@
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="couponAmount"
               label="优惠金额"
               sortable
