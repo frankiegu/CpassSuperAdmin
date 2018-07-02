@@ -221,6 +221,9 @@
               prop="customerName"
               label="领取人"
               width="120">
+              <template slot-scope="scope">
+                {{ (scope.row.customerName === '' || scope.row.customerName === null) ? '-' : scope.row.customerName }}
+              </template>
             </el-table-column>
             <el-table-column
               prop="couponReceiveName"
@@ -255,6 +258,9 @@
               label="使用时间"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.useTime === '' || scope.row.useTime === null) ? '-' : scope.row.useTime }}
+              </template>
             </el-table-column>
             <el-table-column
               v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
@@ -262,6 +268,9 @@
               label="订单金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.orderAmount === '' || scope.row.orderAmount === null) ? '-' : scope.row.orderAmount }}
+              </template>
             </el-table-column>
             <el-table-column
               v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
@@ -269,6 +278,9 @@
               label="优惠金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.couponAmount === '' || scope.row.couponAmount === null) ? '-' : scope.row.couponAmount }}
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination
@@ -559,6 +571,7 @@
       },
       // 领取列表排序
       sortCoupon (sort) {
+        console.log('sort')
         // 卡券id 10升序 11降序 领取时间 20 21 使用时间 30 31 订单金额 40 41 优惠金额 50 51
         if (sort.prop === 'couponCode') {
           this.receiveOrderBy = sort.order === 'ascending' ? 10 : 11
