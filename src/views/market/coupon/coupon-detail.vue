@@ -136,9 +136,11 @@
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
                       <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
-                        <span v-if="item.type === 1">{{fieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
-                        <span v-if="item.type === 2">路演厅</span>
-                        <span v-if="item.type === 4">{{fieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                        <span v-if="item.type === 1">{{fieldTypeList.length > (index + 1) ? '会议室、' : '会议室'}}</span>
+                        <span v-if="item.type === 2">{{fieldTypeList.length > (index + 1) ? '路演厅、' : '路演厅'}}</span>
+                        <span v-if="item.type === 3">{{fieldTypeList.length > (index + 1) ? '移动工位、' : '移动工位'}}</span>
+                        <span v-if="item.type === 4">{{fieldTypeList.length > (index + 1) ? '多功能场地、' : '多功能场地'}}</span>
+                        <span v-if="item.type === 6">{{fieldTypeList.length > (index + 1) ? '时租工位、' : '时租工位'}}</span>
                       </p>
                     </lh-item>
                   </el-col>
