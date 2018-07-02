@@ -733,7 +733,7 @@ export default {
                 type: v.platformCouponId ? 1 : 2,
                 prizeName: v.platformCouponId ? v.couponName : '普通红包(' + v.amount + '元)',
                 quantity: v.giftQuantity,
-                probability: v.lotteryRate * 100,
+                probability: parseFloat((v.lotteryRate * 100).toPrecision(12)).toFixed(2),
                 id: v.platformCouponId,
                 validate: false,
                 probabilityValidate: false,

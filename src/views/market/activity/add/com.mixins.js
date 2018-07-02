@@ -174,10 +174,10 @@ export default {
           type: 1,
           name: '小时券'
         },
-        {
-          type: 2,
-          name: '代金券'
-        },
+        // {
+        //   type: 2,
+        //   name: '代金券'
+        // },
         {
           type: 3,
           name: '礼品券'
