@@ -49,7 +49,11 @@
                   {{scope.row.startDate}} <br> 至 <br> {{scope.row.endDate}}
                 </template>
               </el-table-column>
-              <el-table-column label="获取途径" prop="receiveName" align="left"></el-table-column>
+              <el-table-column label="获取途径" align="left">
+                <template slot-scope="scope">
+                  <el-tag>{{scope.row.receiveName}}</el-tag>
+                </template>
+              </el-table-column>
               <el-table-column label="获取时间" prop="receiveTime" width="180" align="left"></el-table-column>
             </el-table>
 

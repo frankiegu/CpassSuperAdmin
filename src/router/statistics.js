@@ -9,7 +9,8 @@ export default [{
   path: '/statistics',
   redirect: '/statistics/funnel',
   component: layout,
-  icon: 'icon-order',
+  hidden: true,
+  icon: 'icon-Statistics',
   children: [
     // 场地统计
     {

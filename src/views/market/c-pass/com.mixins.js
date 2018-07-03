@@ -1,28 +1,22 @@
 import { API_PATH } from '@/config/env'
+import { fieldData } from './common'
 export default {
   data () {
     return {
-      formData: {
-        selectedContent: '',
-        idx: 0,
-        name: '',
-        work: '',
-        email: '',
-        avator: ''
-      },
-      formDataRule: {
-        name: [{ required: true, trigger: ['blur', 'change'], message: '姓名不能为空' }],
-        work: [{ required: true, trigger: ['blur', 'change'], message: '职务不能为空' }],
-        email: [{ required: true, trigger: ['blur', 'change'], message: '职务不能为空' }],
-        avator: [{ required: true, message: '头像不能为空', trigger: ['blur', 'change'] }]
-      },
-
       // 团队弹出框
       teamVisible: false,
       onType: '',
-      teamData: { idx: 0, name: '', work: '', email: '', avator: '' },
-      teamData2: { idx: 0, name: '', work: '', email: '', avator: '' },
-      teamList: [],
+
+      renderSelectField: false,
+      teamData: fieldData, // 单个场地的数据
+      teamDefaultData: fieldData,
+      // 精选场地table
+      teamsData: [],
+      spaceId: null,
+
+      ajaxName: null, // 添加和编辑的接口名
+      ajaxParam: {},  // 提交表单的参数
+      platformSelectionField: [],
 
       // 左上角标题
       pageTitle: '',
@@ -32,6 +26,26 @@ export default {
       },
       // 图片上传地址
       imgServer: API_PATH + '/supervisor/file/upload',
+
+      formData: {
+        id: null,
+        title: null,
+        subhead: null,
+        bannerPath: null,
+        content: null,
+
+        status: null,
+        pvCount: null,
+        isSelection: null,
+        topTime: null,
+        isDelete: null,
+        created: null
+      },
+      formDataRule: {
+        title: [{ required: true, trigger: ['blur', 'change'], message: '精选标题不能为空' }],
+        subhead: [{ required: true, trigger: ['blur', 'change'], message: '副标题不能为空' }],
+        bannerPath: [{ required: true, message: '请上传头像', trigger: ['blur', 'change'] }]
+      },
       // 是否可编辑
       // 富文本编辑器当前字数长度
       quillLength: 0,
@@ -75,11 +89,6 @@ export default {
       }
     }
   },
-  props: {},
-  components: {},
-  mounted() {
-  },
-  watch: {},
-  computed: {},
+  mounted() {},
   methods: {}
 }

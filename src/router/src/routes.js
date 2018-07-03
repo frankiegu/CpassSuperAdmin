@@ -29,7 +29,6 @@ export const constantRouterMap = [
       ...error
     ]
   },
-  ...example,
   ...client,
   ...member,
   ...field,
@@ -40,6 +39,7 @@ export const constantRouterMap = [
   ...market,
   ...statistics,
   ...register,
+  ...example,
   /* 必须保证404页面在最后引入，有坑 */
   {
     name: '没有发现 ',

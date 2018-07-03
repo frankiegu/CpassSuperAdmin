@@ -85,6 +85,7 @@
           },
           barWidth: '',
           legend: {
+            show: true,
             selectedMode: 'single',
             data: ['品牌', '空间', '场地']
           },
@@ -112,16 +113,23 @@
               name: '空间',
               type: 'bar',
               stack: '总量',
-              data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101]
+              data: []
             },
             {
               name: '场地',
               type: 'bar',
               stack: '总量',
-              data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191]
+              data: []
             }
           ]
-        }
+        },
+
+        // dialog分页器设置
+        dialogTitle: '',
+        diapageTotal: 0,
+        pageSizeArr: [20, 40, 80, 100],
+        diapageSize: 20,
+        diacurrentPage: 1
       }
     },
     mounted () {
@@ -152,12 +160,8 @@
         // 绘制图表
         self.statisticsChart.setOption(this.option);
       },
-      showVis () {
-        this.statisticsChart.dispatchAction({
-          type: 'dataZoom',
-          start: 20,
-          end: 30
-        });
+      showVis (param) {
+        console.log(this.statisticsChart)
       }
     },
     watch: {

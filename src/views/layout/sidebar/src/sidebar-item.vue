@@ -7,12 +7,12 @@
         </el-menu-item>
       </router-link>
 
-      <el-submenu v-if="!item.noDropdown && !item.hidden" :index="item.name">
+      <el-submenu v-if="(item.hidden === 'development') || (!item.noDropdown && !item.hidden)" :index="item.name">
         <template slot="title">
           <lh-svg v-if='item.icon' :iconClass="item.icon" class="icon"></lh-svg>{{item.name}}
         </template>
 
-        <template v-if='!child.hidden' v-for="child in item.children">
+        <template v-if="(item.hidden === 'development') || !child.hidden" v-for="child in item.children">
           <router-link
             v-if="child.path[0] === '/'"
             class="menu-indent"

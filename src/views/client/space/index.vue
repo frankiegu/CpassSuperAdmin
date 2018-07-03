@@ -38,7 +38,7 @@
               <el-tooltip placement="top"
                 :content="starSpaceList.length === 1 ? '至少保留一个明星空间，不可取消' : '点击取消该明星空间'">
                 <span @click="setStarSpace(scope.row)">
-                  <lh-svg icon-class="icon-like" class="ph4 svg18 fill-blue table-link"></lh-svg>
+                  <lh-svg icon-class="icon-love" class="ph4 fill-blue table-link"></lh-svg>
                 </span>
               </el-tooltip>
 
@@ -95,7 +95,7 @@
               <el-tooltip placement="top">
                 <p slot="content">{{starSpaceList.length < 5 ? '点击设置为明星空间' : '最多允许设置5个明星空间'}}</p>
                 <span @click="setStarSpace(scope.row)">
-                  <lh-svg icon-class="icon-like" :class="['ph4', 'svg18', {'table-link': starSpaceList.length < 5}]" />
+                  <lh-svg icon-class="icon-love" :class="['ph4', 'fill-grayish', {'table-link': starSpaceList.length < 5}]" />
                 </span>
               </el-tooltip>
 

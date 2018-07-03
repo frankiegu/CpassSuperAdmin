@@ -11,7 +11,8 @@
         <div v-else-if="index === 2">本周变化</div>
         <div v-else-if="index === 3">本月变化</div>
         <span class="item-num theme-blue">
-          {{ item }}
+          <!--{{ item }}-->
+          <countTo :startVal='0' :endVal='item' :duration='1000'></countTo>
         </span>
       </div>
     </el-col>
@@ -19,7 +20,9 @@
 </template>
 
 <script>
+  import countTo from 'vue-count-to'
   export default {
+    components: { countTo },
     props: {
       memberRateData: {
         type: Array

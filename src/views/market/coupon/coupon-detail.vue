@@ -85,7 +85,7 @@
                 <span>&nbsp;{{receiveStatistics.used || 0}}/{{receiveStatistics.received || 0}}</span>
               </lh-item>
             </el-col>
-            <el-col :span="6" v-if="couponBaseInfo.type === 1">
+            <el-col :span="6" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
               <lh-item label="用券总成交额：" label-width="100px">
                 <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;</span>元
               </lh-item>
@@ -132,13 +132,24 @@
             <h3 class="coupon-tab-title mb22">使用限制</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 2">
+                  <el-col>
+                    <lh-item label="使用门槛" label-width="120px">
+                      <span v-if="platformCashCoupon.applyLowerLimit">订单金额满{{platformCashCoupon.applyLowerLimit}}元可用</span>
+                      <span v-if="!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === ''">无门槛</span>
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
-                        <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
-                        <span v-if="item.type === 2">路演厅</span>
-                        <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                      <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
+                        <span v-if="item.type === 1">{{fieldTypeList.length > (index + 1) ? '会议室、' : '会议室'}}</span>
+                        <span v-if="item.type === 2">{{fieldTypeList.length > (index + 1) ? '路演厅、' : '路演厅'}}</span>
+                        <span v-if="item.type === 3">{{fieldTypeList.length > (index + 1) ? '移动工位、' : '移动工位'}}</span>
+                        <span v-if="item.type === 4">{{fieldTypeList.length > (index + 1) ? '多功能场地、' : '多功能场地'}}</span>
+                        <span v-if="item.type === 6">{{fieldTypeList.length > (index + 1) ? '时租工位、' : '时租工位'}}</span>
                       </p>
                     </lh-item>
                   </el-col>
@@ -210,6 +221,9 @@
               prop="customerName"
               label="领取人"
               width="120">
+              <template slot-scope="scope">
+                {{ (scope.row.customerName === '' || scope.row.customerName === null) ? '-' : scope.row.customerName }}
+              </template>
             </el-table-column>
             <el-table-column
               prop="couponReceiveName"
@@ -244,20 +258,29 @@
               label="使用时间"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.useTime === '' || scope.row.useTime === null) ? '-' : scope.row.useTime }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.orderAmount === '' || scope.row.orderAmount === null) ? '-' : scope.row.orderAmount }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="couponAmount"
               label="优惠金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.couponAmount === '' || scope.row.couponAmount === null) ? '-' : scope.row.couponAmount }}
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination
@@ -290,7 +313,7 @@
         couponBaseInfo: {}, // 优惠券基本信息
         receiveStatistics: {}, // 优惠券领用情况
         couponDiscountContent: {}, // 优惠内容
-        platformHourCouponFieldTypeList: [], // 制定项目
+        fieldTypeList: [], // 制定项目
         conditionTrigger: [], // 触发条件
         storeList: [], // 卡券使用范围
         multipleSelection: [],
@@ -316,6 +339,49 @@
       }
     },
     methods: {
+      getPageData () {
+        couponDetail({ id: this.couponId }).then(res => {
+          if (res.status === 'true') {
+            this.couponBaseInfo = res.info.platformCoupon
+            this.getReceiveList()
+            this.couponTotalAmount = res.info.couponTotalAmount
+            this.receiveStatistics = res.info.statistics
+            this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
+            this.fieldTypeList = res.info.fieldTypeList
+            res.info.couponReceiveDetailList.forEach(v => {
+              if (v.receiveConditionStatus === 1) {
+                v.couponStatus = true
+              } else {
+                v.couponStatus = false
+              }
+            })
+            this.conditionTrigger = res.info.couponReceiveDetailList
+            if (this.couponBaseInfo.type === 1) {
+              this.couponDiscountContent = res.info.platformHourCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 2) {
+              this.platformCashCoupon = res.info.platformCashCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 3) {
+              this.couponDiscountContent = res.info.platformGiftCoupon
+              this.storeList = res.info.verifyStationList
+              this.storeList.forEach(v => {
+                v.useCouponAddress = v.cityName + v.districtName + v.address
+              })
+            }
+            if (res.info.platformCoupon.status === 1) {
+              this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
+              this.couponBaseInfo.controlStatus = true
+            } else if (res.info.platformCoupon.status === 3) {
+              this.couponBaseInfo.fizenStatusText = '点击启用优惠券'
+              this.couponBaseInfo.controlStatus = false
+            } else if (res.info.platformCoupon.status === 2) {
+              this.couponBaseInfo.fizenStatusText = '优惠券已过期'
+              this.couponBaseInfo.controlStatus = false
+            }
+          }
+        })
+      },
       // 删除优惠券
       deleteCoupon () {
         this.$confirm('此操作将永久删除该优惠券, 是否继续?', '提示', {
@@ -353,52 +419,6 @@
           });
         });
       },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      getPageData () {
-        couponDetail({ id: this.couponId }).then(res => {
-          if (res.status === 'true') {
-            this.couponBaseInfo = res.info.platformCoupon
-            this.getReceiveList()
-            this.couponTotalAmount = res.info.couponTotalAmount
-            this.receiveStatistics = res.info.statistics
-            this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
-            this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
-            res.info.couponReceiveDetailList.forEach(v => {
-              if (v.receiveConditionStatus === 1) {
-                v.couponStatus = true
-              } else {
-                v.couponStatus = false
-              }
-            })
-            this.conditionTrigger = res.info.couponReceiveDetailList
-            if (this.couponBaseInfo.type === 1) {
-              this.couponDiscountContent = res.info.platformHourCoupon
-              this.storeList = res.info.storeList
-            } else if (this.couponBaseInfo.type === 2) {
-              this.platformCashCoupon = res.info.platformCashCoupon
-              this.storeList = res.info.cashCouponStoreList
-            } else if (this.couponBaseInfo.type === 3) {
-              this.couponDiscountContent = res.info.platformGiftCoupon
-              this.storeList = res.info.verifyStationList
-              this.storeList.forEach(v => {
-                v.useCouponAddress = v.cityName + v.districtName + v.address
-              })
-            }
-            if (res.info.platformCoupon.status === 1) {
-              this.couponBaseInfo.fizenStatusText = '点击冻结优惠券'
-              this.couponBaseInfo.controlStatus = true
-            } else if (res.info.platformCoupon.status === 3) {
-              this.couponBaseInfo.fizenStatusText = '点击启用优惠券'
-              this.couponBaseInfo.controlStatus = false
-            } else if (res.info.platformCoupon.status === 2) {
-              this.couponBaseInfo.fizenStatusText = '优惠券已过期'
-              this.couponBaseInfo.controlStatus = false
-            }
-          }
-        })
-      },
       getReceiveList (page) {
         this.currentPage = page || this.currentPage
         let params = {
@@ -420,6 +440,9 @@
             })
           }
         })
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -548,6 +571,7 @@
       },
       // 领取列表排序
       sortCoupon (sort) {
+        console.log('sort')
         // 卡券id 10升序 11降序 领取时间 20 21 使用时间 30 31 订单金额 40 41 优惠金额 50 51
         if (sort.prop === 'couponCode') {
           this.receiveOrderBy = sort.order === 'ascending' ? 10 : 11
