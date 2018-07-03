@@ -483,8 +483,6 @@
       // 获取树形数据
       this.handleGetTreeData()
 
-      // 获取优惠券详情
-      if (this.$route.query.id) this.handleGetCouponDetail()
       // 获取核销点列表
       this.handleGetStation()
     },
@@ -522,6 +520,8 @@
           if (res.status === 'true') {
             this.stationList = res.info
             this.isWopVisible = false
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -530,6 +530,8 @@
         loadSpaceStoreTree({ filterName: '' }).then(res => {
           if (res.status === 'true') {
             this.treeData = res.info
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -744,16 +746,13 @@
                     if (item.children && item.children.length > 0) {
                       for (let i = 0; i < storeList.length; i++) {
                         let target = item.children.find(child => child.storeId === storeList[i].id)
-                        console.log(target, 'target')
                         if (target != null) {
                           nodeKeys.push(target.nodeKey)
-                          console.log(target.nodeKey)
                         }
                       }
                     }
                   })
                   this.$nextTick(() => {
-                    console.log(nodeKeys)
                     this.$refs.rangeTree.setCheckedKeys(nodeKeys)
                   })
                 }
@@ -766,7 +765,6 @@
                 couponForm.isAllStore = platformGiftCoupon.verifyStationType
                 if (verifyStationList.length > 0) {
                   this.$nextTick(() => {
-                    console.log(verifyStationList)
                     this.$refs.rangeTree.setCheckedNodes(verifyStationList)
                   })
                 }
