@@ -32,6 +32,14 @@
               type="datetimerange">
             </el-date-picker>
           </el-form-item>
+
+          <el-form-item label="使用限制" prop="useLimit">
+            <el-input v-model.trim="couponForm.useLimit" type="textarea" class="width340px"></el-input>
+          </el-form-item>
+
+          <el-form-item label="使用方法" prop="couponUsage">
+            <el-input v-model.trim="couponForm.couponUsage" type="textarea" class="width340px"></el-input>
+          </el-form-item>
         </div>
       </div>
 
@@ -53,7 +61,7 @@
               <el-form-item label="优惠内容" required>
                 减免场地订单
                 <el-select v-model="couponForm.subtractHour" class="width75px">
-                  <el-option v-for="i in 16" :key="i" :label="i / 2" :value="i / 2" />
+                  <el-option v-for="i in 8" :key="i" :label="i" :value="i" />
                 </el-select>
                 小时的费用
               </el-form-item>
@@ -280,9 +288,10 @@
         callback()
       }
       const checkAmount = (rule, value, callback) => {
-        if (value && (value.toString().indexOf('.') !== -1 ||
-          isNaN(Number(value)) || Number(value) < 1 || Number(value) > 999999)) {
-          callback(new Error('请输入1-999999的正整数'))
+        if (value && (isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 999999)) {
+          callback(new Error('请输入0-999999的正数'))
+        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
+          callback(new Error('最多允许输入两位小数'))
         }
         callback()
       }
@@ -347,6 +356,8 @@
           desc: '',
           quantity: '',
           expireDate: [],
+          useLimit: '', // 使用限制
+          couponUsage: '', // 使用方法
           couponType: 1, // 卡券类型
 
           // 小时券
@@ -383,6 +394,14 @@
           expireDate: [
             { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] },
             { validator: checkMinDate, trigger: ['blur', 'change'] }
+          ],
+          useLimit: [
+            { required: true, message: '请输入使用限制', trigger: ['blur', 'change'] },
+            { max: 500, message: '最大允许输入500字', trigger: ['blur', 'change'] }
+          ],
+          couponUsage: [
+            { required: true, message: '请输入使用方法', trigger: ['blur', 'change'] },
+            { max: 500, message: '最大允许输入500字', trigger: ['blur', 'change'] }
           ],
           voucherAmount: [
             { required: true, message: '请输入优惠金额', trigger: ['blur', 'change'] },
@@ -464,8 +483,6 @@
       // 获取树形数据
       this.handleGetTreeData()
 
-      // 获取优惠券详情
-      if (this.$route.query.id) this.handleGetCouponDetail()
       // 获取核销点列表
       this.handleGetStation()
     },
@@ -503,6 +520,8 @@
           if (res.status === 'true') {
             this.stationList = res.info
             this.isWopVisible = false
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -511,6 +530,8 @@
         loadSpaceStoreTree({ filterName: '' }).then(res => {
           if (res.status === 'true') {
             this.treeData = res.info
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -680,6 +701,8 @@
             couponForm.quantity = platformCoupon.quantity
             couponForm.expireDate = [platformCoupon.startDate, platformCoupon.endDate]
             couponForm.couponType = platformCoupon.type
+            couponForm.useLimit = platformCoupon.useLimit
+            couponForm.couponUsage = platformCoupon.couponUsage
             this.canChangeType = false // 禁止切换卡券类型
             couponReceiveDetailList.forEach(item => {
               couponForm.receiveWay.push(item.receiveType)
@@ -698,8 +721,7 @@
               case 1: // 小时券
               case 2: // 代金券
                 let platformCouponContent = res.info.platformHourCoupon || res.info.platformCashCoupon
-                let platformCouponFieldTypeList = res.info.platformHourCouponFieldTypeList ||
-                  res.info.cashCouponFieldTypeList
+                let platformCouponFieldTypeList = res.info.fieldTypeList
                 let storeList = res.info.storeList || res.info.cashCouponStoreList
 
                 if (platformCoupon.type === 1) couponForm.subtractHour = platformCouponContent.subtractHour
@@ -724,7 +746,9 @@
                     if (item.children && item.children.length > 0) {
                       for (let i = 0; i < storeList.length; i++) {
                         let target = item.children.find(child => child.storeId === storeList[i].id)
-                        if (target != null) nodeKeys.push(target.nodeKey)
+                        if (target != null) {
+                          nodeKeys.push(target.nodeKey)
+                        }
                       }
                     }
                   })
@@ -773,6 +797,8 @@
               startDate: form.expireDate && form.expireDate[0] ? form.expireDate[0] : '',
               endDate: form.expireDate && form.expireDate[1] ? form.expireDate[1] : '',
               type: form.couponType,
+              useLimit: form.useLimit,
+              couponUsage: form.couponUsage,
               receiveCondition: receiveCondition,
               receiveManual: receiveManual,
               receiveManpower: receiveManpower
