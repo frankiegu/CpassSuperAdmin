@@ -82,13 +82,13 @@
         <div class="member-cont">
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
-            <el-radio-group v-model="memberSort.source" size="small" class="fl" @change="changeMemberSource">
-              <el-radio-button label="mp">小程序会员</el-radio-button>
-              <el-radio-button label="app">App会员</el-radio-button>
+            <el-radio-group v-model="memberSort.userType" size="small" class="fl" @change="changeMemberSource">
+              <el-radio-button :label="1">小程序会员</el-radio-button>
+              <el-radio-button :label="2">App会员</el-radio-button>
             </el-radio-group>
 
             <!-- app会员暂时没有注册渠道，若有注册渠道，下拉框数据可能需要更新 -->
-            <el-form-item v-if="memberSort.source === 'mp'">
+            <el-form-item v-if="memberSort.userType === 1">
               <el-select v-model="memberSort.registerWay" placeholder="请选择注册渠道" @change="getPageData(1)"
                 filterable clearable>
                 <el-option v-for="item in channels" :key="item.id" :value="item.registerWay"
@@ -121,7 +121,7 @@
             </el-table-column>
             <el-table-column label="注册日期">
               <template slot-scope="scope">
-                <span v-if="memberSort.source === 'mp'">
+                <span v-if="memberSort.userType === 1">
                   {{scope.row.createDate ? scope.row.createDate.slice(0, 10) : '-'}}
                 </span>
                 <span v-else>{{scope.row.created ? scope.row.created.slice(0, 10) : '-'}}</span>
@@ -218,7 +218,7 @@
         maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
         memberSort: {
-          source: 'mp', // 切换来源：app和小程序mp
+          userType: 1, // 切换来源：2 - app，1 - wxapp
           registerWay: '',
           registerDate: [],
           nickname: ''
@@ -386,7 +386,7 @@
           startDate: startDate,
           endDate: endDate
         }
-        let promise = this.memberSort.source === 'mp' ? CUSTOMER_LIST(params) : APP_CUSTOMER_LIST(params)
+        let promise = this.memberSort.userType === 1 ? CUSTOMER_LIST(params) : APP_CUSTOMER_LIST(params)
         promise.then(res => {
           if (res.status === 'true' && res.info) {
             this.memberList = res.info.result
@@ -401,7 +401,10 @@
           return false
         }
         this.issueLoading = true
-        manualCoupon(this.submitData).then(res => {
+        let params = Object.assign(this.submitData, {
+          userType: this.memberSort.userType
+        })
+        manualCoupon(params).then(res => {
           if (res.status === 'true') {
             this.issueLoading = false
             this.isSuccess = true
