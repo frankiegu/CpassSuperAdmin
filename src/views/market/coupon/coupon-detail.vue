@@ -132,13 +132,24 @@
             <h3 class="coupon-tab-title mb22">使用限制</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 2">
+                  <el-col>
+                    <lh-item label="使用门槛" label-width="120px">
+                      <span v-if="platformCashCoupon.applyLowerLimit">订单金额满{{platformCashCoupon.applyLowerLimit}}元可用</span>
+                      <span v-if="!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === ''">无门槛</span>
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
                       <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
-                        <span v-if="item.type === 1">{{fieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
-                        <span v-if="item.type === 2">路演厅</span>
-                        <span v-if="item.type === 4">{{fieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                        <span v-if="item.type === 1">{{fieldTypeList.length > (index + 1) ? '会议室、' : '会议室'}}</span>
+                        <span v-if="item.type === 2">{{fieldTypeList.length > (index + 1) ? '路演厅、' : '路演厅'}}</span>
+                        <span v-if="item.type === 3">{{fieldTypeList.length > (index + 1) ? '移动工位、' : '移动工位'}}</span>
+                        <span v-if="item.type === 4">{{fieldTypeList.length > (index + 1) ? '多功能场地、' : '多功能场地'}}</span>
+                        <span v-if="item.type === 6">{{fieldTypeList.length > (index + 1) ? '时租工位、' : '时租工位'}}</span>
                       </p>
                     </lh-item>
                   </el-col>
@@ -210,6 +221,9 @@
               prop="customerName"
               label="领取人"
               width="120">
+              <template slot-scope="scope">
+                {{ (scope.row.customerName === '' || scope.row.customerName === null) ? '-' : scope.row.customerName }}
+              </template>
             </el-table-column>
             <el-table-column
               prop="couponReceiveName"
@@ -244,20 +258,29 @@
               label="使用时间"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.useTime === '' || scope.row.useTime === null) ? '-' : scope.row.useTime }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.orderAmount === '' || scope.row.orderAmount === null) ? '-' : scope.row.orderAmount }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="couponAmount"
               label="优惠金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.couponAmount === '' || scope.row.couponAmount === null) ? '-' : scope.row.couponAmount }}
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination
@@ -548,6 +571,7 @@
       },
       // 领取列表排序
       sortCoupon (sort) {
+        console.log('sort')
         // 卡券id 10升序 11降序 领取时间 20 21 使用时间 30 31 订单金额 40 41 优惠金额 50 51
         if (sort.prop === 'couponCode') {
           this.receiveOrderBy = sort.order === 'ascending' ? 10 : 11
