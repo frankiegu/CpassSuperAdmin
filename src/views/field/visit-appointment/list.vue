@@ -53,7 +53,7 @@
             {{ scope.row.spaceName || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="预约门店" align="left">
+        <el-table-column label="预约空间" align="left">
           <template slot-scope="scope">
             {{ scope.row.storeName || '-' }}
           </template>
