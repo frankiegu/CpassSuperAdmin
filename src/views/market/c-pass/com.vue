@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item prop="subhead" label="副标题">
-        <el-input class="width300px" v-model.trim="formData.subhead" :disabled="noAllow" placeholder="请输入副标题"></el-input>
+        <el-input class="width300px" v-model.trim="formData.subhead" :disabled="noAllow":maxlength="15" placeholder="请输入副标题"></el-input>
       </el-form-item>
 
       <el-form-item prop="bannerPath" label="活动banner">
