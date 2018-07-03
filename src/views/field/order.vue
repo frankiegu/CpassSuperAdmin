@@ -4,15 +4,6 @@
 
     <div class="card-padding">
       <el-form class="text-right mr-10" :model="formData" :inline="true" @submit.native.prevent>
-
-        <el-form-item>
-          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
-        </el-form-item>
-
-        <el-form-item>
-          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
-        </el-form-item>
-
         <el-form-item>
           <el-select
             v-model="formData.status"
@@ -29,6 +20,14 @@
         </el-form-item>
 
         <el-form-item>
+          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
+        <el-form-item>
+          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
+        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
@@ -37,6 +36,36 @@
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.couponUse"
+            @change="getPageData(1)"
+            placeholder="是否使用优惠券"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in couponUseList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.couponStatus"
+            @change="getPageData(1)"
+            placeholder="优惠券类型"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in couponStatusList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item>
@@ -77,6 +106,8 @@
           </template>
         </el-table-column>
         <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable="custom" width="116"></el-table-column>
+        <el-table-column label="是否使用优惠券" prop="isUseCouponText" align="left"></el-table-column>
+        <el-table-column label="优惠券类型" prop="couponTypeText" align="left"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">

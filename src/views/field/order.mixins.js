@@ -5,6 +5,7 @@ export default {
   data () {
     return {
       statusList: [
+        { val: 1, text: '全部' },
         { val: 5, text: '待支付' },
         { val: 10, text: '待使用' },
         { val: 20, text: '已使用' },
@@ -12,11 +13,23 @@ export default {
         { val: 40, text: '待退款' },
         { val: 50, text: '已退款' }
       ],
+      couponUseList: [
+        { val: 5, text: '全部' },
+        { val: 1, text: '是' },
+        { val: 0, text: '否' }
+      ],
+      couponStatusList: [
+        { val: 5, text: '全部' },
+        { val: 1, text: '小时券' },
+        { val: 2, text: '代金券' }
+      ],
       formData: {
         name: '',
         bookDate: '',
         orderDate: '',
-        status: ''
+        status: '',
+        couponUse: '',
+        couponStatus: ''
       },
       sortField: '', // 1-生成时间 2-预订时间 3-订单金额
       descOrAsc: '' // 排序方式 0-升序 1-降序
@@ -69,7 +82,9 @@ export default {
         bookEndDate: this.formData.bookDate ? formatTimeString(this.formData.bookDate[1]) : null,
         orderStartDate: this.formData.orderDate ? formatTimeString(this.formData.orderDate[0]) : null,
         orderEndDate: this.formData.orderDate ? formatTimeString(this.formData.orderDate[1]) : null,
-        orderStatus: this.formData.status,
+        orderStatus: this.formData.status === 1 ? '' : this.formData.status,
+        isUseCoupon: this.formData.couponUse === 5 ? '' : this.formData.couponUse,
+        couponType: this.formData.couponStatus === 5 ? '' : this.formData.couponStatus,
         sortField: this.sortField,
         descOrAsc: this.descOrAsc
       }

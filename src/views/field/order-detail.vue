@@ -113,6 +113,30 @@
         </el-table>
       </div>
 
+      <div class="senior-title mt24">优惠信息</div>
+      <div class="card-body">
+        <el-table border :data="couponInfo" class="width100">
+          <el-table-column label="优惠券名称">
+            <template slot-scope="scope">
+              <template slot-scope="scope">
+                <span>{{ scope.row.couponName }}</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column label="优惠券类型">
+            <template slot-scope="scope">
+              <span v-if="type === 1">小时券</span>
+              <span v-if="type === 2">代金券</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="本次优惠金额">
+            <template slot-scope="scope">
+              <span>{{ scope.row.couponAmount }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
       <div class="senior-title mt24">订单日志</div>
       <div class="card-body">
         <el-table border :data="orderLogs" class="width100">
@@ -159,6 +183,7 @@
         orderPay: {}, // 订单支付信息
         fieldInfo: {}, // 场地信息
         store: {}, // 门店信息
+        couponList: [], // 优惠券
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
         space: {}, // 空间信息
@@ -185,6 +210,7 @@
             this.fieldInfo = res.info.platformOrderDetail.fieldSnapshot
             this.store = res.info.platformOrderDetail.store
             this.orderLogs = res.info.platformOrderLogList
+            this.couponInfo = res.info.couponInfo
             this.fieldAddress = res.info.platformOrderDetail.store.cityName + res.info.platformOrderDetail.store.districtName + res.info.platformOrderDetail.store.address
             this.space = res.info.platformOrderDetail.space
             if (!res.info.platformOrderDetail.platformOrderPay.payDate) {
