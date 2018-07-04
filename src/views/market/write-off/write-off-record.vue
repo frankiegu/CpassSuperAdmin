@@ -104,6 +104,18 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="消费门店" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.storeName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="所属空间" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.spaceName }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="状态" align="left">
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.status === 1">已兑换</el-tag>
@@ -191,7 +203,8 @@
           spaceId: this.formData.spaceId,
           storeId: this.formData.storeId,
           verifyStationId: this.formData.verifyStationId,
-          startDate: this.formData
+          startDate: this.formData.startDate,
+          endDate: this.formData.endDate
         }
         platformVerifyRecordPage(paramsObj).then(res => {
           if (res.status === 'true') {
@@ -216,6 +229,7 @@
           }
         })
       },
+      // 获取空间列表
       getspaceList () {
         spaceList().then(res => {
           if (res.status === 'true') {
@@ -225,6 +239,7 @@
           }
         })
       },
+      // 获取门店列表
       getstoreList () {
         storeList({ spaceId: this.formData.spaceId }).then(res => {
           if (res.status === 'true') {
@@ -234,6 +249,7 @@
           }
         })
       },
+      // 获取核销点列表
       getStationList () {
         const paramsObj = {
           spaceId: this.formData.spaceId,
