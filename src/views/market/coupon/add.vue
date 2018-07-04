@@ -516,7 +516,10 @@
 
       // 获取核销点列表
       handleGetStation() {
-        loadStation().then(res => {
+        loadStation({
+          status: 1,
+          isDelete: 0
+        }).then(res => {
           if (res.status === 'true') {
             this.stationList = res.info
             this.isWopVisible = false
