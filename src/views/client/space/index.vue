@@ -9,7 +9,8 @@
         <el-table :data="starSpaceList">
           <el-table-column label="展示图" prop="showImg">
             <template slot-scope="scope">
-              <img :src="scope.row.showImg + zoomImgSize(80)" alt="">
+              <img v-if="scope.row.showImg" :src="scope.row.showImg + zoomImgSize(80)" alt="">
+              <span v-else>-</span>
             </template>
           </el-table-column>
 
@@ -66,7 +67,8 @@
         <el-table :data="spaceList">
           <el-table-column label="展示图" prop="showImg">
             <template slot-scope="scope">
-              <img :src="scope.row.showImg + zoomImgSize(80)" alt="">
+              <img v-if="scope.row.showImg" :src="scope.row.showImg + zoomImgSize(80)" alt="">
+              <span v-else>-</span>
             </template>
           </el-table-column>
 
