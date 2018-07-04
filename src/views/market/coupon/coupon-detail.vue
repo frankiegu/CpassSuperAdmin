@@ -129,9 +129,25 @@
           </div>
           <!--使用限制-->
           <div class="receive-methods mt22">
-            <h3 class="coupon-tab-title mb22">使用限制</h3>
+            <h3 class="coupon-tab-title mb22">使用说明</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
+                <el-row :gutter="20">
+                  <el-col>
+                    <lh-item label="使用限制" label-width="120px">
+                      {{couponBaseInfo.useLimit || '未设置'}}
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                  <el-col>
+                    <lh-item label="使用方法" label-width="120px">
+                      {{couponBaseInfo.couponUsage || '未设置'}}
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
                 <el-row :gutter="20" v-if="couponBaseInfo.type === 2">
                   <el-col>
                     <lh-item label="使用门槛" label-width="120px">
