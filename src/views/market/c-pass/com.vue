@@ -236,7 +236,9 @@ export default {
       })
     },
     onTextChange({ editor, html, text }) {
-      this.quillLength = text.length - 1
+      // console.log('test', editor, html, text);
+      text = text.trim()
+      this.quillLength = text.length
       this.verifyContent()
     },
     verifyContent() {
