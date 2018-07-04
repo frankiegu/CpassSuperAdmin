@@ -42,7 +42,6 @@
         <div class="limit-words-in">
           <div class="limit-words theme-gray">
             <p class="fz12">{{quillLength}}/{{quillMaxLength}}</p>
-            <p class="theme-red fz12" v-if="quillLength > quillMaxLength">字数超限，无法提交</p>
           </div>
         </div>
         <el-form-item class="m-detail" label="精选内容" prop="content">
@@ -54,6 +53,7 @@
               :disabled="noAllow"
               ref="myQuillEditor" />
           </div>
+          <p class="theme-red fz12" >{{ verifyCon }}</p>
         </el-form-item>
       </div>
 
@@ -229,6 +229,7 @@ export default {
     },
     onTextChange({ editor, html, text }) {
       this.quillLength = text.length - 1
+      this.verifyCon = !this.formData.content ? '精选内容不能为空' : (this.quillLength > this.quillMaxLength) ? '字数超限，无法提交' : ''
     },
     // 富文本插入图片
     quillHandleAvatarSuccess(res, file) {
