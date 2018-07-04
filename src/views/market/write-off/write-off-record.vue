@@ -241,7 +241,10 @@
       },
       // 获取门店列表
       getstoreList () {
-        storeList({ spaceId: this.formData.spaceId }).then(res => {
+        const paramsObj = {
+          spaceId: this.formData.spaceId
+        }
+        storeList(paramsObj).then(res => {
           if (res.status === 'true') {
             this.storeList = res.info
           } else {
