@@ -4,6 +4,15 @@
 
     <div class="card-padding">
       <el-form class="text-right mr-10" :model="formData" :inline="true" @submit.native.prevent>
+
+        <el-form-item>
+          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
+        <el-form-item>
+          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
         <el-form-item>
           <el-select
             v-model="formData.status"
@@ -17,25 +26,6 @@
               :value="item.val"
               :key="item.val"></el-option>
           </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <lh-datePicker label="生成日期" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
-        </el-form-item>
-
-        <el-form-item>
-          <lh-datePicker label="预约日期" :dateType="2" @datePickerChange="datePickerChange"></lh-datePicker>
-        </el-form-item>
-
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData(1)"
-            placeholder="请输入订单编号"
-            class="width180px">
-
-            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
-          </el-input>
         </el-form-item>
 
         <el-form-item>
@@ -66,6 +56,17 @@
               :value="item.val"
               :key="item.val"></el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-input
+            v-model.trim="formData.name"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入订单编号"
+            class="width180px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
         </el-form-item>
 
         <el-form-item>

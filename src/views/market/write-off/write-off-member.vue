@@ -230,7 +230,11 @@
       },
       // 获取核销点
       getPoint() {
-        PlatformVerifyStationLoadStation().then(res => {
+        const paramsObj = {
+          status: 1,
+          isDelete: 0
+        }
+        PlatformVerifyStationLoadStation(paramsObj).then(res => {
           if (res.status === 'true') {
             this.pointList = res.info
           } else {
