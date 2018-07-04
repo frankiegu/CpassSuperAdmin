@@ -119,7 +119,7 @@
 
     <!-- 推荐描述 -->
     <el-dialog :visible.sync="isVisible" title="推荐描述" :before-close="closeEditDialog">
-      <el-form :model="spaceForm" label-width="100px" ref="spaceForm">
+      <el-form :model="spaceForm" label-width="100px" ref="spaceForm" @submit.native.prevent>
         <el-form-item label="空间名称">{{spaceForm.storeName}}</el-form-item>
         <el-form-item label="空间简介">{{spaceForm.storeIntroduction || '暂无'}}</el-form-item>
         <el-form-item label="空间描述" prop="recommendDescription" :rules="[
