@@ -204,6 +204,10 @@ export default {
 
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          if (this.quillLength > this.quillMaxLength) {
+            this.setMsg('精选内容字数超限，无法提交')
+            return
+          }
           this.getSubmitParam()
 
           this.ajaxName(this.ajaxParam).then(res => {
