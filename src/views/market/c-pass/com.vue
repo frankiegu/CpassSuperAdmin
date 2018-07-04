@@ -20,11 +20,12 @@
 
       <el-form-item prop="bannerPath" label="活动banner">
         <lh-upload
-          @uploadImg="val => formData.bannerPath = val"
+          @uploadImg="uploadImg"
           :imgUrl="formData.bannerPath"
           :tipsWidth="600"
           :disabled="noAllow"
-          :size="80"/>
+          :size="80" class="oh"/>
+        <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyImg }}</p>
       </el-form-item>
 
       <div class="limit-words-box">
@@ -112,7 +113,11 @@ export default {
     this.setPageTitle()
   },
   methods: {
-    setPageTitle() {
+    uploadImg(val) {
+      this.formData.bannerPath = val
+      this.verifyImage()
+    },
+    setTitleName() {
       this.title = this.noAllow ? '精选详情' : (this.fieldId ? '编辑精选' : '添加精选')
       document.title = this.title
       this.$store.commit('NAV_CRUMB', this.title)
@@ -120,6 +125,9 @@ export default {
       if (!this.$route.name) {
         this.$store.dispatch('addVisitedViews', this.$route)
       }
+    },
+    setPageTitle() {
+      this.setTitleName()
 
       if (this.fieldId) {
         this.getPageData()
@@ -199,15 +207,14 @@ export default {
     submitForm(formName) {
       if (this.noAllow) {
         this.noAllow = !this.noAllow
+        this.setTitleName()
         return
       }
+      this.verifyImage()
+      this.verifyContent()
 
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.quillLength > this.quillMaxLength) {
-            this.setMsg('精选内容字数超限，无法提交')
-            return
-          }
           this.getSubmitParam()
 
           this.ajaxName(this.ajaxParam).then(res => {
@@ -216,6 +223,7 @@ export default {
 
               if (this.fieldId) {
                 this.setMsg('success', '更新精选成功')
+                this.setTitleName()
               } else {
                 this.setMsg('success', '添加精选成功')
                 this.$router.replace({ path: '/market/c-pass' })
@@ -229,7 +237,13 @@ export default {
     },
     onTextChange({ editor, html, text }) {
       this.quillLength = text.length - 1
+      this.verifyContent()
+    },
+    verifyContent() {
       this.verifyCon = !this.formData.content ? '精选内容不能为空' : (this.quillLength > this.quillMaxLength) ? '字数超限，无法提交' : ''
+    },
+    verifyImage() {
+      this.verifyImg = !this.formData.bannerPath ? '请上传头像' : ''
     },
     // 富文本插入图片
     quillHandleAvatarSuccess(res, file) {
