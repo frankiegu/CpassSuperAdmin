@@ -25,3 +25,9 @@ export const switchCity = (obj) => fetch(API_PATH + '/supervisor/regionInfo/open
 
 // 城市置顶
 export const topCity = (obj) => fetch(API_PATH + '/supervisor/regionInfo/top', obj, 'POST')
+
+// 城市code判重
+export const isNotCityCodeExists = (obj) => fetch(API_PATH + '/supervisor/regionInfo/isNotCityCodeExists', obj, 'POST')
+
+// 城市别名判重
+export const isNotCityNameExists = (obj) => fetch(API_PATH + '/supervisor/regionInfo/isUnique', obj, 'POST')

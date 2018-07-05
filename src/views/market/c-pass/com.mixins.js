@@ -44,8 +44,12 @@ export default {
       formDataRule: {
         title: [{ required: true, trigger: ['blur', 'change'], message: '精选标题不能为空' }],
         subhead: [{ required: true, trigger: ['blur', 'change'], message: '副标题不能为空' }],
-        bannerPath: [{ required: true, message: '请上传头像', trigger: ['blur', 'change'] }]
+        content: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
+        bannerPath: [{ required: true, message: ' ', trigger: ['blur', 'change'] }]
       },
+
+      verifyCon: '',
+      verifyImg: '',
       // 是否可编辑
       // 富文本编辑器当前字数长度
       quillLength: 0,

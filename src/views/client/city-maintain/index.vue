@@ -73,7 +73,8 @@
         </el-form-item>
 
         <el-form-item label="城市" prop="regionCode" :rules="[
-            { required: true, message: '请选择省市', trigger: ['blur', 'change'] }]">
+            { required: true, message: '请选择省市', trigger: ['blur', 'change'] },
+            { validator: checkCityCode, trigger: ['blur', 'change'] }]">
           <el-cascader :options="cityTree" v-model="city" :props="cityProps" @change="changeCity" filterable
             placeholder="请选择省市" class="width340px">
           </el-cascader>
@@ -81,21 +82,22 @@
 
         <el-form-item label="城市名称" prop="cityAliasName" :rules="[
           { required: true, message: '请输入城市名称', trigger: ['blur', 'change'] },
-          { max: 10, message: '最大允许输入10个字', trigger: ['blur', 'change'] }]">
+          { max: 10, message: '最大允许输入10个字', trigger: ['blur', 'change'] },
+          { validator: checkCityName, trigger: ['blur'] }]">
           <el-input v-model="addCityForm.cityAliasName" placeholder="请输入城市名称" class="width340px"></el-input>
         </el-form-item>
 
-        <el-form-item label="经度" prop="longitude" :rules="[
-          { required: true, message: '请输入经度', trigger: ['blur', 'change'] },
-          { validator: checkLongitude, trigger: ['blur', 'change'] }]">
-          <el-input v-model="addCityForm.longitude" placeholder="请输入经度" :maxlength="15" class="width340px"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="经度" prop="longitude" :rules="[-->
+          <!--{ required: true, message: '请输入经度', trigger: ['blur', 'change'] },-->
+          <!--{ validator: checkLongitude, trigger: ['blur', 'change'] }]">-->
+          <!--<el-input v-model="addCityForm.longitude" placeholder="请输入经度" :maxlength="15" class="width340px"></el-input>-->
+        <!--</el-form-item>-->
 
-        <el-form-item label="纬度" prop="latitude" :rules="[
-          { required: true, message: '请输入纬度', trigger: ['blur', 'change'] },
-          { validator: checkLatitude, trigger: ['blur', 'change'] }]">
-          <el-input v-model="addCityForm.latitude" placeholder="请输入纬度" :maxlength="14" class="width340px"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="纬度" prop="latitude" :rules="[-->
+          <!--{ required: true, message: '请输入纬度', trigger: ['blur', 'change'] },-->
+          <!--{ validator: checkLatitude, trigger: ['blur', 'change'] }]">-->
+          <!--<el-input v-model="addCityForm.latitude" placeholder="请输入纬度" :maxlength="14" class="width340px"></el-input>-->
+        <!--</el-form-item>-->
 
         <el-form-item label="展示图" prop="url" :rules="[
           { required: true, message: '请上传展示图', trigger: ['blur', 'change'] }]">
@@ -121,7 +123,7 @@
 <script>
   import tableMixins from '@/mixins/table'
   import upload from '@/components/upload'
-  import { listCountry, listCity, listCityTree, addCity, updateCity, switchCity, topCity } from '@/service/city-maintain'
+  import { listCountry, listCity, listCityTree, addCity, updateCity, switchCity, topCity, isNotCityCodeExists, isNotCityNameExists } from '@/service/city-maintain'
   export default {
     name: '',
     mixins: [tableMixins],
@@ -150,23 +152,7 @@
         },
         city: [], // 级联选择城市
         // 树状城市列表
-        cityTree: [
-          {
-            name: '广东省',
-            children: [{
-              code: '10181018',
-              name: '广州'
-            }],
-            code: '1018'
-          }, {
-            name: '北京',
-            children: [{
-              code: '10001000',
-              name: '北京市'
-            }],
-            code: '1000'
-          }
-        ],
+        cityTree: [],
         cityProps: {
           value: 'code',
           label: 'name'
@@ -338,6 +324,36 @@
             this.getPageData()
           }
         })
+      },
+
+      // 自定义校验城市code
+      checkCityCode(rule, value, callback) {
+        if (value) {
+          isNotCityCodeExists({
+            cityCode: value
+          }).then(res => {
+            if (res.status === 'false') {
+              callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
+        }
+      },
+
+      // 自定义校验城市别名
+      checkCityName(rule, value, callback) {
+        if (value) {
+          isNotCityNameExists({
+            cityAliasName: value
+          }).then(res => {
+            if (res.status === 'false') {
+              callback(new Error(res.msg))
+            } else {
+              callback()
+            }
+          })
+        }
       },
 
       // 自定义校验经度

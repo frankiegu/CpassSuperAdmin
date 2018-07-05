@@ -192,6 +192,14 @@
         listShowcase().then(res => {
           if (res.status === 'true') {
             this.starSpaceList = res.info
+            this.starSpaceList.forEach(item => {
+              if (item.recommendDescription == null) {
+                item.recommendDescription = ''
+              }
+              if (item.storeIntroduction == null) {
+                item.storeIntroduction = ''
+              }
+            })
           }
         })
       },
@@ -207,6 +215,14 @@
           if (res.status === 'true' && res.info) {
             this.pageTotal = res.info.total
             this.spaceList = res.info.result
+            this.spaceList.forEach(item => {
+              if (item.recommendDescription == null) {
+                item.recommendDescription = ''
+              }
+              if (item.storeIntroduction == null) {
+                item.storeIntroduction = ''
+              }
+            })
           } else {
             this.$message.info(res.msg || '暂无数据')
           }

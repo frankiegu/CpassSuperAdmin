@@ -738,6 +738,7 @@
                   }
                 }
 
+                couponForm.fieldType = []
                 platformCouponFieldTypeList.forEach(item => {
                   couponForm.fieldType.push(item.type)
                 })
