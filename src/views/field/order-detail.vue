@@ -183,7 +183,7 @@
         orderPay: {}, // 订单支付信息
         fieldInfo: {}, // 场地信息
         store: {}, // 门店信息
-        couponList: [], // 优惠券
+        couponInfo: [], // 优惠券
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
         space: {}, // 空间信息

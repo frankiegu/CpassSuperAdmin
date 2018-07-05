@@ -57,6 +57,7 @@
             v-model.trim="formData.couponName"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入卡券名"
+            clearable
             class="width220px">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
