@@ -194,10 +194,10 @@
             this.starSpaceList = res.info
             this.starSpaceList.forEach(item => {
               if (item.recommendDescription == null) {
-                item.recommendDescription = ''
+                item.recommendDescription = ' '
               }
               if (item.storeIntroduction == null) {
-                item.storeIntroduction = ''
+                item.storeIntroduction = ' '
               }
             })
           }
@@ -217,10 +217,10 @@
             this.spaceList = res.info.result
             this.spaceList.forEach(item => {
               if (item.recommendDescription == null) {
-                item.recommendDescription = ''
+                item.recommendDescription = ' '
               }
               if (item.storeIntroduction == null) {
-                item.storeIntroduction = ''
+                item.storeIntroduction = ' '
               }
             })
           } else {
