@@ -29,6 +29,36 @@
         </el-form-item>
 
         <el-form-item>
+          <el-select
+            v-model="formData.couponUse"
+            @change="getPageData(1)"
+            placeholder="是否使用优惠券"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in couponUseList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.couponStatus"
+            @change="getPageData(1)"
+            placeholder="优惠券类型"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in couponStatusList"
+              :label="item.text"
+              :value="item.val"
+              :key="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
@@ -77,6 +107,8 @@
           </template>
         </el-table-column>
         <el-table-column label="订单总金额" prop="formatPrice" align="left" sortable="custom" width="116"></el-table-column>
+        <el-table-column label="是否使用优惠券" prop="isUseCouponText" align="left"></el-table-column>
+        <el-table-column label="优惠券类型" prop="couponTypeText" align="left"></el-table-column>
 
         <el-table-column label="支付状态" align="left">
           <template slot-scope="scope">
