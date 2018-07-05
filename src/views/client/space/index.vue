@@ -14,8 +14,18 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip />
-          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
+          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.spaceName || '-'}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.storeName || '-'}}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
               <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
@@ -24,7 +34,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip />
+          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.recommendDescription || '-'}}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="地址" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -32,7 +46,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip />
+          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.storeIntroduction || '-'}}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="操作" width="140" align="left" header-align="center">
             <template slot-scope="scope">
@@ -72,8 +90,18 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip />
-          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip />
+          <el-table-column label="所属品牌" prop="spaceName" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.spaceName || '-'}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="空间名称" prop="storeName" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.storeName || '-'}}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
               <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
@@ -82,7 +110,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip />
+          <el-table-column label="空间描述" prop="recommendDescription" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.recommendDescription || '-'}}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="地址" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -90,7 +122,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip />
+          <el-table-column label="空间介绍" prop="storeIntroduction" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>{{scope.row.storeIntroduction || '-'}}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -192,14 +228,6 @@
         listShowcase().then(res => {
           if (res.status === 'true') {
             this.starSpaceList = res.info
-            this.starSpaceList.forEach(item => {
-              if (item.recommendDescription == null) {
-                item.recommendDescription = ' '
-              }
-              if (item.storeIntroduction == null) {
-                item.storeIntroduction = ' '
-              }
-            })
           }
         })
       },
@@ -215,14 +243,6 @@
           if (res.status === 'true' && res.info) {
             this.pageTotal = res.info.total
             this.spaceList = res.info.result
-            this.spaceList.forEach(item => {
-              if (item.recommendDescription == null) {
-                item.recommendDescription = ' '
-              }
-              if (item.storeIntroduction == null) {
-                item.storeIntroduction = ' '
-              }
-            })
           } else {
             this.$message.info(res.msg || '暂无数据')
           }
