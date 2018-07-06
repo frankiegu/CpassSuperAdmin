@@ -94,7 +94,7 @@
         </el-table-column>
         <el-table-column label="生日" align="left">
           <template slot-scope="scope">
-            {{ scope.row.birthday || '-'}}
+            {{ scope.row.birthdayText || '-'}}
           </template>
         </el-table-column>
         <el-table-column label="注册时间" prop="created" align="left"></el-table-column>

@@ -11,7 +11,7 @@
           <lh-item class="nowrap" label="邮箱" label-width="60px">{{memberDetail.email || '-'}}</lh-item>
         </el-col>
         <el-col :span="8">
-          <lh-item class="nowrap" label="生日" label-width="60px">{{memberDetail.birthday || '-'}}</lh-item>
+          <lh-item class="nowrap" label="生日" label-width="60px">{{memberDetail.birthdayText || '-'}}</lh-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">

@@ -20,7 +20,7 @@ export default {
       },
       gradeList: [],
       statusList: [],
-      memberRateData: ['0', '0', '0', '0'] // 会员变化率
+      memberRateData: [0, 0, 0, 0] // 会员变化率
     }
   },
   mounted () {
