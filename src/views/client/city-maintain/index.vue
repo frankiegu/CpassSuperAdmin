@@ -4,7 +4,7 @@
 
     <div class="lh-form-box">
       <el-form :inline="true" :model="citySort" @submit.native.prevent>
-        <el-button type="primary" class="fl" @click="isVisible = true">添加城市</el-button>
+        <el-button type="primary" class="fl" @click="openAddDialog">添加城市</el-button>
         <el-form-item>
           <el-input v-model.trim="citySort.keyword" @keyup.native.enter="getPageData(1)" placeholder="请输入内容">
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -63,7 +63,7 @@
     </div>
 
     <!-- 添加城市弹窗 -->
-    <el-dialog :visible.sync="isVisible" title="添加城市" :before-close="closeEditDialog">
+    <el-dialog :visible.sync="isVisible" :title="dialogTitle" :before-close="closeEditDialog">
       <el-form :model="addCityForm" label-width="100px" ref="addCityForm">
         <el-form-item label="所属国家" prop="countryId" required>
           <el-select v-model="addCityForm.countryId" class="width340px" @change="getCityTree">
@@ -140,8 +140,11 @@
         tableData: [],
         tableLoading: true,
 
-        // 添加城市弹窗
+        // 添加或编辑城市弹窗
+        dialogTitle: '添加城市',
         isVisible: false,
+        isFormInit: true,
+        cityId: null,
         addCityForm: {
           countryId: 44, // 默认中国
           regionCode: '',
@@ -214,6 +217,11 @@
         })
       },
 
+      openAddDialog() {
+        this.isVisible = true
+        this.isFormInit = false
+      },
+
       // 添加/编辑城市
       submitForm() {
         this.$refs['addCityForm'].validate(valid => {
@@ -227,6 +235,7 @@
                 this.$message.success(successTips)
                 this.resetForm()
                 this.getPageData()
+                this.isFormInit = true
               } else {
                 this.$message.error(res.msg || 'something error')
               }
@@ -239,6 +248,8 @@
 
       // 打开编辑对话框
       openEditDialog(id) {
+        this.cityId = id
+        this.dialogTitle = '编辑城市'
         let target = this.tableData.find(item => item.id === id)
         this.isVisible = true
         this.addCityForm = Object.assign({}, {
@@ -251,10 +262,15 @@
           url: target.url
         })
         this.city = [target.provinceCode, target.cityCode]
+        this.$nextTick(() => {
+          this.isFormInit = false
+          this.$refs['addCityForm'].clearValidate(['regionCode'])
+        })
       },
 
       // 关闭编辑对话框
       closeEditDialog() {
+        this.isFormInit = true
         this.$confirm('确认关闭？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -267,6 +283,8 @@
 
       // 重置表单
       resetForm() {
+        this.dialogTitle = '添加城市'
+        this.cityId = null
         this.addCityForm = {
           countryId: 44, // 默认中国
           regionCode: '',
@@ -328,10 +346,14 @@
 
       // 自定义校验城市code
       checkCityCode(rule, value, callback) {
-        if (value) {
-          isNotCityCodeExists({
+        if (value && !this.isFormInit) {
+          let params = {
             cityCode: value
-          }).then(res => {
+          }
+          if (this.cityId != null) {
+            params.regionInfoId = this.cityId
+          }
+          isNotCityCodeExists(params).then(res => {
             if (res.status === 'false') {
               callback(new Error(res.msg))
             } else {
@@ -343,10 +365,14 @@
 
       // 自定义校验城市别名
       checkCityName(rule, value, callback) {
-        if (value) {
-          isNotCityNameExists({
+        if (value && !this.isFormInit) {
+          let params = {
             cityAliasName: value
-          }).then(res => {
+          }
+          if (this.cityId != null) {
+            params.regionInfoId = this.cityId
+          }
+          isNotCityNameExists(params).then(res => {
             if (res.status === 'false') {
               callback(new Error(res.msg))
             } else {
