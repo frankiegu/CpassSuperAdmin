@@ -98,7 +98,7 @@
     methods: {
       // 获取app会员详情
       getMemberDetail() {
-        appMemberDetail({ appCustomerId: this.id }).then(res => {
+        appMemberDetail({ customerId: this.id }).then(res => {
           if (res.status === 'true') {
             this.memberDetail = res.info
           } else {

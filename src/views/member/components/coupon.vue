@@ -114,7 +114,7 @@
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
-          appCustomerId: this.id,
+          customerId: this.id,
           useStatus: status || this.couponStatus
         }
 
@@ -137,7 +137,7 @@
       },
       // app会员订单统计
       getCouponStatistics() {
-        couponStatistics({ appCustomerId: this.id }).then(res => {
+        couponStatistics({ customerId: this.id }).then(res => {
           if (res.status === 'true') {
             this.couponStatisticsObj = res.info
           } else {

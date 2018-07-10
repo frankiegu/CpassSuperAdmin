@@ -166,7 +166,7 @@
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
-          appCustomerId: this.id,
+          customerId: this.id,
           orderStatus: status ? (status === 30 ? [30, 50] : status) : orderStatus
         }
 
@@ -189,7 +189,7 @@
       },
       // app会员订单统计
       getOrderStatistics() {
-        appOrderStatistics({ appCustomerId: this.id }).then(res => {
+        appOrderStatistics({ customerId: this.id }).then(res => {
           if (res.status === 'true') {
             this.orderStatisticsObj = res.info
           } else {
@@ -202,7 +202,7 @@
           return this.setMsg('暂无数据')
         }
         const downParams = {
-          appCustomerId: this.id
+          customerId: this.id
         }
         let url = API_PATH + '/supervisor/appCustomer/orderExport'
         downloadFile(url, downParams)

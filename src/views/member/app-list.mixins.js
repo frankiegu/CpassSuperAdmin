@@ -98,7 +98,7 @@ export default {
     changeStatus (id, currentStatus) {
       const status = currentStatus === 0 ? 1 : 0
       const JSON = {
-        appCustomerId: id,
+        customerId: id,
         status: status
       }
       appChangeStatus(JSON).then(res => {
