@@ -69,7 +69,7 @@
               <el-form-item label="指定项目" prop="fieldType">
                 <el-checkbox-group v-model="couponForm.fieldType">
                   <el-checkbox v-for="item in fieldTypeList" :key="item.name"
-                    v-if="item.key !== 3 && item.key !== 6" :label="parseInt(item.key)">
+                    v-if="item.key !== 3" :label="parseInt(item.key)">
                     {{item.name}}
                   </el-checkbox>
                 </el-checkbox-group>
