@@ -10,7 +10,7 @@ export default [{
   redirect: '/feedback/opinion-feedback',
   component: layout,
   hidden: false,
-  icon: 'icon-Statistics',
+  icon: 'icon-peer_surface',
   children: [
     // 意见反馈
     {
