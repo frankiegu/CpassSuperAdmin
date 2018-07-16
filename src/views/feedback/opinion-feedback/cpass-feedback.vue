@@ -1,7 +1,5 @@
 <template>
   <div class="service-list main-content">
-    <lh-title></lh-title>
-
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <!-- 选择的是到期时间，所以是往后选 -->
@@ -11,9 +9,10 @@
 
         <el-form-item>
           <el-input
-            v-model.trim="formData.content"
+            v-model.trim="formData.keyword"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入内容"
+            clearable
             class="width220px">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -35,15 +34,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="功能模块" prop="moduleName" align="left"></el-table-column>
-        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
-        <el-table-column label="联系电话" prop="contactTel" align="left" ></el-table-column>
-
-        <el-table-column label="所属空间" align="left">
-          <template slot-scope="scope">
-            {{ scope.row.spaceName }}
-          </template>
-        </el-table-column>
+        <el-table-column label="联系人" prop="nickname" align="left"></el-table-column>
+        <el-table-column label="联系电话" prop="mobile" align="left" ></el-table-column>
 
         <el-table-column label="反馈内容" align="left">
           <template slot-scope="scope">
@@ -51,9 +43,11 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="来源" prop="source" align="left" ></el-table-column>
+
         <el-table-column label="操作" align="left">
           <template slot-scope="scope">
-            <el-button type="text" class="lh-table-btn" @click="viewDetail(scope.row.id)">查看</el-button>
+            <el-button type="text" class="lh-table-btn" @click="viewDetail(scope.row.id)" v-if="scope.row.showImg || scope.row.content">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,18 +66,28 @@
 
     <el-dialog
       title="反馈详情"
+      :lock-scroll="true"
       :visible.sync="dialogVisible"
-      width="35%">
-      <div class="detail-info">
-        <div class="label">功能模块</div>
-        <div class="label-con"><div class="intro-desc">{{ moduleName }}</div></div>
+      width="55%">
+
+      <div>
+        <div class="detail-info">
+          <div class="label">反馈内容</div>
+          <div class="label-con"><div class="intro-desc">{{ content }}</div></div>
+        </div>
+
+        <div class="detail-info">
+          <div class="label">反馈图片</div>
+          <div class="label-desc">
+            <div class="intro-desc">
+              <img class="feedback-img" v-if="imgList" :src="item.imgPath" v-for="(item, index) in imgList" :key="index">
+              <span v-else>暂无图片</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="detail-info">
-        <div class="label">反馈内容</div>
-        <div class="label-con"><div class="intro-desc">{{ content }}</div></div>
-      </div>
+
       <span slot="footer" class="dialog-footer">
-        <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
@@ -91,7 +95,7 @@
 </template>
 
 <script>
-  import feedbackList from './list.mixins'
+  import feedbackList from './cpass-feedback.mixin'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   export default {
@@ -110,7 +114,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../../../src/styles/config";
+  @import "../../../../src/styles/config";
   .service-list {
     .operate-btn {
       padding: 6px;
@@ -130,6 +134,26 @@
         float: left;
         width: calc(100% - 80px);
         margin-bottom: 10px;
+      }
+      .label-desc{
+        float: left;
+        width: calc(100% - 80px);
+        max-height: 300px;
+        overflow-y: scroll;
+        margin-bottom: 10px;
+
+        .intro-desc{
+          clear: both;
+          .feedback-img{
+            display: inline-block;
+            width: 180px;
+            height: 180px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            cursor: pointer;
+            float: left;
+          }
+        }
       }
     }
   }
