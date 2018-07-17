@@ -11,9 +11,9 @@
           <el-input
             v-model.trim="formData.keyword"
             @keyup.native.enter="getPageData(1)"
-            placeholder="请输入内容"
+            placeholder="请输入联系人 / 联系电话 / 内容"
             clearable
-            class="width220px">
+            class="width240px">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
