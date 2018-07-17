@@ -13,7 +13,9 @@ export default {
       formData: {
         keyword: '',
         reg_date: null
-      }
+      },
+      imgList: [],
+      showImg: ''
     }
   },
   mounted () {
@@ -52,7 +54,7 @@ export default {
       this.id = id
       this.content = ''
       this.imgList = []
-      this.dialogVisible = true
+      this.outerVisible = true
       const paramsObj = {
         id: this.id
       }
@@ -61,6 +63,7 @@ export default {
           if (res.info) {
             this.content = res.info.content
             this.imgList = res.info.platformFeedbackImgs || []
+            this.showImg = res.info.showImg
           } else {
             this.setMsg('error', res.msg)
           }

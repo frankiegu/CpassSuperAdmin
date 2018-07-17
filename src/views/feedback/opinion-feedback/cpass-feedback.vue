@@ -67,7 +67,7 @@
     <el-dialog
       title="反馈详情"
       :lock-scroll="true"
-      :visible.sync="dialogVisible"
+      :visible.sync="outerVisible"
       width="55%">
 
       <div>
@@ -76,19 +76,26 @@
           <div class="label-con"><div class="intro-desc">{{ content }}</div></div>
         </div>
 
-        <div class="detail-info">
+        <div class="detail-info" v-if="showImg === 1">
           <div class="label">反馈图片</div>
           <div class="label-desc">
             <div class="intro-desc">
-              <img class="feedback-img" v-if="imgList" :src="item.imgPath" v-for="(item, index) in imgList" :key="index">
-              <span v-else>暂无图片</span>
+              <img class="feedback-img" :src="item.imgPath" v-for="(item, index) in imgList" :key="index" @click="viewImgDetail(item.imgPath)">
             </div>
           </div>
         </div>
       </div>
 
+      <el-dialog
+        width="50%"
+        title="反馈图片"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <img class="width100" :src="imgPath">
+      </el-dialog>
+
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="outerVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -105,10 +112,16 @@
     },
     data() {
       return {
-        dialogVisible: false
+        outerVisible: false,
+        innerVisible: false,
+        imgPath: ''
       }
     },
     methods: {
+      viewImgDetail (imgPath) {
+        this.innerVisible = true
+        this.imgPath = imgPath
+      }
     }
   }
 </script>
