@@ -288,8 +288,8 @@
         callback()
       }
       const checkAmount = (rule, value, callback) => {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 999999)) {
-          callback(new Error('请输入0-999999的正数'))
+        if (value && (isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 9999)) {
+          callback(new Error('请输入0-9999的正数'))
         } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
           callback(new Error('最多允许输入两位小数'))
         }
