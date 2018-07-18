@@ -57,12 +57,12 @@
               </el-table-column>
               <el-table-column label="订单折扣" align="left">
                 <template slot-scope="scope">
-                  - ¥{{scope.row.discountAmount || '0'}}
+                  - ¥{{scope.row.discountAmount}}
                 </template>
               </el-table-column>
               <el-table-column label="实付金额" align="left">
                 <template slot-scope="scope">
-                  <span class="theme-red">¥{{scope.row.payAmount || '-'}}</span>
+                  <span class="theme-red">¥{{scope.row.payAmount}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="订单状态" align="left">

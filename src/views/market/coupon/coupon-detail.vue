@@ -58,8 +58,8 @@
             <el-col>
               <lh-item label="优惠内容：" label-width="76px">
                 <span v-if="couponBaseInfo.type === 1">减免场地订单{{couponDiscountContent.subtractHour}}小时的费用</span>
-                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.applyLowerLimit">满{{platformCashCoupon.applyLowerLimit}}减{{platformCashCoupon.amount}}元</span>
-                <span v-if="couponBaseInfo.type === 2 && (!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === '')">无门槛减{{platformCashCoupon.amount}}元</span>
+                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.isConditional === 1">满{{platformCashCoupon.applyLowerLimit}}减{{platformCashCoupon.amount}}元</span>
+                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.isConditional === 0">无门槛减{{platformCashCoupon.amount}}元</span>
                 <span v-if="couponBaseInfo.type === 3">{{couponDiscountContent.benefit}}</span>
               </lh-item>
             </el-col>
