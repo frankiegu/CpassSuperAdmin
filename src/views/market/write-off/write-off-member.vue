@@ -265,6 +265,19 @@
         this.telephone = telephone
         this.merchantName = merchantName
         this.community = community
+
+        var collect = 0
+        this.pointList.forEach(v => {
+          if (v.id === pointId) {
+            collect = 1
+          }
+        })
+
+        if (collect === 1) {
+          this.platformVerifyStationId = pointId
+        } else {
+          this.platformVerifyStationId = ''
+        }
       },
       submit() {
         if (!this.platformVerifyStationId) {
