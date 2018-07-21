@@ -74,6 +74,12 @@ export default {
     },
     getPageData(page) {
       this.currentPage = page || this.currentPage
+
+      // 如果筛选使用优惠券为否，则把优惠券类型置为空
+      if (this.formData.couponUse === 0) {
+        this.formData.couponStatus = ''
+      }
+
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,

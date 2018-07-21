@@ -20,9 +20,9 @@
               <lh-item label="预约日期：" label-width="auto">{{platformOrderField.reservationDate}}</lh-item>
             </el-col>
             <el-col :span="8">
-              <lh-item label="预约时段：" label-width="auto" v-if="fieldInfo.type === 1">
-                {{platformOrderField.bookStartTime}}～{{platformOrderField.bookEndTime}}</lh-item>
               <lh-item label="预约数量：" label-width="auto" v-if="fieldInfo.type === 3">{{platformOrderField.quantity}}</lh-item>
+              <lh-item label="预约时段：" label-width="auto" v-else>
+                {{platformOrderField.bookStartTime}}～{{platformOrderField.bookEndTime}}</lh-item>
             </el-col>
           </el-row>
 
@@ -245,6 +245,11 @@
             } else if (this.fieldInfo.type === 4) {
               this.platformOrderField = res.info.platformOrderDetail.platformOrderOther
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderOther.bookDate
+            } else if (this.fieldInfo.type === 5) {
+              // 办公室 暂时不会有订单
+            } else if (this.fieldInfo.type === 6) {
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderHourStation
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderHourStation.bookDate
             }
           } else {
             this.setMsg('error', res.msg)

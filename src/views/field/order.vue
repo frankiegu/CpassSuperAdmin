@@ -48,6 +48,7 @@
             v-model="formData.couponStatus"
             @change="getPageData(1)"
             placeholder="优惠券类型"
+            :disabled="formData.couponUse === 0"
             class="width140px"
             clearable>
             <el-option
