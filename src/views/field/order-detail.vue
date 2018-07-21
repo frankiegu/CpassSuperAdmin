@@ -118,15 +118,13 @@
         <el-table border :data="couponInfo" class="width100">
           <el-table-column label="优惠券名称">
             <template slot-scope="scope">
-              <template slot-scope="scope">
-                <span>{{ scope.row.couponName }}</span>
-              </template>
+              <span>{{ scope.row.couponName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="优惠券类型">
             <template slot-scope="scope">
-              <span v-if="type === 1">小时券</span>
-              <span v-if="type === 2">代金券</span>
+              <span v-if="scope.row.type === 1">小时券</span>
+              <span v-if="scope.row.type === 2">代金券</span>
             </template>
           </el-table-column>
           <el-table-column label="本次优惠金额">
