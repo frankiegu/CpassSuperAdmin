@@ -7,7 +7,7 @@ export default {
     return {
       tableData: [],
       tableLoading: false,
-      tableEmpty: ' ',
+      tableEmpty: '暂无数据',
 
       // 分页器配置
       pageSizeArr: [20, 40, 80, 100],

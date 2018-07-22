@@ -15,8 +15,8 @@
             <el-input v-model.trim="couponForm.desc" type="textarea" class="width340px"></el-input>
           </el-form-item>
 
-          <el-form-item label="券数量" prop="amount">
-            <el-input v-model="couponForm.amount" class="width340px"></el-input>
+          <el-form-item label="券数量" prop="quantity">
+            <el-input v-model="couponForm.quantity" class="width340px"></el-input>
           </el-form-item>
 
           <el-form-item label="使用期限" prop="expireDate">
@@ -32,6 +32,14 @@
               type="datetimerange">
             </el-date-picker>
           </el-form-item>
+
+          <el-form-item label="使用限制" prop="useLimit">
+            <el-input v-model.trim="couponForm.useLimit" type="textarea" class="width340px"></el-input>
+          </el-form-item>
+
+          <el-form-item label="使用方法" prop="couponUsage">
+            <el-input v-model.trim="couponForm.couponUsage" type="textarea" class="width340px"></el-input>
+          </el-form-item>
         </div>
       </div>
 
@@ -41,7 +49,7 @@
         <div class="card-body">
           <el-form-item label="卡券类型" required>
             <el-radio-group v-model="couponForm.couponType" :disabled="!canChangeType">
-              <el-radio v-if="key !== '2'" v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
+              <el-radio v-for="(value, key) in couponTypeList" :label="parseInt(key)" :key="key" @change="changeType">
                 {{value}}
               </el-radio>
             </el-radio-group>
@@ -53,22 +61,63 @@
               <el-form-item label="优惠内容" required>
                 减免场地订单
                 <el-select v-model="couponForm.subtractHour" class="width75px">
-                  <el-option v-for="i in 16" :key="i" :label="i / 2" :value="i / 2" />
+                  <el-option v-for="i in 8" :key="i" :label="i" :value="i" />
                 </el-select>
                 小时的费用
               </el-form-item>
 
               <el-form-item label="指定项目" prop="fieldType">
                 <el-checkbox-group v-model="couponForm.fieldType">
-                  <el-checkbox v-for="(value, key) in fieldTypeList" :key="key" :label="parseInt(key)">
-                    {{value}}
+                  <el-checkbox v-for="item in fieldTypeList" :key="item.name"
+                    v-if="item.key !== 3" :label="parseInt(item.key)">
+                    {{item.name}}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </div>
+
+            <!-- 代金券 -->
+            <div v-if="couponForm.couponType === 2" v-bind:key="2">
+              <el-form-item label="优惠内容" required>
+                <el-radio-group v-model="couponForm.voucherType" @change="changeVoucherType">
+                  <el-radio :label="0">无门槛</el-radio>
+                  <el-radio :label="1">满减</el-radio>
+                </el-radio-group>
+
+                <transition name="slide-fade" mode="out-in">
+                  <!-- 无门槛 -->
+                  <el-form-item prop="voucherAmount" class="discounted-price"
+                    v-if="couponForm.voucherType === 0" key="voucher1">
+                    优惠金额
+                    <el-input v-model="couponForm.voucherAmount" class="width100px"></el-input>
+                    元
+                  </el-form-item>
+
+                  <!-- 满减 -->
+                  <el-form-item class="discounted-price" v-if="couponForm.voucherType === 1" key="voucher2">
+                    满
+                    <el-form-item prop="voucherFull" class="mb0 dib">
+                      <el-input v-model="couponForm.voucherFull" class="width100px"></el-input>
+                    </el-form-item>
+                    减
+                    <el-form-item prop="voucherReduce" class="mb0 dib">
+                      <el-input v-model="couponForm.voucherReduce" class="width100px"></el-input>
+                    </el-form-item>
+                  </el-form-item>
+                </transition>
+              </el-form-item>
+
+              <el-form-item label="指定项目" prop="fieldType">
+                <el-checkbox-group v-model="couponForm.fieldType">
+                  <el-checkbox v-for="item in fieldTypeList" :key="item.name" :label="parseInt(item.key)">
+                    {{item.name}}
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </div>
 
             <!-- 礼品券 -->
-            <div v-if="couponForm.couponType === 3" v-bind:key="2">
+            <div v-if="couponForm.couponType === 3" v-bind:key="3">
               <el-form-item label="卡券权益" prop="couponRight">
                 <el-input v-model.trim="couponForm.couponRight" class="width340px"
                   placeholder="请输入可享受的权益"></el-input>
@@ -82,8 +131,8 @@
 
           <el-form-item label="使用范围" required>
             <el-radio-group v-model="couponForm.isAllStore" @change="changeRange">
-              <el-radio :label="1">{{couponForm.couponType === 1 ? '全部门店' : '全部核销点'}}</el-radio>
-              <el-radio :label="2">{{couponForm.couponType === 1 ? '部分门店' : '部分核销点'}}</el-radio>
+              <el-radio :label="1">{{couponForm.couponType !== 3 ? '全部门店' : '全部核销点'}}</el-radio>
+              <el-radio :label="2">{{couponForm.couponType !== 3 ? '部分门店' : '部分核销点'}}</el-radio>
               <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
                 添加
               </el-button>
@@ -96,7 +145,7 @@
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
                     <!-- 部分门店的树形 -->
-                    <el-tree v-if="couponForm.couponType === 1" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
+                    <el-tree v-if="couponForm.couponType !== 3" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
                       @check-change="handleCheckChange">
@@ -114,13 +163,13 @@
 
                 <div class="list-cont fl">
                   <p class="theme-gray clearfix fix-input">
-                    {{couponForm.couponType === 1 ? '已选门店' : '已选核销点'}}
+                    {{couponForm.couponType !== 3 ? '已选门店' : '已选核销点'}}
                     <span class="theme-blue ml12">{{selectedRange.length}}</span>
                     <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
                   </p>
 
                   <!-- 选中的部分门店 -->
-                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType === 1" key="storeTable">
+                  <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType !== 3" key="storeTable">
                     <el-table-column label="空间" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
@@ -186,7 +235,7 @@
     </el-form>
 
     <!-- 添加领取方式弹窗 -->
-    <el-dialog title="添加领取方式" :lock-scroll="false" :visible.sync="isWayVisible" :before-close="closeWayDialog"
+    <el-dialog title="添加领取方式" :lock-scroll="false" :visible.sync="isWayVisible" :before-close="closeReceiveDialog"
       width="500px">
       <ul class="receive-list">
         <li v-for="(value, key, index) in conditionTypeList" :key="key">
@@ -212,7 +261,7 @@
         </li>
       </ul>
       <div slot="footer">
-        <el-button @click="closeWayDialog">取 消</el-button>
+        <el-button @click="closeReceiveDialog">取 消</el-button>
         <el-button type="primary" @click="confirmWay">确 定</el-button>
       </div>
     </el-dialog>
@@ -235,6 +284,20 @@
         if (value && (value.toString().indexOf('.') !== -1 ||
             isNaN(Number(value)) || Number(value) < 1 || Number(value) > 99999)) {
           callback(new Error('请输入1-99999的正整数'))
+        }
+        callback()
+      }
+      const checkAmount = (rule, value, callback) => {
+        if (value && (isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 9999)) {
+          callback(new Error('请输入0-9999的正数'))
+        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
+          callback(new Error('最多允许输入两位小数'))
+        }
+        callback()
+      }
+      const checkReduce = (rule, value, callback) => {
+        if (value && (Number(value) > Number(this.couponForm.voucherFull))) {
+          callback(new Error('优惠金额不得大于满减金额'))
         }
         callback()
       }
@@ -270,13 +333,14 @@
       }
       return {
         filterText: '',
-        // 指定项目列表 前端暂时写死
-        fieldTypeList: {
-          1: '会议室',
-          2: '路演厅',
-          // 3: '开放式卡座',
-          4: '多功能场地'
-        },
+        // 指定项目列表 前端暂时写死。v-for对象通过Object.keys()遍历，它对于key为数字的会进行大小排序，顺序不符合预想，改用数组
+        fieldTypeList: [
+          { key: 1, name: '会议室' },
+          { key: 2, name: '路演厅' },
+          { key: 6, name: '时租工位' },
+          { key: 3, name: '移动工位' },
+          { key: 4, name: '多功能场地' }
+        ],
         // 卡券类型列表
         couponTypeList: [],
         canChangeType: true, // 编辑时不可更改卡券类型
@@ -290,8 +354,10 @@
         couponForm: {
           name: '',
           desc: '',
-          amount: '',
+          quantity: '',
           expireDate: [],
+          useLimit: '', // 使用限制
+          couponUsage: '', // 使用方法
           couponType: 1, // 卡券类型
 
           // 小时券
@@ -299,6 +365,12 @@
           fieldType: [],
           isAllStore: 2, // 是否应用全部门店 1-全部门店，2-部分门店
           range: [], // 部分门店的选中门店列表
+
+          // 代金券
+          voucherType: 0, // 0-无门槛，1-满减
+          voucherAmount: '', // 优惠金额
+          voucherFull: '', // 满金额
+          voucherReduce: '', // 减金额
 
           // 礼品券
           couponRight: '', // 卡券权益
@@ -315,13 +387,34 @@
           desc: [
             { max: 100, message: '最大允许输入100字', trigger: ['blur', 'change'] }
           ],
-          amount: [
+          quantity: [
             { required: true, message: '请输入券数量', trigger: ['blur', 'change'] },
             { validator: checkInt, trigger: ['blur', 'change'] }
           ],
           expireDate: [
             { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] },
             { validator: checkMinDate, trigger: ['blur', 'change'] }
+          ],
+          useLimit: [
+            { required: true, message: '请输入使用限制', trigger: ['blur', 'change'] },
+            { max: 500, message: '最大允许输入500字', trigger: ['blur', 'change'] }
+          ],
+          couponUsage: [
+            { required: true, message: '请输入使用方法', trigger: ['blur', 'change'] },
+            { max: 500, message: '最大允许输入500字', trigger: ['blur', 'change'] }
+          ],
+          voucherAmount: [
+            { required: true, message: '请输入优惠金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] }
+          ],
+          voucherFull: [
+            { required: true, message: '请输入满金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] }
+          ],
+          voucherReduce: [
+            { required: true, message: '请输入减金额', trigger: ['blur', 'change'] },
+            { validator: checkAmount, trigger: ['blur', 'change'] },
+            { validator: checkReduce, trigger: ['blur', 'change'] }
           ],
           fieldType: [
             { required: true, message: '至少选择一个项目', trigger: ['blur', 'change'] }
@@ -390,29 +483,48 @@
       // 获取树形数据
       this.handleGetTreeData()
 
-      // 获取优惠券详情
-      if (this.$route.query.id) this.handleGetCouponDetail()
       // 获取核销点列表
       this.handleGetStation()
     },
 
     methods: {
-      // 切换卡券类型
-      changeType(val) {
-        this.couponForm.isAllStore = 2
+      // 切换卡券类型重置数据
+      changeType() {
         this.selectedRange = []
+        this.couponForm.range = []
+        this.couponForm.fieldType = []
+        this.couponForm.couponRight = ''
+        this.couponForm.worth = ''
+        this.couponForm.voucherType = 0
+        this.couponForm.voucherAmount = ''
+        this.couponForm.voucherFull = ''
+        this.couponForm.voucherReduce = ''
+        this.couponForm.isAllStore = 2
+        this.removeSelected()
       },
-      // 切换使用范围
+      // 切换代金券类型时重置数据
+      changeVoucherType() {
+        this.couponForm.voucherAmount = ''
+        this.couponForm.voucherFull = ''
+        this.couponForm.voucherReduce = ''
+      },
+      // 切换使用范围时重置数据
       changeRange() {
         this.selectedRange = []
         this.couponForm.range = []
       },
+
       // 获取核销点列表
       handleGetStation() {
-        loadStation().then(res => {
+        loadStation({
+          status: 1,
+          isDelete: 0
+        }).then(res => {
           if (res.status === 'true') {
             this.stationList = res.info
             this.isWopVisible = false
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -421,6 +533,8 @@
         loadSpaceStoreTree({ filterName: '' }).then(res => {
           if (res.status === 'true') {
             this.treeData = res.info
+            // 获取优惠券详情
+            if (this.$route.query.id) this.handleGetCouponDetail()
           }
         })
       },
@@ -461,7 +575,7 @@
         this.selectedRange = this.getCheckedNodes()
         this.couponForm.range = []
         for (let i = 0; i < this.selectedRange.length; i++) {
-          if (this.couponForm.couponType === 1) {
+          if (this.couponForm.couponType !== 3) {
             this.couponForm.range.push(
               { 'spaceId': this.selectedRange[i].spaceId, 'storeId': this.selectedRange[i].storeId }
             )
@@ -471,7 +585,11 @@
           }
         }
       },
-      // 移除选中的节点
+
+      /**
+       * 移除选中的节点
+       * @param {string} [nodeKey] - 可选的节点key值
+       */
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
         if (!nodeKey) {
@@ -557,7 +675,7 @@
         this.hasCondition = true
         this.isWayVisible = false
       },
-      closeWayDialog() {
+      closeReceiveDialog() {
         this.couponForm.receiveConditionArray.forEach((item) => {
           if (!item.startTime || new Date(item.startTime) < Date.now() ||
             new Date(item.endTime) > new Date(this.couponForm.expireDate[1])) {
@@ -583,9 +701,11 @@
             let couponReceiveDetailList = res.info.couponReceiveDetailList
             couponForm.name = platformCoupon.name
             couponForm.desc = platformCoupon.description
-            couponForm.amount = platformCoupon.quantity
+            couponForm.quantity = platformCoupon.quantity
             couponForm.expireDate = [platformCoupon.startDate, platformCoupon.endDate]
             couponForm.couponType = platformCoupon.type
+            couponForm.useLimit = platformCoupon.useLimit
+            couponForm.couponUsage = platformCoupon.couponUsage
             this.canChangeType = false // 禁止切换卡券类型
             couponReceiveDetailList.forEach(item => {
               couponForm.receiveWay.push(item.receiveType)
@@ -602,14 +722,27 @@
 
             switch (platformCoupon.type) {
               case 1: // 小时券
-                let platformHourCoupon = res.info.platformHourCoupon
-                let platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
-                let storeList = res.info.storeList
-                couponForm.subtractHour = platformHourCoupon.subtractHour
-                platformHourCouponFieldTypeList.forEach(item => {
+              case 2: // 代金券
+                let platformCouponContent = res.info.platformHourCoupon || res.info.platformCashCoupon
+                let platformCouponFieldTypeList = res.info.fieldTypeList
+                let storeList = res.info.storeList || res.info.cashCouponStoreList
+
+                if (platformCoupon.type === 1) couponForm.subtractHour = platformCouponContent.subtractHour
+                if (platformCoupon.type === 2) {
+                  couponForm.voucherType = platformCouponContent.isConditional
+                  if (couponForm.voucherType === 0) {
+                    couponForm.voucherAmount = platformCouponContent.amount
+                  } else {
+                    couponForm.voucherFull = platformCouponContent.applyLowerLimit
+                    couponForm.voucherReduce = platformCouponContent.amount
+                  }
+                }
+
+                couponForm.fieldType = []
+                platformCouponFieldTypeList.forEach(item => {
                   couponForm.fieldType.push(item.type)
                 })
-                couponForm.isAllStore = platformHourCoupon.storeType
+                couponForm.isAllStore = platformCouponContent.storeType
                 // 详情中的门店列表映射回树形门店的选中
                 if (storeList.length > 0) {
                   let nodeKeys = []
@@ -617,7 +750,9 @@
                     if (item.children && item.children.length > 0) {
                       for (let i = 0; i < storeList.length; i++) {
                         let target = item.children.find(child => child.storeId === storeList[i].id)
-                        if (target != null) nodeKeys.push(target.nodeKey)
+                        if (target != null) {
+                          nodeKeys.push(target.nodeKey)
+                        }
                       }
                     }
                   })
@@ -650,23 +785,43 @@
         this.$refs['couponForm'].validate(valid => {
           if (valid) {
             let form = this.couponForm
+            /**
+             * 判断领取方式是否支持（1-支持， 0-不支持）
+             * receiveCondition 条件触发
+             * receiveManual 手动领取
+             * receiveManpower 手动下发
+             */
             let receiveCondition = form.receiveWay.includes(1) ? 1 : 0
             let receiveManual = form.receiveWay.includes(2) ? 1 : 0
             let receiveManpower = form.receiveWay.includes(3) ? 1 : 0
             let params = {
               name: form.name,
               description: form.desc,
-              quantity: form.amount,
+              quantity: form.quantity,
               startDate: form.expireDate && form.expireDate[0] ? form.expireDate[0] : '',
               endDate: form.expireDate && form.expireDate[1] ? form.expireDate[1] : '',
               type: form.couponType,
+              useLimit: form.useLimit,
+              couponUsage: form.couponUsage,
               receiveCondition: receiveCondition,
               receiveManual: receiveManual,
               receiveManpower: receiveManpower
             }
+            // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id
+
             if (form.couponType === 1) { // 小时券的特定参数
               params.subtractHour = form.subtractHour
+              params.fieldType = form.fieldType
+              params.storeType = form.isAllStore
+              if (form.isAllStore === 2) {
+                params.storeArray = form.range
+              }
+            }
+            if (form.couponType === 2) { // 代金券的特定参数
+              params.isConditional = form.voucherType
+              params.amount = form.voucherType === 0 ? form.voucherAmount : form.voucherReduce // 优惠金额
+              if (form.voucherType === 1) params.applyLowerLimit = form.voucherFull // 满金额
               params.fieldType = form.fieldType
               params.storeType = form.isAllStore
               if (form.isAllStore === 2) {
@@ -693,6 +848,7 @@
                   } else {
                     this.$message.error('条件触发的起始时间需大于当前时间')
                     dateValid = false
+                    return
                   }
                   if (new Date(item.endTime) <= new Date(this.couponForm.expireDate[1])) {
                     dateValid = true
@@ -710,7 +866,11 @@
               if (res.status === 'true') {
                 let tipTxt = this.$route.query.id ? '修改成功！' : '创建成功！'
                 this.$message.success(tipTxt)
-                this.$router.replace('/market/coupon')
+                if (this.$route.query.id) {
+                  this.$router.replace('/market/coupon-detail?id=' + this.$route.query.id)
+                } else {
+                  this.$router.replace('/market/coupon')
+                }
               } else {
                 this.$message.error(res.msg)
               }
@@ -742,6 +902,9 @@
 <style lang="scss" scoped>
   @import "src/styles/config";
   .add-coupon {
+    .discounted-price {
+      margin: 18px 0 0;
+    }
     .range-cont {
       margin-right: -12px;
       .list-cont {

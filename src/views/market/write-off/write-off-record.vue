@@ -2,6 +2,68 @@
   <div class="order-field">
     <div class="card-padding">
       <el-form :inline="true" class="text-right mr-10">
+        <el-form-item>
+          <lh-datePicker label="核销日期" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.spaceId"
+            @change="changeSpace"
+            placeholder="请选择所属空间"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in spaceList"
+              :label="item.spaceName"
+              :value="item.id"
+              :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+
+        <el-form-item>
+          <el-select
+            v-model="formData.storeId"
+            @change="changeStore"
+            placeholder="请选择消费门店"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in storeList"
+              :label="item.storeName"
+              :value="item.id"
+              :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.verifyStationId"
+            @change="getPageData(1)"
+            placeholder="请选择核销点"
+            class="width140px"
+            clearable>
+            <el-option
+              v-for="item in verifyStationList"
+              :label="item.name"
+              :value="item.id"
+              :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-input
+            v-model.trim="formData.couponName"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入卡券名"
+            clearable
+            class="width220px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+
         <el-form-item class="fr">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
@@ -40,6 +102,18 @@
         <el-table-column label="卡券名称" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.platformCouponName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="消费门店" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.storeName }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="所属空间" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.spaceName }}
           </template>
         </el-table-column>
 
@@ -89,26 +163,49 @@
 
 <script>
   import { API_PATH } from '@/config/env'
-  import { downloadFile } from '@/config/utils'
+  import { formatTimeString, downloadFile } from '@/config/utils'
   import tableMixins from '@/mixins/table'
-  import { platformVerifyRecordPage } from '@/service/market'
+  import { spaceList, storeList } from '@/service/common'
+  import { platformVerifyRecordPage, PlatformVerifyStationLoadStation } from '@/service/market'
 
   export default {
     mixins: [tableMixins],
     components: {},
     data () {
       return {
+        spaceList: [],
+        storeList: [],
+        verifyStationList: [],
+        formData: {
+          couponName: '',
+          spaceId: '',
+          storeId: '',
+          verifyStationId: '',
+          startDate: '',
+          endDate: ''
+        }
       }
     },
     mounted () {
+      this.getspaceList()
+      this.getstoreList()
+      this.getStationList()
       this.getPageData()
     },
     methods: {
-      getPageData() {
+      getPageData (page) {
         const self = this
+        self.currentPage = page || self.currentPage
         const paramsObj = {
           pageSize: self.pageSize,
-          pageNum: self.currentPage
+          pageNum: self.currentPage,
+
+          couponName: this.formData.couponName,
+          spaceId: this.formData.spaceId,
+          storeId: this.formData.storeId,
+          verifyStationId: this.formData.verifyStationId,
+          startDate: this.formData.startDate,
+          endDate: this.formData.endDate
         }
         platformVerifyRecordPage(paramsObj).then(res => {
           if (res.status === 'true') {
@@ -132,6 +229,69 @@
             this.setMsg('error', res.msg)
           }
         })
+      },
+      // 获取空间列表
+      getspaceList () {
+        spaceList().then(res => {
+          if (res.status === 'true') {
+            this.spaceList = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 获取门店列表
+      getstoreList () {
+        const paramsObj = {
+          spaceId: this.formData.spaceId
+        }
+        storeList(paramsObj).then(res => {
+          if (res.status === 'true') {
+            this.storeList = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 获取核销点列表
+      getStationList () {
+        const paramsObj = {
+          spaceId: this.formData.spaceId,
+          storeId: this.formData.storeId
+        }
+        PlatformVerifyStationLoadStation(paramsObj).then(res => {
+          if (res.status === 'true') {
+            this.verifyStationList = res.info
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 空间变更
+      changeSpace () {
+        // 清空门店和核销点 的选中项以及列表
+        this.formData.storeId = ''
+        this.formData.verifyStationId = ''
+        this.storeList = []
+        this.verifyStationList = []
+
+        this.getPageData(1)
+        this.getstoreList()
+      },
+      // 门店变更
+      changeStore () {
+        // 清空核销点 的选中项以及列表
+        this.formData.verifyStationId = ''
+        this.verifyStationList = []
+
+        this.getPageData(1)
+        this.getStationList()
+      },
+      datePickerChange (val, date) {
+        const self = this
+        self.formData.startDate = date ? formatTimeString(date[0]) : ''
+        self.formData.endDate = date ? formatTimeString(date[1]) : ''
+        this.getPageData(1)
       },
       exportExcel() {
         if (!this.tableData.length) {

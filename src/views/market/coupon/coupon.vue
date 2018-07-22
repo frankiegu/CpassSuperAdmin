@@ -102,6 +102,10 @@
               <span v-if="scope.row.type === 1">{{ scope.row.subtractHour }}小时</span>
               <!--礼品券-->
               <span v-if="scope.row.type === 3">{{ scope.row.benefit }}</span>
+              <!--满减券  有门槛-->
+              <span v-if="scope.row.type === 2 && scope.row.isConditional === 1">满{{ scope.row.applyLowerLimit }}减{{ scope.row.amount }}</span>
+              <!--满减券  无门槛-->
+              <span v-if="scope.row.type === 2 && scope.row.isConditional === 0">无门槛减{{ scope.row.amount }}元</span>
             </template>
           </el-table-column>
 
@@ -122,6 +126,13 @@
               <span v-if="scope.row.storeType === 1 && scope.row.type === 1">全部门店</span>
               <!--storeType = 2 ==> 部分-->
               <span v-if="scope.row.storeType === 2 && scope.row.type === 1">部分门店</span>
+
+              <!--满减券-->
+              <!--storeType = 1 ==> 全部-->
+              <span v-if="scope.row.cashStoreType === 1 && scope.row.type === 2">全部门店</span>
+              <!--storeType = 2 ==> 部分-->
+              <span v-if="scope.row.cashStoreType === 2 && scope.row.type === 2">部分门店</span>
+
               <!--礼品券-->
               <span v-if="scope.row.verifyStationType === 1 && scope.row.type === 3">全部核销点</span>
               <!--storeType = 2 ==> 部分-->

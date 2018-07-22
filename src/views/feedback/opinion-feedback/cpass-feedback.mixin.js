@@ -1,6 +1,6 @@
 import tableMixins from '@/mixins/table'
 import { API_PATH } from '@/config/env'
-import { feedbackList, feedbackDetail } from '@/service/feedback'
+import { cpassFeedbackList, cpassFeedbackDetail } from '@/service/feedback'
 import { formatTimeString, downloadFile } from '@/config/utils'
 
 export default {
@@ -11,9 +11,11 @@ export default {
       content: '',
       moduleName: '',
       formData: {
-        content: '',
+        keyword: '',
         reg_date: null
-      }
+      },
+      imgList: [],
+      showImg: ''
     }
   },
   mounted () {
@@ -25,12 +27,12 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        content: this.formData.content,
+        keyword: this.formData.keyword,
         startDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
         endDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
       }
 
-      feedbackList(paramsObj).then(res => {
+      cpassFeedbackList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {
@@ -51,16 +53,17 @@ export default {
     viewDetail (id) {
       this.id = id
       this.content = ''
-      this.moduleName = ''
-      this.dialogVisible = true
+      this.imgList = []
+      this.outerVisible = true
       const paramsObj = {
         id: this.id
       }
-      feedbackDetail(paramsObj).then(res => {
+      cpassFeedbackDetail(paramsObj).then(res => {
         if (res.status === 'true') {
           if (res.info) {
-            this.moduleName = res.info.moduleName || ''
-            this.content = res.info.content || ''
+            this.content = res.info.content
+            this.imgList = res.info.platformFeedbackImgs || []
+            this.showImg = res.info.showImg
           } else {
             this.setMsg('error', res.msg)
           }
@@ -69,17 +72,22 @@ export default {
         }
       })
     },
+    // 承接datePicker
+    datePickerChange (page, dateRange) {
+      this.formData.reg_date = dateRange
+      this.getPageData(1)
+    },
     exportExcel() {
       if (!this.tableData.length) {
         return this.setMsg('暂无数据')
       }
       const formData = this.formData
       const downParams = {
-        content: formData.content,
+        keyword: formData.keyword,
         startDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
         endDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null
       }
-      let url = API_PATH + '/supervisor/feedback/export'
+      let url = API_PATH + '/supervisor/platformFeedback/export'
       downloadFile(url, downParams)
     }
   }

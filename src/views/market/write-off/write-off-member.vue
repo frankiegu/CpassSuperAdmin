@@ -230,7 +230,11 @@
       },
       // 获取核销点
       getPoint() {
-        PlatformVerifyStationLoadStation().then(res => {
+        const paramsObj = {
+          status: 1,
+          isDelete: 0
+        }
+        PlatformVerifyStationLoadStation(paramsObj).then(res => {
           if (res.status === 'true') {
             this.pointList = res.info
           } else {
@@ -261,6 +265,19 @@
         this.telephone = telephone
         this.merchantName = merchantName
         this.community = community
+
+        var collect = 0
+        this.pointList.forEach(v => {
+          if (v.id === pointId) {
+            collect = 1
+          }
+        })
+
+        if (collect === 1) {
+          this.platformVerifyStationId = pointId
+        } else {
+          this.platformVerifyStationId = ''
+        }
       },
       submit() {
         if (!this.platformVerifyStationId) {

@@ -1,37 +1,55 @@
 <template>
-  <el-upload
-    :before-upload="beforeAvatarUpload"
-    :on-success="handleAvatarSuccess"
-    @click.native="clickUpload"
-    :disabled="disabled"
-    :style="imgSize"
-    name="file"
-    :action="action"
-    :headers="headers"
-    :show-file-list="false"
-    class="avatar-uploader"
-    accept="image/png, image/jpeg">
-
-    <img
-      v-if="imgUrl"
-      :src="imgUrl + zoomImgSize(size, size)"
-      class="avatar"
-      :style="imgSize" />
-
-    <i
-      v-else
+  <div>
+    <el-upload
+      :before-upload="beforeAvatarUpload"
+      :on-success="handleAvatarSuccess"
+      @click.native="clickUpload"
+      :disabled="disabled"
       :style="imgSize"
-      class="el-icon-plus avatar-uploader-icon upload-icon"></i>
+      name="file"
+      :action="action"
+      :headers="headers"
+      :show-file-list="false"
+      class="avatar-uploader fl"
+      accept="image/png, image/jpeg">
 
-    <div v-if="imgUrl && !disabled" :class="{'opacity1': maskStatus}" class="mask-box">
-      <i v-if="!progress" :style="imgSize" class="el-icon-upload upload-icon"></i>
+      <img
+        v-if="imgUrl"
+        :src="imgUrl + zoomImgSize(size, size)"
+        class="avatar"
+        :style="imgSize"
+        :class="{'not-allowed': disabled}" />
 
-      <i v-else
-       :style="imgSize"
-       :class="{'el-icon-success': progress === 'suc', 'el-icon-loading': progress === 'uploading'}"
-       class="dib upload-icon progress-style"></i>
-    </div>
-  </el-upload>
+      <i
+        v-else
+        :style="imgSize"
+        class="el-icon-plus avatar-uploader-icon upload-icon"></i>
+
+      <div v-if="imgUrl && !disabled" :class="{'opacity1': maskStatus}" class="mask-box">
+        <i v-if="!progress" :style="imgSize" class="el-icon-upload upload-icon"></i>
+
+        <i v-else
+         :style="imgSize"
+         :class="{'el-icon-success': progress === 'suc', 'el-icon-loading': progress === 'uploading'}"
+         class="dib upload-icon progress-style"></i>
+      </div>
+    </el-upload>
+
+    <el-popover
+      ref="tipPopover"
+      placement="right"
+      title=""
+      width="150"
+      trigger="hover">
+      <div class="fz12">
+        建议尺寸：{{ tipsWidth || '600' }}PX * {{ tipsHeight || '460' }}PX<br>
+        支持格式：JPG/PNG
+      </div>
+    </el-popover>
+    <span v-popover:tipPopover class="fl ml12" :style="tipsStyle">
+      <lh-svg v-if="!!tipsWidth" icon-class="icon-info" class="theme-gray"></lh-svg>
+    </span>
+  </div>
 </template>
 
 <script>
@@ -39,6 +57,7 @@
   export default {
     // 这样就可以很轻易的修改组件名，又不用修改文件名
     name: 'LhUpload',
+    props: ['disabled', 'imgUrl', 'size', 'tipsWidth', 'tipsHeight'],
     data () {
       return {
         action: API_PATH + '/supervisor/file/upload',
@@ -49,7 +68,6 @@
         }
       }
     },
-    props: ['disabled', 'imgUrl', 'size'],
     computed: {
       imgSize() {
         let size = this.size || 80
@@ -58,7 +76,16 @@
           height: size + 'px',
           lineHeight: size + 'px'
         }
+      },
+      tipsStyle() {
+        let size = this.size || 80
+        return {
+          lineHeight: size + 'px'
+        }
       }
+    },
+    mounted() {
+      // console.log('test', this.tipsWidth);
     },
     methods: {
       clickUpload() {
@@ -94,11 +121,11 @@
         }
       }
     }
-  }
+  };
 </script>
 
 <style lang="scss" scoped>
-  @import "../../styles/variables";
+  @import "src/styles/variables";
   .avatar-uploader {
     position: relative;
     margin-bottom: 2px;
@@ -136,7 +163,7 @@
       border: 1px dashed #d9d9d9;
 
       &:hover {
-        border-color: #20a0ff;
+        border-color: $theme-blue;
       }
     }
     .el-icon-success {

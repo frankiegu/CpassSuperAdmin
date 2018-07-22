@@ -1,6 +1,9 @@
 import fetch from '../config/fetch'
 import { API_PATH } from '../config/env'
 
+// c-pass
+export * from './market/c-pass'
+
 /**
  * 优惠券管理
  */

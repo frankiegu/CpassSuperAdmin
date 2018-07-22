@@ -29,9 +29,9 @@ axios.interceptors.response.use(response => {
       case '401':
         router.replace({ path: '/401' })
         break
-      case '500':
-        router.replace({ path: '/500' })
-        break
+      // case '500':
+      //   router.replace({ path: '/500' })
+      //   break
       case '504':
       case '4010':
       case '4011':
@@ -50,9 +50,9 @@ axios.interceptors.response.use(response => {
       case '401':
         router.replace({ path: '/401' })
         break
-      case '500':
-        router.replace({ path: '/500' })
-        break
+      // case '500':
+      //   router.replace({ path: '/500' })
+      //   break
       case '504':
       case '4010':
       case '4011':

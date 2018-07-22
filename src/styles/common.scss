@@ -7,6 +7,15 @@
 
 /* line-height
 -------------------------- */
+.lh100 {
+  line-height: 100px;
+}
+.lh80 {
+  line-height: 80px;
+}
+.lh66 {
+  line-height: 66px;
+}
 .lh40, .line-height40 {
   line-height: 40px;
 }
@@ -14,7 +23,7 @@
   line-height: 36px;
 }
 .lh32 {
-  line-height: 36px;
+  line-height: 32px;
 }
 .lh22, .line-height22 {
   line-height: 22px;
@@ -78,6 +87,12 @@
 
 /* other
 -------------------------- */
+.not-allowed {
+  cursor: not-allowed !important;
+}
+.mc, .margin-center {
+  margin: 0 auto;
+}
 .fz12, .font-size-12px {
   font-size: 12px;
 }
@@ -97,7 +112,7 @@
   font-size: 50px;
 }
 
-.cursor-pointer {
+.cp, cursor-pointer {
   cursor: pointer;
 }
 .outline-none {
@@ -223,6 +238,12 @@
 .width105px {
   width: 105px !important;
 }
+.width110px {
+  width: 110px;
+}
+.width102px {
+  width: 102px;
+}
 .width100px {
   width: 100px !important;
 }
@@ -272,6 +293,9 @@
 }
 .height30px {
   height: 30px;
+}
+.h6, .height6px {
+  height: 6px;
 }
 
 /* padding
@@ -376,6 +400,10 @@
 .pb12 {
   padding-bottom: 12px;
 }
+.ph4 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 .pd0 {
   padding: 0;
 }
@@ -470,6 +498,9 @@
 }
 .ml20 {
   margin-left: 20px;
+}
+.ml18 {
+  margin-left: 18px;
 }
 .ml16 {
   margin-left: 16px !important;
@@ -663,11 +694,14 @@
 .mt-8 {
   margin-top: -8px;
 }
-.mt-4 {
-  margin-top: -4px;
+.mt-6 {
+  margin-top: -6px;
 }
 .mt-5 {
   margin-top: -5px;
+}
+.mt-4 {
+  margin-top: -4px;
 }
 .mt-1 {
   margin-top: -1px;

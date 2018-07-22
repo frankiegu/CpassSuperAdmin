@@ -9,38 +9,30 @@ export default [{
   path: '/client',
   redirect: '/client/list',
   component: layout,
-  noDropdown: true,
+  noDropdown: false,
   icon: 'icon-kehu',
   children: [{
     name: '客户列表',
     path: 'list',
-    component: _import('client/index'),
-    hidden: true
+    component: _import('client/index')
   }, {
     name: '',
     path: 'add',
     component: _import('client/add'),
     hidden: true,
-    meta: {
-      title: '',
-      level2: true
-    }
+    meta: { title: '', level2: true }
   }, {
     name: '修改客户资料',
     path: 'modify',
     component: _import('client/modify'),
     hidden: true,
-    meta: {
-      level2: true
-    }
+    meta: { level2: true }
   }, {
     name: '客户详情',
     path: 'detail',
     component: _import('client/client-detail'),
     hidden: true,
-    meta: {
-      level2: true
-    }
+    meta: { level2: true }
   }, {
     name: '账户信息',
     path: 'account',
@@ -52,5 +44,21 @@ export default [{
       // title 是否显示下载 pdf 按钮
       pdf: true
     }
+  },
+
+  // 空间列表
+  {
+    name: '空间列表',
+    path: 'space',
+    component: _import('client/space/index'),
+    meta: { level2: true }
+  },
+
+  // 城市维护
+  {
+    name: '城市维护',
+    path: 'city',
+    component: _import('client/city-maintain/index'),
+    meta: { level2: true }
   }]
 }]
