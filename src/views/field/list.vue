@@ -4,6 +4,10 @@
 
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
+        <!--选择预约日期-->
+        <el-form-item>
+          <lh-datePicker label="更新日期" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
+        </el-form-item>
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
@@ -23,6 +27,7 @@
         :slot="tableEmpty"
         v-loading="tableLoading"
         @sort-change="change"
+        @filter-change="filterChange"
         class="width100" border>
 
         <el-table-column label="场地名称" fixed="left" align="left">
@@ -45,7 +50,21 @@
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系方式" prop="phone" align="left" width="110"></el-table-column>
 
-        <el-table-column label="状态" fixed="right" align="left">
+        <el-table-column label="场地更新时间" prop="updated" align="left" width="105"></el-table-column>
+
+        <el-table-column :label="sortStatusName" prop="isOpen" width="100"
+                         :filters="[{ text: '待审核', value: 0 }, { text: '审核通过', value: 1 }]"
+                         :filter-multiple="false"
+                         filter-placement="bottom-end"
+                         column-key="statusType">
+          <template slot-scope="scope">
+            <!--待审核, 审核通过-->
+            <span v-if="scope.row.isOpen === 0">待审核</span>
+            <span v-else-if="scope.row.isOpen === 1">审核通过</span>
+          </template>
+
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" align="left">
           <template slot-scope="scope">
             <el-tooltip
               :content="scope.row.isOpen === 1 ? '点击停用场地' : '点击启用场地'"
@@ -83,6 +102,7 @@
   import tableMixins from '@/mixins/table'
   import listMixins from './list.mixins'
   import { fieldList, setFieldStatus } from '@/service/field'
+  import { formatTimeString } from '@/config/utils'
 
   export default {
     mixins: [listMixins, tableMixins],
@@ -90,7 +110,10 @@
     data () {
       return {
         bookNumSort: '',
+        sortStatusName: '状态',
+        statusType: '',
         formData: {
+          update: '', // 更新时间
           name: ''
         }
       }
@@ -99,6 +122,11 @@
       this.getPageData()
     },
     methods: {
+      // 承接datePicker
+      datePickerChange (page, dateRange) {
+        this.formData.update = dateRange
+        this.getPageData(1)
+      },
       formatterPrice(row, column) {
         return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
       },
@@ -122,7 +150,10 @@
           pageNum: this.currentPage,
           bookNumSort: this.bookNumSort,
           fieldName: this.formData.name,
-          storeId: this.$route.query.storeId
+          storeId: this.$route.query.storeId,
+          status: this.statusType,
+          startTime: this.formData.update ? formatTimeString(this.formData.update[0]) : null,
+          endTime: this.formData.update ? formatTimeString(this.formData.update[1]) : null
         }
         fieldList(paramsObj).then(res => {
           if (res.status === 'true') {
@@ -141,11 +172,12 @@
           }
         })
       },
-      // 更新会员状态
+      // 更新场地状态
       handleUpdateStatus(id, status) {
         setFieldStatus({ fieldId: id, isOpen: status }).then(res => {
           if (res.status === 'true') {
             this.$message.success('修改成功！')
+            // this.getPageData()
           } else {
             this.$message.error(res.msg)
           }
@@ -161,6 +193,32 @@
         //    this.$message.error(res.msg)
         //  }
         // })
+      },
+      // 筛选触发动作
+      filterChange (filters) {
+        if (filters.hasOwnProperty('statusType')) {
+          if (filters['statusType'].length === 0) {
+            this.sortStatusName = '状态'
+            this.statusType = ''
+            this.getPageData(1)
+            return;
+          }
+          if (filters['statusType'][0] === this.statusType) {
+            return;
+          }
+          console.log('filter', filters['statusType'][0])
+          switch (filters['statusType'][0]) {
+            case 1:
+              this.statusType = 1
+              this.sortStatusName = '审核通过'
+              break;
+            case 0:
+              this.statusType = 0
+              this.sortStatusName = '待审核'
+              break;
+          }
+          this.getPageData(1)
+        }
       }
     }
   }
