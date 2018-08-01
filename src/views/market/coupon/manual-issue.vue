@@ -103,7 +103,8 @@
             </el-form-item>
 
             <el-form-item>
-              <el-input v-model.trim="memberSort.nickname" placeholder="请输入会员名称"
+              <el-input v-model.trim="memberSort.nickname"
+                :placeholder="memberSort.userType === 1 ? '请输入会员名称' : '请输入会员名称或会员ID'"
                 @keyup.native.enter="getPageData(1)">
                 <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
               </el-input>
@@ -113,12 +114,15 @@
           <!-- 会员列表 -->
           <el-table :data="memberList" row-key="id" @selection-change="handleSelectionChange" height="360px" :key="2">
             <el-table-column type="selection" width="55" reserve-selection></el-table-column>
+            <el-table-column label="会员ID" prop="customerCode" v-if="memberSort.userType === 2"></el-table-column>
             <el-table-column label="会员名称" prop="nickname"></el-table-column>
+
             <el-table-column label="注册渠道" prop="registerName">
               <template slot-scope="scope">
                 <span>{{scope.row.registerName ? scope.row.registerName : '-'}}</span>
               </template>
             </el-table-column>
+
             <el-table-column label="注册日期">
               <template slot-scope="scope">
                 <span v-if="memberSort.userType === 1">

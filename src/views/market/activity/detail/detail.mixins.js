@@ -105,7 +105,7 @@ export default {
               console.log(this.isOpen)
             }
 
-            if (res.info.platformActivityShowConfigList) {
+            if (res.info.platformActivityShowConfigList.length) {
               this.platformActivityShowConfigList = res.info.platformActivityShowConfigList
               this.showDate = res.info.platformActivityShowConfigList[0].showDate
               this.hiddenDate = res.info.platformActivityShowConfigList[0].hiddenDate
