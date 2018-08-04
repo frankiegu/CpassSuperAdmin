@@ -76,7 +76,7 @@
               <span class="table-link" @click="showDialog(3, scope.row.id, scope.row.relationDate)">{{ scope.row.newFieldCount }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="移动工位" align="left" >
+          <el-table-column label="日租工位" align="left" >
             <template slot-scope="scope">
               <span class="table-link">{{ scope.row.stationCount }}</span>
             </template>
