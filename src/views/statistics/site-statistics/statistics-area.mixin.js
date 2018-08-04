@@ -26,7 +26,7 @@ export default {
           number: '',
           key: ''
         }, {
-          label: '移动工位',
+          label: '日租工位',
           number: '',
           key: 3
         }, {
