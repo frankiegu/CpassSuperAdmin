@@ -28,5 +28,9 @@ export default [{
     path: 'order/detail',
     hidden: true,
     component: _import('field/order-detail')
+  }, {
+    name: '参观预约',
+    path: 'appointment',
+    component: _import('field/visit-appointment/list')
   }]
 }]

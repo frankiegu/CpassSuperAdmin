@@ -49,15 +49,17 @@
         <el-col :span="24">
           <el-row :gutter="20">
             <el-col>
-              <p v-if="couponBaseInfo.description">卡券说明: {{couponBaseInfo.description}}</p>
-              <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: {{couponDiscountContent.worth}}元</p>
+              <p v-if="couponBaseInfo.description">卡券说明: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.description}}</p>
+              <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: &nbsp;&nbsp;&nbsp;{{couponDiscountContent.worth}}元</p>
             </el-col>
           </el-row>
 
           <el-row :gutter="20" class="mt20">
             <el-col>
-              <lh-item label="优惠内容：" label-width="87px">
+              <lh-item label="优惠内容：" label-width="76px">
                 <span v-if="couponBaseInfo.type === 1">减免场地订单{{couponDiscountContent.subtractHour}}小时的费用</span>
+                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.isConditional === 1">满{{platformCashCoupon.applyLowerLimit}}减{{platformCashCoupon.amount}}元</span>
+                <span v-if="couponBaseInfo.type === 2 && platformCashCoupon.isConditional === 0">无门槛减{{platformCashCoupon.amount}}元</span>
                 <span v-if="couponBaseInfo.type === 3">{{couponDiscountContent.benefit}}</span>
               </lh-item>
             </el-col>
@@ -83,7 +85,7 @@
                 <span>&nbsp;{{receiveStatistics.used || 0}}/{{receiveStatistics.received || 0}}</span>
               </lh-item>
             </el-col>
-            <el-col :span="6" v-if="couponBaseInfo.type === 1">
+            <el-col :span="6" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
               <lh-item label="用券总成交额：" label-width="100px">
                 <span style="font-size: 18px; color: #000;">{{couponTotalAmount}}&nbsp;</span>元
               </lh-item>
@@ -106,25 +108,16 @@
                   <el-col v-if="item.receiveType === 1">
                     <lh-item label="条件触发" label-width="120px">
                       <span class="mr15">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
-                      <!--<el-tooltip-->
-                        <!--:content="item.couponStatus ? '生效中' : '未生效'"-->
-                        <!--placement="top"-->
-                        <!--class="margin-lr6">-->
-                        <!--<el-switch-->
-                          <!--class=""-->
-                          <!--v-model="item.couponStatus"-->
-                          <!--active-text=""-->
-                          <!--inactive-text=""-->
-                          <!--:disabled="true"-->
-                          <!--:active-color="switchActiveColor"></el-switch>-->
-                      <!--</el-tooltip>-->
                       <el-button type="primary" v-if="item.couponStatus">生效中</el-button>
                       <el-button type="info" v-if="!item.couponStatus">未生效</el-button>
                     </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 2">
                     <!--<lh-item label="支持手动领取" label-width="120px"></lh-item>-->
-                    <p class="pb16">支持手动领取</p>
+                    <!--<p class="pb16">支持手动领取</p>-->
+                    <lh-item label="支持手动领取" label-width="120px">
+                      <span class="mr15" v-if="item.receiveConditionStartTime && item.receiveConditionEndTime">{{item.receiveConditionStartTime ? item.receiveConditionStartTime.substr(0, 16) : ''}} 至 {{item.receiveConditionEndTime ? item.receiveConditionEndTime.substr(0, 16) : ''}} 期间<span v-if="item.receiveConditionType === '1'">，新用户注册</span></span>
+                    </lh-item>
                   </el-col>
                   <el-col v-if="item.receiveType === 3">
                     <!--<lh-item label="支持手动下发" label-width="120px"></lh-item>-->
@@ -136,16 +129,43 @@
           </div>
           <!--使用限制-->
           <div class="receive-methods mt22">
-            <h3 class="coupon-tab-title mb22">使用限制</h3>
+            <h3 class="coupon-tab-title mb22">使用说明</h3>
             <el-row class="coupon-tab-content">
               <el-col :span="16">
-                <el-row :gutter="20" v-if="couponBaseInfo.type === 1">
+                <el-row :gutter="20">
+                  <el-col>
+                    <lh-item label="使用限制" label-width="120px">
+                      {{couponBaseInfo.useLimit || '未设置'}}
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                  <el-col>
+                    <lh-item label="使用方法" label-width="120px">
+                      {{couponBaseInfo.couponUsage || '未设置'}}
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 2">
+                  <el-col>
+                    <lh-item label="使用门槛" label-width="120px">
+                      <span v-if="platformCashCoupon.applyLowerLimit">订单金额满{{platformCashCoupon.applyLowerLimit}}元可用</span>
+                      <span v-if="!platformCashCoupon.applyLowerLimit || platformCashCoupon.applyLowerLimit === null || platformCashCoupon.applyLowerLimit === ''">无门槛</span>
+                    </lh-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="20" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2">
                   <el-col>
                     <lh-item label="指定项目" label-width="120px">
-                      <p class="mr15 mr0" v-for="(item, index) in platformHourCouponFieldTypeList" :key="index">
-                        <span v-if="item.type === 1">{{platformHourCouponFieldTypeList.length > 1 ? '会议室、' : '会议室'}}</span>
-                        <span v-if="item.type === 2">路演厅</span>
-                        <span v-if="item.type === 4">{{platformHourCouponFieldTypeList.length > 1 ? '、其他场地' : '其他场地'}}</span>
+                      <p class="mr15 mr0" v-for="(item, index) in fieldTypeList" :key="index">
+                        <span v-if="item.type === 1">{{fieldTypeList.length > (index + 1) ? '会议室、' : '会议室'}}</span>
+                        <span v-if="item.type === 2">{{fieldTypeList.length > (index + 1) ? '路演厅、' : '路演厅'}}</span>
+                        <span v-if="item.type === 3">{{fieldTypeList.length > (index + 1) ? '日租工位、' : '日租工位'}}</span>
+                        <span v-if="item.type === 4">{{fieldTypeList.length > (index + 1) ? '多功能场地、' : '多功能场地'}}</span>
+                        <span v-if="item.type === 6">{{fieldTypeList.length > (index + 1) ? '时租工位、' : '时租工位'}}</span>
                       </p>
                     </lh-item>
                   </el-col>
@@ -164,9 +184,9 @@
                           :slot="tableEmpty"
                           v-loading="tableLoading"
                           class="width50" border>
-                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="礼品商" align="left" prop="name" v-if="couponBaseInfo.type === 3"></el-table-column>
-                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1"></el-table-column>
+                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>
                         </el-table>
                         <span v-else>全部门店</span>
@@ -217,6 +237,9 @@
               prop="customerName"
               label="领取人"
               width="120">
+              <template slot-scope="scope">
+                {{ (scope.row.customerName === '' || scope.row.customerName === null) ? '-' : scope.row.customerName }}
+              </template>
             </el-table-column>
             <el-table-column
               prop="couponReceiveName"
@@ -251,20 +274,29 @@
               label="使用时间"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.useTime === '' || scope.row.useTime === null) ? '-' : scope.row.useTime }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="orderAmount"
               label="订单金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.orderAmount === '' || scope.row.orderAmount === null) ? '-' : scope.row.orderAmount }}
+              </template>
             </el-table-column>
             <el-table-column
-              v-if="couponBaseInfo.type === 1"
+              v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"
               prop="couponAmount"
               label="优惠金额"
               sortable
               show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ (scope.row.couponAmount === '' || scope.row.couponAmount === null) ? '-' : scope.row.couponAmount }}
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination
@@ -297,7 +329,7 @@
         couponBaseInfo: {}, // 优惠券基本信息
         receiveStatistics: {}, // 优惠券领用情况
         couponDiscountContent: {}, // 优惠内容
-        platformHourCouponFieldTypeList: [], // 制定项目
+        fieldTypeList: [], // 制定项目
         conditionTrigger: [], // 触发条件
         storeList: [], // 卡券使用范围
         multipleSelection: [],
@@ -318,30 +350,11 @@
         couponStatus: '',
         receiveOrderBy: '', // 领取列表排序
         sortFileName: '使用状态', // 领取列表状态筛选
-        statusType: '' // 领取列表按状态筛选
+        statusType: '', // 领取列表按状态筛选
+        platformCashCoupon: '' // 满减门槛
       }
     },
     methods: {
-      // 删除优惠券
-      deleteCoupon () {
-        couponDelete({ id: this.couponId }).then(res => {
-          if (res.status === 'true') {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-            this.$router.push('/market/coupon')
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.msg
-            });
-          }
-        })
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
       getPageData () {
         couponDetail({ id: this.couponId }).then(res => {
           if (res.status === 'true') {
@@ -350,7 +363,7 @@
             this.couponTotalAmount = res.info.couponTotalAmount
             this.receiveStatistics = res.info.statistics
             this.couponStatus = res.info.platformCoupon.status // 1-开启, 0-关闭
-            this.platformHourCouponFieldTypeList = res.info.platformHourCouponFieldTypeList
+            this.fieldTypeList = res.info.fieldTypeList
             res.info.couponReceiveDetailList.forEach(v => {
               if (v.receiveConditionStatus === 1) {
                 v.couponStatus = true
@@ -361,6 +374,9 @@
             this.conditionTrigger = res.info.couponReceiveDetailList
             if (this.couponBaseInfo.type === 1) {
               this.couponDiscountContent = res.info.platformHourCoupon
+              this.storeList = res.info.storeList
+            } else if (this.couponBaseInfo.type === 2) {
+              this.platformCashCoupon = res.info.platformCashCoupon
               this.storeList = res.info.storeList
             } else if (this.couponBaseInfo.type === 3) {
               this.couponDiscountContent = res.info.platformGiftCoupon
@@ -381,6 +397,43 @@
             }
           }
         })
+      },
+      // 删除优惠券
+      deleteCoupon () {
+        this.$confirm('此操作将永久删除该优惠券, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          couponDelete({ id: this.couponId }).then(res => {
+            if (res.status === 'true') {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+
+              console.log('store', this.$store.state.tagsView.visitedViews)
+              let currentPath
+              this.$store.state.tagsView.visitedViews.forEach(v => {
+                if (v.id === this.$route.query.id && v.path === this.$route.path) {
+                  currentPath = v
+                }
+              })
+              this.$store.dispatch('delVisitedViews', currentPath)
+              this.$router.replace('/market/coupon')
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       getReceiveList (page) {
         this.currentPage = page || this.currentPage
@@ -403,6 +456,9 @@
             })
           }
         })
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -531,6 +587,7 @@
       },
       // 领取列表排序
       sortCoupon (sort) {
+        console.log('sort')
         // 卡券id 10升序 11降序 领取时间 20 21 使用时间 30 31 订单金额 40 41 优惠金额 50 51
         if (sort.prop === 'couponCode') {
           this.receiveOrderBy = sort.order === 'ascending' ? 10 : 11

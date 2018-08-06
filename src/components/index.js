@@ -9,3 +9,4 @@ export { default as upload } from './upload'     // 上传单张图片
 export { default as scroolTop } from './scrool-top'
 export { default as svg } from './svg'
 export { default as title } from './title'
+export { default as datePicker } from './date-picker'

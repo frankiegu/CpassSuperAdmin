@@ -156,7 +156,7 @@
           <div class="label-con"><div class="intro-desc">{{ '￥' + refundAmount }}</div></div>
         </el-form-item>
         <el-form-item label="退款金额" :label-width="formLabelWidth">
-          <el-input class="input-name" type="number" v-model.number="adminRefund" placeholder="请输入退款金额"></el-input>
+          <el-input class="input-name" step="0.01" type="number" v-model.number="adminRefund" placeholder="请输入退款金额"></el-input>
         </el-form-item>
         <el-form-item label="审批回复" :label-width="formLabelWidth">
           <el-input

@@ -1,6 +1,5 @@
 <template>
   <div class="client-list main-content">
-    <lh-title title="会员列表"></lh-title>
 
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>

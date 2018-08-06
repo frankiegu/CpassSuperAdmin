@@ -1,5 +1,17 @@
 @import "../common/var";
 
+/* 设计一套按钮
+-------------------------- */
+/* 表单提交按钮距离顶部48，加上item的mb18，如果没有item就加mt48 */
+.lh-btn-mini {
+  margin-top: 30px;
+}
+.lh-btn-mini, .lh-btn-default {
+  min-width: 80px;
+  letter-spacing: 4px; /* 4px 相当于一个空格 */
+  text-indent: 2px;
+}
+
 /* 渐变按钮
 -------------------------- */
 .to-bottom-right {

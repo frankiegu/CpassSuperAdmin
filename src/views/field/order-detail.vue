@@ -20,9 +20,9 @@
               <lh-item label="预约日期：" label-width="auto">{{platformOrderField.reservationDate}}</lh-item>
             </el-col>
             <el-col :span="8">
-              <lh-item label="预约时段：" label-width="auto" v-if="fieldInfo.type === 1">
-                {{platformOrderField.bookStartTime}}～{{platformOrderField.bookEndTime}}</lh-item>
               <lh-item label="预约数量：" label-width="auto" v-if="fieldInfo.type === 3">{{platformOrderField.quantity}}</lh-item>
+              <lh-item label="预约时段：" label-width="auto" v-else>
+                {{platformOrderField.bookStartTime}}～{{platformOrderField.bookEndTime}}</lh-item>
             </el-col>
           </el-row>
 
@@ -113,6 +113,28 @@
         </el-table>
       </div>
 
+      <div class="senior-title mt24">优惠信息</div>
+      <div class="card-body">
+        <el-table border :data="couponInfo" class="width100">
+          <el-table-column label="优惠券名称">
+            <template slot-scope="scope">
+              <span>{{ scope.row.couponName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="优惠券类型">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 1">小时券</span>
+              <span v-if="scope.row.type === 2">代金券</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="本次优惠金额">
+            <template slot-scope="scope">
+              <span>{{ scope.row.couponAmount }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
       <div class="senior-title mt24">订单日志</div>
       <div class="card-body">
         <el-table border :data="orderLogs" class="width100">
@@ -140,6 +162,7 @@
 </template>
 
 <script>
+  import { typeList } from '@/mixins/data'
   import { fieldOrderDetail } from '@/service/order'
   import fieldDetailMixins from './order-detail.mixins'
 
@@ -150,6 +173,7 @@
       return {
         orderId: this.$route.query.id,
         dialogStatus: false,
+        typeList,
         type: '',
         order: {}, // 订单基本信息
         station: {}, // 工位基本信息
@@ -157,6 +181,7 @@
         orderPay: {}, // 订单支付信息
         fieldInfo: {}, // 场地信息
         store: {}, // 门店信息
+        couponInfo: [], // 优惠券
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
         space: {}, // 空间信息
@@ -183,6 +208,7 @@
             this.fieldInfo = res.info.platformOrderDetail.fieldSnapshot
             this.store = res.info.platformOrderDetail.store
             this.orderLogs = res.info.platformOrderLogList
+            this.couponInfo = res.info.couponInfo
             this.fieldAddress = res.info.platformOrderDetail.store.cityName + res.info.platformOrderDetail.store.districtName + res.info.platformOrderDetail.store.address
             this.space = res.info.platformOrderDetail.space
             if (!res.info.platformOrderDetail.platformOrderPay.payDate) {
@@ -200,22 +226,30 @@
               res.info.platformOrderDetail.platformOrderPay.payTypeText = '微信支付'
             }
             this.tableData.push(res.info.platformOrderDetail.platformOrderPay)
+
+            for (let item of this.typeList) {
+              if (this.fieldInfo.type === item.key) {
+                this.fieldInfo.typeName = item.label
+              }
+            }
+
             if (this.fieldInfo.type === 1) {
-              this.fieldInfo.typeName = '会议室'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderField
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderField.bookDate
             } else if (this.fieldInfo.type === 2) {
-              this.fieldInfo.typeName = '路演厅'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderRoadshowHall
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderRoadshowHall.bookDate
             } else if (this.fieldInfo.type === 3) {
-              this.fieldInfo.typeName = '工位'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderStation
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderStation.bookStartDate + '～' + res.info.platformOrderDetail.platformOrderStation.bookEndDate
             } else if (this.fieldInfo.type === 4) {
-              this.fieldInfo.typeName = '多功能场地'
               this.platformOrderField = res.info.platformOrderDetail.platformOrderOther
               this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderOther.bookDate
+            } else if (this.fieldInfo.type === 5) {
+              // 办公室 暂时不会有订单
+            } else if (this.fieldInfo.type === 6) {
+              this.platformOrderField = res.info.platformOrderDetail.platformOrderHourStation
+              this.platformOrderField.reservationDate = res.info.platformOrderDetail.platformOrderHourStation.bookDate
             }
           } else {
             this.setMsg('error', res.msg)

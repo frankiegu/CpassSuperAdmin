@@ -184,3 +184,8 @@
 .cp {
   cursor: pointer;
 }
+
+// 限制tooltip的最大宽度
+.el-tooltip__popper {
+  max-width: 40%;
+}

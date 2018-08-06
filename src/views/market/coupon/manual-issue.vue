@@ -70,13 +70,25 @@
         </lh-item>
 
         <lh-item label="最大可选会员数" label-width="120px">{{maxSelection}}
-          <span class="ml20">已选 <span class="theme-blue ml20"> {{submitData.customerIds.length}}</span></span>
+          <span class="ml20">已选
+            <span class="theme-blue ml20"> {{submitData.customerIds.length}}</span>
+            <span class="ml20 theme-light-gray font-size-12px">
+              <i class="el-icon-warning theme-red"></i>
+              代金券暂时只能下发给app会员，请注意切换会员来源
+            </span>
+          </span>
         </lh-item>
 
         <div class="member-cont">
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
-            <el-form-item>
+            <el-radio-group v-model="memberSort.userType" size="small" class="fl" @change="changeMemberSource">
+              <el-radio-button :label="1">小程序会员</el-radio-button>
+              <el-radio-button :label="2">App会员</el-radio-button>
+            </el-radio-group>
+
+            <!-- app会员暂时没有注册渠道，若有注册渠道，下拉框数据可能需要更新 -->
+            <el-form-item v-if="memberSort.userType === 1">
               <el-select v-model="memberSort.registerWay" placeholder="请选择注册渠道" @change="getPageData(1)"
                 filterable clearable>
                 <el-option v-for="item in channels" :key="item.id" :value="item.registerWay"
@@ -91,7 +103,8 @@
             </el-form-item>
 
             <el-form-item>
-              <el-input v-model.trim="memberSort.nickname" placeholder="请输入会员名称"
+              <el-input v-model.trim="memberSort.nickname"
+                :placeholder="memberSort.userType === 1 ? '请输入会员名称' : '请输入会员名称或会员ID'"
                 @keyup.native.enter="getPageData(1)">
                 <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
               </el-input>
@@ -101,15 +114,21 @@
           <!-- 会员列表 -->
           <el-table :data="memberList" row-key="id" @selection-change="handleSelectionChange" height="360px" :key="2">
             <el-table-column type="selection" width="55" reserve-selection></el-table-column>
+            <el-table-column label="会员ID" prop="customerCode" v-if="memberSort.userType === 2"></el-table-column>
             <el-table-column label="会员名称" prop="nickname"></el-table-column>
+
             <el-table-column label="注册渠道" prop="registerName">
               <template slot-scope="scope">
                 <span>{{scope.row.registerName ? scope.row.registerName : '-'}}</span>
               </template>
             </el-table-column>
+
             <el-table-column label="注册日期">
               <template slot-scope="scope">
-                <span>{{scope.row.createDate ? scope.row.createDate.slice(0, 10) : '-'}}</span>
+                <span v-if="memberSort.userType === 1">
+                  {{scope.row.createDate ? scope.row.createDate.slice(0, 10) : '-'}}
+                </span>
+                <span v-else>{{scope.row.created ? scope.row.created.slice(0, 10) : '-'}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -162,7 +181,7 @@
 
 <script>
   import tableMixins from '@/mixins/table'
-  import { CUSTOMER_LIST } from '@/service/member'
+  import { CUSTOMER_LIST, APP_CUSTOMER_LIST } from '@/service/member'
   import { channelList, findUsableCoupon, manualCoupon } from '@/service/market'
   export default {
     name: 'manual-issue',
@@ -183,8 +202,12 @@
             nodeKey: 2,
             children: []
           }, {
-            name: '礼品券',
+            name: '代金券',
             nodeKey: 3,
+            children: []
+          }, {
+            name: '礼品券',
+            nodeKey: 4,
             children: []
           }]
         }],
@@ -199,6 +222,7 @@
         maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
         memberSort: {
+          userType: 1, // 切换来源：2 - app，1 - wxapp
           registerWay: '',
           registerDate: [],
           nickname: ''
@@ -278,10 +302,12 @@
             } else {
               couponList.forEach((item, index) => {
                 item.nodeKey = item.name + index
-                if (item.type === 1) {
+                if (item.type === 1) { // 小时券
                   this.treeData[0].children[0]['children'].push(item)
-                } else if (item.type === 3) {
+                } else if (item.type === 2) { // 代金券
                   this.treeData[0].children[1]['children'].push(item)
+                } else if (item.type === 3) { // 礼品券
+                  this.treeData[0].children[2]['children'].push(item)
                 }
               })
               this.loadingTree = false
@@ -343,6 +369,15 @@
           this.submitData.customerIds.push(item.id)
         })
       },
+      // step 2 切换会员来源 app和小程序mp
+      changeMemberSource(val) {
+        if (val === 'app') { // app会员暂时没有注册渠道，若有注册渠道，此条件下需要更新注册渠道数据
+          this.memberSort.registerWay = ''
+          this.memberSort.nickname = ''
+          this.memberSort.registerDate = []
+        }
+        this.getPageData(1)
+      },
       // step 2 获取会员列表
       getPageData(page) {
         this.currentPage = page || this.currentPage
@@ -355,7 +390,8 @@
           startDate: startDate,
           endDate: endDate
         }
-        CUSTOMER_LIST(params).then(res => {
+        let promise = this.memberSort.userType === 1 ? CUSTOMER_LIST(params) : APP_CUSTOMER_LIST(params)
+        promise.then(res => {
           if (res.status === 'true' && res.info) {
             this.memberList = res.info.result
             this.pageTotal = res.info.total
@@ -369,7 +405,10 @@
           return false
         }
         this.issueLoading = true
-        manualCoupon(this.submitData).then(res => {
+        let params = Object.assign(this.submitData, {
+          userType: this.memberSort.userType
+        })
+        manualCoupon(params).then(res => {
           if (res.status === 'true') {
             this.issueLoading = false
             this.isSuccess = true
@@ -430,6 +469,9 @@
     }
     .sort-form-bar .el-form-item__content {
       line-height: 28px;
+    }
+    .el-radio-button--small .el-radio-button__inner {
+      padding: 8px 15px;
     }
     .step-cont {
       margin-top: 24px;

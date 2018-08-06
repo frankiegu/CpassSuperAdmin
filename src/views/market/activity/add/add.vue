@@ -204,7 +204,7 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span style="cursor: pointer;" @click="deletePrize(scope.row.id)">删除</span>
+                  <span style="cursor: pointer;" @click="deletePrize(scope.row.index)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -733,7 +733,7 @@ export default {
                 type: v.platformCouponId ? 1 : 2,
                 prizeName: v.platformCouponId ? v.couponName : '普通红包(' + v.amount + '元)',
                 quantity: v.giftQuantity,
-                probability: v.lotteryRate * 100,
+                probability: parseFloat((v.lotteryRate * 100).toPrecision(12)).toFixed(2),
                 id: v.platformCouponId,
                 validate: false,
                 probabilityValidate: false,
@@ -764,7 +764,8 @@ export default {
                 let giftCouponArray = [] // 红包数组
                 let giftRedpacketArray = [] // 红包数组
                 // 奖品数组
-                this.prizeList.forEach(v => {
+                this.prizeList.forEach((v, i) => {
+                  v.index = i
                   let tempCoupon, tempReEvenlope
                   if (v.type === 1) {
                     // 优惠券
@@ -828,6 +829,7 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
+          console.log('getData', this.prizeList)
           if (this.type) {
             this.checkPrize()
           }
@@ -838,39 +840,41 @@ export default {
      * part 1
      * */
     dateChange (val) {
-      let start = new Date(val[0])
-      let sy = start.getFullYear()
-      let sm = start.getMonth()
-      let sd = start.getDate()
-      let sH = start.getHours()
-      let sM = start.getMinutes()
-      let end = new Date(val[1])
-      let ey = end.getFullYear()
-      let em = end.getMonth()
-      let ed = end.getDate()
-      let eH = end.getHours()
-      let eM = end.getMinutes()
+      if (val) {
+        let start = new Date(val[0])
+        let sy = start.getFullYear()
+        let sm = start.getMonth()
+        let sd = start.getDate()
+        let sH = start.getHours()
+        let sM = start.getMinutes()
+        let end = new Date(val[1])
+        let ey = end.getFullYear()
+        let em = end.getMonth()
+        let ed = end.getDate()
+        let eH = end.getHours()
+        let eM = end.getMinutes()
 
-      // 活动展示时间
-      this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
-      // 活动隐藏时间
-      this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
-      // 活动开始/结束日期
-      sm = sm + 1
-      sm = sm >= 10 ? sm : '0' + sm
-      sd = sd >= 10 ? sd : '0' + sd
-      sH = sH >= 10 ? sH : '0' + sH
-      sM = sM >= 10 ? sM : '0' + sM
+        // 活动展示时间
+        this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
+        // 活动隐藏时间
+        this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
+        // 活动开始/结束日期
+        sm = sm + 1
+        sm = sm >= 10 ? sm : '0' + sm
+        sd = sd >= 10 ? sd : '0' + sd
+        sH = sH >= 10 ? sH : '0' + sH
+        sM = sM >= 10 ? sM : '0' + sM
 
-      em = em + 1
-      em = em >= 10 ? em : '0' + em
-      ed = ed >= 10 ? ed : '0' + ed
-      eH = eH >= 10 ? eH : '0' + eH
-      eM = eM >= 10 ? eM : '0' + eM
-      this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-      this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
-      this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
-      this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+        em = em + 1
+        em = em >= 10 ? em : '0' + em
+        ed = ed >= 10 ? ed : '0' + ed
+        eH = eH >= 10 ? eH : '0' + eH
+        eM = eM >= 10 ? eM : '0' + eM
+        this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
+        this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
+        this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
+        this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
+      }
     },
 
     /**
@@ -950,8 +954,9 @@ export default {
             disabled: false
           }
           this.prizeList.push(prize)
-          this.prizeList.forEach(v => {
+          this.prizeList.forEach((v, i) => {
             this.totalProbability = this.totalProbability + (v.probability - 1 + 1)
+            v.index = i
           })
           this.dialogVisible = false
           this.addPrizeForm = {
@@ -998,11 +1003,15 @@ export default {
       }
     },
     // 删除奖品
-    deletePrize (id) {
+    deletePrize (index) {
       this.prizeList.forEach((v, i) => {
-        if (v.id === id) {
+        if (index === i) {
           this.prizeList.splice(i, 1)
         }
+      })
+      // 重新排序
+      this.prizeList.forEach((v, i) => {
+        v.index = i
       })
     },
     // 判断prizeList所有元素的数量输入验证是否都通过
@@ -1058,7 +1067,6 @@ export default {
           }
         }
       })
-      console.log('this.prizeList', this.prizeList)
     }
   }
 }
@@ -1133,6 +1141,7 @@ export default {
   }
   .quill-editor-box {
     margin-bottom: 0;
+    padding-bottom: 45px;
   }
   .ql-container.ql-snow {
     min-height: 180px;
