@@ -131,8 +131,8 @@
 
           <el-form-item label="使用范围" required>
             <el-radio-group v-model="couponForm.isAllStore" @change="changeRange">
-              <el-radio :label="1">{{couponForm.couponType !== 3 ? '全部门店' : '全部核销点'}}</el-radio>
-              <el-radio :label="2">{{couponForm.couponType !== 3 ? '部分门店' : '部分核销点'}}</el-radio>
+              <el-radio :label="1">{{couponForm.couponType !== 3 ? '全部空间' : '全部核销点'}}</el-radio>
+              <el-radio :label="2">{{couponForm.couponType !== 3 ? '部分空间' : '部分核销点'}}</el-radio>
               <el-button v-if="couponForm.couponType === 3" type="text" class="ml30" @click="isWopVisible = true">
                 添加
               </el-button>
@@ -144,7 +144,7 @@
                 <div class="list-cont fl">
                   <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
                   <div class="tree-cont">
-                    <!-- 部分门店的树形 -->
+                    <!-- 部分空间的树形 -->
                     <el-tree v-if="couponForm.couponType !== 3" node-key="nodeKey" :data="treeData" empty-text="暂无数据"
                       :filter-node-method="filterNode" default-expand-all :props="treeProp" key="storeTree"
                       show-checkbox ref="rangeTree" class="range-tree"
@@ -163,15 +163,15 @@
 
                 <div class="list-cont fl">
                   <p class="theme-gray clearfix fix-input">
-                    {{couponForm.couponType !== 3 ? '已选门店' : '已选核销点'}}
+                    {{couponForm.couponType !== 3 ? '已选空间' : '已选核销点'}}
                     <span class="theme-blue ml12">{{selectedRange.length}}</span>
                     <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
                   </p>
 
-                  <!-- 选中的部分门店 -->
+                  <!-- 选中的部分空间 -->
                   <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType !== 3" key="storeTable">
                     <el-table-column label="品牌" prop="spaceName"></el-table-column>
-                    <el-table-column label="门店" prop="name"></el-table-column>
+                    <el-table-column label="空间" prop="name"></el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">
                         <span class="pointer-theme-gray" @click="removeSelected(scope.row.nodeKey)">删除</span>
@@ -363,8 +363,8 @@
           // 小时券
           subtractHour: 1, // 减免时长
           fieldType: [],
-          isAllStore: 2, // 是否应用全部门店 1-全部门店，2-部分门店
-          range: [], // 部分门店的选中门店列表
+          isAllStore: 2, // 是否应用全部空间 1-全部空间，2-部分空间
+          range: [], // 部分空间的选中空间列表
 
           // 代金券
           voucherType: 0, // 0-无门槛，1-满减
@@ -553,7 +553,7 @@
           return true
         }
       },
-      // 获取选中的树节点，只返回门店节点
+      // 获取选中的树节点，只返回空间节点
       getCheckedNodes() {
         const leafOnly = true
         const checkedNodes = this.$refs.rangeTree.getCheckedNodes(leafOnly)
@@ -743,7 +743,7 @@
                   couponForm.fieldType.push(item.type)
                 })
                 couponForm.isAllStore = platformCouponContent.storeType
-                // 详情中的门店列表映射回树形门店的选中
+                // 详情中的空间列表映射回树形空间的选中
                 if (storeList.length > 0) {
                   let nodeKeys = []
                   this.treeData.forEach((item) => {

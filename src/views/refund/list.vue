@@ -57,7 +57,7 @@
             <span>{{ scope.row.spaceName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="所属门店" align="left">
+        <el-table-column label="所属空间" align="left">
           <template slot-scope="scope">
             <span>{{ scope.row.storeName }}</span>
           </template>

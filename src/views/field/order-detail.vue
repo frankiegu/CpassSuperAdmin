@@ -81,7 +81,7 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <lh-item label="门店名称：" label-width="auto">{{store.storeName}}</lh-item>
+            <lh-item label="空间名称：" label-width="auto">{{store.storeName}}</lh-item>
           </el-col>
           <el-col :span="8">
             <lh-item label="场地类型：" label-width="auto">{{fieldInfo.typeName}}</lh-item>
@@ -180,7 +180,7 @@
         orderContact: {}, // 订单联系人信息
         orderPay: {}, // 订单支付信息
         fieldInfo: {}, // 场地信息
-        store: {}, // 门店信息
+        store: {}, // 空间信息
         couponInfo: [], // 优惠券
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址

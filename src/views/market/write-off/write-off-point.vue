@@ -24,7 +24,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="关联门店" fixed="left" align="left">
+        <el-table-column label="关联空间" fixed="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.spaceName || scope.row.storeName">
               {{ scope.row.spaceName + '-' }}{{ scope.row.storeName }}
