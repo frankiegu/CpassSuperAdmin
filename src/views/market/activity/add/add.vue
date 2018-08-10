@@ -602,13 +602,27 @@ export default {
               // 请求接口
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 if (!this.activityId) {
-                  platformActivityAdd(this.submitObject).then(res => {
-                    if (res.status === 'true') {
-                      this.$router.push('/activity/detail?id=' + res.info.id)
+                  if (this.onePartForm.activityTemplate === '2') {
+                    if (this.checkHasCoupon(this.prizeList) <= 0) {
+                      platformActivityAdd(this.submitObject).then(res => {
+                        if (res.status === 'true') {
+                          this.$router.push('/activity/detail?id=' + res.info.id)
+                        } else {
+                          this.setMsg('error', res.msg)
+                        }
+                      })
                     } else {
-                      this.setMsg('error', res.msg)
+                      this.$message.info('领红包活动的奖品只能添加微信红包, 请确认奖品添加是否正确')
                     }
-                  })
+                  } else {
+                    platformActivityAdd(this.submitObject).then(res => {
+                      if (res.status === 'true') {
+                        this.$router.push('/activity/detail?id=' + res.info.id)
+                      } else {
+                        this.setMsg('error', res.msg)
+                      }
+                    })
+                  }
                 } else if (this.activityId) {
                   this.submitObject.id = this.activityId
                   if (this.submitObject.giftCouponArray.length > 0) {
