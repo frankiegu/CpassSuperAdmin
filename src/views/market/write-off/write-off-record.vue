@@ -10,7 +10,7 @@
           <el-select
             v-model="formData.spaceId"
             @change="changeSpace"
-            placeholder="请选择所属空间"
+            placeholder="请选择所属品牌"
             class="width140px"
             clearable>
             <el-option
@@ -111,7 +111,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="所属空间" fixed="left" align="left">
+        <el-table-column label="所属品牌" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.spaceName }}
           </template>
@@ -230,7 +230,7 @@
           }
         })
       },
-      // 获取空间列表
+      // 获取品牌列表
       getspaceList () {
         spaceList().then(res => {
           if (res.status === 'true') {
@@ -267,7 +267,7 @@
           }
         })
       },
-      // 空间变更
+      // 品牌变更
       changeSpace () {
         // 清空门店和核销点 的选中项以及列表
         this.formData.storeId = ''

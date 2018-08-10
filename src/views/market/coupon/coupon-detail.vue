@@ -184,7 +184,7 @@
                           :slot="tableEmpty"
                           v-loading="tableLoading"
                           class="width50" border>
-                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
+                          <el-table-column label="品牌" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="礼品商" align="left" prop="name" v-if="couponBaseInfo.type === 3"></el-table-column>
                           <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>

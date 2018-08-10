@@ -69,7 +69,7 @@
         <div class="basics-title">场地信息</div>
         <el-row :gutter="20">
           <el-col :span="8">
-            <lh-item label="空间名称：" label-width="auto">{{space.spaceName}}</lh-item>
+            <lh-item label="品牌名称：" label-width="auto">{{space.spaceName}}</lh-item>
           </el-col>
           <el-col :span="8">
             <lh-item label="场地名称：" label-width="auto">{{fieldInfo.fieldName}}</lh-item>
@@ -184,7 +184,7 @@
         couponInfo: [], // 优惠券
         orderLogs: [], // 订单日志
         fieldAddress: '', // 场地地址
-        space: {}, // 空间信息
+        space: {}, // 品牌信息
         platformOrderField: {} // 预定日期
       }
     },

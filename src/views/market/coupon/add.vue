@@ -170,7 +170,7 @@
 
                   <!-- 选中的部分门店 -->
                   <el-table :data="selectedRange" height="360px" v-if="couponForm.couponType !== 3" key="storeTable">
-                    <el-table-column label="空间" prop="spaceName"></el-table-column>
+                    <el-table-column label="品牌" prop="spaceName"></el-table-column>
                     <el-table-column label="门店" prop="name"></el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">

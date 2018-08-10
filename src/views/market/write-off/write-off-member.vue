@@ -54,7 +54,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="所属空间" align="left">
+        <el-table-column label="所属品牌" align="left">
           <template slot-scope="scope">
             {{ scope.row.spaceName }}
           </template>
@@ -183,7 +183,7 @@
         name: '', // 核对员名称
         telephone: '', // 核对员电话
         merchantName: '', // 商家
-        community: '' // 核对员所属空间
+        community: '' // 核对员所属品牌
       }
     },
     mounted () {

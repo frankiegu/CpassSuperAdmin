@@ -38,7 +38,7 @@
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="contactTel" align="left" ></el-table-column>
 
-        <el-table-column label="所属空间" align="left">
+        <el-table-column label="所属品牌" align="left">
           <template slot-scope="scope">
             {{ scope.row.spaceName }}
           </template>
