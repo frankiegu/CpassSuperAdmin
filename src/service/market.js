@@ -8,7 +8,7 @@ export * from './market/c-pass'
  * 优惠券管理
  */
 
-// 获取空间/门店的树形
+// 获取空间/空间的树形
 export const loadSpaceStoreTree = (obj) => fetch(API_PATH + '/supervisor/platformCoupon/loadSpaceStoreTree', obj, 'POST')
 
 // 获取核销点列表(无分页)
@@ -78,7 +78,7 @@ export const PlatformVerifyStationPage = (obj) => fetch(API_PATH + '/supervisor/
 // 查询核销点(不分页)
 export const PlatformVerifyStationLoadStation = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/loadStation', obj, 'POST')
 
-// 获取关联门店列表
+// 获取关联空间列表
 export const stationStoreTree = (obj) => fetch(API_PATH + '/supervisor/platformVerifyStation/storeTree', obj, 'POST')
 
 // 校验核销点名称

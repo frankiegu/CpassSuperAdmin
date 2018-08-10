@@ -46,10 +46,10 @@
 
         <el-row :gutter="20">
           <el-col :span="6">
-            <lh-item label="所属空间：" label-width="auto">{{ spaceName }}</lh-item>
+            <lh-item label="所属品牌：" label-width="auto">{{ spaceName }}</lh-item>
           </el-col>
           <el-col :span="6">
-            <lh-item label="所属门店：" label-width="auto">{{ storeName }}</lh-item>
+            <lh-item label="所属空间：" label-width="auto">{{ storeName }}</lh-item>
           </el-col>
         </el-row>
       </div>
@@ -205,8 +205,8 @@
         gwbookDate: '', // 预定的日期（工位）
         bookStartDate: '', // 预定的开始日期（工位）
         bookEndDate: '', // 预定的结束日期（工位）
-        spaceName: '', // 所属空间
-        storeName: '', // 所属门店
+        spaceName: '', // 所属品牌
+        storeName: '', // 所属空间
 
         refundAmount: '', // 申请金额
         customerRemark: '', // 退款原因

@@ -34,7 +34,7 @@
         </el-col>
         <el-col :span="8">
           <lh-item label="服务类型：" label-width="auto">{{orderData.typeName}}</lh-item>
-          <lh-item label="关联空间：" label-width="auto">{{orderData.spaceName}}</lh-item>
+          <lh-item label="关联品牌：" label-width="auto">{{orderData.spaceName}}</lh-item>
           <lh-item label="联系方式：" label-width="auto">{{orderData.providerPhone}}</lh-item>
         </el-col>
       </el-row>
@@ -60,7 +60,7 @@
           supplier: '广东金冠财税会计事务所',
           supplierContact: '邓先生',
           serviceType: '企业财税',
-          relativeSpace: '矢量空间',
+          relativeSpace: '矢量品牌',
           supplierPhone: '13566666666'
         }
       }
