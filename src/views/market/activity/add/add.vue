@@ -58,8 +58,9 @@
 
         <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40" v-if="onePartForm.activityType === '2'">
           <template>
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
-            <!--<el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>-->
+            <!--活动模板 1砸金蛋 2领红包-->
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1" :disabled="type === 'edit'">砸金蛋</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2" :disabled="type === 'edit'">领红包</el-radio>
           </template>
         </el-form-item>
         <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
@@ -236,12 +237,12 @@
             :rules="addPrizeFormRule">
             <el-form-item label="奖品类型" prop="addPrizeType" style="width: 100%">
               <template>
-                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="1">优惠券</el-radio>
+                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="1" :disabled="onePartForm.activityTemplate === '2'">优惠券</el-radio>
                 <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="2">微信红包</el-radio>
               </template>
             </el-form-item>
             <!--微信红包-->
-            <div v-if="addPrizeForm.showRedEnvelope">
+            <div v-if="addPrizeForm.showRedEnvelope || onePartForm.activityTemplate === '2'">
               <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType">
                 <template>
                   <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="1">普通红包</el-radio>
@@ -254,7 +255,7 @@
             </div>
 
             <!--优惠券-->
-            <div v-else>
+            <div v-if="!addPrizeForm.showRedEnvelope || onePartForm.activityTemplate === '1'">
               <!--选择优惠券类型-->
               <el-form-item style="width: 100%" class="choose-coupon-type" label="选择优惠券" prop="couponType">
                 <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" @change="couponTypeChange">
@@ -441,8 +442,16 @@ export default {
           couponType: 1, // 优惠券类型
           allowRepeat: false, // 是否允许重复中奖
           useInstruction: '', // 使用说明
-          showRedEnvelope: false
+          showRedEnvelope: this.onePartForm.activityTemplate === '2'
         }
+        if (this.onePartForm.activityTemplate === '2') this.addPrizeForm.addPrizeType = '2'
+      }
+    },
+    'onePartForm.activityTemplate': function (val) {
+      if (val === '2') {
+        this.addPrizeForm.addPrizeType = '2'
+      } else {
+        this.addPrizeForm.addPrizeType = '1'
       }
     }
   },
@@ -476,6 +485,7 @@ export default {
               this.validatePartOne = true
               document.documentElement.scrollTop = 0
               document.body.scrollTop = 0
+              if (this.onePartForm.activityTemplate === '2') this.addPrizeForm.addPrizeType = '2'
               break;
             case '2':
               // ajaxParams.step = 2
@@ -669,16 +679,6 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
-      // validatePartOne validatePartTwo validatePartThree
-      // if (val === 1) {
-      //   if (this.validatePartOne) this.activityTab = val
-      // } else if (val === 2) {
-      //   if (this.validatePartTwo) this.activityTab = val
-      // } else if (val === 3) {
-      //   if (this.validatePartThree) this.activityTab = val
-      // } else {
-      //   return false
-      // }
     },
     getPageData() {
       platformActivityDetail({ activityId: this.activityId }).then(res => {
@@ -829,7 +829,6 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
-          console.log('getData', this.prizeList)
           if (this.type) {
             this.checkPrize()
           }
