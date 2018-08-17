@@ -59,7 +59,8 @@
         <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40" v-if="onePartForm.activityType === '2'">
           <template>
             <!--活动模板 1砸金蛋 2领红包-->
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1" :disabled="type === 'edit' || type === 'copy'">砸金蛋</el-radio>
+            <!--产品大佬说活动添加暂时也禁用砸金蛋模板选项-->
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1" :disabled="type === 'edit' || type === 'copy' || !type">砸金蛋</el-radio>
             <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2" :disabled="type === 'edit' || type === 'copy'">领红包</el-radio>
           </template>
         </el-form-item>
@@ -143,7 +144,8 @@
             <el-col :span="8">
               <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
+                <!--活动模板时领红包时要禁用分享输入框, 并且,默认值是0-->
+                <el-input class="width220px" :disabled="onePartForm.activityType === '2'" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>

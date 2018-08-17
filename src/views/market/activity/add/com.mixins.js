@@ -109,7 +109,7 @@ export default {
       onePartForm: {
         activityName: '', // 活动名称
         activityRules: '', // 活动规则
-        activityTemplate: '1', // 活动模板
+        activityTemplate: '2', // 活动模板
         activityType: '2', // 活动类型
         activityStartDate: '', // 活动开始日期
         activityEndDate: '', // 活动结束日期
@@ -135,7 +135,7 @@ export default {
         attendNum: '', // 参与人数
         winningTimes: '', // 允许的最大中奖次数
         originalTimes: '', // 初始抽奖次数
-        shareAddTimes: '' // 分享后获得的抽奖次数
+        shareAddTimes: 0 // 分享后获得的抽奖次数
       },
       twoPartFormRule: {
         price: [{ required: true, validator: checkPrice, trigger: ['blur', 'change'] }],
