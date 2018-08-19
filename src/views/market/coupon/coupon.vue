@@ -123,15 +123,15 @@
             <template slot-scope="scope">
               <!--小时券-->
               <!--storeType = 1 ==> 全部-->
-              <span v-if="scope.row.storeType === 1 && scope.row.type === 1">全部门店</span>
+              <span v-if="scope.row.storeType === 1 && scope.row.type === 1">全部空间</span>
               <!--storeType = 2 ==> 部分-->
-              <span v-if="scope.row.storeType === 2 && scope.row.type === 1">部分门店</span>
+              <span v-if="scope.row.storeType === 2 && scope.row.type === 1">部分空间</span>
 
               <!--满减券-->
               <!--storeType = 1 ==> 全部-->
-              <span v-if="scope.row.cashStoreType === 1 && scope.row.type === 2">全部门店</span>
+              <span v-if="scope.row.cashStoreType === 1 && scope.row.type === 2">全部空间</span>
               <!--storeType = 2 ==> 部分-->
-              <span v-if="scope.row.cashStoreType === 2 && scope.row.type === 2">部分门店</span>
+              <span v-if="scope.row.cashStoreType === 2 && scope.row.type === 2">部分空间</span>
 
               <!--礼品券-->
               <span v-if="scope.row.verifyStationType === 1 && scope.row.type === 3">全部核销点</span>

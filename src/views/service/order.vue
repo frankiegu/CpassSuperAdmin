@@ -28,7 +28,7 @@
 
         <el-table-column label="生成时间" prop="createDate" width="155"></el-table-column>
         <el-table-column label="服务供应商" prop="providerName"></el-table-column>
-        <el-table-column label="所属空间" prop="spaceName"></el-table-column>
+        <el-table-column label="所属品牌" prop="spaceName"></el-table-column>
         <el-table-column label="联系人" prop="contact"></el-table-column>
         <el-table-column label="联系方式" prop="phone" width="110"></el-table-column>
         <el-table-column label="服务类型" prop="typeName"></el-table-column>

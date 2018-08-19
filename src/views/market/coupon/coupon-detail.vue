@@ -184,12 +184,12 @@
                           :slot="tableEmpty"
                           v-loading="tableLoading"
                           class="width50" border>
-                          <el-table-column label="空间" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
+                          <el-table-column label="品牌" align="left" prop="spaceName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="礼品商" align="left" prop="name" v-if="couponBaseInfo.type === 3"></el-table-column>
-                          <el-table-column label="门店" align="left" prop="storeName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
+                          <el-table-column label="空间" align="left" prop="storeName" v-if="couponBaseInfo.type === 1 || couponBaseInfo.type === 2"></el-table-column>
                           <el-table-column label="地址" align="left" prop="useCouponAddress" v-if="couponBaseInfo.type === 3"></el-table-column>
                         </el-table>
-                        <span v-else>全部门店</span>
+                        <span v-else>全部空间</span>
                       </template>
                     </lh-item>
                   </el-col>
@@ -219,12 +219,13 @@
             tooltip-effect="dark"
             style="width: 100%"
             class="mt20"
+            border
             @sort-change="sortCoupon"
             @filter-change="filterChange"
             @selection-change="handleSelectionChange">
             <el-table-column
               type="selection"
-              width="55">
+              width="60">
             </el-table-column>
             <el-table-column
               label="ID"
@@ -239,6 +240,15 @@
               width="120">
               <template slot-scope="scope">
                 {{ (scope.row.customerName === '' || scope.row.customerName === null) ? '-' : scope.row.customerName }}
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              prop="customerMobile"
+              label="联系方式"
+              width="180">
+              <template slot-scope="scope">
+                {{ scope.row.customerMobile || '-' }}
               </template>
             </el-table-column>
             <el-table-column
