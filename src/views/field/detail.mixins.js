@@ -75,7 +75,9 @@ export default {
         price: '',
         clientType: '',
         appointmentTimeType: '' // 是否区分工作日 1:不区分 2:区分
-      }
+      },
+      imageDialog: false,
+      previewImgSrc: ''
     }
   }
 }
