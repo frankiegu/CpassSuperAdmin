@@ -194,13 +194,22 @@
 
     <!-- 展示图 -->
     <lh-card cardTitle="展示图" :isEmpty="!fieldImgs.length" class="diagram">
-      <img v-for="(item, idx) in fieldImgs" :key="idx" :src="item.url">
+      <img v-for="(item, idx) in fieldImgs" :key="idx" :src="item.url" @click="clickPreview(item.url)">
     </lh-card>
 
     <!-- 场地描述 -->
     <lh-card cardTitle="场地描述" :isEmpty="!field.facilitiesAndServices">
       <div v-html="field.facilitiesAndServices"></div>
     </lh-card>
+    <el-dialog
+      width="100%"
+      :show-close="false"
+      top="0"
+      :lock-scroll="true"
+      :close-on-click-modal="true"
+      :visible.sync="imageDialog">
+      <img :src="previewImgSrc" alt="" @click="imageDialog = false">
+    </el-dialog>
   </div>
 </template>
 
@@ -604,6 +613,11 @@ export default {
           this.setMsg('error', res.msg)
         }
       })
+    },
+    // 图片预览
+    clickPreview(url) {
+      this.imageDialog = true
+      this.previewImgSrc = url
     }
   }
 }
@@ -639,5 +653,33 @@ export default {
       float: right;
     }
   }
+
 }
+</style>
+<style lang="scss">
+  .page-field-detail {
+    .el-dialog {
+      background-color: transparent;
+      position: static;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
+      margin-bottom: 0;
+      /*height: 100%;*/
+      /*position: fixed;*/
+      /*top: 0;*/
+      /*left: 0;*/
+      img {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      .el-dialog__body {
+      }
+    }
+  }
 </style>
