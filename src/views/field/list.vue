@@ -18,6 +18,11 @@
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
+        <el-form-item>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
       </el-form>
 
     </div>
@@ -98,10 +103,11 @@
 </template>
 
 <script>
+  import { API_PATH } from '@/config/env'
   import tableMixins from '@/mixins/table'
   import listMixins from './list.mixins'
   import { fieldList, setFieldStatus } from '@/service/field'
-  import { formatTimeString } from '@/config/utils'
+  import { formatTimeString, downloadFile } from '@/config/utils'
 
   export default {
     mixins: [listMixins, tableMixins],
@@ -215,6 +221,19 @@
         //    this.$message.error(res.msg)
         //  }
         // })
+      },
+      // 导出数据
+      exportExcel() {
+        if (!this.tableData.length) {
+          return this.setMsg('暂无数据')
+        }
+        const downParams = {
+          fieldName: this.formData.name,
+          startTime: this.formData.update ? formatTimeString(this.formData.update[0]) : null,
+          endTime: this.formData.update ? formatTimeString(this.formData.update[1]) : null
+        }
+        let url = API_PATH + '/supervisor/field/exportFieldRevenue'
+        downloadFile(url, downParams)
       }
     }
   }
