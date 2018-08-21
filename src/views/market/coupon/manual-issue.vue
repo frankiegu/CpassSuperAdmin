@@ -109,6 +109,21 @@
                 <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
               </el-input>
             </el-form-item>
+            <el-form-item>
+              <el-input v-model.trim="memberSort.mobile"
+                        placeholder="请输入会员手机号码"
+                        @keyup.native.enter="getPageData(1)">
+                <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
+              </el-input>
+            </el-form-item>
+
+            <!--<el-form-item>-->
+              <!--<el-input v-model.trim="memberSort.nickname"-->
+                        <!--:placeholder="memberSort.userType === 1 ? '请输入会员名称' : '请输入会员名称或会员ID'"-->
+                        <!--@keyup.native.enter="getPageData(1)">-->
+                <!--<i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>-->
+              <!--</el-input>-->
+            <!--</el-form-item>-->
           </el-form>
 
           <!-- 会员列表 -->
@@ -225,7 +240,8 @@
           userType: 2, // 切换来源：2 - app，1 - wxapp
           registerWay: '',
           registerDate: [],
-          nickname: ''
+          nickname: '',
+          mobile: ''
         },
         memberList: [],
 
@@ -386,6 +402,7 @@
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           nickname: this.memberSort.nickname,
+          mobile: this.memberSort.mobile,
           registerWay: this.memberSort.registerWay,
           startDate: startDate,
           endDate: endDate
