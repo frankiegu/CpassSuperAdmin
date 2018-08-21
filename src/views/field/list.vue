@@ -47,7 +47,8 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
+          <el-table-column label="所属品牌" prop="spaceName" align="left"></el-table-column>
+          <el-table-column label="所属空间" prop="storeName" align="left"></el-table-column>
           <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
           <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
 
@@ -139,7 +140,17 @@
         this.getPageData(1)
       },
       formatterPrice(row, column) {
-        return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
+        let price = row.minPrice === row.maxPrice ? row.minPrice : row.minPrice + '-' + row.maxPrice
+        // 1=会议室, 2=路演厅,3=工位,4=其他.5=办公室6=时租工位
+        let unit
+        if (row.fieldType === 3) {
+          unit = ' 元/天'
+        } else if (row.fieldType === 5) {
+          unit = ' 元/月'
+        } else {
+          unit = ' 元/小时'
+        }
+        return (price + unit)
       },
       change(sort) {
         // console.log('sort', sort);
