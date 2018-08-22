@@ -186,34 +186,26 @@
 
     <!-- 硬件设施 -->
     <lh-card cardTitle="硬件设施" :isEmpty="!equipments.length">
-      <div v-for="(item, idx) in equipments" :key="idx" class="equipmentList-box">
-        <span class="theme-gray">{{ item.name }}</span>
+      <div v-for="(item, idx) in equipments" :key="idx" class="equipmentList-box lh-checkbox-box">
         <img :src="item.icon + zoomImgSize(24)">
+        <span class="theme-gray checkbox-texst">{{ item.name }}</span>
       </div>
     </lh-card>
 
     <!-- 展示图 -->
     <lh-card cardTitle="展示图" :isEmpty="!fieldImgs.length" class="diagram">
-      <img v-for="(item, idx) in fieldImgs" :key="idx" :src="item.url" @click="clickPreview(item.url)">
+      <img v-for="(item, idx) in fieldImgs" :key="idx" :src="item.url" @click="clickPreview(item.url, idx)">
     </lh-card>
-
+    <imgPreview @closePreview="closePreview" @lastImg="lastImg" @nextImg="nextImg" :imageDialog="imageDialog" :imageList="fieldImgs" :previewActiveIndex="previewActiveIndex" :previewImgSrc="previewImgSrc" />
     <!-- 场地描述 -->
     <lh-card cardTitle="场地描述" :isEmpty="!field.facilitiesAndServices">
       <div v-html="field.facilitiesAndServices"></div>
     </lh-card>
-    <el-dialog
-      width="100%"
-      :show-close="false"
-      top="0"
-      :lock-scroll="true"
-      :close-on-click-modal="true"
-      :visible.sync="imageDialog">
-      <img :src="previewImgSrc" alt="" @click="imageDialog = false">
-    </el-dialog>
   </div>
 </template>
 
 <script>
+import imgPreview from '@/components/image-preview'
 import { fieldDetail, setFieldStatus } from '@/service/field'
 import detaillMixins from './detail.mixins'
 
@@ -511,6 +503,7 @@ export default {
             this.fieldImgs.push({ url: item.img })
             // }
           }
+          console.log('场地图片', this.fieldImgs)
 
           switch (this.fieldType) {
             case '6':
@@ -615,10 +608,25 @@ export default {
       })
     },
     // 图片预览
-    clickPreview(url) {
+    clickPreview(url, index) {
       this.imageDialog = true
       this.previewImgSrc = url
+      this.previewActiveIndex = index
+    },
+    lastImg () {
+      this.previewActiveIndex = this.previewActiveIndex - 1
+      this.previewImgSrc = this.fieldImgs[this.previewActiveIndex].url
+    },
+    nextImg () {
+      this.previewActiveIndex = this.previewActiveIndex + 1
+      this.previewImgSrc = this.fieldImgs[this.previewActiveIndex].url
+    },
+    closePreview () {
+      this.imageDialog = false
     }
+  },
+  components: {
+    imgPreview
   }
 }
 </script>
@@ -635,7 +643,6 @@ export default {
   }
   .equipmentList-box {
     float: left;
-    margin-right: 60px;
 
     img {
       width: 24px;
@@ -644,8 +651,14 @@ export default {
     }
     span {
       vertical-align: middle;
-      margin-right: 4px;
+      margin-left: 4px;
     }
+  }
+  .lh-checkbox-box {
+    display: inline-block;
+    width: 16.66% !important;
+    height: 35px;
+    line-height: 35px;
   }
 
   .page-title-right {
@@ -655,31 +668,4 @@ export default {
   }
 
 }
-</style>
-<style lang="scss">
-  .page-field-detail {
-    .el-dialog {
-      background-color: transparent;
-      position: static;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
-      margin-bottom: 0;
-      /*height: 100%;*/
-      /*position: fixed;*/
-      /*top: 0;*/
-      /*left: 0;*/
-      img {
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        -webkit-transform: translate(-50%, -50%);
-        -moz-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        -o-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-      }
-      .el-dialog__body {
-      }
-    }
-  }
 </style>

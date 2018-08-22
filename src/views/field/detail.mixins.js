@@ -15,7 +15,7 @@ export default {
       appointmentTimeType: 2, // 是否区分工作日 1:不区分 2:区分
       store: {},
       equipments: {},
-      fieldImgs: {},
+      fieldImgs: [],
 
       // 该场地，对外开放设置的状态
       // 跟场地的开放状态不同
@@ -77,7 +77,8 @@ export default {
         appointmentTimeType: '' // 是否区分工作日 1:不区分 2:区分
       },
       imageDialog: false,
-      previewImgSrc: ''
+      previewImgSrc: '',
+      previewActiveIndex: 0
     }
   }
 }
