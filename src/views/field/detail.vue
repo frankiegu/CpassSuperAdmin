@@ -37,16 +37,16 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <lh-item label="所属空间：" label-width="87px">{{ space.spaceName }}</lh-item>
+              <lh-item label="所属品牌：" label-width="87px">{{ space.spaceName }}</lh-item>
             </el-col>
             <el-col :span="8">
-              <lh-item label="所属门店：" label-width="auto">{{ store.storeName }}</lh-item>
+              <lh-item label="所属空间：" label-width="auto">{{ store.storeName }}</lh-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="20">
             <el-col>
-              <lh-item label="门店地址：" label-width="87px">{{store.provinceName}}{{store.cityName}}{{store.districtName}}{{store.address}}</lh-item>
+              <lh-item label="空间地址：" label-width="87px">{{store.provinceName}}{{store.cityName}}{{store.districtName}}{{store.address}}</lh-item>
             </el-col>
           </el-row>
         </el-col>

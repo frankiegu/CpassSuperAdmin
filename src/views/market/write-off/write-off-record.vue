@@ -10,7 +10,7 @@
           <el-select
             v-model="formData.spaceId"
             @change="changeSpace"
-            placeholder="请选择所属空间"
+            placeholder="请选择所属品牌"
             class="width140px"
             clearable>
             <el-option
@@ -26,7 +26,7 @@
           <el-select
             v-model="formData.storeId"
             @change="changeStore"
-            placeholder="请选择消费门店"
+            placeholder="请选择消费空间"
             class="width140px"
             clearable>
             <el-option
@@ -105,13 +105,13 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="消费门店" fixed="left" align="left">
+        <el-table-column label="消费空间" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.storeName }}
           </template>
         </el-table-column>
 
-        <el-table-column label="所属空间" fixed="left" align="left">
+        <el-table-column label="所属品牌" fixed="left" align="left">
           <template slot-scope="scope">
             {{ scope.row.spaceName }}
           </template>
@@ -230,7 +230,7 @@
           }
         })
       },
-      // 获取空间列表
+      // 获取品牌列表
       getspaceList () {
         spaceList().then(res => {
           if (res.status === 'true') {
@@ -240,7 +240,7 @@
           }
         })
       },
-      // 获取门店列表
+      // 获取空间列表
       getstoreList () {
         const paramsObj = {
           spaceId: this.formData.spaceId
@@ -267,9 +267,9 @@
           }
         })
       },
-      // 空间变更
+      // 品牌变更
       changeSpace () {
-        // 清空门店和核销点 的选中项以及列表
+        // 清空空间和核销点 的选中项以及列表
         this.formData.storeId = ''
         this.formData.verifyStationId = ''
         this.storeList = []
@@ -278,7 +278,7 @@
         this.getPageData(1)
         this.getstoreList()
       },
-      // 门店变更
+      // 空间变更
       changeStore () {
         // 清空核销点 的选中项以及列表
         this.formData.verifyStationId = ''

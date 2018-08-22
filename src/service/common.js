@@ -14,5 +14,5 @@ export const regionList = (obj) => fetch(API_PATH + '/common/region/listAll', ob
 // 获取空间
 export const spaceList = (obj) => fetch(API_PATH + '/supervisor/space/list', obj, 'POST')
 
-// 获取门店
+// 获取空间
 export const storeList = (obj) => fetch(API_PATH + '/supervisor/store/list', obj, 'POST')

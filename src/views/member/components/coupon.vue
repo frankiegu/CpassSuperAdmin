@@ -41,7 +41,7 @@
                 <template slot-scope="scope">
                   <!--礼品券-->
                   <span v-if="scope.row.platformCouponType === 3">{{scope.row.verifyStationType === 1 ? '全部核销点' : '部分核销点'}}</span>
-                  <span v-else>{{scope.row.storeType === 1 ? '全部门店' : '部分门店'}}</span>
+                  <span v-else>{{scope.row.storeType === 1 ? '全部空间' : '部分空间'}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="有效期" width="180" align="left">

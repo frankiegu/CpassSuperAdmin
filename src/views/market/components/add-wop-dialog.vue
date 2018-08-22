@@ -8,7 +8,7 @@
         <el-input v-model.trim="formData.name" placeholder="请输入核销点名称"></el-input>
       </el-form-item>
 
-      <el-form-item label="关联门店">
+      <el-form-item label="关联空间">
         <el-cascader v-model="formData.storeId" :props="storeProp" :options="storeList" clearable></el-cascader>
       </el-form-item>
 
@@ -46,7 +46,7 @@
         }
       }
       return {
-        storeList: [], // 关联门店列表
+        storeList: [], // 关联空间列表
         storeProp: {
           label: 'name',
           value: 'code',
@@ -92,14 +92,14 @@
     mounted() {
       // 获取省市区列表
       this.getRegionList()
-      // 获取关联门店列表
+      // 获取关联空间列表
       if (this.storeList.length === 0) this.handleGetStoreList()
     },
     methods: {
       ...mapActions([
         'getRegionList'
       ]),
-      // 获取关联门店列表
+      // 获取关联空间列表
       handleGetStoreList() {
         stationStoreTree().then(res => {
           if (res.status === 'true') {

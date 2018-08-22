@@ -83,8 +83,8 @@
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
             <el-radio-group v-model="memberSort.userType" size="small" class="fl" @change="changeMemberSource">
-              <el-radio-button :label="1">小程序会员</el-radio-button>
               <el-radio-button :label="2">App会员</el-radio-button>
+              <el-radio-button :label="1" disabled>小程序会员</el-radio-button>
             </el-radio-group>
 
             <!-- app会员暂时没有注册渠道，若有注册渠道，下拉框数据可能需要更新 -->
@@ -222,7 +222,7 @@
         maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
         memberSort: {
-          userType: 1, // 切换来源：2 - app，1 - wxapp
+          userType: 2, // 切换来源：2 - app，1 - wxapp
           registerWay: '',
           registerDate: [],
           nickname: ''

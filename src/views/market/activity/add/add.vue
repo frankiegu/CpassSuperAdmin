@@ -58,8 +58,10 @@
 
         <el-form-item prop="activityType" label="活动模板" label-width="120px" class="mt40" v-if="onePartForm.activityType === '2'">
           <template>
-            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1">砸金蛋</el-radio>
-            <!--<el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2">其他</el-radio>-->
+            <!--活动模板 1砸金蛋 2领红包-->
+            <!--产品大佬说活动添加暂时也禁用砸金蛋模板选项-->
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="1" :disabled="type === 'edit' || type === 'copy' || !type">砸金蛋</el-radio>
+            <el-radio class="mt10" v-model="onePartForm.activityTemplate" label="2" :disabled="type === 'edit' || type === 'copy'">领红包</el-radio>
           </template>
         </el-form-item>
         <el-form-item label="活动有效期" label-width="120px" prop="rangeDate" class="mt40">
@@ -142,7 +144,8 @@
             <el-col :span="8">
               <el-form-item prop="shareAddTimes">
                 <h3 class="text-title second-form-title">分享成功后额外抽奖次数</h3>
-                <el-input class="width220px" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
+                <!--活动模板时领红包时要禁用分享输入框, 并且,默认值是0-->
+                <el-input class="width220px" :disabled="onePartForm.activityType === '2'" v-model.trim="twoPartForm.shareAddTimes" placeholder="请输入分享成功后额外抽奖次数" :maxlength="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -236,12 +239,12 @@
             :rules="addPrizeFormRule">
             <el-form-item label="奖品类型" prop="addPrizeType" style="width: 100%">
               <template>
-                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="1">优惠券</el-radio>
+                <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.addPrizeType" label="1" :disabled="onePartForm.activityTemplate === '2'">优惠券</el-radio>
                 <el-radio class="mt10" v-model="addPrizeForm.addPrizeType" label="2">微信红包</el-radio>
               </template>
             </el-form-item>
             <!--微信红包-->
-            <div v-if="addPrizeForm.showRedEnvelope">
+            <div v-if="addPrizeForm.showRedEnvelope || onePartForm.activityTemplate === '2'">
               <el-form-item style="width: 100%" label="红包类型" prop="redEnvelopeType">
                 <template>
                   <el-radio class="mt10 add-prize-info" v-model="addPrizeForm.redEnvelopeType" label="1">普通红包</el-radio>
@@ -254,7 +257,7 @@
             </div>
 
             <!--优惠券-->
-            <div v-else>
+            <div v-if="!addPrizeForm.showRedEnvelope || (onePartForm.activityTemplate === '1' && !addPrizeForm.showRedEnvelope)">
               <!--选择优惠券类型-->
               <el-form-item style="width: 100%" class="choose-coupon-type" label="选择优惠券" prop="couponType">
                 <el-select v-model="addPrizeForm.couponType" class="width220px add-prize-info" @change="couponTypeChange">
@@ -441,8 +444,16 @@ export default {
           couponType: 1, // 优惠券类型
           allowRepeat: false, // 是否允许重复中奖
           useInstruction: '', // 使用说明
-          showRedEnvelope: false
+          showRedEnvelope: this.onePartForm.activityTemplate === '2'
         }
+        if (this.onePartForm.activityTemplate === '2') this.addPrizeForm.addPrizeType = '2'
+      }
+    },
+    'onePartForm.activityTemplate': function (val) {
+      if (val === '2') {
+        this.addPrizeForm.addPrizeType = '2'
+      } else {
+        this.addPrizeForm.addPrizeType = '1'
       }
     }
   },
@@ -476,15 +487,28 @@ export default {
               this.validatePartOne = true
               document.documentElement.scrollTop = 0
               document.body.scrollTop = 0
+              if (this.onePartForm.activityTemplate === '2') this.addPrizeForm.addPrizeType = '2'
               break;
             case '2':
               // ajaxParams.step = 2
+              console.log('1111111', this.checkHasCoupon(this.prizeList))
               this.checkPrize()
               this.validatePartTwo = true
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
-                this.tabSwitch = 3      // add field 打开第三道门
-                this.activityTab = 3 // 切换到第二道门
-                this.loadingTwoPart = false
+                if (this.onePartForm.activityTemplate === '2') {
+                  // 如果活动模板是领红包, 奖品不允许添加券
+                  if (this.checkHasCoupon(this.prizeList) <= 0) {
+                    this.tabSwitch = 3      // add field 打开第三道门
+                    this.activityTab = 3 // 切换到第二道门
+                    this.loadingTwoPart = false
+                  } else {
+                    this.$message.info('领红包活动的奖品只能添加微信红包, 请确认奖品添加是否正确')
+                  }
+                } else {
+                  this.tabSwitch = 3      // add field 打开第三道门
+                  this.activityTab = 3 // 切换到第二道门
+                  this.loadingTwoPart = false
+                }
               } else if (this.prizeList.length <= 0) {
                 this.$message.info('请至少添加一个奖品')
               } else if (!this.prizeList.every(this.checkPrizeQuantity) || !this.prizeList.every(this.checkPrizeProbability)) {
@@ -580,13 +604,27 @@ export default {
               // 请求接口
               if (this.prizeList.length > 0 && this.prizeList.every(this.checkPrizeQuantity) && this.prizeList.every(this.checkPrizeProbability)) {
                 if (!this.activityId) {
-                  platformActivityAdd(this.submitObject).then(res => {
-                    if (res.status === 'true') {
-                      this.$router.push('/activity/detail?id=' + res.info.id)
+                  if (this.onePartForm.activityTemplate === '2') {
+                    if (this.checkHasCoupon(this.prizeList) <= 0) {
+                      platformActivityAdd(this.submitObject).then(res => {
+                        if (res.status === 'true') {
+                          this.$router.push('/activity/detail?id=' + res.info.id)
+                        } else {
+                          this.setMsg('error', res.msg)
+                        }
+                      })
                     } else {
-                      this.setMsg('error', res.msg)
+                      this.$message.info('领红包活动的奖品只能添加微信红包, 请确认奖品添加是否正确')
                     }
-                  })
+                  } else {
+                    platformActivityAdd(this.submitObject).then(res => {
+                      if (res.status === 'true') {
+                        this.$router.push('/activity/detail?id=' + res.info.id)
+                      } else {
+                        this.setMsg('error', res.msg)
+                      }
+                    })
+                  }
                 } else if (this.activityId) {
                   this.submitObject.id = this.activityId
                   if (this.submitObject.giftCouponArray.length > 0) {
@@ -669,16 +707,6 @@ export default {
     },
     toggleTab(val) {
       this.activityTab = val
-      // validatePartOne validatePartTwo validatePartThree
-      // if (val === 1) {
-      //   if (this.validatePartOne) this.activityTab = val
-      // } else if (val === 2) {
-      //   if (this.validatePartTwo) this.activityTab = val
-      // } else if (val === 3) {
-      //   if (this.validatePartThree) this.activityTab = val
-      // } else {
-      //   return false
-      // }
     },
     getPageData() {
       platformActivityDetail({ activityId: this.activityId }).then(res => {
@@ -829,7 +857,6 @@ export default {
           // 活动未开始提示
           this.threePartForm.tipsBeforeStart = res.info.platformActivityShowConfigList[0].notBeginPrompt
           this.threePartForm.tipsEnd = res.info.platformActivityShowConfigList[0].endPrompt
-          console.log('getData', this.prizeList)
           if (this.type) {
             this.checkPrize()
           }
@@ -876,7 +903,19 @@ export default {
         this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
       }
     },
-
+    /**
+     * part 2: 活动模板是领红包时判断奖品列表里面是否包含优惠券
+     * 目前需求是: 领红包模板不能添加优惠券的奖品
+     */
+    checkHasCoupon (list) {
+      let coupon = []
+      list.forEach(v => {
+        if (v.type === 1) {
+          coupon.push(v)
+        }
+      })
+      return coupon.length
+    },
     /**
      * part 3
      */
