@@ -623,6 +623,7 @@ export default {
     },
     closePreview () {
       this.imageDialog = false
+      this.previewImgSrc = ''
     }
   },
   components: {

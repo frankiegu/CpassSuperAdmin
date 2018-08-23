@@ -9,7 +9,7 @@
       :visible.sync="imageDialog">
       <div class="img-indicator-wrapper">
         <img class="preview-big-img" :src="previewImgSrc" alt="">
-        <div class="indicators-wrapper">
+        <div class="indicators-wrapper" v-if="imageList.length > 1">
           <span class="indicator-span" v-for="(item, indicationI) in imageList" :key="indicationI" :class="{'indicator-span-active': previewActiveIndex === indicationI}"></span>
         </div>
       </div>
@@ -85,13 +85,14 @@
         position: relative;
         top: 50%;
         left: 50%;
-        -webkit-transform: translate(-50%, -60%);
-        -moz-transform: translate(-50%, -60%);
-        -ms-transform: translate(-50%, -60%);
-        -o-transform: translate(-50%, -60%);
-        transform: translate(-50%, -60%);
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
       }
       .close-btn {
+        -webkit-tap-highlight-color: transparent;
         display: block;
         width: 54px;
         height: 54px;
@@ -101,6 +102,7 @@
         cursor: pointer;
       }
       .last-img-btn {
+        -webkit-tap-highlight-color: transparent;
         cursor: pointer;
         display: block;
         width: 56px;
@@ -115,6 +117,7 @@
         transform: translte(0, -50%);
       }
       .next-img-btn {
+        -webkit-tap-highlight-color: transparent;
         cursor: pointer;
         display: block;
         width: 56px;
@@ -132,7 +135,7 @@
         height: 10px;
         position: absolute;
         left: 50%;
-        bottom: 20%;
+        bottom: 10%;
         -webkit-transform: translate(-50%, 0);
         -moz-transform: translate(-50%, 0);
         -ms-transform: translate(-50%, 0);
