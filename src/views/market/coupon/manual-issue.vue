@@ -131,6 +131,7 @@
             <el-table-column type="selection" width="55" reserve-selection></el-table-column>
             <el-table-column label="会员ID" prop="customerCode" v-if="memberSort.userType === 2"></el-table-column>
             <el-table-column label="会员名称" prop="nickname"></el-table-column>
+            <el-table-column label="手机号码" prop="telephone"></el-table-column>
 
             <el-table-column label="注册渠道" prop="registerName">
               <template slot-scope="scope">
