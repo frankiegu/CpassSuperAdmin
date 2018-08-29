@@ -282,8 +282,8 @@
     data() {
       const checkInt = (rule, value, callback) => {
         if (value && (value.toString().indexOf('.') !== -1 ||
-            isNaN(Number(value)) || Number(value) < 1 || Number(value) > 99999)) {
-          callback(new Error('请输入1-99999的正整数'))
+            isNaN(Number(value)) || Number(value) < 1 || Number(value) > 999999)) {
+          callback(new Error('请输入1-999999的正整数'))
         }
         callback()
       }
