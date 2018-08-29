@@ -22,18 +22,18 @@
         </el-table-column>
         <el-table-column label="banner" width="240">
           <template slot-scope="scope">
-            <img class="banner-img" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535524151593&di=c72c6091d85e43484749de65b63664d4&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6d8577270370000012e7e30d877.jpg%401280w_1l_2o_100sh.jpg">
-            <!--<router-link :to="'/market/c-pass/com?noAllow=true&fieldId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>-->
+            <img class="banner-img" :src="scope.row.imgUrl">
           </template>
         </el-table-column>
         <el-table-column label="标题" >
           <template slot-scope="scope">
-            <router-link :to="'/market/banner/add'" class="table-link">新人礼包活动</router-link>
+            <router-link :to="'/market/banner/add?noAllow=true&bannerId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
           </template>
         </el-table-column>
         <el-table-column label="状态" >
           <template slot-scope="scope">
-            <el-tag type="success">展示中</el-tag>
+            <el-tag v-if="scope.row.status === 0" type="info">未发布</el-tag>
+            <el-tag v-if="scope.row.status === 1" type="success">展示中</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="点击数" prop="pvCount" ></el-table-column>
@@ -50,7 +50,7 @@
                 <lh-svg @click.native="setRelease(scope.row.id, 0)" icon-class="icon-love" class="ph4 fill-blue cp"></lh-svg>
               </el-tooltip>
 
-              <router-link :to="'/market/banner/add?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+              <router-link :to="'/market/banner/add?banner=' + scope.row.id" class="lh-table-btn">编辑</router-link>
               <span v-if="scope.$index !== 0" @click="setFirst(scope.row.id)" class="lh-table-btn">置顶</span>
               </div>
           </template>
@@ -66,17 +66,18 @@
         class="width100" border>
         <el-table-column label="banner" width="240">
           <template slot-scope="scope">
-            <img class="banner-img" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535524151593&di=c72c6091d85e43484749de65b63664d4&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6d8577270370000012e7e30d877.jpg%401280w_1l_2o_100sh.jpg">
+            <img class="banner-img" :src="scope.row.imgUrl">
           </template>
         </el-table-column>
         <el-table-column label="标题" >
           <template slot-scope="scope">
-            <router-link :to="'/market/banner/add?noAllow=true&fieldId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
+            <router-link :to="'/market/banner/add?noAllow=true&bannerId=' + scope.row.id" class="table-link">{{ scope.row.title }}</router-link>
           </template>
         </el-table-column>
         <el-table-column label="状态" >
           <template slot-scope="scope">
-            <el-tag>未发布</el-tag>
+            <el-tag v-if="scope.row.status === 0" type="info">未发布</el-tag>
+            <el-tag v-if="scope.row.status === 1" type="success">展示中</el-tag>
           </template>
         </el-table-column>
 
@@ -93,7 +94,7 @@
               <lh-svg @click.native="setRelease(scope.row.id, 1)" icon-class="icon-love" class="ph4 fill-grayish cp"></lh-svg>
             </el-tooltip>
 
-            <router-link :to="'/market/banner/add?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+            <router-link :to="'/market/banner/add?bannerId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
             <span @click="deleteField(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
           </template>
         </el-table-column>
@@ -115,115 +116,13 @@
 
 <script>
 import listMixins from './list.mixins'
-import { cPassShowcaseList, cPassList, cPassDelWellChosen, cPassSetTop, cPassSetSelectionType } from '@/service/market'
 
 export default {
   mixins: [listMixins],
   components: {},
   mounted () {
-    this.getShowCaseList()
-    this.getPageData()
   },
   methods: {
-    /**
-     * 加精和取精
-     * @param {[Numer]} id       [场地id]
-     * @param {[Number]} status   [是否加精]
-     */
-    setRelease(id, status) {
-      if (status && this.showcaseData.length >= 3) return
-
-      this.$confirm(status ? '确认后将推送到活动新人限时抢展示, 是否继续?' : '确认后取消在活动展示, 是否继续?', '提示', { type: 'warning' }).then(() => {
-        cPassSetSelectionType({
-          selectionId: id,
-          selectionType: status
-        }).then(res => {
-          if (res.status === 'true') {
-            this.getShowCaseList()
-            this.getPageData()
-            this.setMsg('success', (status ? '加精成功' : '取消成功'))
-          } else {
-            this.setMsg('error', res.msg)
-          }
-        })
-      }).catch(() => {
-        this.setMsg('已取消删除')
-      })
-    },
-    /**
-     * 精选列表
-     * @param  {[Number]} page [每次触发筛选条件，分页数重置为1]
-     */
-    getPageData(page) {
-      this.currentPage = page || this.currentPage
-
-      const ajaxParam = {
-        pageSize: this.pageSize,
-        pageNum: this.currentPage,
-        title: this.formDate.title
-      }
-      cPassList(ajaxParam).then(res => {
-        if (res.status === 'true') {
-          let resInfo = res.info
-          if (resInfo) {
-            this.pageTotal = resInfo.total
-            this.tableData = resInfo.result
-          }
-
-          this.tableLoading = false
-          if (this.tableData.length === 0) {
-            this.tableEmpty = '暂无数据'
-          }
-        } else {
-          this.tableLoading = false
-          this.tableEmpty = '暂无数据'
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
-    // 置顶操作
-    setFirst(id) {
-      cPassSetTop({ selectionId: id }).then(res => {
-        if (res.status === 'true') {
-          this.getShowCaseList()
-          this.setMsg('success', '置顶成功')
-        } else {
-          this.setMsg('error', res.msg)
-        }
-      })
-    },
-    // 删除精选
-    deleteField(id) {
-      this.$confirm('此操作将永久删除该banner, 是否继续?', '提示', { type: 'warning' }).then(() => {
-        cPassDelWellChosen({ selectionId: id }).then(res => {
-          if (res.status === 'true') {
-            this.getPageData()
-            this.setMsg('success', '删除成功')
-          } else {
-            this.setMsg('已取消删除')
-          }
-        })
-      }).catch(() => {
-        this.setMsg('已取消删除')
-      })
-    },
-    // 橱窗列表
-    getShowCaseList() {
-      cPassShowcaseList().then(res => {
-        if (res.status === 'true') {
-          this.showcaseData = res.info
-
-          this.showcaseTableLoading = false
-          if (this.showcaseData.length === 0) {
-            this.showcaseTableEmpty = '暂无数据'
-          }
-        } else {
-          this.showcaseTableEmpty = '暂无数据'
-          this.showcaseTableLoading = false
-          this.setMsg('error', res.msg)
-        }
-      })
-    }
   }
 };
 </script>

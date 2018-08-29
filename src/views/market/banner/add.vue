@@ -12,21 +12,16 @@
       class="card-padding pv32">
       <el-form-item prop="bannerPath" label="首页banner">
         <lh-upload
-          @uploadImg="val => formData.bannerPath = val"
+          @uploadImg="uploadImg"
           :imgUrl="formData.bannerPath"
           :disabled="noAllow"
           :size="80"/>
 
-        <el-popover ref="tipPopover" placement="right" title="" width="167" trigger="hover">
-          <div class="fz12">
-            建议尺寸：670PX * 260PX<br>
-            支持格式：JPG / PNG
-          </div>
-        </el-popover>
-        <span v-popover:tipPopover class="fl lh66 ml10">
-          <lh-svg icon-class="icon-info" class="theme-gray"></lh-svg>
-        </span>
-        <!--<p class="theme-red fz12 clearfix mt-6 h6">{{ verifyImg }}</p>-->
+        <i class="el-icon-question fl theme-light-gray mt8 mr5 ml15" @click="uploadText = true"></i>
+        <div v-if="uploadText" class="fl">
+          <p>建议尺寸： 670PX * 260PX<br>支持格式： JPG / PNG</p>
+        </div>
+        <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyImg }}</p>
       </el-form-item>
 
       <el-form-item prop="title" label="banner标题">
@@ -34,11 +29,11 @@
       </el-form-item>
 
       <el-form-item prop="wxLink" label="APP跳转链接">
-        <el-input class="width300px" v-model.trim="formData.wxLink" :disabled="noAllow":maxlength="15" placeholder="暂仅支持h5链接跳转"></el-input>
+        <el-input class="width300px" v-model.trim="formData.wxLink" :disabled="noAllow" placeholder="暂仅支持h5链接跳转"></el-input>
       </el-form-item>
 
       <el-form-item prop="wxAppLink" label="小程序路径">
-        <el-input class="width300px" v-model.trim="formData.wxAppLink" :disabled="noAllow":maxlength="15" placeholder="请输入小程序页面路径"></el-input>
+        <el-input class="width300px" v-model.trim="formData.wxAppLink" :disabled="noAllow" placeholder="请输入小程序页面路径"></el-input>
       </el-form-item>
 
       <el-form-item class="lh-form-item0">

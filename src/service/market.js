@@ -1,6 +1,9 @@
 import fetch from '../config/fetch'
 import { API_PATH } from '../config/env'
 
+// banner
+export * from './market/banner'
+
 // c-pass
 export * from './market/c-pass'
 
