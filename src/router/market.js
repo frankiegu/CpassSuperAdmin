@@ -7,12 +7,12 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '营销管理',
   path: '/market',
-  redirect: '/market/c-pass',
+  redirect: '/market/banner',
   component: layout,
   icon: 'icon-Site',
   children: [{
     name: '首页banner',
-    path: '/banner',
+    path: 'banner',
     component: _import('market/banner/list')
   }, {
     name: '',

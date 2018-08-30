@@ -46,11 +46,11 @@
           <template slot-scope="scope">
             <div class="width110px tl mc">
               <el-tooltip placement="top"
-                :content="showcaseData.length <= 1 ? '至少需要有一个banner' : '点击取消加精'">
+                :content="'点击取消展示'">
                 <lh-svg @click.native="setRelease(scope.row.id, 0)" icon-class="icon-love" class="ph4 fill-blue cp"></lh-svg>
               </el-tooltip>
 
-              <router-link :to="'/market/banner/add?banner=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+              <router-link :to="'/market/banner/add?bannerId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
               <span v-if="scope.$index !== 0" @click="setFirst(scope.row.id)" class="lh-table-btn">置顶</span>
               </div>
           </template>
@@ -90,12 +90,12 @@
         <el-table-column label="操作" >
           <template slot-scope="scope">
             <el-tooltip placement="top"
-              :content="showcaseData.length >= 3 ? '最多允许展示3个加精内容' : '点击进行加精'">
+              :content="showcaseData.length >= 3 ? '最多允许展示3个banner' : '点击展示banner'">
               <lh-svg @click.native="setRelease(scope.row.id, 1)" icon-class="icon-love" class="ph4 fill-grayish cp"></lh-svg>
             </el-tooltip>
 
             <router-link :to="'/market/banner/add?bannerId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
-            <span @click="deleteField(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
+            <span @click="deleteBanner(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
           </template>
         </el-table-column>
       </el-table>

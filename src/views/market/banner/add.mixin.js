@@ -1,4 +1,4 @@
-import { indexBannerAddOrUpdate } from '@/service/market'
+import { indexBannerAddOrUpdate, indexBannerDetail } from '@/service/market'
 export default {
   mixins: [],
   data () {
@@ -32,7 +32,7 @@ export default {
     },
     // 设置标题
     setTitleName() {
-      this.title = this.noAllow ? 'banner详情' : (this.fieldId ? '编辑banner' : '添加banner')
+      this.title = this.noAllow ? 'banner详情' : (this.bannerId ? '编辑banner' : '添加banner')
       document.title = this.title
       this.$store.commit('NAV_CRUMB', this.title)
       this.$route.meta.title = this.title
@@ -43,12 +43,22 @@ export default {
     setPageTitle() {
       this.setTitleName()
 
-      if (this.fieldId) {
+      if (this.bannerId) {
         this.getPageData()
-        this.ajaxName = 'cPassEditWellChosen'
       } else {
-        this.ajaxName = 'cPassAddWellChosen'
       }
+    },
+    getPageData() {
+      indexBannerDetail({ id: this.bannerId }).then(res => {
+        if (res.status === 'true') {
+          this.formData.bannerPath = res.info.imgUrl
+          this.formData.title = res.info.title
+          this.formData.wxLink = res.info.appForwardUrl
+          this.formData.wxAppLink = res.info.wxappForwardUrl
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
     },
     verifyImage() {
       this.verifyImg = !this.formData.bannerPath ? '请上传banner' : ''
@@ -73,7 +83,15 @@ export default {
           }
           indexBannerAddOrUpdate(dataObj).then(res => {
             if (res.status === 'true') {
-              this.setMsg('success', '操作成功！')
+              this.noAllow = !this.noAllow
+
+              if (this.bannerId) {
+                this.setMsg('success', '更新banner成功')
+                this.setTitleName()
+              } else {
+                this.setMsg('success', '添加banner成功')
+                this.$router.replace({ path: '/market/banner' })
+              }
             } else {
               this.setMsg('error', res.msg)
             }

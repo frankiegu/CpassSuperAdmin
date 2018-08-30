@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { indexBannerShowcaseList, indexBannerList, cPassDelWellChosen, cPassSetTop, cPassSetSelectionType } from '@/service/market'
+import { indexBannerShowcaseList, indexBannerList, indexBannerDelete, indexBannerTop, indexBannerChangeStatus } from '@/service/market'
 
 export default {
   mixins: [tableMixins],
@@ -22,21 +22,21 @@ export default {
   methods: {
     /**
      * 加精和取精
-     * @param {[Numer]} id       [场地id]
-     * @param {[Number]} status   [是否加精]
+     * @param {[Numer]} bannerId        [bannerId]
+     * @param {[Number]} bannerStatus   [是否加精]
      */
-    setRelease(id, status) {
-      if (status && this.showcaseData.length >= 3) return
+    setRelease(bannerId, bannerStatus) {
+      if (bannerStatus && this.showcaseData.length >= 3) return
 
-      this.$confirm(status ? '确认后将推送到活动新人限时抢展示, 是否继续?' : '确认后取消在活动展示, 是否继续?', '提示', { type: 'warning' }).then(() => {
-        cPassSetSelectionType({
-          selectionId: id,
-          selectionType: status
+      this.$confirm(bannerStatus ? '确认后将推送到活动新人限时抢展示, 是否继续?' : '确认后取消在活动展示, 是否继续?', '提示', { type: 'warning' }).then(() => {
+        indexBannerChangeStatus({
+          id: bannerId,
+          status: bannerStatus
         }).then(res => {
           if (res.status === 'true') {
             this.getShowCaseList()
             this.getPageData()
-            this.setMsg('success', (status ? '加精成功' : '取消成功'))
+            this.setMsg('success', (bannerStatus ? '设置成功' : '取消成功'))
           } else {
             this.setMsg('error', res.msg)
           }
@@ -77,8 +77,8 @@ export default {
       })
     },
     // 置顶操作
-    setFirst(id) {
-      cPassSetTop({ selectionId: id }).then(res => {
+    setFirst(bannerId) {
+      indexBannerTop({ id: bannerId }).then(res => {
         if (res.status === 'true') {
           this.getShowCaseList()
           this.setMsg('success', '置顶成功')
@@ -88,9 +88,9 @@ export default {
       })
     },
     // 删除精选
-    deleteField(id) {
+    deleteBanner(bannerId) {
       this.$confirm('此操作将永久删除该banner, 是否继续?', '提示', { type: 'warning' }).then(() => {
-        cPassDelWellChosen({ selectionId: id }).then(res => {
+        indexBannerDelete({ id: bannerId }).then(res => {
           if (res.status === 'true') {
             this.getPageData()
             this.setMsg('success', '删除成功')
