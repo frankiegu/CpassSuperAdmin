@@ -222,6 +222,7 @@
 
               <el-checkbox :label="2">支持手动领取</el-checkbox><br>
               <el-checkbox :label="3">支持手动下发</el-checkbox><br>
+              <el-checkbox :label="5">新人礼包活动发放</el-checkbox><br>
             </el-checkbox-group>
           </el-form-item>
 
@@ -709,6 +710,7 @@
             this.canChangeType = false // 禁止切换卡券类型
             couponReceiveDetailList.forEach(item => {
               couponForm.receiveWay.push(item.receiveType)
+              console.log(couponForm.receiveWay)
               if (item.receiveType === 1) {
                 this.hasCondition = true
                 couponForm.receiveConditionArray = [{
@@ -794,6 +796,7 @@
             let receiveCondition = form.receiveWay.includes(1) ? 1 : 0
             let receiveManual = form.receiveWay.includes(2) ? 1 : 0
             let receiveManpower = form.receiveWay.includes(3) ? 1 : 0
+            let receiveNewcomerActivity = form.receiveWay.includes(5) ? 1 : 0
             let params = {
               name: form.name,
               description: form.desc,
@@ -805,7 +808,8 @@
               couponUsage: form.couponUsage,
               receiveCondition: receiveCondition,
               receiveManual: receiveManual,
-              receiveManpower: receiveManpower
+              receiveManpower: receiveManpower,
+              receiveNewcomerActivity: receiveNewcomerActivity
             }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id
