@@ -15,7 +15,7 @@ export default {
         title: '', // banner标题
         subTitle: '', // 副标题
         bannerPath: '', // banner图片路径
-        shareImageUrl: '', // banner图片路径
+        shareImgUrl: '', // banner图片路径
         wxLink: '', // 微信h5链接
         wxAppLink: '' // 微信小程序链接
       },
@@ -23,7 +23,7 @@ export default {
         title: [{ required: true, trigger: ['blur', 'change'], message: 'banner标题不能为空' }],
         subTitle: [{ required: true, trigger: ['blur', 'change'], message: '副标题不能为空' }],
         bannerPath: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
-        shareImageUrl: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
+        shareImgUrl: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
         wxLink: [{ required: true, trigger: ['blur', 'change'], message: 'App跳转链接不能为空' }],
         wxAppLink: [{ required: true, trigger: ['blur', 'change'], message: '小程序页面路径不能为空' }]
       }
@@ -38,7 +38,7 @@ export default {
       this.verifyUploadBanner()
     },
     uploadShareImg(val) {
-      this.formData.shareImageUrl = val
+      this.formData.shareImgUrl = val
       this.verifyUploadShare()
     },
     // 设置标题
@@ -65,7 +65,7 @@ export default {
           this.formData.title = res.info.title
           this.formData.subTitle = res.info.subTitle
           this.formData.bannerPath = res.info.imgUrl
-          this.formData.shareImageUrl = res.info.shareImageUrl
+          this.formData.shareImgUrl = res.info.shareImgUrl
           this.formData.wxLink = res.info.appForwardUrl
           this.formData.wxAppLink = res.info.wxappForwardUrl
         } else {
@@ -77,7 +77,7 @@ export default {
       this.verifyBanner = !this.formData.bannerPath ? '请上传banner' : ''
     },
     verifyUploadShare() {
-      this.verifyShare = !this.formData.shareImageUrl ? '请上传分享配图' : ''
+      this.verifyShare = !this.formData.shareImgUrl ? '请上传分享配图' : ''
     },
     submitForm(formName) {
       if (this.noAllow) {
@@ -96,7 +96,7 @@ export default {
             title: this.formData.title,
             subTitle: this.formData.subTitle,
             imgUrl: this.formData.bannerPath,
-            shareImageUrl: this.formData.shareImageUrl,
+            shareImgUrl: this.formData.shareImgUrl,
             appForwardUrl: this.formData.wxLink,
             wxappForwardUrl: this.formData.wxAppLink
           }

@@ -32,10 +32,10 @@
         <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyBanner }}</p>
       </el-form-item>
 
-      <el-form-item prop="shareImageUrl" label="分享配图">
+      <el-form-item prop="shareImgUrl" label="分享配图">
         <lh-upload
           @uploadImg="uploadShareImg"
-          :imgUrl="formData.shareImageUrl"
+          :imgUrl="formData.shareImgUrl"
           :disabled="noAllow"
           :size="80"/>
 
