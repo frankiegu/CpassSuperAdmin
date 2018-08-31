@@ -5,18 +5,25 @@ export default {
     return {
       bannerId: this.$route.query.bannerId,
       noAllow: Boolean(this.$route.query.noAllow),
-      uploadText: false,
-      verifyImg: '',
+      bannerUploadText: false,
+      ShareUploadText: false,
+      verifyBanner: '',
+      verifyShare: '',
       title: '', // 页面标题
 
       formData: {
-        bannerPath: '', // banner图片路径
         title: '', // banner标题
+        subTitle: '', // 副标题
+        bannerPath: '', // banner图片路径
+        shareImageUrl: '', // banner图片路径
         wxLink: '', // 微信h5链接
         wxAppLink: '' // 微信小程序链接
       },
       formDataRule: {
         title: [{ required: true, trigger: ['blur', 'change'], message: 'banner标题不能为空' }],
+        subTitle: [{ required: true, trigger: ['blur', 'change'], message: '副标题不能为空' }],
+        bannerPath: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
+        shareImageUrl: [{ required: true, trigger: ['blur', 'change'], message: ' ' }],
         wxLink: [{ required: true, trigger: ['blur', 'change'], message: 'App跳转链接不能为空' }],
         wxAppLink: [{ required: true, trigger: ['blur', 'change'], message: '小程序页面路径不能为空' }]
       }
@@ -26,9 +33,13 @@ export default {
     this.setPageTitle()
   },
   methods: {
-    uploadImg(val) {
+    uploadBanner(val) {
       this.formData.bannerPath = val
-      this.verifyImage()
+      this.verifyUploadBanner()
+    },
+    uploadShareImg(val) {
+      this.formData.shareImageUrl = val
+      this.verifyUploadShare()
     },
     // 设置标题
     setTitleName() {
@@ -51,8 +62,10 @@ export default {
     getPageData() {
       indexBannerDetail({ id: this.bannerId }).then(res => {
         if (res.status === 'true') {
-          this.formData.bannerPath = res.info.imgUrl
           this.formData.title = res.info.title
+          this.formData.subTitle = res.info.subTitle
+          this.formData.bannerPath = res.info.imgUrl
+          this.formData.shareImageUrl = res.info.shareImageUrl
           this.formData.wxLink = res.info.appForwardUrl
           this.formData.wxAppLink = res.info.wxappForwardUrl
         } else {
@@ -60,8 +73,11 @@ export default {
         }
       })
     },
-    verifyImage() {
-      this.verifyImg = !this.formData.bannerPath ? '请上传banner' : ''
+    verifyUploadBanner() {
+      this.verifyBanner = !this.formData.bannerPath ? '请上传banner' : ''
+    },
+    verifyUploadShare() {
+      this.verifyShare = !this.formData.shareImageUrl ? '请上传分享配图' : ''
     },
     submitForm(formName) {
       if (this.noAllow) {
@@ -70,14 +86,17 @@ export default {
         return
       }
 
-      this.verifyImage()
+      this.verifyUploadBanner()
+      this.verifyUploadShare()
 
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let dataObj = {
             id: this.bannerId || '',
-            imgUrl: this.formData.bannerPath,
             title: this.formData.title,
+            subTitle: this.formData.subTitle,
+            imgUrl: this.formData.bannerPath,
+            shareImageUrl: this.formData.shareImageUrl,
             appForwardUrl: this.formData.wxLink,
             wxappForwardUrl: this.formData.wxAppLink
           }
