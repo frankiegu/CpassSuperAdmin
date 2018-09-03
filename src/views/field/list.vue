@@ -228,6 +228,7 @@
           return this.setMsg('暂无数据')
         }
         const downParams = {
+          status: this.statusType !== '-1' ? this.statusType : null,
           fieldName: this.formData.name,
           startTime: this.formData.update ? formatTimeString(this.formData.update[0]) : null,
           endTime: this.formData.update ? formatTimeString(this.formData.update[1]) : null
