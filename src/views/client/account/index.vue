@@ -68,7 +68,7 @@
 
 <script>
   import accountMixins from './account.mixins'
-  import clientDialog from './components/dialog'
+  import clientDialog from '../components/dialog'
   import qrCode from 'vue-qrcode-component'
   import capturePdfMixins from '@/mixins/capture-pdf'
   import { accountInfo } from '@/service/client'

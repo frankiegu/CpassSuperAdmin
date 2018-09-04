@@ -46,7 +46,7 @@
 </template>
 
 <script>
-  import baseInfo from './components/base-info'
+  import baseInfo from '../components/base-info'
   import { clientDetail } from '@/service'
   export default {
     name: 'detail',

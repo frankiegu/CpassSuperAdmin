@@ -193,8 +193,8 @@
 </template>
 
 <script>
-  import { baseInfo } from './components'
-  import commonMixins from './common.mixins'
+  import { baseInfo } from '../components/index'
+  import commonMixins from '../common.mixins'
   import { addClient, updateClientInfo, createAccount, bindWeixinPay } from '@/service'
 
   export default {
@@ -406,7 +406,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/config";
+  @import "../../../styles/config";
   .client-data {
     .el-input .el-icon-upload {
       display: block;

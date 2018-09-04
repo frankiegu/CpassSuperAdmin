@@ -66,7 +66,7 @@
 
 <script>
   import { checkPhone } from '@/config/utils'
-  import accountMixins from '../account.mixins'
+  import accountMixins from '../account/account.mixins'
   import { clientResetAccount, clientResetPassword, clientSendSms } from '@/service/client'
 
   export default {

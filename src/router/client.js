@@ -18,25 +18,25 @@ export default [{
   }, {
     name: '',
     path: 'add',
-    component: _import('client/add'),
+    component: _import('client/add/index'),
     hidden: true,
     meta: { title: '', level2: true }
   }, {
     name: '修改客户资料',
     path: 'modify',
-    component: _import('client/modify'),
+    component: _import('client/edit/index'),
     hidden: true,
     meta: { level2: true }
   }, {
     name: '客户详情',
     path: 'detail',
-    component: _import('client/client-detail'),
+    component: _import('client/detail/index'),
     hidden: true,
     meta: { level2: true }
   }, {
     name: '账户信息',
     path: 'account',
-    component: _import('client/account'),
+    component: _import('client/account/index'),
     hidden: true,
     meta: {
       // 是否是二级页包括 3级 等

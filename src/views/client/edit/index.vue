@@ -183,8 +183,8 @@
 </template>
 
 <script>
-  import { baseInfo } from './components'
-  import commonMixins from './common.mixins'
+  import { baseInfo } from '../components/index'
+  import commonMixins from '../common.mixins'
   import {
     updateClientInfo, updateAccount, setAccountStatus,
     bindWeixinPay, updateWeixinPay, setWeixinPayStatus
@@ -454,7 +454,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/config";
+  @import "../../../styles/config";
 
   .client-modify {
     .el-input .el-icon-upload {
