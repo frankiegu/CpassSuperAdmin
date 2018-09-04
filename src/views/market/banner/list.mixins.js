@@ -28,7 +28,7 @@ export default {
     setRelease(bannerId, bannerStatus) {
       if (bannerStatus && this.showcaseData.length >= 3) return
 
-      this.$confirm(bannerStatus ? '确认后将推送到活动新人限时抢展示, 是否继续?' : '确认后取消在活动展示, 是否继续?', '提示', { type: 'warning' }).then(() => {
+      this.$confirm(bannerStatus ? '是否确认进行展示？' : '是否确认取消展示？', '提示', { type: 'warning' }).then(() => {
         indexBannerChangeStatus({
           id: bannerId,
           status: bannerStatus
