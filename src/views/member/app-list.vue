@@ -45,11 +45,11 @@
           </el-input>
         </el-form-item>
 
-        <!--<el-form-item>-->
-          <!--<el-button @click="exportExcel" class="lh-btn-export">-->
-            <!--<lh-svg icon-class="icon-download" />导出-->
-          <!--</el-button>-->
-        <!--</el-form-item>-->
+        <el-form-item>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
 
       </el-form>
 
@@ -98,6 +98,13 @@
           </template>
         </el-table-column>
         <el-table-column label="注册时间" prop="created" align="left"></el-table-column>
+
+        <el-table-column label="注册渠道" prop="registerName" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.registerName ? scope.row.registerName : '-' }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="最后一次登录时间" prop="lastLogin" align="left"></el-table-column>
         <el-table-column label="会员等级" width="100" prop="levelName" align="left">
           <template slot-scope="scope">

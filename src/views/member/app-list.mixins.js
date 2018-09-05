@@ -116,9 +116,9 @@ export default {
       }
       const formData = this.formData
       const downParams = {
-        nickname: formData.name
+        nickname: formData.name // TODO 导出参数替换
       }
-      let url = API_PATH + '/supervisor/customer/exportExcel'
+      let url = API_PATH + '/supervisor/customer/exportExcel' // TODO 导出接口替换
       downloadFile(url, downParams)
     }
   }
