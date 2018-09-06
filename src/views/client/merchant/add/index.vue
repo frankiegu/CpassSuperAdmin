@@ -406,7 +406,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../../styles/config";
+  @import "../../../../styles/config";
   .client-data {
     .el-input .el-icon-upload {
       display: block;

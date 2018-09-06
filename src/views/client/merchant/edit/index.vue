@@ -454,7 +454,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../../styles/config";
+  @import "../../../../styles/config";
 
   .client-modify {
     .el-input .el-icon-upload {
