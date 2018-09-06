@@ -1,5 +1,6 @@
 import tableMixins from '@/mixins/table'
 import { appMemberList, memberStatistics, appChangeStatus } from '@/service/member'
+import { channelList } from '@/service/market'
 import { loadConstant } from '@/service/common'
 import { API_PATH } from '@/config/env'
 import { downloadFile } from '@/config/utils'
@@ -14,16 +15,23 @@ export default {
       formData: {
         logInDate: null,
         registerDate: null,
+        registerWay: '',
         grade: '',
         status: '',
         name: ''
       },
+      channels: [], // 渠道列表
       gradeList: [],
       statusList: [],
       memberRateData: [0, 0, 0, 0] // 会员变化率
     }
   },
   mounted () {
+    channelList().then(res => {
+      if (res.status === 'true' && res.info) {
+        this.channels = res.info
+      }
+    })
     this.getMemberStatistics()
     this.getStatusList()
     this.getPageData()
@@ -60,6 +68,7 @@ export default {
         lastLoginEnd: formData.logInDate ? formData.logInDate[1] : null,
         registerStart: formData.registerDate ? formData.registerDate[0] : null,
         registerEnd: formData.registerDate ? formData.registerDate[1] : null,
+        registerWay: formData.registerWay,
         levelId: formData.grade,
         status: formData.status,
         search: formData.name
@@ -116,9 +125,16 @@ export default {
       }
       const formData = this.formData
       const downParams = {
-        nickname: formData.name
+        lastLoginStart: formData.logInDate ? formData.logInDate[0] : null,
+        lastLoginEnd: formData.logInDate ? formData.logInDate[1] : null,
+        registerStart: formData.registerDate ? formData.registerDate[0] : null,
+        registerEnd: formData.registerDate ? formData.registerDate[1] : null,
+        registerWay: formData.registerWay,
+        levelId: formData.grade,
+        status: formData.status,
+        search: formData.name
       }
-      let url = API_PATH + '/supervisor/customer/exportExcel'
+      let url = API_PATH + '/supervisor/appCustomer/export'
       downloadFile(url, downParams)
     }
   }
