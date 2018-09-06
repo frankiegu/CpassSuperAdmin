@@ -1,29 +1,30 @@
 <template>
   <div class="client-list main-content">
-    <lh-title title="客户列表"></lh-title>
+    <lh-title title="商户列表"></lh-title>
 
     <div class="lh-form-box">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">
-          &nbsp;新增客户
+          &nbsp;新增商户
         </router-link>
 
-        <el-form-item>
-          <el-select
-            v-model="formData.registerWay"
-            @change="getPageData(1)"
-            placeholder="请选择生成渠道"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="i in channels"
-              :label="i.channel"
-              :value="i.id"
-              :key="i.id"></el-option>
-          </el-select>
-        </el-form-item>
+        <!-- TODO 搜索栏新增筛选项："公司名称"、"商户类型"、"结算方式" -->
+        <!--<el-form-item>-->
+          <!--<el-select-->
+            <!--v-model="formData.registerWay"-->
+            <!--@change="getPageData(1)"-->
+            <!--placeholder="请选择生成渠道"-->
+            <!--class="width150px"-->
+            <!--clearable>-->
+            <!--<el-option-->
+              <!--v-for="i in channels"-->
+              <!--:label="i.channel"-->
+              <!--:value="i.id"-->
+              <!--:key="i.id"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
 
         <!-- <el-form-item>
           <el-select
@@ -53,27 +54,15 @@
 
         <!-- 选择的是到期时间，所以是往后选 -->
         <el-form-item>
-          <lh-datePicker ref="lhDatePicker" label="到期时间" :optionType="false" @datePickerChange="pickerChange"></lh-datePicker>
+          <lh-datePicker ref="lhDatePicker" label="到期时间" :optionType="false"
+            @datePickerChange="pickerChange"></lh-datePicker>
         </el-form-item>
-
-        <!--<el-form-item>-->
-          <!--<el-date-picker-->
-            <!--v-model="formData.reg_date"-->
-            <!--@change="getPageData(1)"-->
-            <!--type="daterange"-->
-            <!--align="right"-->
-            <!--clearable-->
-            <!--start-placeholder="开始日期"-->
-            <!--end-placeholder="结束日期"-->
-            <!--placeholder="选择下单日期"-->
-            <!--:picker-options="pickerOptions"></el-date-picker>-->
-        <!--</el-form-item>-->
 
         <el-form-item>
           <el-input
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
-            placeholder="请输入客户名称"
+            placeholder="请输入品牌名称"
             class="lh-form-input">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -96,7 +85,7 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="客户名称" fixed="left" align="left">
+        <el-table-column label="品牌名称" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
               :to="{path: '/client/detail', query: {id: scope.row.id}}"
@@ -106,12 +95,14 @@
           </template>
         </el-table-column>
 
+        <!-- TODO 新增公司名称、商户类型、结算方式、门店、场地、企业服务/场地服务column -->
+
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
         <el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>
-        <el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>
-        <el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>
-        <el-table-column label="产品" prop="productName" align="left"></el-table-column>
+        <!--<el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>-->
+        <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
+        <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
         <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
 
         <!-- 小宽度可以不写死 -->
