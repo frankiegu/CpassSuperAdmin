@@ -10,7 +10,7 @@
           &nbsp;新增商户
         </router-link>
 
-        <!-- TODO 搜索栏新增筛选项："公司名称"、"商户类型"、"结算方式" -->
+        <!-- TODO(jingyi) 搜索栏新增筛选项："公司名称"、"商户类型"、"结算方式" -->
         <!--<el-form-item>-->
           <!--<el-select-->
             <!--v-model="formData.registerWay"-->
@@ -95,7 +95,7 @@
           </template>
         </el-table-column>
 
-        <!-- TODO 新增公司名称、商户类型、结算方式、门店、场地、企业服务/场地服务column -->
+        <!-- TODO(jingyi) 新增公司名称、商户类型、结算方式、门店、场地、企业/场地服务column -->
 
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
