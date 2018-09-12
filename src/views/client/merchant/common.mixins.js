@@ -147,6 +147,9 @@ export default {
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         adminUsername: '',
+
+        // 开通公众服务号
+        isOpenWxService: 0,
         appId: '',
         appSecret: '',
         jsFile: '', // JS接口文件
@@ -412,6 +415,10 @@ export default {
 
     changeCreateStatus(status) {
       this.isCreateAccount = status
+      if (!status) {
+        this.dataForm.isOpenWxService = false
+        this.dataForm.isOpenPayment = false
+      }
     }
   }
 }

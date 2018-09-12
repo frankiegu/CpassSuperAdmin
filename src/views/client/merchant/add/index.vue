@@ -3,73 +3,103 @@
     <lh-title :title="$route.query.id ? dataForm.name : '新增客户'" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
-        <h3 class="grid-title">基础信息</h3>
-        <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
+        <el-row :gutter="40">
+          <!-- 基础信息 -->
+          <el-col :span="12">
+            <h3 class="grid-title">基础信息</h3>
+            <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
+          </el-col>
 
-        <el-collapse-transition>
-          <h3 class="grid-title" v-show="isCreateAccount">开通账户</h3>
-        </el-collapse-transition>
+          <!-- 签约信息 -->
+          <el-col :span="12">
+            <el-collapse-transition>
+              <h3 class="grid-title">签约信息</h3>
+            </el-collapse-transition>
 
-        <el-collapse-transition>
-          <div class="account-form" v-show="isCreateAccount">
-            <el-form-item label="产品" prop="productId" ref="productId"
-              :rules="dataRules.productId" :required="isCreateAccount">
-              <el-select v-model="dataForm.productId" class="width300px">
-                <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
-              </el-select>
-            </el-form-item>
+            <el-collapse-transition>
+              <div class="account-form">
+                <el-form-item label="是否签约">
+                  <el-switch v-model="isCreateAccount" @change="changeCreateStatus"
+                    active-color="#7ED321" inactive-color="#A9ADBC"></el-switch>
+                </el-form-item>
 
-            <el-form-item label="有效期至" required>
-              <el-form-item prop="validity" ref="validity" class="fl mr20"
-                :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
-                <el-date-picker
-                  v-model="dataForm.validity"
-                  :disabled="!!dataForm.isPermanent"
-                  type="date"
-                  placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                  :picker-options="pickerOptions"
-                  style="width: 300px">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item class="fl">
-                <el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"
-                  @change="resetItemField('validity', true)">永久</el-checkbox>
-              </el-form-item>
-            </el-form-item>
+                <el-form-item label="签约版本" prop="productId" ref="productId"
+                  :rules="dataRules.productId" :required="isCreateAccount">
+                  <el-select v-model="dataForm.productId" class="width300px" :disabled="!isCreateAccount">
+                    <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
+                  </el-select>
+                </el-form-item>
 
-            <el-form-item label="管理后台登录账户" prop="adminUsername" ref="adminUsername"
-              :error="errorField === 'adminUsername' ? errorMsg : ''"
-              :rules="dataRules.adminUsername" :required="isCreateAccount">
-              <el-input
-                v-model.trim="dataForm.adminUsername"
-                class="width300px"
-                placeholder="输入管理后台登录账户（手机格式）"
-                :maxlength="11"></el-input>
+                <el-form-item label="有效期至" required>
+                  <el-form-item prop="validity" ref="validity" class="fl mr20"
+                    :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
+                    <el-date-picker
+                      v-model="dataForm.validity"
+                      :disabled="!isCreateAccount || !!dataForm.isPermanent"
+                      type="date"
+                      placeholder="结束日期"
+                      value-format="yyyy-MM-dd"
+                      :picker-options="pickerOptions"
+                      style="width: 300px">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item class="fl">
+                    <el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"
+                      :disabled="!isCreateAccount" @change="resetItemField('validity', true)">永久</el-checkbox>
+                  </el-form-item>
+                </el-form-item>
+
+                <el-form-item label="管理后台登录账户" prop="adminUsername" ref="adminUsername"
+                  :error="errorField === 'adminUsername' ? errorMsg : ''"
+                  :rules="dataRules.adminUsername" :required="isCreateAccount">
+                  <el-input
+                    v-model.trim="dataForm.adminUsername"
+                    class="width300px"
+                    :disabled="!isCreateAccount"
+                    placeholder="输入管理后台登录账户（手机格式）"
+                    :maxlength="11"></el-input>
+                </el-form-item>
+              </div>
+            </el-collapse-transition>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="40">
+          <!-- 开通公众服务号 -->
+          <el-col :span="12">
+            <h3 class="grid-title">公众号</h3>
+            <el-form-item label="开通公众服务号">
+              <el-switch v-model="dataForm.isOpenWxService" :active-value="1" :inactive-value="0"
+                active-color="#7ED321" inactive-color="#A9ADBC"
+                :disabled="!isCreateAccount" @change="resetItemField(['appId', 'appSecret', 'jsFile'], false)">
+              </el-switch>
             </el-form-item>
 
             <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
               :error="errorField === 'appId' ? errorMsg : ''"
-              :rules="dataRules.appId" :required="isCreateAccount">
+              :rules="dataRules.appId" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
                 class="width300px"
+                :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppID"></el-input>
             </el-form-item>
 
             <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
-              :rules="dataRules.appSecret" :required="isCreateAccount">
+              :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
                 class="width300px"
+                :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
 
             <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
-              :rules="dataRules.jsFile" :required="isCreateAccount">
+              :rules="dataRules.jsFile" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model="dataForm.jsFile"
                 readonly
+                :disabled="!dataForm.isOpenWxService"
                 placeholder='选择后缀名为"txt"的JS接口文件'
                 class="width300px upload-input">
                 <el-upload
@@ -84,16 +114,22 @@
                   :on-change="changeInFile"
                   :before-upload="beforeUploadInFile"
                   :on-success="successUploadInFile"
+                  :disabled="!dataForm.isOpenWxService"
                   slot="suffix">
                   <span class="el-input__icon el-icon-upload"></span>
                 </el-upload>
                 <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
               </el-input>
             </el-form-item>
+          </el-col>
 
+          <!-- 开通微信支付功能 -->
+          <el-col :span="12">
+            <h3 class="grid-title">微信支付</h3>
             <el-form-item label="开通微信支付功能">
               <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
-                @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
+                active-color="#7ED321" inactive-color="#A9ADBC"
+                :disabled="!isCreateAccount" @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
               </el-switch>
             </el-form-item>
 
@@ -142,11 +178,16 @@
                 <span v-show="uploadLoading2" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
               </el-input>
             </el-form-item>
-          </div>
-        </el-collapse-transition>
+          </el-col>
+        </el-row>
 
-        <el-form-item>
-          <el-button type="primary" class="width120px" @click="createSubmit"
+        <el-form-item label-width="0" class="mt60">
+          <el-button class="width100px" @click="createSubmit"
+            :loading="isCreateAccount && createLoading">
+            取消
+          </el-button>
+
+          <el-button type="primary" class="width100px" @click="createSubmit"
             :loading="isCreateAccount && createLoading">
             {{isCreateAccount && createLoading ? '执行中...' : '保存'}}
           </el-button>

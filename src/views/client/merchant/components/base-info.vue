@@ -37,7 +37,7 @@
       <el-input v-model.trim="modelForm.weixin" class="width300px" placeholder="填写微信服务号" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="备注" ref="remark"
+    <el-form-item label="公司/品牌简介" ref="remark"
       v-if="infoType === 'detail' && (modelForm.remark && !!modelForm.remark.length) || !infoType">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.remark}}</p>
       <el-input type="textarea" v-model.trim="modelForm.remark"
@@ -51,9 +51,9 @@
         placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="创建智众账户" v-if="!infoType && !hasAccount">
-      <el-switch v-model="isCreateAccount" @change="changeCreateStatus"></el-switch>
-    </el-form-item>
+    <!--<el-form-item label="创建智众账户" v-if="!infoType && !hasAccount">-->
+      <!--<el-switch v-model="isCreateAccount" @change="changeCreateStatus"></el-switch>-->
+    <!--</el-form-item>-->
   </div>
 </template>
 
