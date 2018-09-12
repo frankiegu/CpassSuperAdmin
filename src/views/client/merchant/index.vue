@@ -95,11 +95,46 @@
           </template>
         </el-table-column>
 
-        <!-- TODO(jingyi) 新增公司名称、商户类型、结算方式、门店、场地、企业/场地服务column -->
+        <!-- TODO(jingyi) 对接新增公司名称、商户类型、取消规则、结算方式、门店、场地、企业/场地服务column -->
+        <el-table-column label="公司名称" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户类型" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="取消规则" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="结算方式" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="门店" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="场地" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="企业/场地服务" prop="companyName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.companyName || '-'}}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
         <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
-        <el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>
+        <!--<el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>-->
         <!--<el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>-->
         <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
         <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
@@ -116,11 +151,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column
-          fixed="right"
-          align="left"
-          label="操作"
-          width="110">
+        <el-table-column fixed="right" align="left" label="操作" width="110">
           <template slot-scope="scope">
             <router-link
               :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
