@@ -106,11 +106,22 @@
             <span>{{scope.row.companyName || '-'}}</span>
           </template>
         </el-table-column>
+
+        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
+        <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
+        <!--<el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>-->
+        <!--<el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>-->
+        <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
+        <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
+
         <el-table-column label="取消规则" prop="companyName" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.companyName || '-'}}</span>
           </template>
         </el-table-column>
+
+        <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
+
         <el-table-column label="结算方式" prop="companyName" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.companyName || '-'}}</span>
@@ -131,14 +142,6 @@
             <span>{{scope.row.companyName || '-'}}</span>
           </template>
         </el-table-column>
-
-        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
-        <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
-        <!--<el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>-->
-        <!--<el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>-->
-        <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
-        <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
-        <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
 
         <!-- 小宽度可以不写死 -->
         <el-table-column label="状态" align="left">
