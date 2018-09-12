@@ -16,12 +16,12 @@ export default [{
     redirect: '/member/list/app-list',
     component: _import('member/main'),
     children: [{
-      name: 'APP会员列表',
+      name: 'CPASS会员列表',
       path: 'app-list',
       hidden: true,
       component: _import('member/app-list')
     }, {
-      name: 'APP会员详情',
+      name: 'CPASS会员详情',
       path: 'app-detail',
       hidden: true,
       component: _import('member/app-detail')
