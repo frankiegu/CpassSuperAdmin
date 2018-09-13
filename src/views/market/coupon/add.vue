@@ -276,7 +276,7 @@
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon, couponDetail, updateCoupon } from '@/service/market'
+  import { loadSpaceStoreTree, loadStation, addCoupon, couponDetail, updateCoupon } from '@/service/market'
 
   export default {
     name: 'add',
