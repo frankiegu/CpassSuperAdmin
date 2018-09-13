@@ -58,7 +58,34 @@
     <el-form-item label="联系地址" ref="address"
       v-if="infoType === 'detail' && (modelForm.address && !!modelForm.address.length) || !infoType">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.address}}</p>
-      <el-input v-model.trim="modelForm.address" class="width100" placeholder="请输入详细地址" :maxlength="500" v-else></el-input>
+      <el-form-item v-else>
+        <el-row justify="space-between" type="flex">
+          <el-col :xs="11" :sm="11" :md="11" :lg="5" :xl="5">
+            <el-select placeholder="国家" v-model="modelForm.countryId">
+              <el-option value="中国"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :xs="11" :sm="11" :md="11" :lg="5" :xl="5">
+            <el-select placeholder="省" v-model="modelForm.provinceCode">
+              <el-option value="广东省"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :xs="11" :sm="11" :md="11" :lg="5" :xl="5">
+            <el-select placeholder="市" v-model="modelForm.cityCode">
+              <el-option value="广州市"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :xs="11" :sm="11" :md="11" :lg="5" :xl="5">
+            <el-select placeholder="区" v-model="modelForm.districtCode">
+              <el-option value="天河区"></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model.trim="modelForm.address" class="width100" placeholder="请输入详细地址"
+          :maxlength="300"></el-input>
+      </el-form-item>
     </el-form-item>
 
     <el-form-item label="公司/品牌简介" ref="remark"
