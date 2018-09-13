@@ -309,21 +309,21 @@
         }
         callback()
       }
-      const checkNameUnique = (rule, value, callback) => {
-        if (value) {
-          let params = {
-            name: value
-          }
-          if (this.$route.query.id) params.couponId = this.$route.query.id
-          isUniqueCoupon(params).then(res => {
-            if (res.status === 'false') {
-              return callback(new Error(res.msg))
-            } else {
-              callback()
-            }
-          })
-        }
-      }
+      // const checkNameUnique = (rule, value, callback) => {
+      //   if (value) {
+      //     let params = {
+      //       name: value
+      //     }
+      //     if (this.$route.query.id) params.couponId = this.$route.query.id
+      //     isUniqueCoupon(params).then(res => {
+      //       if (res.status === 'false') {
+      //         return callback(new Error(res.msg))
+      //       } else {
+      //         callback()
+      //       }
+      //     })
+      //   }
+      // }
       const checkMinDate = (rule, value, callback) => {
         if (value && value.length > 0) {
           if (new Date(value[0]) < new Date()) {
