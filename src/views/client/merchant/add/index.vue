@@ -5,13 +5,13 @@
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <el-row :gutter="40">
           <!-- 基础信息 -->
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">基础信息</h3>
             <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
           </el-col>
 
           <!-- 签约信息 -->
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-collapse-transition>
               <h3 class="grid-title">签约信息</h3>
             </el-collapse-transition>
@@ -25,38 +25,59 @@
 
                 <el-form-item label="签约版本" prop="productId" ref="productId"
                   :rules="dataRules.productId" :required="isCreateAccount">
-                  <el-select v-model="dataForm.productId" class="width300px" :disabled="!isCreateAccount">
+                  <el-select v-model="dataForm.productId" class="width100" :disabled="!isCreateAccount">
                     <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
                   </el-select>
                 </el-form-item>
 
-                <el-form-item label="有效期至" required>
-                  <el-form-item prop="validity" ref="validity" class="fl mr20"
-                    :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
-                    <el-date-picker
-                      v-model="dataForm.validity"
-                      :disabled="!isCreateAccount || !!dataForm.isPermanent"
-                      type="date"
-                      placeholder="结束日期"
-                      value-format="yyyy-MM-dd"
-                      :picker-options="pickerOptions"
-                      style="width: 300px">
-                    </el-date-picker>
-                  </el-form-item>
-                  <el-form-item class="fl">
-                    <el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"
-                      :disabled="!isCreateAccount" @change="resetItemField('validity', true)">永久</el-checkbox>
-                  </el-form-item>
+                <el-form-item label="签约年限" prop="period" ref="period"
+                  :error="errorField === 'period' ? errorMsg : ''"
+                  :rules="dataRules.period" :required="isCreateAccount">
+                  <el-input
+                    type="number"
+                    v-model.trim="dataForm.period"
+                    class="width120px"
+                    :disabled="!isCreateAccount"></el-input>
+                  <span class="input-unit">年</span>
                 </el-form-item>
+
+                <el-form-item label="服务费比例" prop="feeRatio" ref="feeRatio"
+                  :error="errorField === 'feeRatio' ? errorMsg : ''"
+                  :rules="dataRules.feeRatio" :required="isCreateAccount">
+                  <el-input
+                    v-model.number.trim="dataForm.feeRatio"
+                    class="width120px"
+                    :disabled="!isCreateAccount"></el-input>
+                  <span class="input-unit">%</span>
+                </el-form-item>
+
+                <!--<el-form-item label="有效期至" required>-->
+                  <!--<el-form-item prop="validity" ref="validity" class="fl mr20"-->
+                    <!--:rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">-->
+                    <!--<el-date-picker-->
+                      <!--v-model="dataForm.validity"-->
+                      <!--:disabled="!isCreateAccount || !!dataForm.isPermanent"-->
+                      <!--type="date"-->
+                      <!--placeholder="结束日期"-->
+                      <!--value-format="yyyy-MM-dd"-->
+                      <!--:picker-options="pickerOptions"-->
+                      <!--class="width100">-->
+                    <!--</el-date-picker>-->
+                  <!--</el-form-item>-->
+                  <!--<el-form-item class="fl">-->
+                    <!--<el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"-->
+                      <!--:disabled="!isCreateAccount" @change="resetItemField('validity', true)">永久</el-checkbox>-->
+                  <!--</el-form-item>-->
+                <!--</el-form-item>-->
 
                 <el-form-item label="管理后台登录账户" prop="adminUsername" ref="adminUsername"
                   :error="errorField === 'adminUsername' ? errorMsg : ''"
                   :rules="dataRules.adminUsername" :required="isCreateAccount">
                   <el-input
                     v-model.trim="dataForm.adminUsername"
-                    class="width300px"
+                    class="width100"
                     :disabled="!isCreateAccount"
-                    placeholder="输入管理后台登录账户（手机格式）"
+                    placeholder="请输入管理后台登录账户（手机格式）"
                     :maxlength="11"></el-input>
                 </el-form-item>
               </div>
@@ -66,7 +87,7 @@
 
         <el-row :gutter="40">
           <!-- 开通公众服务号 -->
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">公众号</h3>
             <el-form-item label="开通公众服务号">
               <el-switch v-model="dataForm.isOpenWxService" :active-value="1" :inactive-value="0"
@@ -80,7 +101,7 @@
               :rules="dataRules.appId" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppID"></el-input>
             </el-form-item>
@@ -89,7 +110,7 @@
               :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
@@ -101,7 +122,7 @@
                 readonly
                 :disabled="!dataForm.isOpenWxService"
                 placeholder='选择后缀名为"txt"的JS接口文件'
-                class="width300px upload-input">
+                class="width100 upload-input">
                 <el-upload
                   v-show="!uploadLoading1"
                   :action="jsUploadPath"
@@ -124,7 +145,7 @@
           </el-col>
 
           <!-- 开通微信支付功能 -->
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">微信支付</h3>
             <el-form-item label="开通微信支付功能">
               <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
@@ -137,7 +158,7 @@
               :rules="dataRules.mchId" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchId"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenPayment"
                 placeholder="客户微信支付商号mch_ID"></el-input>
             </el-form-item>
@@ -146,7 +167,7 @@
               :rules="dataRules.mchKey" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchKey"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenPayment"
                 placeholder="客户微信支付商号API密钥"></el-input>
             </el-form-item>
@@ -158,7 +179,7 @@
                 readonly
                 :disabled="!dataForm.isOpenPayment"
                 placeholder='选择后缀名为"p12"的支付证书文件'
-                class="width300px upload-input">
+                class="width100 upload-input">
                 <el-upload
                   v-show="!uploadLoading2"
                   :action="p12UploadPath"
@@ -472,6 +493,10 @@
     }
     .el-upload {
       display: block;
+    }
+    .input-unit {
+      margin-left: 12px;
+      vertical-align: middle;
     }
   }
 </style>

@@ -27,7 +27,29 @@ export default {
     const checkProduct = (rule, value, callback) => {
       if (this.isCreateAccount) {
         if (!value) {
-          return callback(new Error('产品不能为空！'))
+          return callback(new Error('签约版本不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkPeriod = (rule, value, callback) => {
+      if (this.isCreateAccount) {
+        if (!value) {
+          return callback(new Error('签约年限不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkFeeRatio = (rule, value, callback) => {
+      if (this.isCreateAccount) {
+        if (!value) {
+          return callback(new Error('服务费比例不能为空！'))
+        } else if ((isNaN(value) || Number(value) < 0 || Number(value) > 100)) {
+          callback(new Error('请输入0-100的正数'))
+        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
+          callback(new Error('最多允许输入两位小数'))
         }
         callback()
       }
@@ -50,7 +72,7 @@ export default {
       callback()
     }
     const checkAppId = (rule, value, callback) => {
-      if (this.isCreateAccount) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenWxService) {
         if (!value) {
           return callback(new Error('AppID不能为空！'))
         }
@@ -59,7 +81,7 @@ export default {
       callback()
     }
     const checkAppSecret = (rule, value, callback) => {
-      if (this.isCreateAccount) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenWxService) {
         if (!value) {
           return callback(new Error('AppSecret不能为空！'))
         }
@@ -68,7 +90,7 @@ export default {
       callback()
     }
     const checkInFile = (rule, value, callback) => {
-      if (this.isCreateAccount) {
+      if (this.isCreateAccount && !!this.dataForm.isOpenWxService) {
         if (!value) {
           if (this.hasJsFile > 0) {
             return callback(new Error('非正确的接口文件！'))
@@ -132,18 +154,23 @@ export default {
       dialogVisible: false,
       dataForm: {
         // 客户基础信息
+        clientType: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
         name: '',
+        companyName: '',
         contact: '',
         phone: '',
         email: '',
         address: '',
         weixin: '',
+        webAddress: '',
         remark: '',
         saleManager: '',
 
-        // 开通账户信息
+        // 签约信息
         productStatus: 1,
         productId: '',
+        period: '', // 签约年限
+        feeRatio: '', // 服务费比例
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         adminUsername: '',
@@ -164,6 +191,8 @@ export default {
 
       dataRules: {
         productId: [{ validator: checkProduct, trigger: ['blur', 'change'] }],
+        period: [{ validator: checkPeriod, trigger: ['blur', 'change'] }],
+        feeRatio: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
         validity: [{ validator: checkValidity, trigger: ['blur', 'change'] }],
         adminUsername: [{ validator: checkTel, trigger: ['blur', 'change'] }],
         appId: [{ validator: checkAppId, trigger: ['blur', 'change'] }],
@@ -418,6 +447,7 @@ export default {
       if (!status) {
         this.dataForm.isOpenWxService = false
         this.dataForm.isOpenPayment = false
+        this.resetItemField(['productId', 'period', 'feeRatio', 'adminUsername'], false)
       }
     }
   }
