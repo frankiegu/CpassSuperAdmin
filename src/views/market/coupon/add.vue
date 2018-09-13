@@ -382,8 +382,8 @@
         couponFormRules: {
           name: [
             { required: true, message: '请输入卡券名称', trigger: ['blur', 'change'] },
-            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] },
-            { validator: checkNameUnique, trigger: ['blur'] }
+            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] }
+            // { validator: checkNameUnique, trigger: ['blur'] }
           ],
           desc: [
             { max: 100, message: '最大允许输入100字', trigger: ['blur', 'change'] }
