@@ -123,6 +123,10 @@
                     <!--<lh-item label="支持手动下发" label-width="120px"></lh-item>-->
                     <p class="pb16">支持手动下发</p>
                   </el-col>
+                  <el-col v-if="item.receiveType === 5">
+                    <!--<lh-item label="支持手动下发" label-width="120px"></lh-item>-->
+                    <p class="pb16">新人礼包活动发放</p>
+                  </el-col>
                 </el-row>
               </el-col>
             </el-row>

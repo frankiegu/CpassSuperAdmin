@@ -18,6 +18,11 @@
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
+        <el-form-item>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
       </el-form>
 
     </div>
@@ -47,7 +52,8 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="场地所属" prop="spaceName" align="left"></el-table-column>
+          <el-table-column label="所属品牌" prop="spaceName" align="left"></el-table-column>
+          <el-table-column label="所属空间" prop="storeName" align="left"></el-table-column>
           <el-table-column label="所在地区" prop="address" align="left"></el-table-column>
           <el-table-column label="场地类型" prop="fieldTypeName" align="left"></el-table-column>
 
@@ -97,10 +103,11 @@
 </template>
 
 <script>
+  import { API_PATH } from '@/config/env'
   import tableMixins from '@/mixins/table'
   import listMixins from './list.mixins'
   import { fieldList, setFieldStatus } from '@/service/field'
-  import { formatTimeString } from '@/config/utils'
+  import { formatTimeString, downloadFile } from '@/config/utils'
 
   export default {
     mixins: [listMixins, tableMixins],
@@ -139,7 +146,17 @@
         this.getPageData(1)
       },
       formatterPrice(row, column) {
-        return (row.minPrice + '-' + row.maxPrice + (row.fieldType === 3 ?  ' 元/天' : ' 元/小时'))
+        let price = row.minPrice === row.maxPrice ? row.minPrice : row.minPrice + '-' + row.maxPrice
+        // 1=会议室, 2=路演厅,3=工位,4=其他.5=办公室6=时租工位
+        let unit
+        if (row.fieldType === 3) {
+          unit = ' 元/天'
+        } else if (row.fieldType === 5) {
+          unit = ' 元/月'
+        } else {
+          unit = ' 元/小时'
+        }
+        return (price + unit)
       },
       change(sort) {
         // console.log('sort', sort);
@@ -204,6 +221,20 @@
         //    this.$message.error(res.msg)
         //  }
         // })
+      },
+      // 导出数据
+      exportExcel() {
+        if (!this.tableData.length) {
+          return this.setMsg('暂无数据')
+        }
+        const downParams = {
+          status: this.statusType !== '-1' ? this.statusType : null,
+          fieldName: this.formData.name,
+          startTime: this.formData.update ? formatTimeString(this.formData.update[0]) : null,
+          endTime: this.formData.update ? formatTimeString(this.formData.update[1]) : null
+        }
+        let url = API_PATH + '/supervisor/field/exportFieldRevenue'
+        downloadFile(url, downParams)
       }
     }
   }

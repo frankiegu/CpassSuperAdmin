@@ -7,10 +7,22 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '营销管理',
   path: '/market',
-  redirect: '/market/c-pass',
+  redirect: '/market/banner',
   component: layout,
   icon: 'icon-Site',
   children: [{
+    name: '首页banner',
+    path: 'banner',
+    component: _import('market/banner/list')
+  }, {
+    name: '',
+    path: 'banner/add',
+    hidden: true,
+    component: _import('market/banner/add')
+  },
+
+  // CPASS精选
+  {
     name: 'C-PASS精选',
     path: 'c-pass',
     component: _import('market/c-pass/list')

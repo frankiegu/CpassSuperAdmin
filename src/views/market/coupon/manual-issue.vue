@@ -82,15 +82,14 @@
         <div class="member-cont">
           <!-- 筛选表单 -->
           <el-form :model="memberSort" :inline="true" @submit.native.prevent class="sort-form-bar clearfix">
-            <el-radio-group v-model="memberSort.userType" size="small" class="fl" @change="changeMemberSource">
-              <el-radio-button :label="2">App会员</el-radio-button>
-              <el-radio-button :label="1" disabled>小程序会员</el-radio-button>
-            </el-radio-group>
+            <!--<el-radio-group v-model="memberSort.userType" size="small" class="fl" @change="changeMemberSource">-->
+              <!--<el-radio-button :label="2">CPASS会员</el-radio-button>-->
+              <!--<el-radio-button :label="1" disabled>小程序会员</el-radio-button>-->
+            <!--</el-radio-group>-->
 
-            <!-- app会员暂时没有注册渠道，若有注册渠道，下拉框数据可能需要更新 -->
-            <el-form-item v-if="memberSort.userType === 1">
-              <el-select v-model="memberSort.registerWay" placeholder="请选择注册渠道" @change="getPageData(1)"
-                filterable clearable>
+            <el-form-item>
+              <el-select v-model="memberSort.registerWay" multiple placeholder="请选择注册渠道" @change="changeChannel"
+                @visible-change="changeVisible"	filterable>
                 <el-option v-for="item in channels" :key="item.id" :value="item.registerWay"
                   :label="item.registerName"></el-option>
               </el-select>
@@ -109,6 +108,13 @@
                 <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
               </el-input>
             </el-form-item>
+            <el-form-item>
+              <el-input v-model.trim="memberSort.mobile"
+                        placeholder="请输入会员手机号码"
+                        @keyup.native.enter="getPageData(1)">
+                <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search pointer-theme-gray"></i>
+              </el-input>
+            </el-form-item>
           </el-form>
 
           <!-- 会员列表 -->
@@ -116,10 +122,11 @@
             <el-table-column type="selection" width="55" reserve-selection></el-table-column>
             <el-table-column label="会员ID" prop="customerCode" v-if="memberSort.userType === 2"></el-table-column>
             <el-table-column label="会员名称" prop="nickname"></el-table-column>
+            <el-table-column label="手机号码" prop="telephone"></el-table-column>
 
             <el-table-column label="注册渠道" prop="registerName">
               <template slot-scope="scope">
-                <span>{{scope.row.registerName ? scope.row.registerName : '-'}}</span>
+                <span>{{scope.row.registerName || '-'}}</span>
               </template>
             </el-table-column>
 
@@ -221,11 +228,14 @@
         selectedCoupons: [], // 选中的优惠券
         maxSelection: 0, // 最大可选择会员数
         channels: [], // 渠道列表
+        isChannelsVisible: false,
+        isChannelsChange: false,
         memberSort: {
           userType: 2, // 切换来源：2 - app，1 - wxapp
-          registerWay: '',
+          registerWay: [],
           registerDate: [],
-          nickname: ''
+          nickname: '',
+          mobile: ''
         },
         memberList: [],
 
@@ -378,6 +388,21 @@
         }
         this.getPageData(1)
       },
+      // step 2 渠道下拉框切换事件
+      changeVisible(val) {
+        this.isChannelsVisible = val
+        if (val) {
+          this.isChannelsChange = false
+        } else {
+          this.isChannelsChange && this.getPageData(1)
+        }
+      },
+      // step 2 渠道下拉框选中值改变事件
+      changeChannel(val) {
+        this.isChannelsChange = true
+        if (this.isChannelsVisible) return
+        this.getPageData(1)
+      },
       // step 2 获取会员列表
       getPageData(page) {
         this.currentPage = page || this.currentPage
@@ -386,6 +411,7 @@
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           nickname: this.memberSort.nickname,
+          mobile: this.memberSort.mobile,
           registerWay: this.memberSort.registerWay,
           startDate: startDate,
           endDate: endDate

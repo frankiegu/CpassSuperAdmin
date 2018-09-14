@@ -189,9 +189,9 @@ export const downloadFile = (url, params) => {
       return (key + '=' + (params[key] || ''))
     }) : []
   // 拼接token以及其他参数
-  console.log(sessionStorage.getItem('token'))
+  // console.log(sessionStorage.getItem('token'))
   url = url + '?' + 'token=' + sessionStorage.token + '&' + queryArr.join('&')
-  console.log(url)
+  // console.log(url)
   // 打开下载地址执行下载
   window.location.href = url
 }

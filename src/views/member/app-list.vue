@@ -4,12 +4,12 @@
     <div class="card-padding">
       <member-rate :memberRateData="memberRateData"></member-rate>
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
-        <!-- 选择提交日期 -->
+        <!-- 最后登录时间 -->
         <el-form-item>
           <lh-datePicker label="最后登录时间" :dateType="1" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
 
-        <!--选择预约日期-->
+        <!--注册时间-->
         <el-form-item>
           <lh-datePicker label="注册时间" :dateType="2" :optionType="true" @datePickerChange="datePickerChange"></lh-datePicker>
         </el-form-item>
@@ -24,6 +24,15 @@
               <!--:key="key"></el-option>-->
           <!--</el-select>-->
         <!--</el-form-item>-->
+
+        <!--注册渠道-->
+        <el-form-item>
+          <el-select v-model="formData.registerWay" placeholder="请选择注册渠道" clearable @change="getPageData(1)">
+            <el-option v-for="item in channels" :key="item.id" :value="item.registerWay"
+              :label="item.registerName"></el-option>
+          </el-select>
+        </el-form-item>
+
         <!--会员状态-->
         <el-form-item>
           <el-select v-model="formData.status" placeholder="状态" clearable class="width120px" @change="getPageData(1)">
@@ -45,11 +54,11 @@
           </el-input>
         </el-form-item>
 
-        <!--<el-form-item>-->
-          <!--<el-button @click="exportExcel" class="lh-btn-export">-->
-            <!--<lh-svg icon-class="icon-download" />导出-->
-          <!--</el-button>-->
-        <!--</el-form-item>-->
+        <el-form-item>
+          <el-button @click="exportExcel" class="lh-btn-export">
+            <lh-svg icon-class="icon-download" />导出
+          </el-button>
+        </el-form-item>
 
       </el-form>
 
@@ -98,6 +107,13 @@
           </template>
         </el-table-column>
         <el-table-column label="注册时间" prop="created" align="left"></el-table-column>
+
+        <el-table-column label="注册渠道" prop="registerName" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.registerName ? scope.row.registerName : '-' }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="最后一次登录时间" prop="lastLogin" align="left"></el-table-column>
         <el-table-column label="会员等级" width="100" prop="levelName" align="left">
           <template slot-scope="scope">
@@ -112,7 +128,7 @@
         </el-table-column>
         <el-table-column label="订单" prop="orderNum" align="left"></el-table-column>
         <el-table-column label="优惠券" prop="couponNum" align="left"></el-table-column>
-        <el-table-column label="操作" prop="registerName" align="left" width="120" fixed="right">
+        <el-table-column label="操作" align="left" width="120" fixed="right">
           <template slot-scope="scope">
             <router-link :to="'/member/list/app-detail?id='+scope.row.id">
               <el-button type="text" class="lh-table-btn">详情</el-button>

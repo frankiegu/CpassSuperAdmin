@@ -16,13 +16,13 @@
       return {
         isShow: true,
         tabList: [
-          { type: 1, text: 'APP会员', name: '/member/list/app-list' },
+          { type: 1, text: 'CPASS会员', name: '/member/list/app-list' },
           { type: 2, text: '小程序会员', name: '/member/list/wechat-list' }
         ]
       }
     },
     mounted() {
-      // 如果是APP会员详情
+      // 如果是CPASS会员详情
       if (this.$route.path === '/member/list/app-detail') {
         this.isShow = false
       } else {

@@ -22,9 +22,12 @@
         <lh-upload
           @uploadImg="uploadImg"
           :imgUrl="formData.bannerPath"
-          :tipsWidth="600"
           :disabled="noAllow"
-          :size="80" class="oh"/>
+          :size="80"/>
+        <i class="el-icon-question fl theme-light-gray mt8 mr5 ml15" @click="uploadText = true"></i>
+        <div v-if="uploadText" class="fl">
+          <p>建议尺寸： 420PX * 480PX<br>支持格式： JPG / PNG</p>
+        </div>
         <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyImg }}</p>
       </el-form-item>
 
@@ -106,7 +109,8 @@ export default {
     return {
       fieldId: this.$route.query.fieldId,
       noAllow: Boolean(this.$route.query.noAllow),
-      title: ''
+      title: '',
+      uploadText: false
     }
   },
   mounted() {
