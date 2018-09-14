@@ -276,7 +276,7 @@
 <script>
   import addWopDialog from '../components/add-wop-dialog'
   import { loadConstant } from '@/service/common'
-  import { isUniqueCoupon, loadSpaceStoreTree, loadStation, addCoupon, couponDetail, updateCoupon } from '@/service/market'
+  import { loadSpaceStoreTree, loadStation, addCoupon, couponDetail, updateCoupon } from '@/service/market'
 
   export default {
     name: 'add',
@@ -309,21 +309,21 @@
         }
         callback()
       }
-      const checkNameUnique = (rule, value, callback) => {
-        if (value) {
-          let params = {
-            name: value
-          }
-          if (this.$route.query.id) params.couponId = this.$route.query.id
-          isUniqueCoupon(params).then(res => {
-            if (res.status === 'false') {
-              return callback(new Error(res.msg))
-            } else {
-              callback()
-            }
-          })
-        }
-      }
+      // const checkNameUnique = (rule, value, callback) => {
+      //   if (value) {
+      //     let params = {
+      //       name: value
+      //     }
+      //     if (this.$route.query.id) params.couponId = this.$route.query.id
+      //     isUniqueCoupon(params).then(res => {
+      //       if (res.status === 'false') {
+      //         return callback(new Error(res.msg))
+      //       } else {
+      //         callback()
+      //       }
+      //     })
+      //   }
+      // }
       const checkMinDate = (rule, value, callback) => {
         if (value && value.length > 0) {
           if (new Date(value[0]) < new Date()) {
@@ -382,8 +382,8 @@
         couponFormRules: {
           name: [
             { required: true, message: '请输入卡券名称', trigger: ['blur', 'change'] },
-            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] },
-            { validator: checkNameUnique, trigger: ['blur'] }
+            { max: 20, message: '最大允许输入20个字', trigger: ['blur', 'change'] }
+            // { validator: checkNameUnique, trigger: ['blur'] }
           ],
           desc: [
             { max: 100, message: '最大允许输入100字', trigger: ['blur', 'change'] }
