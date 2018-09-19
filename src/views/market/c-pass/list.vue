@@ -280,5 +280,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/config";
-.page-market-c-pass {}
 </style>
