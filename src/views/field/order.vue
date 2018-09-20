@@ -116,7 +116,7 @@
           <template slot-scope="scope">
             <el-tag v-if="scope.row.payStatus === 10">待支付</el-tag>
             <el-tag v-else-if="scope.row.payStatus === 20" type="success">已支付</el-tag>
-            <el-tag v-else-if="scope.row.payStatus === 30" type="warning">已退款</el-tag>
+            <el-tag v-else-if="scope.row.payStatus === 40" type="warning">已退款</el-tag>
             <el-tag v-else >待退款</el-tag>
           </template>
         </el-table-column>
