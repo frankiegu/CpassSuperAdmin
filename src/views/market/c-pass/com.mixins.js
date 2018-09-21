@@ -10,9 +10,6 @@ export default {
       renderSelectField: false,
       teamData: fieldData, // 单个场地的数据
       teamDefaultData: fieldData,
-      // 精选场地table
-      teamsData: [],
-      spaceId: null,
 
       ajaxName: null, // 添加和编辑的接口名
       ajaxParam: {},  // 提交表单的参数
@@ -27,12 +24,16 @@ export default {
       // 图片上传地址
       imgServer: API_PATH + '/supervisor/file/upload',
 
+      previewStatus: false,
       formData: {
         id: null,
         title: null,
         subhead: null,
         bannerPath: null,
         content: null,
+        authorName: null,
+        link: null,
+        switch: true,
 
         status: null,
         pvCount: null,
@@ -65,18 +66,15 @@ export default {
           toolbar: {
             container: [
               ['bold', 'italic', 'underline', 'strike'],
-              ['blockquote', 'code-block'],
+              ['blockquote'],
               [{ 'header': 1 }, { 'header': 2 }],
               [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }],
               [{ 'indent': '-1' }, { 'indent': '+1' }],
               [{ 'direction': 'rtl' }],
-              [{ 'size': ['small', false, 'large', 'huge'] }],
               [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
               [{ 'font': [] }],
               [{ 'color': [] }, { 'background': [] }],
               [{ 'align': [] }],
-              ['clean'],
               ['link', 'image']
             ],  // 工具栏
             handlers: {
@@ -92,7 +90,5 @@ export default {
         }
       }
     }
-  },
-  mounted() {},
-  methods: {}
+  }
 }

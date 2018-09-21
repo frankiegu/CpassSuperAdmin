@@ -15,6 +15,16 @@
 @import './public/svg';
 @import './public/switch';
 @import './public/form';
+
+/* transition
+-------------------------- */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 /* 链接
 -------------------------- */
 /* 文本链接 */
@@ -48,6 +58,23 @@
 
 /* 未分类
 -------------------------- */
+.submit-fixed-bottom {
+  position: fixed; z-index: $zindex-fix-con;
+  left: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 64px;
+  background-color: #fff;
+  box-shadow: 1px 0 4px rgba(0, 21, 41, 0.08);
+
+  .ml271 {
+    margin-left: 271px;
+  }
+  .ml427 {
+    margin-left: 427px;
+  }
+}
 .lh-edit-img {
   color: $theme-grayish;
   display: flex;
@@ -383,9 +410,9 @@
   }
 }
 // 页面主内容容器样式
-.main-content {
-  //padding-top: 30px;
-}
+//.main-content {
+// padding-top: 30px;
+// }
 .grid-title{
   font-size: 16px;
   margin-bottom: 22px;
@@ -554,9 +581,9 @@
   }
   .el-message-box__headerbtn, .el-dialog__headerbtn {
     top: 10px;
-    .el-message-box__close, .el-dialog__close {
-      /*color: #ffffff;*/
-    }
+    // .el-message-box__close, .el-dialog__close {
+    /* color: #ffffff; */
+    // }
   }
   .el-message-box__content, .el-dialog__body {
     padding-top: 20px;

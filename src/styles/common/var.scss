@@ -14,6 +14,7 @@ $theme-light-blue:  #20A0FF; // 浅蓝、辅助蓝色
 $theme-red:         #FF4949; // 红
 $theme-orange:      #EE9F1D; // 橙
 $theme-green:       #36C626; // 绿
+$theme-white:       #fff; // 白色
 
 /* 字体  */
 $font-bold: PingFangSC-Medium; // 中文，粗体，设计稿内字体浏览器不支持
@@ -53,3 +54,26 @@ $tag-gray:          #475669; // 标签灰色
 $radius-mini:       2px;
 $radius-small:      4px;
 $radius-medium:     6px;
+
+
+/* z-index层级，-1~3就随便用吧
+-------------------------- */
+/* 细分层次 */
+$zindex-affix:          10;
+$zindex-back-top:       10;
+$zindex-fix-con:        800;
+$zindex-scrolltop:      900;
+$zindex-modal:          1000;
+
+$zindex-notification:   1010;
+$zindex-message:        1010;
+$zindex-popover:        1030;
+$zindex-picker:         1050;
+$zindex-dropdown:       1050;
+$zindex-tooltip:        1060;
+
+/* fixed-bottom 高于内容，但不能高于遮罩层 */
+$z-index-fixed:         2000;
+$z-index-fixed1:        2001;
+
+$zindex-mask:           3000;
