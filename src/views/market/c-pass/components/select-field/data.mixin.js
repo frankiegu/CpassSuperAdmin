@@ -1,4 +1,4 @@
-import { fieldData } from '../../common'
+// import { fieldData } from '../../common'
 export default {
   data () {
     // 自定义电话号码校验规则
@@ -27,9 +27,9 @@ export default {
 
       titleTypeList: [
         { key: 'brand', val: '品牌名' },
-        { key: 'space', val: '空间名' },
+        { key: 'store', val: '空间名' },
         { key: 'field', val: '场地名' },
-        { key: 'rrbitrary', val: '任意名' }
+        { key: 'arbitrarily', val: '任意名' }
       ],
 
       spaceList: [],
@@ -37,20 +37,39 @@ export default {
       fieldList: [],
 
       currentFieldId: null,
-      dialogData: fieldData,
+      dialogData: {
+        id: 0,
+        idx: 'add', //
+        platformSelectionId: null,
+        spaceId: null,
+        storeId: null,
+        fieldId: null,
+        fieldTitle: null,
+        fieldName: null,
+        imgPath: null,
+        created: null,
+        updated: null,
+
+        // 二级标题
+        spaceName: null,
+        storeName: null,
+        arbitrarilyName: null,
+        titleType: null,
+
+        // 添加空间
+        spaceBrandId: null,
+        spaceStoreId: null,
+        addStoreList: [
+          { sBandId: '', sStoreId: '', sStoreList: [] }
+        ]
+      },
       dialogDataRule: {
-        spaceId: [{ required: true, trigger: ['blur', 'change'], message: '标题类型不能为空' }],
+        arbitrarilyName: [{ required: true, trigger: ['blur', 'change'], message: '输入名称不能为空' }],
+        bandId: [{ required: true, trigger: ['blur', 'change'], message: '品牌名不能为空' }],
         titleType: [{ required: true, trigger: ['blur', 'change'], message: '标题类型不能为空' }],
         storeId: [{ required: true, trigger: ['blur', 'change'], message: '空间名不能为空' }],
         fieldId: [{ required: true, trigger: ['blur', 'change'], validator: checkFieldId }]
       }
-    }
-  },
-  methods: {
-    selectTitleType() {
-      console.log('selectTitleType');
-
-      // this.dialogData.titleType =
     }
   }
 }

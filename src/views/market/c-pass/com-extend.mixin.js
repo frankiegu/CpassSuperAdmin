@@ -5,20 +5,25 @@ export default {
       this.dialogStatus = false
     },
     showInsertDialog(type) {
-      this.teamVisible = true
-      // switch (type) {
-      //   case 1:
-      //   break;
-      //   case 2:
-      //   break;
-      //   case 3:
-      //   break;
-      // }
+      if (this.noAllow) return
+
+      this.showInsert = true
+      this.insertType = type
+      switch (type) {
+        case 'title':
+          break
+        case 'store':
+          break
+        case 'field':
+          break
+      }
+
+      console.log('type', this.insertType);
     },
 
-    closeTeamDialog(teamData) {
+    closeInsertDialog(teamData) {
       // console.log('closeTeamDialog', teamData);
-      this.teamVisible = false
+      this.showInsert = false
 
       // 第一次渲染添加场地弹出框请求接口数据，往后再不请求品牌、空间、场地列表数据
       if (!this.renderSelectField) {

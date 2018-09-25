@@ -3,8 +3,12 @@ import { fieldData } from './common'
 export default {
   data() {
     return {
-      // 团队弹出框
-      teamVisible: false,
+      // 预览弹出框
+      showPreview: false,
+
+      // 插入弹出框
+      insertType: '',
+      showInsert: false,
       onType: '',
 
       renderSelectField: false,
@@ -17,7 +21,7 @@ export default {
 
       insertList: [
         { id: 1, name: '二级标题', type: 'title' },
-        { id: 2, name: '空间链接', type: 'space' },
+        { id: 2, name: '空间链接', type: 'store' },
         { id: 3, name: '场地链接', type: 'field' }
       ],
 

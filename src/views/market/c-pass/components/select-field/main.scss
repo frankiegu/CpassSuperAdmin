@@ -1,9 +1,34 @@
 @import "src/styles/common/var";
 
 .component-store-com-team {
+  .width290px {
+    width: 290px;
+  }
+  .store-tile {
+    padding-left: 4px;
+  }
+  .btn-delete {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    transform: translateY(-5px);
+    float: right;
+    color: $theme-light-gray;
+    cursor: pointer;
+    padding: 0 18px 0 12px;
+  }
+  .add-store {
+    width: 354px;
+    margin: 24px auto 18px;
+    display: block;
+  }
   .dialog-tip {
     position: absolute;
     top: 48px;
     left: 20px;
+  }
+  .store-box {
+    max-height: 330px;
+    overflow: auto;
   }
 }

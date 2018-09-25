@@ -84,7 +84,8 @@
               <ul>
                 <li
                   v-for="(itm, key) in insertList" :key="key"
-                  @click="showInsertDialog(itm.type)">{{ itm.name }}</li>
+                  @click="showInsertDialog(itm.type)"
+                  :class="{'btn-color-disabled': noAllow}">{{ itm.name }}</li>
               </ul>
             </div>
           </div>
@@ -128,12 +129,13 @@
     <!-- 预览 -->
     <cpass-preview
       :dialogStatus="showPreview"
-      @closeDialog="closeDialog" />
+      @closeInsertDialog="closeDialog" />
 
     <!-- 添加、编辑空间团队 -->
     <select-field
-      :teamVisible="teamVisible"
-      @closeTeamDialog="closeTeamDialog"/>
+      :dialogStatus="showInsert"
+      :insertType="insertType"
+      @closeInsertDialog="closeInsertDialog"/>
   </div>
 </template>
 
@@ -158,11 +160,7 @@ export default {
     return {
       fieldId: this.$route.query.fieldId,
       noAllow: Boolean(this.$route.query.noAllow),
-      title: '',
-
-      // dialog
-      dialogStatus: false,
-      showPreview: false
+      title: ''
     }
   },
   computed: {
@@ -176,7 +174,6 @@ export default {
   methods: {
     previewCon() {
       this.showPreview = true
-      this.dialogStatus = true
     },
 
     uploadImg(val) {
