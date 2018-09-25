@@ -1,52 +1,66 @@
 <template>
-  <el-dialog title="选择场地" :visible="teamVisible" :before-close="closeDialog" class="component-store-com-team" width="420px">
-    <el-form :model="dialogData" :rules="dialogDataRule" ref="dialogData" label-width="0" @submit.native.prevent label-position="right">
-      <el-form-item prop="spaceId" label="所属品牌" label-width="77px">
-        <el-select v-model="dialogData.spaceId" placeholder="请选择所属品牌" @change="selectSpaceId" class="width100" filterable>
+  <el-dialog
+    title="选择场地"
+    :visible="teamVisible"
+    :before-close="closeDialog"
+    class="component-store-com-team"
+    width="420px">
+    <el-form
+      :model="dialogData"
+      :rules="dialogDataRule"
+      ref="dialogData"
+      label-width="0"
+      @submit.native.prevent
+      label-position="right">
+      <el-form-item prop="titleType" label="标题类型" label-width="77px">
+        <el-select
+          v-model="dialogData.titleType"
+          placeholder="选择类型"
+          @change="selectTitleType"
+          class="width100"
+          filterable>
+          <el-option
+            v-for="(itm, key) in titleTypeList" :key="key"
+            :label="item.val"
+            :value="item.key"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item prop="spaceId" label="c" label-width="77px">
+        <el-select v-model="dialogData.spaceId" placeholder="选择或搜索品牌名" @change="selectSpaceId" class="width100" filterable>
           <el-option v-for="item in spaceList" :key="item.id" :label="item.spaceName" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item prop="storeId" label="所属空间" label-width="77px">
-        <el-select v-model="dialogData.storeId" placeholder="请选择所属空间" @change="selectStoreId" class="width100" filterable>
+      <el-form-item prop="storeId" label="空间名" label-width="77px">
+        <el-select v-model="dialogData.storeId" placeholder="选择或搜索空间名" @change="selectStoreId" class="width100" filterable>
           <el-option v-for="item in storeList" :key="item.id" :label="item.storeName" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item prop="fieldId" label="场地" label-width="77px">
-        <el-select v-model="dialogData.fieldId" placeholder="请选择场地" class="width100" filterable>
+      <el-form-item prop="fieldId" label="场地名" label-width="77px">
+        <el-select v-model="dialogData.fieldId" placeholder="选择或搜索场地名" class="width100" filterable>
           <el-option v-for="item in fieldList" :key="item.id" :label="item.fieldName" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-
-      <el-form-item label="展示图" label-width="77px" class="lh-form-item0">
-        <lh-upload ref="refSelectField" :imgUrl="dialogData.imgPath" @uploadImg="val => dialogData.imgPath = val" :size="64" class="fl"/>
-        <el-popover ref="tipPopover" placement="right" title="" width="167" trigger="hover">
-          <div class="fz12">
-            建议尺寸：600PX * 460PX<br>
-            支持格式：JPG / PNG
-          </div>
-        </el-popover>
-        <span v-popover:tipPopover class="fl lh66">
-          <lh-svg icon-class="icon-info" class="theme-gray"></lh-svg>
-        </span>
-      </el-form-item>
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer" class="dialog-footer align-center">
       <el-button @click="closeDialog" class="lh-btn-default">取消</el-button>
-      <el-button @click="submitForm('dialogData')" type="primary" class="lh-btn-default">确认</el-button>
+      <el-button
+        @click="submitForm('dialogData')"
+        type="primary"
+        class="lh-btn-default">添加</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import lhUpload from '@/components/upload'
-import selectField from './select-field.mixins'
+import indexField from './index.mixins'
 import { cPassFindUseStore, cPassFindUseField, cPassFindUseSpace } from '@/service/market'
 export default {
   name: 'SelectField',
-  mixins: [selectField],
+  mixins: [indexField],
   props: {
     teamVisible: Boolean,
     renderSelectField: Boolean,
@@ -54,9 +68,6 @@ export default {
     teamData: Object,
     teamsData: Array,
     onType: String
-  },
-  components: {
-    [lhUpload.name]: lhUpload
   },
   watch: {
     teamVisible: function(val, oldVal) {
@@ -202,12 +213,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.component-store-com-team {
-  .dialog-tip {
-    position: absolute;
-    top: 48px;
-    left: 20px;
-  }
-}
-</style>
+<style lang="scss" scoped src='./main.scss'></style>

@@ -19,6 +19,16 @@
         <el-input class="width340px" v-model.trim="formData.subhead" :disabled="noAllow" :maxlength="15" placeholder="请输入副标题"></el-input>
       </el-form-item>
 
+      <el-form-item label="作者名称">
+        <el-input
+          v-model.trim="formData.authorName"
+          :maxlength="20"
+          :disabled="noAllow"
+          type="textarea"
+          class="width340px"
+          placeholder="请输入作者名称"></el-input>
+      </el-form-item>
+
       <el-form-item prop="bannerPath" label="活动banner">
         <lh-upload
           @uploadImg="uploadImg"
@@ -37,16 +47,6 @@
             <lh-svg icon-class="icon-info" class="theme-gray cp"></lh-svg>
           </span>
         <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyImg }}</p>
-      </el-form-item>
-
-      <el-form-item label="作者名称">
-        <el-input
-          v-model.trim="formData.authorName"
-          :maxlength="20"
-          :disabled="noAllow"
-          type="textarea"
-          class="width340px"
-          placeholder="请输入作者名称"></el-input>
       </el-form-item>
 
       <div class="limit-words-box">
@@ -82,9 +82,9 @@
             <div class="insert-list">
               <h4 class="insert-title">添加</h4>
               <ul>
-                <li>二级标题</li>
-                <li>空间链接</li>
-                <li>场地链接</li>
+                <li
+                  v-for="(itm, key) in insertList" :key="key"
+                  @click="showInsertDialog(itm.type)">{{ itm.name }}</li>
               </ul>
             </div>
           </div>
@@ -132,10 +132,7 @@
 
     <!-- 添加、编辑空间团队 -->
     <select-field
-      :onType="onType"
-      :teamData="teamData"
       :teamVisible="teamVisible"
-      :renderSelectField="renderSelectField"
       @closeTeamDialog="closeTeamDialog"/>
   </div>
 </template>
@@ -143,13 +140,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import comMixins from './com.mixins'
+import comExtend from './com-extend.mixin'
 import lhUpload from '@/components/upload'
 import { quillEditor } from 'vue-quill-editor' // 调用编辑器
 import selectField from './components/select-field'
 import cpassPreview from './components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
 export default {
-  mixins: [comMixins],
+  mixins: [comMixins, comExtend],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
@@ -163,8 +161,8 @@ export default {
       title: '',
 
       // dialog
-      dialogStatus: true,
-      showPreview: true
+      dialogStatus: false,
+      showPreview: false
     }
   },
   computed: {
@@ -176,11 +174,6 @@ export default {
     this.setPageTitle()
   },
   methods: {
-    closeDialog() {
-      this.showPreview = false
-      this.dialogStatus = false
-    },
-
     previewCon() {
       this.showPreview = true
       this.dialogStatus = true
@@ -208,42 +201,6 @@ export default {
       } else {
         this.ajaxName = cPassAddWellChosen
       }
-    },
-    closeTeamDialog(teamData) {
-      // console.log('closeTeamDialog', teamData);
-      this.teamVisible = false
-
-      // 第一次渲染添加场地弹出框请求接口数据，往后再不请求品牌、空间、场地列表数据
-      if (!this.renderSelectField) {
-        this.renderSelectField = true
-      }
-
-      if (teamData) {
-        if (teamData.idx === 'add') {
-          // this.teamsData.push(teamData)
-        } else {
-          // this.teamsData.splice(teamData.idx, 1, teamData)
-        }
-      }
-
-      // 清空数据
-      if (this.teamData.spaceId) {
-        this.teamData = { ...this.teamDefaultData }
-      }
-      // console.log('closeTeamDialog', this.teamData)
-    },
-    showTeamDialog(type, teamData, idx) {
-      this.onType = type
-      if (type === 'edit') {
-        this.teamData = { ...teamData }
-        this.teamData.idx = idx
-      } else {
-        // this.teamDefaultData.idx = this.teamsData.length
-        this.teamData = { ...this.teamDefaultData }
-      }
-      // console.log('showTeamDialog', this.teamData.idx, idx)
-
-      this.teamVisible = true
     },
     getPageData() {
       cPassEditDetail({ selectionId: this.fieldId }).then(res => {

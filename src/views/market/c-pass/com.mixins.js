@@ -1,7 +1,7 @@
 import { API_PATH } from '@/config/env'
 import { fieldData } from './common'
 export default {
-  data () {
+  data() {
     return {
       // 团队弹出框
       teamVisible: false,
@@ -15,6 +15,12 @@ export default {
       ajaxParam: {},  // 提交表单的参数
       platformSelectionField: [],
 
+      insertList: [
+        { id: 1, name: '二级标题', type: 'title' },
+        { id: 2, name: '空间链接', type: 'space' },
+        { id: 3, name: '场地链接', type: 'field' }
+      ],
+
       // 左上角标题
       pageTitle: '',
       // 请求头携带token
@@ -24,7 +30,6 @@ export default {
       // 图片上传地址
       imgServer: API_PATH + '/supervisor/file/upload',
 
-      previewStatus: false,
       formData: {
         id: null,
         title: null,

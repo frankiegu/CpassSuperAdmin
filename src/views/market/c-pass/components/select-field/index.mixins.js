@@ -1,4 +1,4 @@
-import { fieldData } from '../common'
+import { fieldData } from '../../common'
 export default {
   data () {
     // 自定义电话号码校验规则
@@ -25,6 +25,13 @@ export default {
       disabledweixinPay: false,
       closeDialogStatus: false, // 取消弹出框
 
+      titleTypeList: [
+        { key: 'brand', val: '品牌名' },
+        { key: 'space', val: '空间名' },
+        { key: 'field', val: '场地名' },
+        { key: 'rrbitrary', val: '任意名' }
+      ],
+
       spaceList: [],
       storeList: [],
       fieldList: [],
@@ -32,16 +39,18 @@ export default {
       currentFieldId: null,
       dialogData: fieldData,
       dialogDataRule: {
-        spaceId: [{ required: true, trigger: ['blur', 'change'], message: '所属品牌不能为空' }],
-        storeId: [{ required: true, trigger: ['blur', 'change'], message: '所属空间不能为空' }],
+        spaceId: [{ required: true, trigger: ['blur', 'change'], message: '标题类型不能为空' }],
+        titleType: [{ required: true, trigger: ['blur', 'change'], message: '标题类型不能为空' }],
+        storeId: [{ required: true, trigger: ['blur', 'change'], message: '空间名不能为空' }],
         fieldId: [{ required: true, trigger: ['blur', 'change'], validator: checkFieldId }]
       }
     }
   },
-  props: {},
-  components: {},
-  mounted() {},
-  watch: {},
-  computed: {},
-  methods: {}
+  methods: {
+    selectTitleType() {
+      console.log('selectTitleType');
+
+      // this.dialogData.titleType =
+    }
+  }
 }
