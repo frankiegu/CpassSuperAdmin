@@ -292,6 +292,7 @@ export default {
     //   margin-bottom: 20px;
     // }
     .ql-container {
+      padding: 0 32px 24px;
       min-height: 380px;
       overflow: auto;
 

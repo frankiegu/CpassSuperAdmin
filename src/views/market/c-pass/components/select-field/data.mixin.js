@@ -39,6 +39,21 @@ export default {
         storeId: [{ required: true, trigger: ['blur', 'change'], message: '空间名不能为空' }],
         fieldId: [{ required: true, trigger: ['blur', 'change'], message: '场地名不能为空' }],
         arbitrarilyName: [{ required: true, trigger: ['blur', 'change'], message: '输入名称不能为空' }]
+      },
+      dialogData2: {
+        titleType: null,
+        brandId: null,
+        storeId: null,
+        fieldId: null,
+        arbitrarilyName: null,
+        addArr: [{
+          brandId: null,
+          storeId: null,
+          fieldId: null,
+          brandList: [],
+          storeList: [],
+          fieldList: []
+        }]
       }
     }
   }

@@ -6,8 +6,8 @@
     background-color:$theme-white;
   }
   .editor-box {
-    min-width: 769px;
-    max-width: 769px;
+    min-width: 711px;
+    max-width: 711px;
     min-height: 380px;
     // border-top: 1px solid $border-gray;
     border-bottom: 1px solid $border-gray;
@@ -17,7 +17,7 @@
     overflow: hidden;
 
     .quill-editor-box {
-      width: 558px;
+      width: 500px;
       min-height: 380px;
       padding-bottom: 0;
 

@@ -23,10 +23,19 @@ export default {
       })
     },
 
-    getStores(storeIdx) {
-      console.log('getStores', storeIdx);
+    getStores(brandIdx) {
+      console.log('getStores', brandIdx);
 
-      cPassFindUseStore({ spaceId: this.dialogData.brandId }).then(res => {
+      const ajaxParam = {
+        spaceId: ''
+      }
+      if (this.insertType === 'title') {
+        ajaxParam.spaceId = this.dialogData.brandId
+      } else {
+        ajaxParam.spaceId = this.dialogData.addArr[brandIdx - 1].brandId
+      }
+
+      cPassFindUseStore(ajaxParam).then(res => {
         if (res.status === 'true') {
           const resInfo = res.info
           switch (this.insertType) {
@@ -34,32 +43,59 @@ export default {
               this.storeList = resInfo
               break
             case 'store':
-              if (storeIdx) {
-                this.addArr[storeIdx - 1].storeList = resInfo
+              if (brandIdx) {
+                this.dialogData.addArr[brandIdx - 1].storeList = resInfo
               } else {
                 this.dialogData.addArr[0].storeList = resInfo
               }
               break
             case 'field':
-              if (storeIdx) {
-                this.addArr[storeIdx - 1].storeList = resInfo
+              if (brandIdx) {
+                this.dialogData.addArr[brandIdx - 1].storeList = resInfo
               } else {
                 this.dialogData.addArr[0].storeList = resInfo
               }
-
-              this.getFields()
               break
           }
+
+          console.log('getStores', brandIdx, this.dialogData.addArr[brandIdx - 1]);
         } else {
           this.setMsg('error', res.msg)
         }
       })
     },
 
-    getFields() {
-      cPassFindUseField({ storeId: this.dialogData.storeId }).then(res => {
+    getFields(storeIdx) {
+      console.log('getFields', this.dialogData.addArr, storeIdx);
+
+      const ajaxParam = {
+        storeId: ''
+      }
+      if (this.insertType === 'title') {
+        ajaxParam.storeId = this.dialogData.storeId
+      } else {
+        ajaxParam.storeId = this.dialogData.addArr[storeIdx - 1].storeId
+      }
+
+      cPassFindUseField(ajaxParam).then(res => {
         if (res.status === 'true') {
-          this.fieldList = res.info
+          const resInfo = res.info
+          switch (this.insertType) {
+            case 'title':
+              this.fieldList = resInfo
+              break
+            case 'field':
+              if (storeIdx) {
+                this.dialogData.addArr[storeIdx - 1].fieldList = resInfo
+              } else {
+                this.dialogData.addArr[0].fieldList = resInfo
+              }
+              break
+            case 'store':
+              break
+          }
+
+          console.log('getStores', storeIdx, this.dialogData.addArr[storeIdx - 1]);
         } else {
           this.setMsg('error', res.msg)
         }
