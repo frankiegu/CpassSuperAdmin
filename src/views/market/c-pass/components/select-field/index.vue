@@ -13,7 +13,6 @@
       label-width="0"
       @submit.native.prevent
       label-position="right">
-
       <!-- 添加标题 -->
       <div v-if="insertType === 'title'">
         <el-form-item prop="titleType" label="标题类型" label-width="77px">
@@ -21,45 +20,67 @@
             v-model="dialogData.titleType"
             placeholder="选择类型"
             @change="selectTitleType"
-            class="width100"
+            class="width290px"
             filterable>
             <el-option
               v-for="(itm, key) in titleTypeList" :key="key"
-              :label="itm.val"
-              :value="itm.key"></el-option>
+              :label="itm.val" :value="itm.key"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="dialogData.titleType && dialogData.titleType !== 'arbitrarily'" prop="spaceId" label="品牌名" label-width="77px">
-          <el-select v-model="dialogData.spaceId" placeholder="选择或搜索品牌名" @change="selectSpaceId" class="width100" filterable>
+        <!-- 用v-show，会通不过校验 -->
+        <el-form-item
+          v-if="dialogData.titleType && dialogData.titleType !== 'arbitrarily'"
+          prop="brandId"
+          label="品牌名" label-width="77px">
+          <el-select
+            v-model="dialogData.brandId"
+            @change="selectBrandId"
+            placeholder="选择或搜索品牌名"
+            class="width290px" filterable>
             <el-option
-              v-for="itm in spaceList" :key="itm.id"
+              v-for="itm in brandList" :key="itm.id"
               :label="itm.spaceName" :value="itm.id"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="dialogData.titleType === 'store' || dialogData.titleType === 'field'" prop="storeId" label="空间名" label-width="77px">
-          <el-select v-model="dialogData.storeId" placeholder="选择或搜索空间名" @change="selectStoreId" class="width100" filterable>
+        <el-form-item
+          v-if="dialogData.titleType === 'store' || dialogData.titleType === 'field'"
+          prop="storeId"
+          label="空间名" label-width="77px">
+          <el-select
+            v-model="dialogData.storeId"
+            @change="selectStoreId"
+            placeholder="选择或搜索空间名"
+            class="width290px" filterable>
             <el-option
               v-for="itm in storeList" :key="itm.id"
               :label="itm.storeName" :value="itm.id"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="dialogData.titleType === 'field'" prop="fieldId" label="场地名" label-width="77px">
-          <el-select v-model="dialogData.fieldId" placeholder="选择或搜索场地名" class="width100" filterable>
+        <el-form-item
+          v-if="dialogData.titleType === 'field'"
+          prop="fieldId"
+          label="场地名" label-width="77px">
+          <el-select
+            v-model="dialogData.fieldId"
+            placeholder="选择或搜索场地名"
+            class="width290px" filterable>
             <el-option
               v-for="itm in fieldList" :key="itm.id"
               :label="itm.fieldName" :value="itm.id"></el-option>
           </el-select>
         </el-form-item>
-        </el-form-item>
 
-        <el-form-item v-if="dialogData.titleType === 'arbitrarily'" prop="arbitrarilyName" label="任意名" label-width="77px">
+        <el-form-item
+          v-if="dialogData.titleType === 'arbitrarily'"
+          prop="arbitrarilyName"
+          label="任意名" label-width="77px">
           <el-input
             v-model.trim="dialogData.arbitrarilyName"
             :maxlength="20"
-            class="width100"
+            class="width290px"
             placeholder="输入名称"></el-input>
         </el-form-item>
       </div>
@@ -67,7 +88,7 @@
       <!-- 添加空间 -->
       <div v-if="insertType === 'store'" class="store-box">
         <div
-          v-for="(itm, idx) in dialogData.addStoreList" :key="idx"
+          v-for="(itm, idx) in dialogData.addArr" :key="idx"
           v-if="idx <= 4">
           <div class="store-tile mb12">
             <span class="fz16">空间({{ idx + 1 }}/5)</span>
@@ -75,14 +96,14 @@
           </div>
 
           <el-form-item
-            :prop="'addStoreList.' + idx + '.sBandId'"
+            :prop="'addArr.' + idx + '.brandId'"
             :rules="{
               required: true, message: '品牌名不能为空', trigger: ['blur', 'change']
             }"
             label="品牌名"
             label-width="77px" class="is-required">
             <el-select
-              v-model="itm.sBandId"
+              v-model="itm.brandId"
               placeholder="选择或搜索品牌名"
               @change="getStores(idx + 1)"
               class="width290px" filterable>
@@ -93,7 +114,7 @@
           </el-form-item>
 
           <el-form-item
-            :prop="'addStoreList.' + idx + '.sStoreId'"
+            :prop="'addArr.' + idx + '.sStoreId'"
             :rules="{
               required: true, message: '空间名不能为空', trigger: ['blur', 'change']
             }"
@@ -110,7 +131,7 @@
           </el-form-item>
         </div>
 
-        <!-- v-if="dialogData.addStoreList.length <= 4" -->
+        <!-- v-if="dialogData.addArr.length <= 4" -->
         <el-button
           @click="addStore"
           icon="el-icon-circle-plus"
@@ -143,28 +164,30 @@ export default {
   },
   watch: {
     dialogStatus: function(val, oldVal) {
-      console.log('insertType', this.insertType);
+      if (val) {
+        console.log('watch-showDialog');
 
-      // this.dialogData = { ...this.teamData }
-      // 用于去重判断
-      this.currentFieldId = this.dialogData.fieldId
+        switch (this.insertType) {
+          case 'store':
+          case 'field':
+            this.getSpaces()
+            break
+          case 'title':
+            break
+        }
+      } else {
+        console.log('watch-resetFields');
 
-      if (this.onType === 'add' && this.$refs.dialogData) {
-        this.$refs.dialogData.resetFields()
-      }
-
-      if (!this.renderSelectField) {
-        this.renderComponent()
+        if (this.$refs.dialogData) {
+          this.$refs.dialogData.resetFields()
+        }
       }
     }
   },
   methods: {
-    renderComponent() {
-      this.getSpaces()
-    },
-
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
+        console.log('submitForm', valid, this.dialogData);
         if (valid) {
           switch (this.insertType) {
             case 'title':
@@ -182,7 +205,7 @@ export default {
 
     getDialogFormData() {
       let spaceName
-      for (let item of this.spaceList) {
+      for (let item of this.brandList) {
         if (this.dialogData.spaceId === item.id) {
           spaceName = item.spaceName
           break;

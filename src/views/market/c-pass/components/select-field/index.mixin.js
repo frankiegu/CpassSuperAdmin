@@ -2,19 +2,19 @@ import { cPassFindUseStore, cPassFindUseField, cPassFindUseSpace } from '@/servi
 export default {
   methods: {
     getSpaces() {
+      console.log('getSpaces', this.dialogData.titleType);
+
       cPassFindUseSpace().then(res => {
         if (res.status === 'true') {
           const resInfo = res.info
-          this.spaceList = resInfo
-
           switch (this.insertType) {
             case 'title':
+              // 标题类型，已经在change时区分了
+              this.brandList = resInfo
               break
             case 'store':
-              this.dialogData.addStoreList[0].sStoreList = resInfo
-              this.getStores()
-              break
             case 'field':
+              this.dialogData.addArr[0].brandList = resInfo
               break
           }
         } else {
@@ -22,24 +22,40 @@ export default {
         }
       })
     },
+
     getStores(storeIdx) {
-      cPassFindUseStore({ spaceId: this.dialogData.spaceId }).then(res => {
+      console.log('getStores', storeIdx);
+
+      cPassFindUseStore({ spaceId: this.dialogData.brandId }).then(res => {
         if (res.status === 'true') {
           const resInfo = res.info
-          if (storeIdx) {
-            this.addStoreList[storeIdx - 1].storeList = resInfo
-          } else {
-            this.storeList = resInfo
-          }
+          switch (this.insertType) {
+            case 'title':
+              this.storeList = resInfo
+              break
+            case 'store':
+              if (storeIdx) {
+                this.addArr[storeIdx - 1].storeList = resInfo
+              } else {
+                this.dialogData.addArr[0].storeList = resInfo
+              }
+              break
+            case 'field':
+              if (storeIdx) {
+                this.addArr[storeIdx - 1].storeList = resInfo
+              } else {
+                this.dialogData.addArr[0].storeList = resInfo
+              }
 
-          if (this.dialogData.storeId) {
-            this.getFields()
+              this.getFields()
+              break
           }
         } else {
           this.setMsg('error', res.msg)
         }
       })
     },
+
     getFields() {
       cPassFindUseField({ storeId: this.dialogData.storeId }).then(res => {
         if (res.status === 'true') {
