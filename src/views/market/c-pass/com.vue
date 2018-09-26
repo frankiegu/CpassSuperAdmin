@@ -292,7 +292,8 @@ export default {
     //   margin-bottom: 20px;
     // }
     .ql-container {
-      padding: 0 32px 24px;
+      // padding 左右 默认15
+      padding: 0 107px 24px;
       min-height: 380px;
       overflow: auto;
 
