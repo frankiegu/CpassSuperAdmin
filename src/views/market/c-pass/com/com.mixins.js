@@ -1,5 +1,5 @@
 import { API_PATH } from '@/config/env'
-import { fieldData } from './common'
+import { fieldData } from '../common'
 export default {
   data() {
     return {
@@ -72,30 +72,26 @@ export default {
         placeholder: ' ',
         theme: 'snow',  // or 'bubble'
         modules: {
-          toolbar: {
-            container: [
-              ['bold', 'italic', 'underline', 'strike'],
-              ['blockquote'],
-              [{ 'header': 1 }, { 'header': 2 }],
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'indent': '-1' }, { 'indent': '+1' }],
-              [{ 'direction': 'rtl' }],
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'font': [] }],
-              [{ 'color': [] }, { 'background': [] }],
-              [{ 'align': [] }],
-              ['link', 'image']
-            ],  // 工具栏
-            handlers: {
-              'image': function (value) {
-                if (value) {
-                  document.querySelector('#quill-upload input').click()
-                } else {
-                  this.quill.format('image', false)
-                }
-              }
-            }
-          }
+          toolbar: '.lh-toolbar'
+          // toolbar: {
+          //   container: [
+          //     ['bold', 'italic', 'underline'],
+          //     [{ 'color': [] }, { 'background': [] }],
+          //     [{ 'align': ['', 'center', 'right', 'justify'] }],
+          //     ['blockquote'],
+          //     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          //     ['link', 'image']
+          //   ],  // 工具栏
+          //   handlers: {
+          //     'image': function (value) {
+          //       if (value) {
+          //         document.querySelector('#quill-upload input').click()
+          //       } else {
+          //         this.quill.format('image', false)
+          //       }
+          //     }
+          //   }
+          // }
         }
       }
     }

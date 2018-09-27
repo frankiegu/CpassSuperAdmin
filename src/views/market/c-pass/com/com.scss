@@ -1,0 +1,94 @@
+@import "src/styles/config";
+
+.page-market-c-pass-com {
+  .m-detail {
+    min-height: 380px;
+    background-color:$theme-white;
+  }
+  .editor-box {
+    min-width: 747px;
+    max-width: 747px;
+    min-height: 380px;
+    border-bottom: 1px solid $border-gray;
+    border-right: 1px solid $border-gray;
+    box-shadow: 0 1px 6px 0 rgba(0,21,41,.12);
+    overflow: hidden;
+
+
+    .quill-editor-box {
+      width: 536px;
+      min-height: 380px;
+      padding-bottom: 0;
+
+      .quill-editor {
+        min-height: 380px;
+        height: auto;
+      }
+      // .ql-toolbar.ql-snow, .ql-container.ql-snow {
+      //   border: none !important;
+      // }
+    }
+    .insert-list {
+      float: left;
+      display: block;
+      width: 211px;
+      min-height: 456px;
+      padding: 0 20px;
+      border-top: 1px solid $border-grayish;
+      background-color: $theme-white;
+      box-sizing: border-box;
+
+      .insert-title {
+        height: 22px;
+        line-height: 22px;
+        padding: 24px 0 20px;
+      }
+      ul {
+        text-align: center;
+        border: 1px solid $border-gray;
+        box-sizing: border-box;
+      }
+      li {
+        display: block;
+        width: 100%;
+        height: 51px;
+        line-height: 51px;
+        border-top: 1px solid $border-gray;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        &:first-child {
+          // border-top: 0;
+          margin-top: -1px;
+        }
+        &:hover:not(.btn-color-disabled) {
+          color: $theme-blue;
+          border: 1px solid $theme-blue;
+        }
+      }
+      .btn-color-disabled {
+        color: $btn-disabled-color;
+        border-color: $btn-disabled-border-color;
+
+        &:hover {
+          color: $btn-disabled-color;
+          border-color: $btn-disabled-border-color;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .card-padding {
+    padding-right: 32px;
+    // padding-right: 111px;
+  }
+  #quill-upload {
+    height: 0;
+  }
+  .tip-style {
+    position: absolute;
+    top: 20px;
+    margin-left: 15px;
+  }
+}

@@ -69,14 +69,49 @@
 
         <!-- 精选内容 -->
         <el-form-item class="m-detail" label="精选内容" prop="content">
-          <div class="editor-box">
+          <div class="editor-box lh-quill-modules">
             <div class="quill-editor-box fl" v-loading="quillUploadImg">
               <quill-editor
                 v-model.trim="formData.content"
                 @change="onTextChange($event)"
                 :options="editorOption"
                 :disabled="noAllow"
-                ref="myQuillEditor" />
+                ref="myQuillEditor"
+                class="lh-quill">
+                <div class="lh-toolbar" slot="toolbar">
+                  <span class="ql-formats">
+                    <span @click="insertDivider" class="ql-divider ql-btn">
+                      <span class="hr"></span>
+                    </span>
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                  </span>
+
+                  <span class="ql-formats">
+                    <select class="ql-align">
+                      <option value=""></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                    </select>
+                  </span>
+
+                  <span class="ql-formats">
+                    <button class="ql-blockquote"></button>
+                  </span>
+
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                  </span>
+
+                  <span class="ql-formats">
+                    <button class="ql-link"></button>
+                    <button class="ql-image"></button>
+                  </span>
+                </div>
+              </quill-editor>
             </div>
 
             <div class="insert-list">
@@ -129,7 +164,7 @@
     <!-- 预览 -->
     <cpass-preview
       :dialogStatus="showPreview"
-      @closeInsertDialog="closeDialog" />
+      @closeDialog="closeDialog" />
 
     <!-- 添加、编辑空间团队 -->
     <select-field
@@ -142,14 +177,23 @@
 <script>
 import { mapGetters } from 'vuex'
 import comMixins from './com.mixins'
+import quillMixin from './quill.mixin'
 import comExtend from './com-extend.mixin'
 import lhUpload from '@/components/upload'
-import { quillEditor } from 'vue-quill-editor' // 调用编辑器
-import selectField from './components/select-field'
-import cpassPreview from './components/cpass-preview'
+import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
+import selectField from '../components/select-field'
+import cpassPreview from '../components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
+
+let BlockEmbed = Quill.import('blots/block/embed')
+class DividerBlot extends BlockEmbed {}
+DividerBlot.blotName = 'divider'
+DividerBlot.tagName = 'div'
+DividerBlot.className = 'cpass-hr'
+Quill.register(DividerBlot)
+
 export default {
-  mixins: [comMixins, comExtend],
+  mixins: [comMixins, comExtend, quillMixin],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
@@ -166,7 +210,13 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar'
-    ])
+    ]),
+    editor() {
+      return this.$refs.myQuillEditor.quill
+    },
+    quill() {
+      return Quill
+    }
   },
   mounted() {
     this.setPageTitle()
@@ -261,65 +311,15 @@ export default {
     },
     verifyImage() {
       this.verifyImg = !this.formData.bannerPath ? '请上传头像' : ''
-    },
-    // 富文本插入图片
-    quillHandleAvatarSuccess(res, file) {
-      let quill = this.$refs.myQuillEditor.quill
-      if (res.code === '200' && res.info.path !== null) {
-        let range = quill.getSelection()
-        let length = range.index;
-        quill.insertEmbed(length, 'image', res.info.path)
-        quill.setSelection(length + 1)
-      }
-      this.quillUploadImg = false
-    },
-    // 富文本框上传图片前
-    quillBeforeUploadImg() {
-      this.quillUploadImg = true
-    },
-    // 富文本框上传图片失败
-    quillUploadImgError() {
-      this.quillUploadImg = false
-      this.setMsg('error', '上传图片失败')
     }
   }
 };
 </script>
 
 <style lang="scss">
-  .page-market-c-pass-com {
-    // .quill-editor {
-    //   margin-bottom: 20px;
-    // }
-    .ql-container {
-      // padding 左右 默认15
-      padding: 0 107px 24px;
-      min-height: 380px;
-      overflow: auto;
-
-      // @#技巧：各屏幕大小，展示不同高度，实现类似fixed的效果
-      @media screen and (max-width: 1366px) {
-        min-height: 380px;
-        max-height: 400px;
-      }
-      @media screen and (max-width: 1440px) {
-        min-height: 380px;
-        max-height: 424px;
-      }
-      @media screen and (min-width: 1441px) {
-        min-height: 380px;
-        max-height: 603px;
-      }
-    }
-    .ql-toolbar.ql-snow .ql-formats {
-      line-height: 24px;
-    }
-    .ql-container.ql-snow {
-      border-bottom: 0;
-    }
-  }
   .lh-main {
     padding-bottom: 89px !important;
   }
 </style>
 <style lang="scss" scoped src='./com.scss'></style>
+<style lang="scss" src='../com.scss'></style>

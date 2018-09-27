@@ -169,6 +169,7 @@
       </div>
     </el-form>
 
+    <!-- @#TODO 新增做成虚线 -->
     <div slot="footer" class="dialog-footer align-center">
       <el-button
         @click="submitForm('dialogData')"
@@ -233,12 +234,12 @@ export default {
       }
 
       this.dialogData = { ...this.dialogData2 }
-      this.dialogData.addArr = [ ...this.dialogData2.addArr ]
+      this.dialogData.addArr = [...this.dialogData2.addArr]
 
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
       }
-      console.log('dialogData', this.dialogData)
+      // console.log('dialogData', this.dialogData)
     }
   }
 };
