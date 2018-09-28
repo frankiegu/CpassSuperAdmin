@@ -81,7 +81,7 @@
                 <div class="lh-toolbar" slot="toolbar">
                   <span class="ql-formats">
                     <span @click="insertDivider" class="ql-divider ql-btn">
-                      <span class="hr"></span>
+                      <span class="ql-hr"></span>
                     </span>
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
@@ -140,6 +140,7 @@
           <el-switch
             v-model="formData.switch"
             :inactive-value="0"
+            :disabled="noAllow"
             :active-value="1"></el-switch>
           <span class="theme-light-gray ml10">在页面中展示“标题”“副标题”“作者名称”等头部信息</span>
         </el-form-item>
@@ -185,29 +186,7 @@ import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
 import cpassPreview from '../components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
-
-let BlockEmbed = Quill.import('blots/block/embed')
-
-// 分割线
-class DividerBlot extends BlockEmbed {}
-DividerBlot.blotName = 'divider'
-DividerBlot.tagName = 'div'
-DividerBlot.className = 'cpass-hr'
-Quill.register(DividerBlot)
-
-// 二级标题
-class TitleBlot extends BlockEmbed {
-  static create(data) {
-    const node = super.create(data.brandId)
-    node.innerHTML = data.brandId
-    return node
-  }
-
-}
-TitleBlot.blotName = 'title'
-TitleBlot.tagName = 'div'
-TitleBlot.className = 'quill-featured-subhead'
-Quill.register(TitleBlot)
+require('./blot.mixin')
 
 export default {
   mixins: [comMixins, comExtend, quillMixin],

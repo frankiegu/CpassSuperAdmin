@@ -15,17 +15,17 @@
       float: left;
       height: 24px;
       padding: 3px 5px;
-      width: 28px;
+      width: 24px;
       outline: none;
     }
     .ql-divider {
       display: flex;
       align-items: center;
 
-      &:hover .hr {
+      &:hover .ql-hr {
         background-color: #06c;
       }
-      .hr {
+      .ql-hr {
         display: block;
         width: 100%;
         height: 2px;
@@ -33,6 +33,7 @@
       }
     }
   }
+
   .ql-container {
     // padding 左右 默认15
     padding: 0 107px 24px;

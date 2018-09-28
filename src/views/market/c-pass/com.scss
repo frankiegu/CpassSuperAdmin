@@ -1,11 +1,12 @@
 .lh-quill-modules {
-  padding: 36px 20px 25px;
+  padding: 0 20px 25px;
   box-sizing: border-box;
 
   /* 新添加
   -------------------------- */
-  .cpass-hr {
+  .hr {
     height: 1px;
+    margin-top: 24px;
     background-color: #E1E1E6;
   }
   p {
@@ -22,25 +23,27 @@
     margin: 26px auto 0;
   }
 
-  /* 旧
-  -------------------------- */
-  .font-weight-normal {
-    font-weight: normal !important;
-  }
-  .font-bold-style {
+  /*二级标题*/
+  @mixin com {
+    margin-top: 46px;
+    width: 100%;
+    font-size: 18px;
+    color: #333;
     font-weight: bold;
   }
-  .space-template {
-    text-align: justify;
-    font-size: 16px;
-    color: #333333;
-    line-height: 28px;
-    .mt66 {
-      margin-top: 66px !important;
-    }
+  .title-brand {
+    @include com;
   }
-  /*二级标题*/
-  .quill-featured-subhead {
+  .title-store {
+    @include com;
+  }
+  .title-field {
+    @include com;
+  }
+  .title-arbitrarily {
+    @include com;
+  }
+  .quill-title {
     .sub-title-order {
       font-size: 18px;
       display: inline-block;
@@ -281,6 +284,25 @@
       box-sizing: border-box;
     }
   }
+
+  /* 旧
+  -------------------------- */
+  .font-weight-normal {
+    font-weight: normal !important;
+  }
+  .font-bold-style {
+    font-weight: bold;
+  }
+  .space-template {
+    text-align: justify;
+    font-size: 16px;
+    color: #333333;
+    line-height: 28px;
+    .mt66 {
+      margin-top: 66px !important;
+    }
+  }
+
   /*门店*/
   .quill-store-list {
     margin-top: 26px;
@@ -466,19 +488,7 @@
       }
     }
   }
-  /*二级标题*/
-  .quill-featured-subhead {
-    margin-top: 46px;
-    font-size: 18px;
-    color: #333333;
-    font-weight: bold;
-    padding-left: 20px;
-    padding-right: 20px;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
+
   /*滑动场地列表*/
   .quill-scroll-fields {
     overflow-x:scroll;

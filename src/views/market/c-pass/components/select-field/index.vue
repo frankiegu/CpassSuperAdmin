@@ -212,14 +212,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         console.log('submitForm', valid, this.dialogData);
         if (valid) {
-          switch (this.insertType) {
-            case 'title':
-              break
-            case 'store':
-              break
-            case 'field':
-              break
-          }
           this.closeDialog('save')
         } else {
         }
@@ -227,25 +219,13 @@ export default {
     },
 
     closeDialog(type) {
-      let data = {}
+      console.log('closeDialog', type, this.insertType, this.dialogData.titleType);
+
       if (type !== 'save') {
         this.$emit('closeInsertDialog')
       } else {
         switch (this.insertType) {
           case 'title':
-            switch (this.dialogData.titleType) {
-              case 'store':
-                for (let itm of this.brandList) {
-                  if (itm.id === this.dialogData.brandId) {
-                    data.titleName = itm.spaceName
-                  }
-                }
-                break
-              case 'field':
-                break
-              case 'brand':
-                break
-            }
             break
           case 'store':
             break
@@ -253,7 +233,7 @@ export default {
             break
         }
 
-        this.$emit('closeInsertDialog', { ...data })
+        this.$emit('closeInsertDialog', { ...this.dialogData })
       }
 
       this.dialogData = { ...this.dialogData2 }
@@ -262,7 +242,7 @@ export default {
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
       }
-      console.log('closeDialog', data, this.dialogData)
+      // console.log('closeDialog', data, this.dialogData, this.insertType)
     }
   }
 };

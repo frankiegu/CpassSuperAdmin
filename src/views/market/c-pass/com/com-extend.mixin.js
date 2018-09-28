@@ -23,12 +23,23 @@ export default {
     },
 
     closeInsertDialog(insertData) {
-      console.log('closeTeamDialog', insertData);
+      console.log('closeInsertDialog', insertData);
       this.showInsert = false
 
       switch (this.insertType) {
         case 'title':
-          this.handleInsertTitle(insertData)
+          switch (insertData.titleType) {
+            case 'brand':
+              this.handleInsertBrandTitle(insertData.brandId)
+              break
+            case 'store':
+              break
+            case 'field':
+              break
+            case 'arbitrarily':
+              this.handleInsertArbitrarilyTitle(insertData.arbitrarilyName)
+              break
+          }
           break
         case 'store':
           break
@@ -36,10 +47,16 @@ export default {
           break
       }
     },
-    handleInsertTitle(insertData) {
+    handleInsertBrandTitle(brandId) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'title', insertData, this.quill.sources.USER)
+      this.editor.insertEmbed(len, 'titleBrand', brandId, this.quill.sources.USER)
+      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+    },
+    handleInsertArbitrarilyTitle(arbitrarilyName) {
+      let range = this.editor.getSelection(true)
+      let len = range.index
+      this.editor.insertEmbed(len, 'titleArbitrarily', arbitrarilyName, this.quill.sources.USER)
       this.editor.setSelection(len + 1, this.quill.sources.SILENT)
     }
   }
