@@ -1,9 +1,29 @@
 .lh-quill-modules {
+  padding: 36px 20px 25px;
+  box-sizing: border-box;
+
+  /* 新添加
+  -------------------------- */
   .cpass-hr {
     height: 1px;
-    margin: 12px 0;
     background-color: #E1E1E6;
   }
+  p {
+    margin-top: 26px;
+    font-size: 16px;
+    color: #333;
+    line-height: 28px;
+    box-sizing: border-box;
+  }
+  img {
+    display: block;
+    width: 100%;
+    border-radius: 7px;
+    margin: 26px auto 0;
+  }
+
+  /* 旧
+  -------------------------- */
   .font-weight-normal {
     font-weight: normal !important;
   }

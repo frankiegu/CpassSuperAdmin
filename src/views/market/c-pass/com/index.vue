@@ -69,7 +69,7 @@
 
         <!-- 精选内容 -->
         <el-form-item class="m-detail" label="精选内容" prop="content">
-          <div class="editor-box lh-quill-modules">
+          <div class="editor-box">
             <div class="quill-editor-box fl" v-loading="quillUploadImg">
               <quill-editor
                 v-model.trim="formData.content"
@@ -77,7 +77,7 @@
                 :options="editorOption"
                 :disabled="noAllow"
                 ref="myQuillEditor"
-                class="lh-quill">
+                class="lh-quill lh-quill-modules">
                 <div class="lh-toolbar" slot="toolbar">
                   <span class="ql-formats">
                     <span @click="insertDivider" class="ql-divider ql-btn">
@@ -164,6 +164,7 @@
     <!-- 预览 -->
     <cpass-preview
       :dialogStatus="showPreview"
+      :content="formData.content"
       @closeDialog="closeDialog" />
 
     <!-- 添加、编辑空间团队 -->
@@ -186,11 +187,27 @@ import cpassPreview from '../components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
 
 let BlockEmbed = Quill.import('blots/block/embed')
+
+// 分割线
 class DividerBlot extends BlockEmbed {}
 DividerBlot.blotName = 'divider'
 DividerBlot.tagName = 'div'
 DividerBlot.className = 'cpass-hr'
 Quill.register(DividerBlot)
+
+// 二级标题
+class TitleBlot extends BlockEmbed {
+  static create(data) {
+    const node = super.create(data.brandId)
+    node.innerHTML = data.brandId
+    return node
+  }
+
+}
+TitleBlot.blotName = 'title'
+TitleBlot.tagName = 'div'
+TitleBlot.className = 'quill-featured-subhead'
+Quill.register(TitleBlot)
 
 export default {
   mixins: [comMixins, comExtend, quillMixin],

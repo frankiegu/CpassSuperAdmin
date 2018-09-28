@@ -201,8 +201,8 @@ export default {
           case 'field':
             this.getSpaces()
             break
-          case 'title':
-            break
+          // case 'title':
+          //   break
         }
       }
     }
@@ -227,10 +227,33 @@ export default {
     },
 
     closeDialog(type) {
+      let data = {}
       if (type !== 'save') {
         this.$emit('closeInsertDialog')
       } else {
-        this.$emit('closeInsertDialog', { ...this.dialogData })
+        switch (this.insertType) {
+          case 'title':
+            switch (this.dialogData.titleType) {
+              case 'store':
+                for (let itm of this.brandList) {
+                  if (itm.id === this.dialogData.brandId) {
+                    data.titleName = itm.spaceName
+                  }
+                }
+                break
+              case 'field':
+                break
+              case 'brand':
+                break
+            }
+            break
+          case 'store':
+            break
+          case 'field':
+            break
+        }
+
+        this.$emit('closeInsertDialog', { ...data })
       }
 
       this.dialogData = { ...this.dialogData2 }
@@ -239,7 +262,7 @@ export default {
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
       }
-      // console.log('dialogData', this.dialogData)
+      console.log('closeDialog', data, this.dialogData)
     }
   }
 };

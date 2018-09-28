@@ -22,28 +22,25 @@ export default {
       console.log('type', this.insertType);
     },
 
-    closeInsertDialog(teamData) {
-      // console.log('closeTeamDialog', teamData);
+    closeInsertDialog(insertData) {
+      console.log('closeTeamDialog', insertData);
       this.showInsert = false
 
-      // 第一次渲染添加场地弹出框请求接口数据，往后再不请求品牌、空间、场地列表数据
-      if (!this.renderSelectField) {
-        this.renderSelectField = true
+      switch (this.insertType) {
+        case 'title':
+          this.handleInsertTitle(insertData)
+          break
+        case 'store':
+          break
+        case 'field':
+          break
       }
-
-      if (teamData) {
-        if (teamData.idx === 'add') {
-          // this.teamsData.push(teamData)
-        } else {
-          // this.teamsData.splice(teamData.idx, 1, teamData)
-        }
-      }
-
-      // 清空数据
-      if (this.teamData.spaceId) {
-        this.teamData = { ...this.teamDefaultData }
-      }
-      // console.log('closeTeamDialog', this.teamData)
+    },
+    handleInsertTitle(insertData) {
+      let range = this.editor.getSelection(true)
+      let len = range.index
+      this.editor.insertEmbed(len, 'title', insertData, this.quill.sources.USER)
+      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
     }
   }
 }

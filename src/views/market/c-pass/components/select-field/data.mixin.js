@@ -23,6 +23,7 @@ export default {
         brandId: null,
         storeId: null,
         fieldId: null,
+        titleName: null,
         arbitrarilyName: null,
         addArr: [{
           brandId: null,

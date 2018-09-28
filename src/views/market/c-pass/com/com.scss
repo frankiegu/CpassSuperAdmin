@@ -1,6 +1,9 @@
 @import "src/styles/config";
 
 .page-market-c-pass-com {
+  .lh-quill {
+    padding: 0;
+  }
   .m-detail {
     min-height: 380px;
     background-color:$theme-white;
@@ -13,7 +16,6 @@
     border-right: 1px solid $border-gray;
     box-shadow: 0 1px 6px 0 rgba(0,21,41,.12);
     overflow: hidden;
-
 
     .quill-editor-box {
       width: 536px;
@@ -75,6 +77,36 @@
           border-color: $btn-disabled-border-color;
           cursor: not-allowed;
         }
+      }
+    }
+  }
+  @media screen and (min-width: 1365px) {
+    .editor-box {
+      min-width: 802px;
+      max-width: 802px;
+
+      .quill-editor-box {
+        width: 591px;
+      }
+    }
+  }
+  @media screen and (min-width: 1439px) {
+    .editor-box {
+      min-width: 907px;
+      max-width: 907px;
+
+      .quill-editor-box {
+        width: 696px;
+      }
+    }
+  }
+  @media screen and (min-width: 1600px) {
+    .editor-box {
+      min-width: 1067px;
+      max-width: 1067px;
+
+      .quill-editor-box {
+        width: 856px;
       }
     }
   }
