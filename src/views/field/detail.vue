@@ -201,6 +201,11 @@
     <lh-card cardTitle="场地描述" :isEmpty="!field.facilitiesAndServices">
       <div v-html="field.facilitiesAndServices"></div>
     </lh-card>
+
+    <!-- 场地守则 -->
+    <lh-card cardTitle="场地守则" :isEmpty="!field.instructionsForUse">
+      <div v-html="field.instructionsForUse"></div>
+    </lh-card>
   </div>
 </template>
 
