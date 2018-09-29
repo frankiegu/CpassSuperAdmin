@@ -67,6 +67,7 @@
           <el-select
             v-model="dialogData.fieldId"
             placeholder="选择或搜索场地名"
+            @change="selectFieldId"
             class="width290px" filterable>
             <el-option
               v-for="itm in fieldList" :key="itm.id"
@@ -219,20 +220,11 @@ export default {
     },
 
     closeDialog(type) {
-      console.log('closeDialog', type, this.insertType, this.dialogData.titleType);
+      console.log('closeDialog', this.insertType, this.dialogData.titleType, this.dialogData)
 
       if (type !== 'save') {
         this.$emit('closeInsertDialog')
       } else {
-        switch (this.insertType) {
-          case 'title':
-            break
-          case 'store':
-            break
-          case 'field':
-            break
-        }
-
         this.$emit('closeInsertDialog', { ...this.dialogData })
       }
 
@@ -242,7 +234,6 @@ export default {
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
       }
-      // console.log('closeDialog', data, this.dialogData, this.insertType)
     }
   }
 };

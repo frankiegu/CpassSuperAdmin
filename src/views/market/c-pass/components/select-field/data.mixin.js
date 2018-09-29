@@ -21,10 +21,14 @@ export default {
       dialogData: {
         titleType: null,
         brandId: null,
+        brandItm: null,
         storeId: null,
+        storeItm: null,
         fieldId: null,
+        fieldItm: null,
         titleName: null,
         arbitrarilyName: null,
+
         addArr: [{
           brandId: null,
           storeId: null,
@@ -44,9 +48,14 @@ export default {
       dialogData2: {
         titleType: null,
         brandId: null,
+        brandItm: null,
         storeId: null,
+        storeItm: null,
         fieldId: null,
+        fieldItm: null,
+        titleName: null,
         arbitrarilyName: null,
+
         addArr: [{
           brandId: null,
           storeId: null,

@@ -2,7 +2,7 @@ import { cPassFindUseStore, cPassFindUseField, cPassFindUseSpace } from '@/servi
 export default {
   methods: {
     getSpaces() {
-      console.log('getSpaces', this.dialogData.titleType);
+      console.log('getSpaces', this.dialogData.titleType, this.insertType);
 
       cPassFindUseSpace().then(res => {
         if (res.status === 'true') {
@@ -11,6 +11,7 @@ export default {
             case 'title':
               // 标题类型，已经在change时区分了
               this.brandList = resInfo
+              console.log(1);
               break
             case 'store':
             case 'field':
@@ -41,6 +42,7 @@ export default {
           switch (this.insertType) {
             case 'title':
               this.storeList = resInfo
+              console.log('getStores', this.storeList)
               break
             case 'store':
               if (brandIdx) {
@@ -58,7 +60,7 @@ export default {
               break
           }
 
-          console.log('getStores', brandIdx, this.dialogData.addArr[brandIdx - 1]);
+          console.log('getStores', brandIdx);
         } else {
           this.setMsg('error', res.msg)
         }

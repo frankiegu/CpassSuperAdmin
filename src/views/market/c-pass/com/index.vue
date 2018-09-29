@@ -186,7 +186,7 @@ import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
 import cpassPreview from '../components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
-require('./blot.mixin')
+require('./blot/index')
 
 export default {
   mixins: [comMixins, comExtend, quillMixin],

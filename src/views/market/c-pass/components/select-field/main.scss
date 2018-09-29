@@ -1,6 +1,10 @@
 @import "src/styles/common/var";
 
 .component-store-com-team {
+
+  .width290px {
+    width: 290px;
+  }
   .add-box {
     max-height: 374px;
     overflow: auto;

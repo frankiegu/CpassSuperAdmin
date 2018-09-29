@@ -73,25 +73,6 @@ export default {
         theme: 'snow',  // or 'bubble'
         modules: {
           toolbar: '.lh-toolbar'
-          // toolbar: {
-          //   container: [
-          //     ['bold', 'italic', 'underline'],
-          //     [{ 'color': [] }, { 'background': [] }],
-          //     [{ 'align': ['', 'center', 'right', 'justify'] }],
-          //     ['blockquote'],
-          //     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          //     ['link', 'image']
-          //   ],  // 工具栏
-          //   handlers: {
-          //     'image': function (value) {
-          //       if (value) {
-          //         document.querySelector('#quill-upload input').click()
-          //       } else {
-          //         this.quill.format('image', false)
-          //       }
-          //     }
-          //   }
-          // }
         }
       }
     }
