@@ -31,10 +31,12 @@ export default {
 
         addArr: [{
           brandId: null,
-          storeId: null,
-          fieldId: null,
           brandList: [],
+          storeId: null,
+          storeItm: null,
           storeList: [],
+          fieldId: null,
+          fieldItm: null,
           fieldList: []
         }]
       },

@@ -2,31 +2,51 @@
 export default {
   methods: {
     handleBrandId(brandIdx) {
-      console.log('handleBrandId', this.insertType, brandIdx);
+      console.log('handleBrandId', this.insertType, brandIdx, this.dialogData.addArr[brandIdx - 1]);
 
       // 切换前置条件，清空后置条件
       if (this.dialogData.addArr[brandIdx - 1].storeId) {
-        this.dialogData.addArr[brandIdx - 1] = null
+        this.clearSelectedStoreData(brandIdx - 1)
       }
 
       this.getStores(brandIdx)
 
       if (this.insertType === 'field' && this.dialogData.addArr[brandIdx - 1].fieldId) {
-        this.dialogData.addArr[brandIdx - 1] = null
+        this.clearSelectedFieldData(brandIdx - 1)
       }
     },
 
     handleStoreId(storeIdx) {
-      console.log('handleStoreId', this.insertType, storeIdx);
+      const itm = this.dialogData.addArr[storeIdx - 1]
+      console.log('handleStoreId', this.insertType, storeIdx, itm);
 
       // 切换前置条件，清空后置条件
-      if (this.dialogData.addArr[storeIdx - 1].fieldId) {
-        this.dialogData.addArr[storeIdx - 1] = null
+      if (itm.fieldId) {
+        this.clearSelectedStoreData(storeIdx - 1)
       }
 
-      if (this.insertType !== 'title') {
+      for (const list of itm.storeList) {
+        if (itm.storeId === list.id) {
+          this.dialogData.addArr[storeIdx - 1].storeItm = list
+        }
+      }
+      console.log('storeItm', this.dialogData.addArr[storeIdx - 1]);
+
+      if (this.insertType === 'field') {
         this.getFields(storeIdx)
       }
+    },
+
+    handleFieldId(fieldIdx) {
+      const itm = this.dialogData.addArr[fieldIdx - 1]
+      console.log('handleFieldId', this.insertType, fieldIdx, itm);
+
+      for (const list of itm.fieldList) {
+        if (itm.fieldId === list.id) {
+          this.dialogData.addArr[fieldIdx - 1].fieldItm = list
+        }
+      }
+      console.log('fieldItm', this.dialogData.addArr[fieldIdx - 1]);
     },
 
     delThisStore(idx) {
@@ -42,7 +62,9 @@ export default {
         let data = {
           brandId: null,
           storeId: null,
+          storeItm: null,
           fieldId: null,
+          fieldItm: null,
           brandList: [],
           storeList: [],
           fieldList: []
@@ -83,6 +105,18 @@ export default {
         }
         this.dialogData.addArr.push(data)
       }
+    },
+
+    clearSelectedStoreData(idx) {
+      this.dialogData.addArr[idx].storeId = null
+      this.dialogData.addArr[idx].storeItm = null
+      this.dialogData.addArr[idx].storeList = null
+    },
+
+    clearSelectedFieldData(idx) {
+      this.dialogData.addArr[idx - 1].fieldId = null
+      this.dialogData.addArr[idx - 1].fieldItm = null
+      this.dialogData.addArr[idx - 1].fieldList = null
     }
   }
 }

@@ -81,6 +81,7 @@
           label="任意名" label-width="77px">
           <el-input
             v-model.trim="dialogData.arbitrarilyName"
+            @keyup.native.enter="submitForm('dialogData')"
             :maxlength="20"
             class="width290px"
             placeholder="输入名称"></el-input>
@@ -134,8 +135,8 @@
                 placeholder="选择或搜索空间名"
                 class="input-width" filterable>
                 <el-option
-                  v-for="itm in itm.storeList" :key="itm.id"
-                  :label="itm.storeName" :value="itm.id"></el-option>
+                  v-for="item in itm.storeList" :key="item.id"
+                  :label="item.storeName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
@@ -150,18 +151,19 @@
               :class="{'lh-form-item0': idx === 4}">
               <el-select
                 v-model="itm.fieldId"
+                @change="handleFieldId(idx + 1)"
                 placeholder="选择或搜索场地名"
                 class="input-width" filterable>
                 <el-option
-                  v-for="itm in itm.fieldList" :key="itm.id"
-                  :label="itm.fieldName" :value="itm.id"></el-option>
+                  v-for="item in itm.fieldList" :key="item.id"
+                  :label="item.fieldName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </div>
 
           <el-button
             @click="addStoreField"
-            :disabled="!(insertType === 'store' && itm.storeId) || !(insertType === 'field') && itm.fieldId"
+            :disabled="(insertType === 'store') ? !itm.storeId : (insertType === 'field') ? !itm.fieldId : ''"
             v-if="(dialogData.addArr.length === (idx + 1)) && idx < 4"
             icon="el-icon-circle-plus"
             type="primary"

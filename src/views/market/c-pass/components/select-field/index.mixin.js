@@ -25,8 +25,6 @@ export default {
     },
 
     getStores(brandIdx) {
-      console.log('getStores', brandIdx);
-
       const ajaxParam = {
         spaceId: ''
       }
@@ -45,18 +43,19 @@ export default {
               console.log('getStores', this.storeList)
               break
             case 'store':
-              if (brandIdx) {
-                this.dialogData.addArr[brandIdx - 1].storeList = resInfo
-              } else {
-                this.dialogData.addArr[0].storeList = resInfo
-              }
-              break
             case 'field':
               if (brandIdx) {
                 this.dialogData.addArr[brandIdx - 1].storeList = resInfo
               } else {
                 this.dialogData.addArr[0].storeList = resInfo
               }
+
+              for (const itm of resInfo) {
+                if (this.dialogData.addArr[brandIdx - 1].storeId === itm.id) {
+                  this.dialogData.addArr[brandIdx - 1].storeItm = itm
+                }
+              }
+              console.log('storeItm', this.dialogData.addArr[brandIdx - 1].storeItm);
               break
           }
 
@@ -68,18 +67,12 @@ export default {
     },
 
     getFields(storeIdx) {
-      console.log('getFields', this.dialogData.addArr, storeIdx);
+      var addArr = this.dialogData.addArr
+      console.log('getFields', addArr, storeIdx, addArr[storeIdx - 1]);
 
-      const ajaxParam = {
-        storeId: ''
-      }
-      if (this.insertType === 'title') {
-        ajaxParam.storeId = this.dialogData.storeId
-      } else {
-        ajaxParam.storeId = this.dialogData.addArr[storeIdx - 1].storeId
-      }
-
-      cPassFindUseField(ajaxParam).then(res => {
+      cPassFindUseField({
+        storeId: (this.insertType === 'title') ? this.dialogData.storeId : addArr[storeIdx - 1].storeId
+      }).then(res => {
         if (res.status === 'true') {
           const resInfo = res.info
           switch (this.insertType) {
@@ -96,8 +89,6 @@ export default {
             case 'store':
               break
           }
-
-          console.log('getStores', storeIdx, this.dialogData.addArr[storeIdx - 1]);
         } else {
           this.setMsg('error', res.msg)
         }

@@ -46,10 +46,26 @@ export default {
           }
           break
         case 'store':
+          this.handleInsertStores(insertData.addArr)
           break
         case 'field':
+          this.handleInsertFields(insertData.addArr)
           break
       }
+    },
+
+    handleInsertFields(fieldArr) {
+      let range = this.editor.getSelection(true)
+      let len = range.index
+      this.editor.insertEmbed(len, 'fieldArr', fieldArr, this.quill.sources.USER)
+      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+    },
+
+    handleInsertStores(storeArr) {
+      let range = this.editor.getSelection(true)
+      let len = range.index
+      this.editor.insertEmbed(len, 'storeArr', storeArr, this.quill.sources.USER)
+      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
     },
 
     handleInsertFieldTitle(fieldItm) {

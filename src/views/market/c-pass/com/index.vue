@@ -22,7 +22,7 @@
       <el-form-item label="作者名称">
         <el-input
           v-model.trim="formData.authorName"
-          :maxlength="20"
+          :maxlength="5"
           :disabled="noAllow"
           type="textarea"
           class="width340px"

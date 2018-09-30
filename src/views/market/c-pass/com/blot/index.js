@@ -1,8 +1,40 @@
 
 import { Quill } from 'vue-quill-editor' // 调用编辑器
 import { renderBrandTitle, renderStoreTitle, renderFieldTitle } from './title'
+import { renderStoreArrBlot } from './store'
+import { renderFieldArrBlot } from './field'
 
 let BlockEmbed = Quill.import('blots/block/embed')
+
+// 添加空间链接
+class FieldArrBlot extends BlockEmbed {
+  static create(fieldArr) {
+    const node = super.create()
+    node.innerHTML = renderFieldArrBlot(fieldArr)
+    console.log('FieldArrBlot-node', node)
+
+    return node
+  }
+}
+FieldArrBlot.blotName = 'fieldArr'
+FieldArrBlot.tagName = 'div'
+FieldArrBlot.className = 'field-box'
+Quill.register(FieldArrBlot)
+
+// 添加空间链接
+class StoreArrBlot extends BlockEmbed {
+  static create(storeArr) {
+    const node = super.create()
+    node.innerHTML = renderStoreArrBlot(storeArr)
+    console.log('StoreArrBlot-node', node)
+
+    return node
+  }
+}
+StoreArrBlot.blotName = 'storeArr'
+StoreArrBlot.tagName = 'div'
+StoreArrBlot.className = 'store-list'
+Quill.register(StoreArrBlot)
 
 // 分割线
 class DividerBlot extends BlockEmbed {}
