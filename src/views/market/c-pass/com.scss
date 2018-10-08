@@ -1,15 +1,23 @@
 .lh-quill-modules {
-  padding: 0 20px 25px;
+  padding: 0 0 25px;
   box-sizing: border-box;
 
+  .ql-editor {
+    padding-left: 0;
+    padding-right: 0;
+  }
   /* 新添加
   -------------------------- */
   .hr {
+    margin-left: 20px;
+    margin-right: 20px;
     height: 1px;
     margin-top: 24px;
     background-color: #E1E1E6;
   }
   p {
+    padding-left: 20px;
+    padding-right: 20px;
     margin-top: 22px;
     font-size: 16px;
     color: #333;
@@ -18,7 +26,7 @@
   }
   & > img {
     display: block;
-    width: 100%;
+    width: 89.33%;
     border-radius: 7px;
     margin: 26px auto 0;
   }
@@ -29,6 +37,8 @@
     margin-top: 46px;
     width: 100%;
     font-size: 18px;
+    padding-left: 20px;
+    padding-right: 20px;
     color: #333;
     font-family: PingFangSC-Medium;
     overflow: hidden;
@@ -48,7 +58,7 @@
     }
     .title-name {
       float: left;
-      max-width: 87%;
+      max-width: 78%;
       margin-left: 8px;
 
       .name {
@@ -72,6 +82,8 @@
   /* 门店，单个与多个
   -------------------------- */
   .store-list {
+    padding-left: 20px;
+    padding-right: 20px;
     margin-top: 8px;
 
     .item {
@@ -211,6 +223,8 @@
   /* 单个场地
   -------------------------- */
   .field-one {
+    padding-left: 20px;
+    padding-right: 20px;
     margin-top: 26px;
     margin-bottom: 32px;
 

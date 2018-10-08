@@ -18,6 +18,7 @@
     overflow: hidden;
 
     .quill-editor-box {
+      position: relative;
       width: 536px;
       min-height: 380px;
       padding-bottom: 0;
@@ -25,6 +26,14 @@
       .quill-editor {
         min-height: 380px;
         height: auto;
+      }
+      .quill-mask {
+        position: absolute;
+        top: 47px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 48px);
+        background-color: #fff;
       }
       // .ql-toolbar.ql-snow, .ql-container.ql-snow {
       //   border: none !important;

@@ -1,7 +1,9 @@
 import { typeList } from '@/mixins/data/index'
 
 export function renderFieldArrBlot(fieldData) {
-  if (!fieldData.length) return
+  console.log('renderFieldArrBlot');
+
+  if (!fieldData.length) return ''
   let fieldArrDom = ''
   let fieldTypeDom
   console.log('fieldData', fieldData);

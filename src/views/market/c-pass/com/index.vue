@@ -70,7 +70,7 @@
         <!-- 精选内容 -->
         <el-form-item class="m-detail" label="精选内容" prop="content">
           <div class="editor-box">
-            <div class="quill-editor-box fl" v-loading="quillUploadImg">
+            <div class="quill-editor-box fl">
               <quill-editor
                 v-model.trim="formData.content"
                 @change="onTextChange($event)"
@@ -112,6 +112,7 @@
                   </span>
                 </div>
               </quill-editor>
+              <div class="quill-mask" v-show="quillLoading"></div>
             </div>
 
             <div class="insert-list">
@@ -178,9 +179,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import comMixins from './com.mixins'
+import comMixin from './com.mixin'
 import quillMixin from './quill.mixin'
 import comExtend from './com-extend.mixin'
+import renderBlotMixin from './render-blot.mixin'
 import lhUpload from '@/components/upload'
 import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
@@ -189,7 +191,7 @@ import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/serv
 require('./blot/index')
 
 export default {
-  mixins: [comMixins, comExtend, quillMixin],
+  mixins: [comMixin, renderBlotMixin, comExtend, quillMixin],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
@@ -215,6 +217,7 @@ export default {
     }
   },
   mounted() {
+    this.quillLoading = true
     this.setPageTitle()
   },
   methods: {
@@ -250,11 +253,17 @@ export default {
         if (res.status === 'true') {
           let resInfo = res.info
           this.formData = resInfo.platformSelection
+
+          // 最终解，先渲染，然后再替换
+          this.$nextTick(_ => {
+            this.renderQuillData()
+          })
         } else {
           this.setMsg('error', res.msg)
         }
       })
     },
+
     getSubmitParam() {
       this.ajaxParam = {
         id: this.formData.id,

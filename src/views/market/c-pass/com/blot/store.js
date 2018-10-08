@@ -3,7 +3,7 @@ import meeting from '../imgs/meeting.png'
 import station from '../imgs/station.png'
 
 export function renderStoreArrBlot(storeArr) {
-  if (!storeArr.length) return
+  if (!storeArr.length) return ''
   let storeArrDom = ''
   let imgDom = ''
   let distanceDom = ''

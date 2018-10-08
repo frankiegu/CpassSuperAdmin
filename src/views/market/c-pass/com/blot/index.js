@@ -6,12 +6,17 @@ import { renderFieldArrBlot } from './field'
 
 let BlockEmbed = Quill.import('blots/block/embed')
 
+// render数据，blot匹配插入字符串的样式，如果有对应的，就会执行生成的blot方法
+// 如插入字符串有选择器 field-box，则会执行 FieldArrBlot方法
+
+// 怎么传参？哪个地方可以插入？
+
 // 添加空间链接
 class FieldArrBlot extends BlockEmbed {
   static create(fieldArr) {
     const node = super.create()
     node.innerHTML = renderFieldArrBlot(fieldArr)
-    console.log('FieldArrBlot-node', node)
+    console.log('FieldArrBlot-node', fieldArr, renderFieldArrBlot(fieldArr), node)
 
     return node
   }
@@ -61,9 +66,14 @@ Quill.register(ArbitrarilyTitle)
 class BrandTitle extends BlockEmbed {
   static create(brandItm) {
     const node = super.create()
-    node.dataset.id = brandItm.id
-    node.innerHTML = renderBrandTitle(brandItm)
-    console.log('node', node)
+
+    if (typeof brandItm !== 'boolean') {
+      node.dataset.id = brandItm.id
+      node.innerHTML = renderBrandTitle(brandItm)
+    } else {
+      console.log('插入')
+    }
+    console.log('BrandTitle', brandItm, brandItm, node)
 
     return node
   }
@@ -103,4 +113,3 @@ FieldTitle.blotName = 'titleField'
 FieldTitle.tagName = 'div'
 FieldTitle.className = 'title-field'
 Quill.register(FieldTitle)
-

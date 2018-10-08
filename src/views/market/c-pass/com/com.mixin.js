@@ -66,7 +66,7 @@ export default {
       // 富文本编辑器输入字数上限
       quillMaxLength: 3000, // 富文本编辑器的length
       // 富文本框图片上传状态
-      quillUploadImg: false,
+      quillLoading: false,
       // 富文本框参数设置
       editorOption: {
         placeholder: ' ',
