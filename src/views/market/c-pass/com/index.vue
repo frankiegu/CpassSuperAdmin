@@ -197,7 +197,7 @@ import { $ } from '@/config/utils'
 import comMixin from './com.mixin'
 import quillMixin from './quill.mixin'
 import comExtend from './com-extend.mixin'
-// import renderBlotMixin from './render-blot.mixin'
+import updateQuill from './update-quill.mixin'
 import lhUpload from '@/components/upload'
 import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
@@ -205,7 +205,7 @@ import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/serv
 require('./blot/index')
 
 export default {
-  mixins: [comMixin, comExtend, quillMixin],
+  mixins: [comMixin, updateQuill, comExtend, quillMixin],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
@@ -271,11 +271,8 @@ export default {
 
           // 最终解，先渲染，然后再替换
           this.$nextTick(_ => {
-            const quillDom = $('.copy-quill-con')[0].innerHTML
-            $('.ql-editor')[0].innerHTML = quillDom
-            $('.p-con')[0].innerHTML = quillDom
-
-            this.quillLoading = false
+            // 刷新插入的数据
+            this.updateData()
           })
         } else {
           this.setMsg('error', res.msg)

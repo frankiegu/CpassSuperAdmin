@@ -92,7 +92,7 @@
     padding-right: 20px;
     margin-top: 8px;
 
-    .item {
+    .store-item {
       position: relative;
       margin: 0 auto;
       width: 100%;
@@ -235,7 +235,7 @@
     margin-bottom: 32px;
 
     /*列表项*/
-    .activities-item {
+    .field-one-item {
       margin-bottom: 30px;
       position: relative;
       width: 100%;
@@ -392,7 +392,7 @@
         }
       }
     }
-    .activities-item:nth-last-child(1) {
+    .field-one-item:nth-last-child(1) {
       margin-bottom: 0;
     }
   }
@@ -404,7 +404,7 @@
     white-space:nowrap;
     width: 100%;
 
-    .quill-field-item {
+    .field-list-item {
       margin-top: 26px;
       display:inline-block;
       width: 140px;
@@ -487,13 +487,13 @@
       }
 
     }
-    .quill-field-item + .quill-field-item {
+    .field-list-item + .field-list-item {
       margin-left: 15px;
     }
-    .quill-field-item:nth-of-type(1) {
+    .field-list-item:nth-of-type(1) {
       margin-left: 20px;
     }
-    .quill-field-item:nth-last-of-type(1) {
+    .field-list-item:nth-last-of-type(1) {
       margin-right: 20px;
     }
   }

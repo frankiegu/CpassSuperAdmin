@@ -16,7 +16,7 @@ class FieldArrBlot extends BlockEmbed {
   static create(fieldArr) {
     const node = super.create()
     node.innerHTML = renderFieldArrBlot(fieldArr)
-    console.log('FieldArrBlot-node', fieldArr, renderFieldArrBlot(fieldArr), node)
+    // console.log('FieldArrBlot-node', fieldArr, renderFieldArrBlot(fieldArr), node)
 
     return node
   }
@@ -31,7 +31,7 @@ class StoreArrBlot extends BlockEmbed {
   static create(storeArr) {
     const node = super.create()
     node.innerHTML = renderStoreArrBlot(storeArr)
-    console.log('StoreArrBlot-node', node)
+    // console.log('StoreArrBlot-node', node)
 
     return node
   }
@@ -71,9 +71,9 @@ class BrandTitle extends BlockEmbed {
       node.dataset.id = brandItm.id
       node.innerHTML = renderBrandTitle(brandItm)
     } else {
-      console.log('插入')
+      // console.log('插入')
     }
-    console.log('BrandTitle', brandItm, brandItm, node)
+    // console.log('BrandTitle', brandItm, brandItm, node)
 
     return node
   }
@@ -89,7 +89,7 @@ class StoreTitle extends BlockEmbed {
     const node = super.create()
     node.dataset.id = storeItm.id
     node.innerHTML = renderStoreTitle(storeItm)
-    console.log('storeTitle-node', node)
+    // console.log('storeTitle-node', node)
     return node
   }
 }
@@ -104,7 +104,7 @@ class FieldTitle extends BlockEmbed {
     const node = super.create()
     node.dataset.id = fieldItm.id
     node.innerHTML = renderFieldTitle(fieldItm)
-    console.log('fieldTitle-node', node)
+    // console.log('fieldTitle-node', node)
 
     return node
   }
