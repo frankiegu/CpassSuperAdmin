@@ -163,11 +163,25 @@
       </div>
     </el-form>
 
+    <div v-show="false" class="copy-quill-con" v-html="copyQuillCon"></div>
+
     <!-- 预览 -->
-    <cpass-preview
-      :dialogStatus="showPreview"
-      :content="formData.content"
-      @closeDialog="closeDialog" />
+    <transition name="fade">
+      <div class="component-cpass-preview" v-show="showPreview">
+        <div class="preview-box">
+          <div class="lh-phone">
+            <div class="p-con lh-quill-modules">
+              <div v-html="formData.content"></div>
+            </div>
+
+            <el-button @click="closeDialog" class="lh-btn-default width120px save-btn" plain>保存</el-button>
+            <el-button @click="closeDialog" class="lh-btn-default width120px close-btn" plain>关闭</el-button>
+          </div>
+        </div>
+
+        <div class="preview-mask"></div>
+      </div>
+    </transition>
 
     <!-- 添加、编辑空间团队 -->
     <select-field
@@ -179,23 +193,22 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { $ } from '@/config/utils'
 import comMixin from './com.mixin'
 import quillMixin from './quill.mixin'
 import comExtend from './com-extend.mixin'
-import renderBlotMixin from './render-blot.mixin'
+// import renderBlotMixin from './render-blot.mixin'
 import lhUpload from '@/components/upload'
 import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
-import cpassPreview from '../components/cpass-preview'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
 require('./blot/index')
 
 export default {
-  mixins: [comMixin, renderBlotMixin, comExtend, quillMixin],
+  mixins: [comMixin, comExtend, quillMixin],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
-    [cpassPreview.name]: cpassPreview,
     [selectField.name]: selectField
   },
   data () {
@@ -222,6 +235,7 @@ export default {
   },
   methods: {
     previewCon() {
+      $('.p-con')[0].innerHTML = $('.ql-editor')[0].innerHTML
       this.showPreview = true
     },
 
@@ -253,10 +267,15 @@ export default {
         if (res.status === 'true') {
           let resInfo = res.info
           this.formData = resInfo.platformSelection
+          this.copyQuillCon = resInfo.platformSelection.content
 
           // 最终解，先渲染，然后再替换
           this.$nextTick(_ => {
-            this.renderQuillData()
+            const quillDom = $('.copy-quill-con')[0].innerHTML
+            $('.ql-editor')[0].innerHTML = quillDom
+            $('.p-con')[0].innerHTML = quillDom
+
+            this.quillLoading = false
           })
         } else {
           this.setMsg('error', res.msg)
@@ -270,7 +289,7 @@ export default {
         title: this.formData.title,
         subhead: this.formData.subhead,
         bannerPath: this.formData.bannerPath,
-        content: this.formData.content
+        content: $('.ql-editor')[0].innerHTML || ''
       }
       // console.log('test', this.ajaxParam)
     },
@@ -322,9 +341,10 @@ export default {
 </script>
 
 <style lang="scss">
-  .lh-main {
-    padding-bottom: 89px !important;
-  }
+.lh-main {
+  padding-bottom: 89px !important;
+}
 </style>
 <style lang="scss" scoped src='./com.scss'></style>
 <style lang="scss" src='../com.scss'></style>
+<style lang="scss" src='./cpass-preview.scss'></style>

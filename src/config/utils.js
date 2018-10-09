@@ -3,6 +3,18 @@ import router from '@/router'
 import { PHONEREG } from './env'
 
 /**
+ * 模仿JQuery $
+ * @param {String} selector id、选择器
+ * @param {DOM} context 父节点
+ * @return {DOM} return 返回获取的DOM节点
+ */
+export const $ = function (selector, context) {
+  context = context || document
+  var element = context.querySelectorAll(selector)
+  return Array.prototype.slice.call(element)
+}
+
+/**
  * 对象深拷贝
  *
  * @param {Object} obj - 传递一个待拷贝的对象
