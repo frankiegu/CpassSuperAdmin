@@ -17,7 +17,7 @@ export function renderFieldArrBlot(fieldData) {
         }
       }
 
-      fieldArrDom += `<div class="field-list-item" data-id="${item.fieldItm.id}">
+      fieldArrDom += `<div class="field-list-item field-flag" data-id="${item.fieldItm.id}">
         <div class="quill-field-img-wrapper">
           <img class="quill-field-img-wrapper" src="${item.fieldItm.mainImgUrl  + '?x-oss-process=image/resize,l_640'}">
         </div>
@@ -41,7 +41,7 @@ export function renderFieldArrBlot(fieldData) {
     }
     // 单个
     fieldArrDom = `<div class="field-one">
-      <div class="field-one-item" data-id="${fieldItm.id}">
+      <div class="field-one-item field-flag" data-id="${fieldItm.id}">
         <div class="item-pic">
           <img src="${fieldItm.mainImgUrl  + '?x-oss-process=image/resize,l_640'}">
         </div>

@@ -22,7 +22,7 @@ export function renderStoreArrBlot(storeArr) {
     // 静态icon
     distanceDom = `<div class="distance">距您${item.storeItm.distance ? item.storeItm.distance : '-m'}</div>`
 
-    storeArrDom += (`<div class="store-item" data-id="${item.storeItm.id}">
+    storeArrDom += (`<div class="store-item store-flag" data-id="${item.storeItm.id}">
       <div class="img-wrapper">${imgDom}</div>
       <div class="name">${item.storeItm.storeName}</div>
       <div class="addr">${item.storeItm.cityName}${item.storeItm.districtName}${item.storeItm.address}</div>
