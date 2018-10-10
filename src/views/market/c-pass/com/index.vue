@@ -281,12 +281,20 @@ export default {
     },
 
     getSubmitParam() {
+      $('.copy-quill-con')[0].innerHTML = $('.ql-editor')[0].innerHTML
+
+
+      // 删除已关闭DOM
+      $('.copy-quill-con .quill-close').forEach((itm, idx) => {
+        itm.parentNode.removeChild(itm)
+      })
+
       this.ajaxParam = {
         id: this.formData.id,
         title: this.formData.title,
         subhead: this.formData.subhead,
         bannerPath: this.formData.bannerPath,
-        content: $('.ql-editor')[0].innerHTML || ''
+        content: $('.copy-quill-con')[0].innerHTML || ''
       }
       // console.log('test', this.ajaxParam)
     },

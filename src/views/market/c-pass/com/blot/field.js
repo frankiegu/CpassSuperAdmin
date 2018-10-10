@@ -51,7 +51,7 @@ export function renderFieldArrBlot(fieldData) {
             <span class="distance">
               ${fieldTypeDom}
               <span class="city-name">${fieldItm.cityName}</span>
-              <span>·距您${fieldItm.distance ? fieldItm.distance : '-m'}</span>
+              <span class="field-distance-unique">·距您${fieldItm.distance ? fieldItm.distance : '-m'}</span>
             </span>
             <span class="price">
               <span class="price-statics">¥${fieldItm.priceRange || 0}</span>
