@@ -34,6 +34,8 @@ export default {
       // 图片上传地址
       imgServer: API_PATH + '/supervisor/file/upload',
 
+      updateSpaces: null,
+
       copyQuillCon: null,
       formData: {
         id: null,
@@ -42,8 +44,8 @@ export default {
         bannerPath: null,
         content: null,
         authorName: null,
-        link: null,
-        switch: true,
+        selectionLink: null,
+        styleSwitch: 1,
 
         status: null,
         pvCount: null,

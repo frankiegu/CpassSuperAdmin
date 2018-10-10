@@ -11,7 +11,7 @@ export default {
     replaceDom() {
       const quillDom = $('.copy-quill-con')[0].innerHTML
       $('.ql-editor')[0].innerHTML = quillDom
-      $('.p-con')[0].innerHTML = quillDom
+      $('.preview-html')[0].innerHTML = quillDom
 
       this.quillLoading = false
     },

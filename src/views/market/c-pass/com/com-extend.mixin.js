@@ -1,10 +1,5 @@
 export default {
   methods: {
-    closeDialog() {
-      console.log('closeDialog');
-
-      this.showPreview = false
-    },
     showInsertDialog(type) {
       if (this.noAllow) return
 

@@ -130,8 +130,7 @@
 
         <el-form-item label="精选外链">
           <el-input
-            v-model.trim="formData.link"
-            :maxlength="20"
+            v-model.trim="formData.selectionLink"
             :disabled="noAllow"
             class="width340px"
             placeholder="若填写外链后，则不读取精选内容，以外链内容展示"></el-input>
@@ -139,10 +138,10 @@
 
         <el-form-item label="样式设置" class="lh-form-item0">
           <el-switch
-            v-model="formData.switch"
+            v-model="formData.styleSwitch"
             :inactive-value="0"
-            :disabled="noAllow"
-            :active-value="1"></el-switch>
+            :active-value="1"
+            :disabled="noAllow"></el-switch>
           <span class="theme-light-gray ml10">在页面中展示“标题”“副标题”“作者名称”等头部信息</span>
         </el-form-item>
       </div>
@@ -150,6 +149,7 @@
       <div class="submit-fixed-bottom">
         <el-button
           @click="previewCon"
+          :disabled="quillLoading"
           :class="{'ml427': sidebar.opened, 'ml271': !sidebar.opened}"
           class="lh-btn-default mr12"
           plain>预览</el-button>
@@ -157,6 +157,7 @@
         <el-button
           @click="submitForm('formData')"
           type="primary"
+          :disabled="quillLoading"
           class="lh-btn-default">
           {{ noAllow ? '编辑' : '保存' }}
         </el-button>
@@ -170,12 +171,19 @@
       <div class="component-cpass-preview" v-show="showPreview">
         <div class="preview-box">
           <div class="lh-phone">
-            <div class="p-con lh-quill-modules">
-              <div v-html="formData.content"></div>
+            <div class="p-con">
+              <iframe v-if="formData.selectionLink" class="preview-iframe" :src="formData.selectionLink" frameborder="0"></iframe>
+              <div v-else class="lh-quill-modules preview-html" v-html="formData.content"></div>
             </div>
 
-            <el-button @click="closeDialog" class="lh-btn-default width120px save-btn" plain>保存</el-button>
-            <el-button @click="closeDialog" class="lh-btn-default width120px close-btn" plain>关闭</el-button>
+            <el-button
+              @click="submitForm('formData')"
+              class="lh-btn-default width120px save-btn"
+              plain>{{ noAllow ? '编辑' : '保存' }}</el-button>
+            <el-button
+              @click="showPreview = false"
+              class="lh-btn-default width120px close-btn"
+              plain>关闭</el-button>
           </div>
         </div>
 
@@ -202,6 +210,8 @@ import lhUpload from '@/components/upload'
 import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
 import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
+import cpassLogo from './imgs/cpass-logo-featured.png'
+
 require('./blot/index')
 
 export default {
@@ -235,7 +245,26 @@ export default {
   },
   methods: {
     previewCon() {
-      $('.p-con')[0].innerHTML = $('.ql-editor')[0].innerHTML
+      if (!this.formData.selectionLink) {
+        let previewDom = ''
+        if (this.formData.styleSwitch) {
+          previewDom += `<div class="featured-content">
+            <h3 class="featured-title">${this.formData.title}</h3>
+            <div class="clearfix">
+              <p class="sub-title fl">
+                <img src="${cpassLogo}" class="cpass-logo">
+                <span class="cpass-name">${this.formData.authorName || 'CPASS'}</span>
+                <span class="publish-date">今天</span>
+              </p>
+              <p class="read-times fr">阅读数 100</p>
+            </div>
+          </div>`
+        }
+
+        previewDom += $('.ql-editor')[0].innerHTML
+        $('.preview-html')[0].innerHTML = previewDom
+      }
+
       this.showPreview = true
     },
 
@@ -282,7 +311,6 @@ export default {
 
     getSubmitParam() {
       $('.copy-quill-con')[0].innerHTML = $('.ql-editor')[0].innerHTML
-
 
       // 删除已关闭DOM
       $('.copy-quill-con .quill-close').forEach((itm, idx) => {
