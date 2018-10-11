@@ -1,9 +1,19 @@
 @import "src/styles/config";
+
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+  color: #5A72F6 !important;
+}
 .lh-quill-modules, .component-cpass-preview {
   padding: 0 0 25px;
   box-sizing: border-box;
 
-  // 关闭或删除状态
+  .ql-snow .ql-stroke {
+    stroke: #979797;
+  }
+  .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+    fill: #979797;
+  }
+  /* 关闭或删除状态 */
   .quill-close {
     position: absolute; z-index: 1;
     top: 0;
@@ -12,6 +22,7 @@
     height: 100%;
     font-size: 16px;
     color: $theme-red;
+    font-weight: bold;
 
     background-color: #ffffff82;
     border: 1px solid $theme-red;
@@ -88,8 +99,11 @@
     @include com;
 
     .quill-close {
+      background-color: #ffffffc9;
       width: calc(100% - 40px);
       margin-left: 20px;
+      font-weight: normal;
+      font-size: 14px;
     }
     img {
       width: 22px;
@@ -616,8 +630,7 @@
 
     .featured-title {
       color: rgba(51,51,51,1);
-      font-size: 22px;
-      font-weight: bold;
+      font-weight: normal;
     }
     .sub-title {
       margin-top: 8px;

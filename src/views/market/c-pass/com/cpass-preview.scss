@@ -42,7 +42,8 @@
   .close-btn {
     @include com;
     bottom: 90px;
-    left: -146px;
+    left: -136px;
+    margin-left: 0;
   }
   .save-btn {
     @include com;

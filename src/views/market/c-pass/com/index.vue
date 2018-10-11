@@ -24,7 +24,6 @@
           v-model.trim="formData.authorName"
           :maxlength="5"
           :disabled="noAllow"
-          type="textarea"
           class="width340px"
           placeholder="请输入作者名称"></el-input>
       </el-form-item>
@@ -108,7 +107,17 @@
                   </span>
 
                   <span class="ql-formats">
-                    <button class="ql-link"></button>
+                    <select class="ql-color">
+                      <option v-for="(itm, idx) in colorBgc" :key="idx" :value="itm" />
+                    </select>
+
+                    <select class="ql-background">
+                      <option v-for="(itm, idx) in colorBgc" :key="idx" :value="itm" />
+                    </select>
+                  </span>
+
+                  <span class="ql-formats">
+                    <!-- <button class="ql-link"></button> -->
                     <button class="ql-image"></button>
                   </span>
                 </div>
@@ -184,6 +193,7 @@
             </div>
 
             <el-button
+              v-if="!noAllow"
               @click="submitForm('formData')"
               class="lh-btn-default width120px save-btn"
               plain>{{ noAllow ? '编辑' : '保存' }}</el-button>
@@ -339,7 +349,7 @@ export default {
         selectionLink: this.formData.selectionLink,
         styleSwitch: this.formData.styleSwitch
       }
-      console.log('test', this.ajaxParam)
+      // console.log('test', this.ajaxParam)
     },
     submitForm(formName) {
       if (this.noAllow) {
