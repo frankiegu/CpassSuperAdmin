@@ -20,7 +20,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 2px;
+    border-radius: 6px;
+  }
+  .ql-toolbar + .ql-container {
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+  }
+  .ql-toolbar {
+    border-top: 0;
+    border-left: 0;
   }
   .ql-editor {
     padding-left: 0;
@@ -467,6 +476,7 @@
         -ms-text-overflow: ellipsis;
         text-overflow: ellipsis;
         margin-top: 15px;
+        height: 22px;
         font-size: 16px;
         color: rgba(51,51,51,1);
         text-align: left;

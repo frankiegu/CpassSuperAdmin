@@ -71,6 +71,7 @@
         <el-form-item class="m-detail" label="精选内容" prop="content">
           <div class="editor-box">
             <div class="quill-editor-box fl">
+              <!-- 历史记录和剪贴板，暂时没有实现 -->
               <quill-editor
                 v-model.trim="formData.content"
                 @change="onTextChange($event)"
@@ -132,7 +133,7 @@
           <el-input
             v-model.trim="formData.selectionLink"
             :disabled="noAllow"
-            class="width340px"
+            class="select-link"
             placeholder="若填写外链后，则不读取精选内容，以外链内容展示"></el-input>
         </el-form-item>
 
@@ -172,7 +173,13 @@
         <div class="preview-box">
           <div class="lh-phone">
             <div class="p-con">
-              <iframe v-if="formData.selectionLink" class="preview-iframe" :src="formData.selectionLink" frameborder="0"></iframe>
+              <iframe
+                v-if="formData.selectionLink"
+                class="preview-iframe"
+                :src="formData.selectionLink"
+                width="319px"
+                height="563px"
+                frameborder="0"></iframe>
               <div v-else class="lh-quill-modules preview-html" v-html="formData.content"></div>
             </div>
 
@@ -256,13 +263,18 @@ export default {
                 <span class="cpass-name">${this.formData.authorName || 'CPASS'}</span>
                 <span class="publish-date">今天</span>
               </p>
-              <p class="read-times fr">阅读数 100</p>
+              <p class="read-times fr">阅读数 ${this.formData.pvCount}</p>
             </div>
           </div>`
         }
 
         previewDom += $('.ql-editor')[0].innerHTML
         $('.preview-html')[0].innerHTML = previewDom
+
+        // 隐藏已经关闭的项
+        $('.preview-html .quill-close').forEach((itm, idx) => {
+          itm.parentNode.parentNode.removeChild(itm.parentNode)
+        })
       }
 
       this.showPreview = true
@@ -322,9 +334,12 @@ export default {
         title: this.formData.title,
         subhead: this.formData.subhead,
         bannerPath: this.formData.bannerPath,
-        content: $('.copy-quill-con')[0].innerHTML || ''
+        content: $('.copy-quill-con')[0].innerHTML || '',
+        authorName: this.formData.authorName,
+        selectionLink: this.formData.selectionLink,
+        styleSwitch: this.formData.styleSwitch
       }
-      // console.log('test', this.ajaxParam)
+      console.log('test', this.ajaxParam)
     },
     submitForm(formName) {
       if (this.noAllow) {

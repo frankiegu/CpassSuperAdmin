@@ -17,8 +17,8 @@
     min-width: 747px;
     max-width: 747px;
     min-height: 380px;
-    border-bottom: 1px solid $border-gray;
-    border-right: 1px solid $border-gray;
+    // border-bottom: 1px solid $border-gray;
+    // border-right: 1px solid $border-gray;
     box-shadow: 0 1px 6px 0 rgba(0,21,41,.12);
     overflow: hidden;
 
@@ -40,9 +40,6 @@
         height: calc(100% - 48px);
         background-color: #fff;
       }
-      // .ql-toolbar.ql-snow, .ql-container.ql-snow {
-      //   border: none !important;
-      // }
     }
     .insert-list {
       float: left;
@@ -50,7 +47,7 @@
       width: 211px;
       min-height: 456px;
       padding: 0 20px;
-      border-top: 1px solid $border-grayish;
+      // border-top: 1px solid $border-grayish;
       background-color: $theme-white;
       box-sizing: border-box;
 
@@ -94,7 +91,13 @@
       }
     }
   }
+  .select-link {
+    width: 748px;
+  }
   @media screen and (min-width: 1365px) {
+    .select-link {
+      width: 802px;
+    }
     .editor-box {
       min-width: 802px;
       max-width: 802px;
@@ -105,6 +108,9 @@
     }
   }
   @media screen and (min-width: 1439px) {
+    .select-link {
+      width: 907px;
+    }
     .editor-box {
       min-width: 907px;
       max-width: 907px;
@@ -115,6 +121,9 @@
     }
   }
   @media screen and (min-width: 1600px) {
+    .select-link {
+      width: 1067px;
+    }
     .editor-box {
       min-width: 1067px;
       max-width: 1067px;

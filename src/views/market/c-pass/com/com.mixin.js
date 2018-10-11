@@ -45,7 +45,7 @@ export default {
         content: null,
         authorName: null,
         selectionLink: null,
-        styleSwitch: 1,
+        styleSwitch: 0,
 
         status: null,
         pvCount: null,
