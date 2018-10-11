@@ -261,19 +261,34 @@ export default {
     this.setPageTitle()
   },
   methods: {
+    getPublishDate () {
+      let actual = new Date(this.formData.created).valueOf()
+      let now = Date.now()
+      let day = (now - actual) / (24 * 60 * 60 * 1000)
+      if (day > 0 && day < 1) {
+        this.displayPublishDate = '今天'
+      } else if (day < 2 && day >= 1) {
+        this.displayPublishDate = '昨天'
+      } else {
+        this.displayPublishDate = this.formData.created
+      }
+      console.log('date', [actual, now, now - actual])
+    },
     previewCon() {
       if (!this.formData.selectionLink) {
         let previewDom = ''
+        this.getPublishDate()
+
         if (this.formData.styleSwitch) {
           previewDom += `<div class="featured-content">
             <h3 class="featured-title">${this.formData.title}</h3>
             <div class="clearfix">
-              <p class="sub-title fl">
+              <div class="sub-title fl">
                 <img src="${cpassLogo}" class="cpass-logo">
                 <span class="cpass-name">${this.formData.authorName || 'CPASS'}</span>
-                <span class="publish-date">今天</span>
-              </p>
-              <p class="read-times fr">阅读数 ${this.formData.pvCount}</p>
+                <span class="publish-date">${this.displayPublishDate}</span>
+              </div>
+              <div class="read-times fr">阅读数 ${this.formData.pvCount}</div>
             </div>
           </div>`
         }
@@ -319,6 +334,7 @@ export default {
           let resInfo = res.info
           this.formData = resInfo.platformSelection
           this.copyQuillCon = resInfo.platformSelection.content
+          this.formData.created = resInfo.platformSelection.created.split(' ')[0]
 
           // 最终解，先渲染，然后再替换
           this.$nextTick(_ => {

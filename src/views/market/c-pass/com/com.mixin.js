@@ -37,6 +37,7 @@ export default {
       updateSpaces: null,
 
       copyQuillCon: null,
+      displayPublishDate: null,
       formData: {
         id: null,
         title: null,
