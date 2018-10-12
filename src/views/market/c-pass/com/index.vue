@@ -101,6 +101,17 @@
                   </span>
 
                   <span class="ql-formats">
+                    <select class="ql-header">
+                      <option value="6">12px</option>
+                      <option value="5">14px</option>
+                      <option value="4">16px</option>
+                      <option value="3">18px</option>
+                      <option value="2">20px</option>
+                      <option value="1">24px</option>
+                    </select>
+                  </span>
+
+                  <span class="ql-formats">
                     <select class="ql-align">
                       <option value=""></option>
                       <option value="center"></option>
@@ -385,10 +396,10 @@ export default {
           break
       }
 
-      console.log('type', this.insertType);
+      // console.log('type', this.insertType);
     },
     closeInsertDialog(insertData) {
-      console.log('closeInsertDialog', insertData);
+      // console.log('closeInsertDialog', insertData);
       this.showInsert = false
 
       if (!insertData) return
@@ -430,7 +441,7 @@ export default {
       } else {
         this.displayPublishDate = this.formData.created
       }
-      console.log('date', [actual, now, now - actual])
+      // console.log('date', [actual, now, now - actual])
     },
     // 预览内容替换
     previewQuillCon() {

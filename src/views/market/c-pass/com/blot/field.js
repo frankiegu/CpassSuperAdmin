@@ -6,7 +6,7 @@ export function renderFieldArrBlot(fieldData) {
   if (!fieldData.length) return ''
   let fieldArrDom = ''
   let fieldTypeDom
-  console.log('fieldData', fieldData);
+  // console.log('fieldData', fieldData);
 
   if (fieldData.length > 1) {
     fieldArrDom = `<div class="field-list">`
@@ -31,7 +31,7 @@ export function renderFieldArrBlot(fieldData) {
     }
 
     fieldArrDom += `</div>`
-    console.log('fieldArrDom', fieldArrDom);
+    // console.log('fieldArrDom', fieldArrDom);
   } else {
     const fieldItm = fieldData[0].fieldItm
     for (const itm of typeList) {

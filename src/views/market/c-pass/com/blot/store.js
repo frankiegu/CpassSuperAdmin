@@ -9,7 +9,7 @@ export function renderStoreArrBlot(storeArr) {
   let distanceDom = ''
 
   for (const item of storeArr) {
-    console.log('storeArr----item', item.storeItm);
+    // console.log('storeArr----item', item.storeItm);
 
     // 空态图
     imgDom = ''
@@ -42,7 +42,7 @@ export function renderStoreArrBlot(storeArr) {
       </div>
     </div>`)
 
-    console.log('storeArrDom', storeArrDom);
+    // console.log('storeArrDom', storeArrDom);
   }
 
   return storeArrDom

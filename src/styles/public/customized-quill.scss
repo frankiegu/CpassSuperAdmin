@@ -124,6 +124,27 @@
     border-radius: 7px;
     margin: 26px auto 0;
   }
+  .ql-snow .ql-picker.ql-header {
+    width: 65px;
+  }
+  .ql-toolbar.ql-snow .ql-formats {
+    margin-right: 10px;
+  }
+  .ql-snow .ql-picker.ql-header .ql-picker-label[data-label]:not([data-label=''])::before {
+    transform: translateY(-1px)
+  }
+  .ql-editor {
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 22px;
+      line-height: 28px;
+    }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 18px; }
+    h4 { font-size: 16px; }
+    h5 { font-size: 14px; }
+    h6 { font-size: 12px; }
+  }
   /* 关闭或删除状态 */
   .quill-close {
     position: absolute; z-index: 1;
