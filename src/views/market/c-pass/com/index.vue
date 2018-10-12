@@ -15,6 +15,7 @@
         <el-input
           placeholder="请输入精选标题"
           v-model.trim="formData.title"
+          @blur="clearEmoji('title')"
           :maxlength="30"
           :disabled="noAllow"
           class="width340px"></el-input>
@@ -24,6 +25,7 @@
         <el-input
           v-model.trim="formData.subhead"
           :maxlength="15"
+          @blur="clearEmoji('subhead')"
           placeholder="请输入副标题"
           :disabled="noAllow"
           class="width340px"></el-input>
@@ -229,6 +231,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { $ } from '@/config/utils'
+import { REG_EMOJI } from '@/config/env';
 import comMixin from './com.mixin'
 import quillMixin from './quill.mixin'
 import updateQuill from './update-quill.mixin'
@@ -271,6 +274,13 @@ export default {
     this.setPageTitle()
   },
   methods: {
+    clearEmoji(type) {
+      if (type === 'title') {
+        this.formData.title = this.formData.title.replace(REG_EMOJI, '')
+      } else {
+        this.formData.subhead = this.formData.subhead.replace(REG_EMOJI, '')
+      }
+    },
     setTitleName() {
       this.title = this.noAllow ? '精选详情' : (this.fieldId ? '编辑精选' : '添加精选')
       document.title = this.title

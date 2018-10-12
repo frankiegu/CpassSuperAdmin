@@ -2,7 +2,7 @@ import { cPassFindUseStore, cPassFindUseField, cPassFindUseSpace } from '@/servi
 export default {
   methods: {
     getSpaces() {
-      console.log('getSpaces', this.dialogData.titleType, this.insertType);
+      // console.log('getSpaces', this.dialogData.titleType, this.insertType);
 
       cPassFindUseSpace().then(res => {
         if (res.status === 'true') {
@@ -11,7 +11,7 @@ export default {
             case 'title':
               // 标题类型，已经在change时区分了
               this.brandList = resInfo
-              console.log(1);
+              // console.log(1);
               break
             case 'store':
             case 'field':
@@ -40,7 +40,7 @@ export default {
           switch (this.insertType) {
             case 'title':
               this.storeList = resInfo
-              console.log('getStores', this.storeList)
+              // console.log('getStores', this.storeList)
               break
             case 'store':
             case 'field':
@@ -55,11 +55,18 @@ export default {
                   this.dialogData.addArr[brandIdx - 1].storeItm = itm
                 }
               }
-              console.log('storeItm', this.dialogData.addArr[brandIdx - 1].storeItm);
+
+              if (this.insertType === 'field') {
+                if (this.dialogData.addArr[brandIdx - 1].fieldId) {
+                  this.dialogData.addArr[brandIdx - 1].fieldId = null
+                  this.dialogData.addArr[brandIdx - 1].fieldItm = null
+                }
+              }
+              // console.log('storeItm', this.dialogData.addArr[brandIdx - 1].storeItm, this.dialogData.addArr[brandIdx - 1]);
               break
           }
 
-          console.log('getStores', brandIdx);
+          // console.log('getStores', brandIdx);
         } else {
           this.setMsg('error', res.msg)
         }
@@ -68,7 +75,7 @@ export default {
 
     getFields(storeIdx) {
       var addArr = this.dialogData.addArr
-      console.log('getFields', addArr, storeIdx, addArr[storeIdx - 1]);
+      // console.log('getFields', addArr, storeIdx, addArr[storeIdx - 1]);
 
       cPassFindUseField({
         storeId: (this.insertType === 'title') ? this.dialogData.storeId : addArr[storeIdx - 1].storeId
@@ -81,6 +88,9 @@ export default {
               break
             case 'field':
               if (storeIdx) {
+                if (this.dialogData.addArr[storeIdx - 1].fieldId) {
+                  this.dialogData.addArr[storeIdx - 1].fieldId = null
+                }
                 this.dialogData.addArr[storeIdx - 1].fieldList = resInfo
               } else {
                 this.dialogData.addArr[0].fieldList = resInfo

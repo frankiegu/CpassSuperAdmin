@@ -198,7 +198,7 @@ export default {
   watch: {
     dialogStatus: function(val, oldVal) {
       if (val) {
-        console.log('watch-showDialog', this.dialogData);
+        // console.log('watch-showDialog', this.dialogData);
         switch (this.insertType) {
           case 'store':
           case 'field':
@@ -213,7 +213,7 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        console.log('submitForm', valid, this.dialogData);
+        // console.log('submitForm', valid, this.dialogData);
         if (valid) {
           this.closeDialog('save')
         } else {
@@ -222,7 +222,7 @@ export default {
     },
 
     closeDialog(type) {
-      console.log('closeDialog', this.insertType, this.dialogData.titleType, this.dialogData)
+      // console.log('closeDialog', this.insertType, this.dialogData.titleType, this.dialogData)
 
       if (type !== 'save') {
         this.$emit('closeInsertDialog')

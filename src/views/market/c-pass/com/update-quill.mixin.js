@@ -29,9 +29,9 @@ export default {
           // 请求接口的数据，已下架或已删除，请求则不返回，数量就会减少，所以以详情返回内容为大条件
           titleBrandDom.forEach((list, i) => {
             this.updateSpaces.forEach((brandItm, idx) => {
-              // console.log('未关闭的项 brandItm---brand', titleBrandDom.length, titleBrandDom, brandItm);
+              // console.log('未关闭的项 brandItm---brand', list.dataset.id, brandItm.id, titleBrandDom.length, list.dataset.id, brandItm);
               if (list.dataset.id == brandItm.id) {
-                $('.copy-quill-con .title-brand')[idx].innerHTML = `<img src="${brandItm.spaceLogo}">
+                $('.copy-quill-con .title-brand')[i].innerHTML = `<img src="${brandItm.spaceLogo}">
                 <div class="title-name">
                   <span class="name">${brandItm.spaceName}</span>
                   <div class="num">共${brandItm.storeCount || 0}个门店</div>
@@ -74,7 +74,7 @@ export default {
           storesData.forEach((storeItm, idx) => {
             // 未关闭的项
             if (list == storeItm.id) {
-              $('.copy-quill-con .title-store')[idx].innerHTML = `<img src="${storeItm.imgUrl}">
+              $('.copy-quill-con .title-store')[i].innerHTML = `<img src="${storeItm.imgUrl}">
               <div class="title-name">
                 <div class="name">${storeItm.storeName}</div>
               </div>`
@@ -283,9 +283,7 @@ export default {
         let fieldTypeDom = ''
         let fieldArrDom = ''
         fieldData.forEach((fieldItm, idx) => {
-          if (fieldArr[idx] != fieldItm.id) {
-            // $('.copy-quill-con .field-list-item')[idx].insertAfter(``)
-          } else {
+          if (fieldArr[idx] == fieldItm.id) {
             fieldArrDom = ''
 
             for (const itm of typeList) {
