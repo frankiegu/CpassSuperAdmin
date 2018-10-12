@@ -1,7 +1,7 @@
 <!-- 富文本编辑器-升级 -->
 <template>
   <div class="page-market-c-pass-com">
-    <lh-title :title="title"></lh-title>
+    <lh-title :title="title" />
 
     <el-form
       :model="formData"
@@ -12,20 +12,30 @@
       label-position="right"
       class="card-padding pv32">
       <el-form-item prop="title" label="精选标题">
-        <el-input class="width340px" v-model.trim="formData.title" :disabled="noAllow" :maxlength="30" placeholder="请输入精选标题"></el-input>
+        <el-input
+          placeholder="请输入精选标题"
+          v-model.trim="formData.title"
+          :maxlength="30"
+          :disabled="noAllow"
+          class="width340px"></el-input>
       </el-form-item>
 
       <el-form-item prop="subhead" label="副标题">
-        <el-input class="width340px" v-model.trim="formData.subhead" :disabled="noAllow" :maxlength="15" placeholder="请输入副标题"></el-input>
+        <el-input
+          v-model.trim="formData.subhead"
+          :maxlength="15"
+          placeholder="请输入副标题"
+          :disabled="noAllow"
+          class="width340px"></el-input>
       </el-form-item>
 
       <el-form-item label="作者名称">
         <el-input
           v-model.trim="formData.authorName"
+          placeholder="请输入作者名称"
           :maxlength="5"
           :disabled="noAllow"
-          class="width340px"
-          placeholder="请输入作者名称"></el-input>
+          class="width340px"></el-input>
       </el-form-item>
 
       <el-form-item prop="bannerPath" label="活动banner">
@@ -51,7 +61,7 @@
       <div class="limit-words-box">
         <!--上传图片辅助控件-->
         <el-upload ref="refCom"
-          id="quill-upload"
+          class="quill-upload"
           :action="imgServer"
           name="file"
           :headers="headers"
@@ -60,11 +70,11 @@
           :before-upload='quillBeforeUploadImg'
           :on-success="quillHandleAvatarSuccess">
         </el-upload>
-        <!-- <div class="limit-words-in">
+        <div class="limit-words-in">
           <div class="limit-words theme-gray">
             <p class="fz12">{{quillLength}}/{{quillMaxLength}}</p>
           </div>
-        </div> -->
+        </div>
 
         <!-- 精选内容 -->
         <el-form-item class="m-detail" label="精选内容" prop="content">
@@ -72,12 +82,12 @@
             <div class="quill-editor-box fl">
               <!-- 历史记录和剪贴板，暂时没有实现 -->
               <quill-editor
+                ref="myQuillEditor"
                 v-model.trim="formData.content"
                 @change="onTextChange($event)"
                 :options="editorOption"
                 :disabled="noAllow"
-                ref="myQuillEditor"
-                class="lh-quill lh-quill-modules">
+                class="lh-quill-modules">
                 <div class="lh-toolbar" slot="toolbar">
                   <span class="ql-formats">
                     <span @click="insertDivider" class="ql-divider ql-btn">

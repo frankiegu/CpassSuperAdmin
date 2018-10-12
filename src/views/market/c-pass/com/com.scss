@@ -1,13 +1,11 @@
 @import "src/styles/config";
 
 .page-market-c-pass-com {
-  .copy-quill-con {
+  .copy-quill-con, .quill-upload {
     width: 0;
     height: 0;
-  }
-
-  .lh-quill {
-    padding: 0;
+    visibility: hidden;
+    overflow: hidden;
   }
   .m-detail {
     min-height: 380px;
@@ -94,6 +92,11 @@
   .select-link {
     width: 747px;
   }
+  .tip-style {
+    position: absolute;
+    top: 20px;
+    margin-left: 15px;
+  }
   @media screen and (min-width: 1365px) {
     .select-link {
       width: 802px;
@@ -132,18 +135,5 @@
         width: 856px;
       }
     }
-  }
-
-  .card-padding {
-    padding-right: 32px;
-    // padding-right: 111px;
-  }
-  #quill-upload {
-    height: 0;
-  }
-  .tip-style {
-    position: absolute;
-    top: 20px;
-    margin-left: 15px;
   }
 }
