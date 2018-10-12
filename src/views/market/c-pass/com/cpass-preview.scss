@@ -6,6 +6,24 @@
   height: 100%;
   z-index: $z-index-fixed;
 
+  .lh-quill-modules {
+    padding: 0 20px 25px;
+    box-sizing: border-box;
+  }
+  ul, ol {
+    padding-left: 1.5em;
+  }
+  ul li {
+    list-style: disc;
+  }
+  ol li {
+    list-style: decimal;
+  }
+  /* 预览iframe */
+  .preview-iframe {
+    width: 100%;
+    height: 100%;
+  }
   .preview-box {
     position: fixed; z-index: 1;
     top: 50%;
@@ -34,7 +52,6 @@
       overflow: auto;
     }
   }
-
   @mixin com {
     position: absolute;
     text-align: center;
@@ -50,7 +67,6 @@
     bottom: 132px;
     left: -136px;
   }
-
   .el-carousel {
     position: absolute;
     min-height: 300px;
@@ -62,5 +78,81 @@
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+  }
+  /* 预览头部 */
+  .featured-content {
+    padding: 36px 0 15px;
+
+    .featured-title {
+      color: rgba(51,51,51,1);
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .sub-title {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #818490;
+      line-height: 24px;
+      width: 71%;
+      overflow: hidden;
+      white-space: nowrap;
+      -ms-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      position: relative;
+      padding-left: 22px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .cpass-logo {
+        display: block;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1px solid #f2f2f2;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        margin: 0 auto;
+      }
+      .cpass-name {
+        margin-left: 6px;
+        font-size: 13px;
+        color: rgba(51,51,51,1);
+        line-height: 26px;
+        display: block;
+        float: left;
+        max-width: 46%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .publish-date {
+        float: left;
+        display: block;
+        max-width: 54%;
+        font-size: 13px;
+        color: rgba(129,132,144,1);
+        margin-left: 6px;
+        line-height: 26px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+    .read-times {
+      width: 29%;
+      text-align: right;
+      line-height: 26px;
+      margin-top: 8px;
+      font-size: 13px;
+      font-family: PingFangSC-Regular;
+      color:rgba(129,132,144,1);
+      white-space: nowrap;
+      -ms-word-break: break-all;
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }

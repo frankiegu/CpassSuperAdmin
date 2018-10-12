@@ -168,7 +168,7 @@
 
       <div class="submit-fixed-bottom">
         <el-button
-          @click="previewCon"
+          @click="previewQuillCon"
           :disabled="quillLoading"
           :class="{'ml427': sidebar.opened, 'ml271': !sidebar.opened}"
           class="lh-btn-default mr12"
@@ -231,18 +231,18 @@ import { mapGetters } from 'vuex'
 import { $ } from '@/config/utils'
 import comMixin from './com.mixin'
 import quillMixin from './quill.mixin'
-import comExtend from './com-extend.mixin'
 import updateQuill from './update-quill.mixin'
 import lhUpload from '@/components/upload'
-import { quillEditor, Quill } from 'vue-quill-editor' // 调用编辑器
 import selectField from '../components/select-field'
-import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
+import { quillEditor, Quill } from 'vue-quill-editor'
 import cpassLogo from './imgs/cpass-logo-featured.png'
+import { cPassEditDetail, cPassEditWellChosen, cPassAddWellChosen } from '@/service/market'
 
+// 自定义quill 插入节点
 require('./blot/index')
 
 export default {
-  mixins: [comMixin, updateQuill, comExtend, quillMixin],
+  mixins: [comMixin, updateQuill, quillMixin],
   components: {
     quillEditor,
     [lhUpload.name]: lhUpload,
@@ -271,54 +271,6 @@ export default {
     this.setPageTitle()
   },
   methods: {
-    getPublishDate () {
-      let actual = new Date(this.formData.created).valueOf()
-      let now = Date.now()
-      let day = (now - actual) / (24 * 60 * 60 * 1000)
-      if (day > 0 && day < 1) {
-        this.displayPublishDate = '今天'
-      } else if (day < 2 && day >= 1) {
-        this.displayPublishDate = '昨天'
-      } else {
-        this.displayPublishDate = this.formData.created
-      }
-      console.log('date', [actual, now, now - actual])
-    },
-    previewCon() {
-      if (!this.formData.selectionLink) {
-        let previewDom = ''
-        this.getPublishDate()
-
-        if (this.formData.styleSwitch) {
-          previewDom += `<div class="featured-content">
-            <h3 class="featured-title">${this.formData.title}</h3>
-            <div class="clearfix">
-              <div class="sub-title fl">
-                <img src="${cpassLogo}" class="cpass-logo">
-                <span class="cpass-name">${this.formData.authorName || 'CPASS'}</span>
-                <span class="publish-date">${this.displayPublishDate}</span>
-              </div>
-              <div class="read-times fr">阅读数 ${this.formData.pvCount}</div>
-            </div>
-          </div>`
-        }
-
-        previewDom += $('.ql-editor')[0].innerHTML
-        $('.preview-html')[0].innerHTML = previewDom
-
-        // 隐藏已经关闭的项
-        $('.preview-html .quill-close').forEach((itm, idx) => {
-          itm.parentNode.parentNode.removeChild(itm.parentNode)
-        })
-      }
-
-      this.showPreview = true
-    },
-
-    uploadImg(val) {
-      this.formData.bannerPath = val
-      this.verifyImage()
-    },
     setTitleName() {
       this.title = this.noAllow ? '精选详情' : (this.fieldId ? '编辑精选' : '添加精选')
       document.title = this.title
@@ -356,7 +308,6 @@ export default {
         }
       })
     },
-
     getSubmitParam() {
       $('.copy-quill-con')[0].innerHTML = $('.ql-editor')[0].innerHTML
 
@@ -408,27 +359,109 @@ export default {
         }
       })
     },
-    onTextChange({ editor, html, text }) {
-      // console.log('test', editor, html, text);
-      text = text.trim()
-      this.quillLength = text.length
-      this.verifyContent()
+
+    /* 弹出框及预览 */
+    showInsertDialog(type) {
+      if (this.noAllow) return
+
+      this.showInsert = true
+      this.insertType = type
+      switch (type) {
+        case 'title':
+          break
+        case 'store':
+          break
+        case 'field':
+          break
+      }
+
+      console.log('type', this.insertType);
     },
-    verifyContent() {
-      this.verifyCon = !this.formData.content ? '精选内容不能为空' : (this.quillLength > this.quillMaxLength) ? '字数超限，无法提交' : ''
+    closeInsertDialog(insertData) {
+      console.log('closeInsertDialog', insertData);
+      this.showInsert = false
+
+      if (!insertData) return
+
+      switch (this.insertType) {
+        case 'title':
+          switch (insertData.titleType) {
+            case 'brand':
+              this.handleInsertBrandTitle(insertData.brandItm)
+              break
+            case 'store':
+              this.handleInsertStoreTitle(insertData.storeItm)
+              break
+            case 'field':
+              this.handleInsertFieldTitle(insertData.fieldItm)
+              break
+            case 'arbitrarily':
+              this.handleInsertArbitrarilyTitle(insertData.arbitrarilyName)
+              break
+          }
+          break
+        case 'store':
+          this.handleInsertStores(insertData.addArr)
+          break
+        case 'field':
+          this.handleInsertFields(insertData.addArr)
+          break
+      }
     },
-    verifyImage() {
-      this.verifyImg = !this.formData.bannerPath ? '请上传头像' : ''
+    // 预览展示，创建日期文本
+    getPublishDate () {
+      let actual = new Date(this.formData.created).valueOf()
+      let now = Date.now()
+      let day = (now - actual) / (24 * 60 * 60 * 1000)
+      if (day > 0 && day < 1) {
+        this.displayPublishDate = '今天'
+      } else if (day < 2 && day >= 1) {
+        this.displayPublishDate = '昨天'
+      } else {
+        this.displayPublishDate = this.formData.created
+      }
+      console.log('date', [actual, now, now - actual])
+    },
+    // 预览内容替换
+    previewQuillCon() {
+      if (!this.formData.selectionLink) {
+        let previewDom = ''
+        this.getPublishDate()
+
+        if (this.formData.styleSwitch) {
+          previewDom += `<div class="featured-content">
+            <h3 class="featured-title">${this.formData.title}</h3>
+            <div class="clearfix">
+              <div class="sub-title fl">
+                <img src="${cpassLogo}" class="cpass-logo">
+                <span class="cpass-name">${this.formData.authorName || 'CPASS'}</span>
+                <span class="publish-date">${this.displayPublishDate}</span>
+              </div>
+              <div class="read-times fr">阅读数 ${this.formData.pvCount}</div>
+            </div>
+          </div>`
+        }
+
+        previewDom += $('.ql-editor')[0].innerHTML
+        $('.preview-html')[0].innerHTML = previewDom
+
+        // 隐藏已经关闭的项
+        $('.preview-html .quill-close').forEach((itm, idx) => {
+          itm.parentNode.parentNode.removeChild(itm.parentNode)
+        })
+      }
+
+      this.showPreview = true
     }
   }
 };
 </script>
 
+<style lang="scss" scoped src='./com.scss'></style>
+<style lang="scss" src='./cpass-preview.scss'></style>
 <style lang="scss">
+// 遮住footer
 .lh-main {
   padding-bottom: 89px !important;
 }
 </style>
-<style lang="scss" scoped src='./com.scss'></style>
-<style lang="scss" src='../com.scss'></style>
-<style lang="scss" src='./cpass-preview.scss'></style>
