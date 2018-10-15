@@ -1,38 +1,27 @@
-<style lang="scss" scoped>
-  .permission-add-style {
-    .page-padding {
-      position: relative;
-      padding: 30px 0;
-      background-color: #fff;
-      border-radius: 4px;
-    }
-  }
-</style>
-
 <template>
   <div class="permission-add-style">
     <lh-title class="mb24" :title="title"/>
 
-    <div class="lh-card-body">
+    <div class="card-padding">
       <el-form :model="ruleForm" ref="ruleForm" label-width="180px">
-        <el-form-item label="职务名称" prop="roleName" :rules="[ { required: true, message: '请输入职务名称'} ]">
+        <el-form-item label="角色名称" prop="roleName" :rules="[ { required: true, message: '请输入角色名称'} ]">
           <el-input
             v-model.trim="ruleForm.roleName"
             ref="jobName"
             :maxlength="10"
             class="width300px"
-            placeholder="请输入职务名称" ></el-input>
+            placeholder="请输入角色名称" ></el-input>
 
           <span class="theme-light-gray">&nbsp;&nbsp;限制字数 10</span>
         </el-form-item>
 
-        <el-form-item class="align-bottom" label="职务描述" prop="roleDesc">
+        <el-form-item class="align-bottom" label="角色描述" prop="roleDesc">
           <el-input
             v-model.trim="ruleForm.roleDesc"
             type="textarea"
             :maxlength="100"
             class="text-box"
-            placeholder="请输入职务描述"
+            placeholder="请输入角色描述"
             :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
 
           <span class="set-bottom theme-light-gray" v-if="ruleForm.roleDesc">&nbsp;&nbsp;(字数 {{ ruleForm.roleDesc.length }}/100)</span>
@@ -92,7 +81,7 @@
           :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
           class="width80px mr30"
           type="primary">
-          {{ type === 'add' ? '创建职务' : '保 存'}}
+          {{ type === 'add' ? '创建角色' : '保 存'}}
         </el-button>
       </div>
     </div>
