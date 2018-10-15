@@ -84,6 +84,8 @@ export default {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
         orderNum: this.formData.name,
+        customerName: this.formData.customerName,
+        customerPhone: isNaN(parseInt(this.formData.customerPhoneStr)) ? '' : parseInt(this.formData.customerPhoneStr),
         bookStartDate: this.formData.bookDate ? formatTimeString(this.formData.bookDate[0]) : null,
         bookEndDate: this.formData.bookDate ? formatTimeString(this.formData.bookDate[1]) : null,
         orderStartDate: this.formData.orderDate ? formatTimeString(this.formData.orderDate[0]) : null,
