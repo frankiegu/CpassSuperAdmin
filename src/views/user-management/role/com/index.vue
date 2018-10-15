@@ -1,6 +1,6 @@
 <template>
   <div class="permission-add-style">
-    <lh-title class="mb24" :title="title"/>
+    <lh-title :title="title"></lh-title>
 
     <div class="card-padding">
       <el-form :model="ruleForm" ref="ruleForm" label-width="180px">
@@ -122,7 +122,7 @@
         'sidebar'
       ])
     },
-    mounted: function () {
+    mounted () {
       if (this.type === 'add') {
         document.title = '添加角色'
         this.title = '添加角色'
@@ -130,7 +130,10 @@
         document.title = '编辑角色'
         this.title = '编辑角色'
       }
-
+      this.$route.meta.title = this.title
+      if (!this.$route.name) {
+        this.$store.dispatch('addVisitedViews', this.$route)
+      }
       this.tableLoading = true
       // this.getPageData()
     },

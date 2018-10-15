@@ -32,19 +32,31 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="角色名称" prop="contact" align="center"></el-table-column>
-        <el-table-column label="已分配用户" prop="contact" align="center"></el-table-column>
-        <el-table-column label="可用状态" prop="contact" align="center" width="100"></el-table-column>
-        <el-table-column label="描述" prop="contact" align="left"></el-table-column>
-        <el-table-column label="操作" prop="contact" align="center">
+        <el-table-column label="角色名称" prop="name" align="center"></el-table-column>
+        <el-table-column label="已分配用户" prop="userList" align="center"></el-table-column>
+        <el-table-column label="可用状态" prop="status" align="center" width="100"></el-table-column>
+        <el-table-column label="描述" prop="desc" align="left"></el-table-column>
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <router-link
+              to="/user-management/role/com?type=edit&&id=10"
               class="table-link mr5">
               编辑
             </router-link>
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        :total="pageTotal"
+        :layout="layoutArr"
+        :page-size="pageSize"
+        :page-sizes="pageSizeArr"
+        :current-page="currentPage"
+        class="pagination-container"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        background></el-pagination>
     </div>
   </div>
 </template>

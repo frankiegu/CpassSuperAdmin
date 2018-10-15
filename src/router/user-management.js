@@ -19,7 +19,7 @@ export default [{
     path: 'role',
     component: _import('user-management/role/index')
   }, {
-    name: '添加角色',
+    name: '',
     path: 'role/com',
     hidden: true,
     component: _import('user-management/role/com/index')
