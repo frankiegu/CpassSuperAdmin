@@ -6,7 +6,7 @@
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
-          to="/user-management/role/com" tag="a">
+          to="/user-management/role/com?type=add" tag="a">
           &nbsp;新增角色
         </router-link>
 
