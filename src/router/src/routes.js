@@ -12,6 +12,7 @@ import cantonFair from '@/router/canton-fair'      // 广交会活动
 import feedback from '@/router/feedback'           // 广交会活动
 import market from '@/router/market'               // 营销管理
 import statistics from '@/router/statistics'       // 统计
+import product from '@/router/product'             // 产品库
 
 export const constantRouterMap = [
   {
@@ -37,6 +38,7 @@ export const constantRouterMap = [
   ...cantonFair,
   ...feedback,
   ...market,
+  ...product,
   ...statistics,
   ...register,
   ...example,
