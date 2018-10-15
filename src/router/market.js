@@ -30,7 +30,7 @@ export default [{
     name: '',
     path: 'c-pass/com',
     hidden: true,
-    component: _import('market/c-pass/com')
+    component: _import('market/c-pass/com/index')
   },
 
   // 优惠券

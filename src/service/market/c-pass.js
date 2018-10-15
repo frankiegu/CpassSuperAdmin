@@ -5,13 +5,13 @@ import { API_PATH } from '@/config/env'
 /* c-pass 添加和编辑
 -------------------------- */
 // 场地列表，没有分页
-export const cPassFindUseField = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseField', obj, 'GET')
+export const cPassFindUseField = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseField', obj, 'POST')
 
 // 品牌列表，没有分页
-export const cPassFindUseSpace = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseSpace', obj, 'GET')
+export const cPassFindUseSpace = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseSpace', obj, 'POST')
 
 // 空间列表，没有分页
-export const cPassFindUseStore = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseStore', obj, 'GET')
+export const cPassFindUseStore = (obj) => fetch(API_PATH + '/supervisor/marketing/findUseStore', obj, 'POST')
 
 // 编辑精选场地
 export const cPassEditWellChosen = (obj) => fetch(API_PATH + '/supervisor/marketing/editWellChosen', obj, 'POST')

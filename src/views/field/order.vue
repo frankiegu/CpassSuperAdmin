@@ -72,6 +72,30 @@
         </el-form-item>
 
         <el-form-item>
+          <el-input
+            v-model.trim="formData.customerName"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入用户名"
+            clearable
+            class="width180px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-input
+            v-model.number="formData.customerPhoneStr"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入手机号"
+            clearable
+            class="width180px">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item>
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
