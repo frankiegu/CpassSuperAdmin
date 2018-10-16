@@ -81,30 +81,31 @@ export default {
 }
 </script>
 
-<style scoped>
-  .back-to-ceiling {
-    position: fixed;
-    display: inline-block;
-    text-align: center;
-    cursor: pointer;
-  }
+<style lang="scss" scoped>
+@import "src/styles/config";
+.back-to-ceiling {
+  position: fixed; z-index: $zindex-scrolltop;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+}
 
-  .back-to-ceiling:hover {
-    background: #d5dbe7;
-  }
+.back-to-ceiling:hover {
+  background: #d5dbe7;
+}
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity .5s;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
+}
 
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0
-  }
+.fade-enter,
+.fade-leave-to {
+  opacity: 0
+}
 
-  .back-to-ceiling .Icon {
-    fill: #9aaabf;
-    background: none;
-  }
+.back-to-ceiling .Icon {
+  fill: #9aaabf;
+  background: none;
+}
 </style>

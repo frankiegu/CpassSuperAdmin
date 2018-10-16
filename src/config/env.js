@@ -26,6 +26,8 @@ const NATURAL_NUM = /^[0-9]\d*$/
 const IP_REG = /^(25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?[1-9]))\.((25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?\d))\.){2}(25[0-5]|2[0-4]\d|(1\d{2})|([1-9]?\d))$/
 const PWD_RRGULAR = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/
 
+const REG_EMOJI = /\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g
+
 export {
   API_PATH,
   baseUrl,
@@ -38,5 +40,6 @@ export {
   POSITIVE_INTEGER,
   NATURAL_NUM,
   IP_REG,
-  PWD_RRGULAR
+  PWD_RRGULAR,
+  REG_EMOJI
 }
