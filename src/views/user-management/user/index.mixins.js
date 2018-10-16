@@ -24,6 +24,7 @@ export default {
       callback()
     }
     return {
+      userFormTitle: '',
       formData: {
         userName: '',
         realName: '',
@@ -111,7 +112,10 @@ export default {
     },
     setUser (item) {
       if (item) {
+        this.userFormTitle = '编辑用户'
         Object.assign(this.userForm, item)
+      } else {
+        this.userFormTitle = '新增用户'
       }
       this.isShowUserForm = true
     },

@@ -50,7 +50,9 @@
         </el-form-item>
 
       </el-form>
+    </div>
 
+    <div class="card-padding">
       <!-- 新增编辑用户 -->
       <transition name="slide-fade">
         <el-form
@@ -59,68 +61,80 @@
           :rules="rules"
           label-width="120px"
           class="set-table-dialog"
-          label-position="right"
           v-show="isShowUserForm">
 
           <div class="panel scroll-panel">
-            <i @click="cancelSet('userForm')" class="el-icon-close mt10"></i>
-            <h1 class="align-left">基本信息</h1>
+            <h1 class=""><i @click="cancelSet('userForm')" class="el-icon-arrow-right fl callback theme-gray"></i>{{ userFormTitle }}</h1>
 
-            <el-form-item class="mt20" label="用户名/手机号:" prop="userName">
-              <el-input
-                v-model.trim="userForm.userName"
-                placeholder="请输入"></el-input>
-            </el-form-item>
+            <div class="content mt40">
+              <div class="content-form clearfix">
 
-            <el-form-item class="mt20" label="真实姓名:" prop="realName">
-              <el-input
-                v-model.trim="userForm.realName"
-                placeholder="请输入"></el-input>
-            </el-form-item>
+                <el-form-item class="mt40" label="员工ID">
+                  <span v-if="userForm.number">{{ userForm.number }}</span>
+                  <span v-else>新增账号后由系统生成</span>
+                </el-form-item>
 
-            <el-form-item class="mt20" label="邮箱:" prop="email">
-              <el-input
-                v-model.trim="userForm.email"
-                placeholder="请输入公司邮箱"></el-input>
-            </el-form-item>
+                <el-form-item class="mt40" label="用户名/手机号" prop="userName">
+                  <el-input
+                    v-model.trim="userForm.userName"
+                    placeholder="请输入手机号"></el-input>
+                </el-form-item>
 
-            <el-form-item label="描述:" prop="description">
-              <el-input
-                type="textarea"
-                v-model.trim="userForm.description"></el-input>
-            </el-form-item>
+                <el-form-item class="mt40" label="真实姓名" prop="realName">
+                  <el-input
+                    v-model.trim="userForm.realName"
+                    placeholder="请输入真实姓名"></el-input>
+                </el-form-item>
 
-            <el-form-item label="可用状态" prop="useState">
-              <el-switch
-                v-model.trim="userForm.useState"
-                active-color="#13ce66"
-                inactive-text="禁用"
-                active-text="可用"
-                active-value="可用"
-                inactive-value="禁用"></el-switch>
-            </el-form-item>
+                <el-form-item class="mt40" label="邮箱" prop="email">
+                  <el-input
+                    v-model.trim="userForm.email"
+                    placeholder="请输入公司邮箱"></el-input>
+                </el-form-item>
 
-            <h1 class="align-left">权限信息</h1>
+                <el-form-item label="描述" prop="description">
+                  <el-input
+                    type="textarea"
+                    v-model.trim="userForm.description"></el-input>
+                </el-form-item>
 
-            <el-form-item class="mt20" label="角色:" prop="role">
-              <el-select
-                clearable
-                v-model.trim="userForm.role"
-                placeholder="请选择">
+                <el-form-item label="可用状态" prop="useState">
+                  <el-switch
+                    v-model.trim="userForm.useState"
+                    active-color="#13ce66"
+                    inactive-text="禁用"
+                    active-text="可用"
+                    active-value="可用"
+                    inactive-value="禁用"></el-switch>
+                </el-form-item>
 
-                <el-option
-                  v-for="(item, index) in userForm.roles"
-                  :key="index"
-                  :label="item.role"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
+                <el-form-item class="mt40" label="角色" prop="role">
+                  <el-select
+                    clearable
+                    v-model.trim="userForm.role"
+                    class="fl width100"
+                    placeholder="请选择">
 
-            <el-button
-              class="mt20"
-              type="primary"
-              @click="postSave('userForm')">{{ this.userForm.id?'提交':'新增用户' }}</el-button>
+                    <el-option
+                      v-for="(item, index) in userForm.roles"
+                      :key="index"
+                      :label="item.role"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+
+              </div>
+            </div>
+
+            <div class="footer">
+              <p class="theme-gray mb22">新增账号初始密码为手机号后6位</p>
+                <el-button
+                  class="btn-save width80px"
+                  type="primary"
+                  @click="postSave('userForm')">{{ this.userForm.id?'提交':'新增用户' }}</el-button>
+                <el-button @click="cancelSet('userForm')" class="btn-clear">取消</el-button>
+            </div>
           </div>
 
           <div @touchmove.prevent @click="cancelSet('userForm')" class="v-modal"></div>
@@ -183,4 +197,48 @@
 <style lang="scss" scoped>
   @import 'src/styles/variables.scss';
   @import 'src/styles/common.scss';
+
+  .main-content {
+    .set-table-dialog {
+      .panel {
+        min-height: 100%;
+        overflow-y: auto;
+        &.scroll-panel {
+          width: 410px;
+          right: -20px;
+        }
+        .content {
+          .content-form {
+            padding-bottom: 100px;
+          }
+          margin-bottom: 50px;
+        }
+        .footer {
+          position: relative;
+          height: 100px;
+          margin-top: -100px;
+          margin-bottom: 50px;
+          clear: both;
+        }
+        .clearfix:after {
+          content: ".";
+          display: block;
+          height: 0;
+          clear: both;
+          visibility: hidden;
+        }
+        .clearfix {
+          display: inline-block;
+        }
+      }
+      .callback {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 25px;
+        padding: 0 5px;
+        cursor: pointer;
+        margin-left: -9px;
+      }
+    }
+  }
 </style>
