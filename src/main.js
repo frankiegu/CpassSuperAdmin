@@ -14,7 +14,7 @@ import App from './App'
 import comMixins from '@/mixins'                            // 全局的方法
 import './permission'                                       // 路由拦截
 import vuePermissions from './directive/permissions/index'  // 如果参数为true是，聚焦元素
-import { title, item, svg, card, datePicker } from '@/components'
+import { title, item, svg, card, datePicker, lhTextarea } from '@/components'
 import './icons'
 
 Vue.use(ElementUI, { size: 'small' })
@@ -23,7 +23,7 @@ Vue.mixin(comMixins)
 
 // 全局注册组件
 const components = [
-  title, item, svg, card, datePicker
+  title, item, svg, card, datePicker, lhTextarea
 ]
 components.map(component => {
   Vue.component(component.name, component)

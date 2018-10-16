@@ -1,52 +1,38 @@
-<style lang="scss" scoped>
-  .permission-add-style {
-    .page-padding {
-      position: relative;
-      padding: 30px 0;
-      background-color: #fff;
-      border-radius: 4px;
-    }
-  }
-</style>
-
 <template>
-  <div class="permission-add-style">
+  <div class="product-lib-detail">
     <lh-title class="mb24" :title="title"/>
 
     <div class="card-padding card-padding-vertical">
       <el-form :model="ruleForm" ref="ruleForm" label-width="80px">
         <h3 class="grid-title">基础信息</h3>
-        <el-form-item label="版本名称" prop="versionName" :rules="[ { required: true, message: '请输入版本名称'} ]">
+        <el-form-item label="版本名称" prop="versionName" :rules="[{ required: true, message: '请输入版本名称'}]">
           <el-input
             v-model.trim="ruleForm.versionName"
-            ref="jobName"
+            ref="versionName"
             :maxlength="30"
-            class="width300px"
-            placeholder="请输入版本名称" ></el-input>
-
-          <span class="theme-light-gray">&nbsp;&nbsp;限制字数 30</span>
+            class="width420px"
+            placeholder="请输入版本名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="售价" prop="price">
+        <el-form-item label="售价" prop="price" :rules="[{ validator: checkAmount, trigger: ['blur', 'change'] }]">
           <el-input
             v-model.trim="ruleForm.price"
             ref="price"
-            class="width300px"
-            placeholder="请输入价格" ></el-input>
+            class="width420px"
+            placeholder="请输入价格">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
 
         <el-form-item class="align-bottom" label="描述" prop="description">
-          <el-input
-            v-model.trim="ruleForm.description"
-            type="textarea"
+          <lh-textarea
+            class="width420px"
+            :textData="ruleForm.description"
             :maxlength="100"
-            class="text-box"
             placeholder="请输入描述内容"
-            :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
-
-          <span class="set-bottom theme-light-gray" v-if="ruleForm.description">
-            &nbsp;&nbsp;(字数 {{ ruleForm.description.length }}/100)
-          </span>
+            :minRows="3"
+            :maxRows="3"
+            @input="val => ruleForm.description = val" />
         </el-form-item>
 
         <el-form-item class="align-bottom" label="可用状态" prop="status">
@@ -71,7 +57,8 @@
               ref="multipleTable">
               <el-table-column label-class-name="ml70" align="left" label="功能模块" width="250">
                 <template slot-scope="scope">
-                  <el-checkbox class="ml50" @change="handleSelectionChange(scope.row.id, scope.row.allPermisIds, scope.row.checked)" v-model="scope.row.checked">{{ scope.row.moduleName }}</el-checkbox>
+                  <el-checkbox class="ml50" @change="handleSelectionChange(scope.row.id, scope.row.allPermisIds,
+                   scope.row.checked)" v-model="scope.row.checked">{{ scope.row.moduleName }}</el-checkbox>
                 </template>
               </el-table-column>
 
@@ -107,7 +94,7 @@
             :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
             class="width80px mr30"
             type="primary">
-            {{ type === 'add' ? '创建职务' : '保 存'}}
+            {{ type === 'add' ? '创建版本' : '保 存'}}
           </el-button>
         </el-form-item>
 
@@ -118,7 +105,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { roleAdd, roleUpdate } from '@/service/product'
+  // import { roleAdd, roleUpdate } from '@/service/product'
   import dataMixins from './data.mixins'
 
   export default {
@@ -128,7 +115,6 @@
         id: this.$route.query.id,
         type: this.$route.query.type,
         title: this.$route.query.id ? '编辑产品版本' : '新增产品版本',
-        activeName: 'access',
         checkList: [],
 
         ruleForm: {
@@ -137,15 +123,13 @@
           description: '',
           status: 1,
           permisIds: [],
-          pushCode: [], // 消息推送选中的选项
           pushList: [],
           checkList: []
         },
 
         tableData: [],
         tableEmpty: ' ',
-        tableLoading: false,
-        pushListChange: false
+        tableLoading: false
       }
     },
     computed: {
@@ -161,7 +145,7 @@
         this.$store.dispatch('addVisitedViews', this.$route)
       }
 
-      // this.tableLoading = true
+      this.tableLoading = true
       this.getPageData()
     },
     methods: {
@@ -177,7 +161,16 @@
           this.$refs['tree' + val].setCheckedKeys(checked ? allPermisIds : [])
         }
       },
+      checkAmount: (rule, value, callback) => {
+        if (isNaN(Number(value)) || Number(value) < 0) {
+          callback(new Error('请输入不小于0的数值'))
+        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
+          callback(new Error('最多允许输入两位小数'))
+        }
+        callback()
+      },
       getPageData() {
+        this.tableLoading = false
         this.tableData = this.modulePermis
         // getRoleDetail({ roleId: this.id }).then(res => {
         //   if (res.status === 'true') {
@@ -202,51 +195,51 @@
         let treeData
 
         if (!this.ruleForm.versionName) {
-          this.$refs.jobName.focus()
+          this.$refs.versionName.focus()
         }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // 赋值前，先初始化一下数据
             this.ruleForm.permisIds = []
             // 拿到权限id数组
-            for (var list of this.tableData) {
+            for (let list of this.tableData) {
               treeData = this.$refs['tree' + list.id]
 
               if (treeData) {
-                for (var item of treeData.getCheckedKeys()) {
+                for (let item of treeData.getCheckedKeys()) {
                   this.ruleForm.permisIds.push(item)
                 }
               }
             }
-            console.log('this.ruleForm.pushList', this.ruleForm.pushList)
-            let pushList = []
-            this.ruleForm.pushList.forEach(v => {
-              if (v.selected === 1) {
-                pushList.push(v.id)
-              }
-            })
-            let ajaxParameters = {
-              name: this.ruleForm.versionName,
-              description: this.ruleForm.description,
-              permisIds: this.ruleForm.permisIds
-            }
+            // console.log('this.ruleForm.pushList', this.ruleForm.pushList)
+            // let pushList = []
+            // this.ruleForm.pushList.forEach(v => {
+            //   if (v.selected === 1) {
+            //     pushList.push(v.id)
+            //   }
+            // })
+            // let ajaxParameters = {
+            //   name: this.ruleForm.versionName,
+            //   description: this.ruleForm.description,
+            //   permisIds: this.ruleForm.permisIds
+            // }
 
-            let requestWay = roleAdd
-            // 实现复制功能，只在编辑的状态下才传id
-            if (this.type === 'edit') {
-              ajaxParameters.id = this.id
-              requestWay = roleUpdate
-            }
-            requestWay(ajaxParameters).then(res => {
-              if (res.status === 'true') {
-                let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
-
-                this.setMsg('success', tipsText)
-                this.$router.replace('/job')
-              } else {
-                this.setMsg('error', res.msg)
-              }
-            })
+            // let requestWay = roleAdd
+            // // 实现复制功能，只在编辑的状态下才传id
+            // if (this.type === 'edit') {
+            //   ajaxParameters.id = this.id
+            //   requestWay = roleUpdate
+            // }
+            // requestWay(ajaxParameters).then(res => {
+            //   if (res.status === 'true') {
+            //     let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
+            //
+            //     this.setMsg('success', tipsText)
+            //     this.$router.replace('/job')
+            //   } else {
+            //     this.setMsg('error', res.msg)
+            //   }
+            // })
           } else {
             return false
           }
@@ -263,26 +256,6 @@
             { mlPX }
           </span>
         )
-      },
-      handleClick(tab, event) {
-        console.log(tab, event);
-      },
-      getInfoPush (val) {
-        console.log('val', val)
-        if (val.length) this.pushListChange = true
-        let selArr = []
-        for (let i = 0; i < val.length; i++) {
-          for (let j = 0; j < this.ruleForm.pushList.length; j++) {
-            if (val[i] === this.ruleForm.pushList[j].name) {
-              selArr.push(this.ruleForm.pushList[j].id)
-              let temp = this.ruleForm.pushList[j]
-              temp.selected = temp.selected === 1 ? 0 : 1
-              this.ruleForm.pushList.splice(j, temp)
-            }
-          }
-        }
-        this.ruleForm.pushCode = selArr
-        console.log('selArr', selArr)
       }
     }
   }
@@ -290,7 +263,7 @@
 
 <style lang="scss">
   @import "src/styles/variables";
-  .permission-add-style {
+  .product-lib-detail {
     .el-table__row:nth-child(2n) {
       background-color: #fff !important;
     }
