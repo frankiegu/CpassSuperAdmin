@@ -151,6 +151,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        :total="pageTotal"
+        :layout="layoutArr"
+        :page-size="pageSize"
+        :page-sizes="pageSizeArr"
+        :current-page="currentPage"
+        class="pagination-container"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        background></el-pagination>
     </div>
   </div>
 </template>
