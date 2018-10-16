@@ -43,6 +43,8 @@
               class="table-link mr5">
               编辑
             </router-link>
+            <span class="table-link mr5" @click="handleChangeUseState('禁用')">禁用</span>
+            <span class="table-link" @click="handleChangeUseState('删除')">删除</span>
           </template>
         </el-table-column>
       </el-table>

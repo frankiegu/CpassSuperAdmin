@@ -8,11 +8,11 @@
           <el-input
             v-model.trim="ruleForm.roleName"
             ref="jobName"
-            :maxlength="10"
+            :maxlength="20"
             class="width300px"
             placeholder="请输入角色名称" ></el-input>
 
-          <span class="theme-light-gray">&nbsp;&nbsp;限制字数 10</span>
+          <span class="theme-light-gray">&nbsp;&nbsp;限制字数 20</span>
         </el-form-item>
 
         <el-form-item class="align-bottom" label="角色描述" prop="roleDesc">

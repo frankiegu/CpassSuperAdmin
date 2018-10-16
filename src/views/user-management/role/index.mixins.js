@@ -32,5 +32,15 @@ export default {
   },
   watch: {},
   computed: {},
-  methods: {}
+  methods: {
+    // 二次弹窗确认
+    handleChangeUseState (action) {
+      this.$confirm(`确认${action}此用户？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      }).catch(() => {})
+    }
+  }
 }

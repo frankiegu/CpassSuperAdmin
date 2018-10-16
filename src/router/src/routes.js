@@ -19,7 +19,7 @@ export const constantRouterMap = [
   {
     name: '首页',
     path: '',
-    redirect: '/client/list',
+    redirect: '/user-management',
     component: layout,
     hidden: true,
     children: [
@@ -42,8 +42,8 @@ export const constantRouterMap = [
   ...market,
   ...statistics,
   ...register,
-  ...example,
   ...resource,
+  ...example,
   /* 必须保证404页面在最后引入，有坑 */
   {
     name: '没有发现 ',
