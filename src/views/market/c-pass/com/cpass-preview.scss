@@ -87,6 +87,9 @@
       color: rgba(51,51,51,1);
       font-size: 22px;
       font-weight: bold;
+      word-break: keep-all;
+      word-wrap: break-word;
+      overflow: hidden;
     }
     .sub-title {
       margin-top: 8px;
