@@ -71,10 +71,10 @@ export default {
         { id: 3, role: '运营主管' }
       ],
       tableData: [
-        { id: 1, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', useState: '可用', description: '打工仔' },
-        { id: 2, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', useState: '可用', description: '超级管理员' },
-        { id: 3, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '禁用', description: '打工仔' },
-        { id: 4, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '可用', description: '打工仔' }
+        { id: 1, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', useState: '可用', description: '打工仔' },
+        { id: 2, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', useState: '可用', description: '超级管理员' },
+        { id: 3, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '禁用', description: '打工仔' },
+        { id: 4, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '可用', description: '打工仔' }
       ]
     }
   },
@@ -115,14 +115,15 @@ export default {
         this.userFormTitle = '编辑用户'
         Object.assign(this.userForm, item)
       } else {
+        this.userForm.id = ''
+        this.userForm.userNumber = ''
         this.userFormTitle = '新增用户'
       }
       this.isShowUserForm = true
     },
     cancelSet (formName) {
-      this.$refs[formName].resetFields()
-      this.userForm.id = ''
       this.isShowUserForm = false
+      this.$refs[formName].resetFields()
     },
     postSave (formName) {
       this.$refs[formName].validate(valid => {

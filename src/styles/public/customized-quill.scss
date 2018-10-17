@@ -133,11 +133,12 @@
   .ql-snow .ql-picker.ql-header .ql-picker-label[data-label]:not([data-label=''])::before {
     transform: translateY(-1px)
   }
+  // 编辑器和预览都有用到
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 22px;
+    line-height: 28px;
+  }
   .ql-editor {
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 22px;
-      line-height: 28px;
-    }
     h1 { font-size: 24px; }
     h2 { font-size: 20px; }
     h3 { font-size: 18px; }
