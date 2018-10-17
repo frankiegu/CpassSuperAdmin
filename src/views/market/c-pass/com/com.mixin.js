@@ -73,7 +73,7 @@ export default {
       quillLoading: false,
       // 富文本框参数设置
       editorOption: {
-        placeholder: ' ',
+        placeholder: '从这里开始写正文',
         theme: 'snow',  // or 'bubble'
         modules: {
           toolbar: '.lh-toolbar'

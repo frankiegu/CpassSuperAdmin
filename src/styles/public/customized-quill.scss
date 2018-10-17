@@ -57,10 +57,21 @@
     min-height: 380px;
     overflow: auto;
 
+    .ql-editor::before {
+      color: #C0C4CC;
+      font-style: normal;
+      font-size: 14px;
+      font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+      padding-top: 28px;
+      padding-left: 113px;
+    }
+
     // @#技巧：各屏幕大小，展示不同高度，实现类似fixed的效果
     @media screen and (max-width: 1366px) {
       min-height: 380px;
       max-height: 400px;
+
+      .ql-editor::before { padding-left: 86px; }
     }
     @media screen and (max-width: 1440px) {
       min-height: 380px;
