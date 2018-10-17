@@ -6,6 +6,13 @@ export default {
   data () {
     return {
       id: '',
+      permisList: [
+        '空间管理',
+        '场地管理',
+        '场地订单管理',
+        '服务及服务商管理',
+        '服务商管理'
+      ],
       formData: {
         name: ''
       }

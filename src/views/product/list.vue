@@ -42,19 +42,22 @@
         </el-table-column>
         <el-table-column label="包含功能" prop="type" align="left" min-width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.type === 1">普通活动</span>
-            <span v-if="scope.row.type === 2">互动活动</span>
+            <span v-for="(item, index) in permisList">{{item}}<span v-if="index < permisList.length - 1">、</span></span>
           </template>
         </el-table-column>
-        <el-table-column label="售价" prop="startDate" align="left" width="120"></el-table-column>
-        <el-table-column label="签约数量" prop="endDate" align="left" width="120"></el-table-column>
+        <el-table-column label="售价" align="left" width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.id.toFixed(2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="签约数量" prop="id" align="left" width="120"></el-table-column>
         <el-table-column label="可用状态" align="left" width="120">
           <template slot-scope="scope">
             <el-tag type="success" v-if="true">可用</el-tag>
             <el-tag type="danger" v-if="false">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="描述" prop="startDate" align="left"></el-table-column>
+        <el-table-column label="描述" prop="name" align="left"></el-table-column>
 
 
         <el-table-column label="操作" align="left" width="120">
