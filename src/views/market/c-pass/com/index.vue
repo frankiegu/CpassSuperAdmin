@@ -281,7 +281,6 @@ export default {
     }
   },
   mounted() {
-    this.quillLoading = true
     this.setPageTitle()
   },
   methods: {
@@ -305,6 +304,7 @@ export default {
       this.setTitleName()
 
       if (this.fieldId) {
+        this.quillLoading = true
         this.getPageData()
         this.ajaxName = cPassEditWellChosen
       } else {

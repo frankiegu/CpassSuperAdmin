@@ -82,7 +82,7 @@
           <el-input
             v-model.trim="dialogData.arbitrarilyName"
             @keyup.native.enter="submitForm('dialogData')"
-            :maxlength="20"
+            :maxlength="30"
             class="width290px"
             placeholder="输入名称"></el-input>
         </el-form-item>
