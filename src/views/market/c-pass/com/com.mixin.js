@@ -27,6 +27,7 @@ export default {
 
       // 左上角标题
       pageTitle: '',
+      quillUploadImg: false, // 富文本框图片上传状态
       // 请求头携带token
       headers: {
         token: sessionStorage.getItem('token')
