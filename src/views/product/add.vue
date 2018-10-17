@@ -1,6 +1,6 @@
 <template>
   <div class="product-lib-detail">
-    <lh-title class="mb24" :title="title"/>
+    <lh-title :title="title"/>
 
     <div class="card-padding card-padding-vertical">
       <el-form :model="ruleForm" ref="ruleForm" label-width="80px">
@@ -53,12 +53,16 @@
             <div class="table-header-dec">功能描述</div>
 
             <!-- table -->
-            <el-table :data="tableData" v-loading="tableLoading" :empty-text="tableEmpty" class="table-box"
+            <el-table :data="tableData" v-loading="tableLoading" class="table-box"
               ref="multipleTable">
               <el-table-column label-class-name="ml70" align="left" label="功能模块" width="250">
                 <template slot-scope="scope">
-                  <el-checkbox class="ml50" @change="handleSelectionChange(scope.row.id, scope.row.allPermisIds,
-                   scope.row.checked)" v-model="scope.row.checked">{{ scope.row.moduleName }}</el-checkbox>
+                  <el-checkbox class="ml50"
+                    @change="handleSelectionChange(scope.row.moduleId, scope.row.allPermisIds,
+                     scope.row.checked, scope.row.requiredList)"
+                    v-model="scope.row.checked" :indeterminate="scope.row.isIndeterminate">
+                    {{ scope.row.moduleName }}
+                  </el-checkbox>
                 </template>
               </el-table-column>
 
@@ -66,12 +70,12 @@
                 <template slot-scope="scope">
                   <!-- :default-expanded-keys="scope.row.allPermisIds" -->
                   <el-tree
-                    v-if="scope.row.permis != null"
+                    v-if="scope.row.permission != null"
                     @check-change="handleCheckChange"
-                    :data="scope.row.permis"
-                    :default-checked-keys="scope.row.checkedPermisIds"
-                    :props="{ label: 'permisName', children: 'children' }"
-                    :ref="'tree' + scope.row.id"
+                    :data="scope.row.permission"
+                    :default-checked-keys="scope.row.checkIdList"
+                    :props="{ label: 'name', children: 'children', disabled: 'mustCheck' }"
+                    :ref="'tree' + scope.row.moduleId"
                     :expand-on-click-node="false"
                     :render-content="renderContent"
                     show-checkbox
@@ -93,9 +97,7 @@
             @click="submitForm('ruleForm')"
             :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
             class="width80px mr30"
-            type="primary">
-            {{ type === 'add' ? '创建版本' : '保 存'}}
-          </el-button>
+            type="primary">保 存</el-button>
         </el-form-item>
 
       </el-form>
@@ -105,7 +107,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  // import { roleAdd, roleUpdate } from '@/service/product'
+  // import { permissionList } from '@/service/product'
+  // import { productAdd, productUpdate } from '@/service/product'
   import dataMixins from './data.mixins'
 
   export default {
@@ -115,28 +118,28 @@
         id: this.$route.query.id,
         type: this.$route.query.type,
         title: this.$route.query.id ? '编辑产品版本' : '新增产品版本',
-        checkList: [],
+        allPermisIds: [],
 
         ruleForm: {
           versionName: '',
           price: 0,
           description: '',
           status: 1,
-          permisIds: [],
-          pushList: [],
+          permisIdList: [],
           checkList: []
         },
 
         tableData: [],
-        tableEmpty: ' ',
         tableLoading: false
       }
     },
+
     computed: {
       ...mapGetters([
         'sidebar'
       ])
     },
+
     mounted: function () {
       document.title = this.title
       this.$store.commit('NAV_CRUMB', this.title)
@@ -146,51 +149,110 @@
       }
 
       this.tableLoading = true
-      this.getPageData()
+      this.getPermissionList()
     },
+
     methods: {
+      // 切换权限选中事件
       handleCheckChange(data, checked, indeterminate) {
-        for (let i = 0, list = this.tableData, listLenght = list.length; i < listLenght; i++) {
-          if (list[i].id === (data.permisModuleId)) {
-            list[i].checked = (list[i].allPermisIds.length === this.$refs['tree' + data.permisModuleId].getCheckedKeys().length)
+        // console.log(indeterminate)
+        for (let i = 0, list = this.tableData, listLen = list.length; i < listLen; i++) {
+          // console.log(list[i].allPermisIds.length, this.$refs['tree' + list[i].moduleId].getCheckedKeys().length)
+          if (list[i].permission.includes(data)) {
+            list[i].checked = false
+            if (list[i].allPermisIds.length === this.$refs['tree' + list[i].moduleId].getCheckedKeys().length) {
+              list[i].checked = true
+              list[i].isIndeterminate = false
+            } else {
+              list[i].checked = false
+              list[i].isIndeterminate = true
+            }
           }
         }
       },
-      handleSelectionChange(val, allPermisIds, checked) {
+
+      // 全选功能模块
+      handleSelectionChange(val, allPermisIds, checked, requiredList) {
         if (allPermisIds.length > 0) {
-          this.$refs['tree' + val].setCheckedKeys(checked ? allPermisIds : [])
+          this.$refs['tree' + val].setCheckedKeys(checked ? allPermisIds : requiredList)
         }
       },
-      checkAmount: (rule, value, callback) => {
-        if (isNaN(Number(value)) || Number(value) < 0) {
-          callback(new Error('请输入不小于0的数值'))
-        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
-          callback(new Error('最多允许输入两位小数'))
+
+      // 获取权限列表
+      getPermissionList() {
+        let allPermisIds = [] // 全部权限的id数组（包含顶级权限）
+        let requiredList = [] // 必选权限的id数组
+        let diffLen = 0 // 长度差（allPermisIds的长度 - 实际权限的长度）为顶级权限的长度
+
+        let traverse = (tree) => {
+          const childNode = tree.permission || tree.children || tree
+          // console.log(childNode, 'node')
+          if (childNode.length) {
+            childNode.forEach((child) => {
+              allPermisIds.push(child.id)
+              if (child.mustCheck) {
+                requiredList.push(child.id)
+              }
+              // console.log(child.id, allPermisIds)
+              traverse(child)
+            })
+          }
         }
-        callback()
-      },
-      getPageData() {
-        this.tableLoading = false
+
         this.tableData = this.modulePermis
-        // getRoleDetail({ roleId: this.id }).then(res => {
+        this.tableData.forEach((child) => {
+          let topPermis = child.permission
+          this.$set(child, 'checked', false)
+          this.$set(child, 'isIndeterminate', false)
+          this.$set(child, 'allPermisIds', [])
+          this.$set(child, 'requiredList', [])
+          allPermisIds = []
+          requiredList = []
+          diffLen = topPermis.length
+          // 当顶级权限下面的权限全部为必选时，禁用该顶级权限
+          if (topPermis && topPermis.length > 0) {
+            topPermis.forEach(item1 => {
+              this.$set(item1, 'mustCheck', false)
+              if (item1.children.length) {
+                let permisList = item1.children
+                let checkLen = 0
+                permisList.forEach(item2 => {
+                  if (item2.mustCheck) {
+                    ++checkLen
+                    if (checkLen === permisList.length) {
+                      this.$set(item1, 'mustCheck', true)
+                    }
+                  }
+                })
+              }
+            })
+          }
+          traverse(child)
+          child.allPermisIds = allPermisIds
+          child.requiredList = requiredList
+          child.checked = child.allPermisIds.length === child.checkIdList.length + diffLen
+          child.isIndeterminate = child.allPermisIds.length !== child.checkIdList.length + diffLen
+          this.tableLoading = false
+        })
+        // permissionList().then(res => {
         //   if (res.status === 'true') {
-        //     let data = res.info
-        //     this.ruleForm.pushList = res.info.pushPermisList
-        //     if (data.role) {
-        //       if (this.type !== 'copy') {
-        //         this.ruleForm.versionName = data.role.versionName
-        //         this.ruleForm.description = data.role.description
-        //       }
-        //     }
-        //
-        //     this.tableData = data.modulePermis
-        //     this.tableLoading = false
-        //     this.tableEmpty = '暂无数据'
+        //     this.tableData = res.info
+        //     // this.tableData = this.tableData.concat(this.modulePermis)
+        //     this.tableData.forEach((child) => {
+        //       child.allPermisIds = []
+        //       allPermisIds = []
+        //       traverse(child)
+        //       child.allPermisIds = allPermisIds
+        //       this.tableLoading = false
+        //     })
         //   } else {
+        //     this.tableLoading = false
         //     this.setMsg('error', res.msg)
         //   }
         // })
       },
+
+      // 保存
       submitForm(formName) {
         let treeData
 
@@ -200,14 +262,14 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // 赋值前，先初始化一下数据
-            this.ruleForm.permisIds = []
+            this.ruleForm.permisIdList = []
             // 拿到权限id数组
             for (let list of this.tableData) {
-              treeData = this.$refs['tree' + list.id]
+              treeData = this.$refs['tree' + list.moduleId]
 
               if (treeData) {
                 for (let item of treeData.getCheckedKeys()) {
-                  this.ruleForm.permisIds.push(item)
+                  this.ruleForm.permisIdList.push(item)
                 }
               }
             }
@@ -221,7 +283,7 @@
             // let ajaxParameters = {
             //   name: this.ruleForm.versionName,
             //   description: this.ruleForm.description,
-            //   permisIds: this.ruleForm.permisIds
+            //   permisIdList: this.ruleForm.permisIdList
             // }
 
             // let requestWay = roleAdd
@@ -245,9 +307,11 @@
           }
         })
       },
-      renderContent(h, { node, data, store }) {
-        let mlPX = (data.lvl !== 2) ? (<span class='fl ml70'>{data.permisDesc}</span>) : (<span class='fl ml50'>{data.permisDesc}</span>)
 
+      // Tree组件自定义渲染权限描述
+      renderContent(h, { node, data, store }) {
+        let mlPX = (data.lvl !== 2) ? (<span class='fl ml70'>{data.permisDesc}</span>)
+          : (<span class='fl ml50'>{data.permisDesc}</span>)
         return (
           <span style='width: 100%;'>
             <span class='fl width170px'>
@@ -256,6 +320,16 @@
             { mlPX }
           </span>
         )
+      },
+
+      // 自定义校验-售价
+      checkAmount: (rule, value, callback) => {
+        if (isNaN(Number(value)) || Number(value) < 0) {
+          callback(new Error('请输入不小于0的数值'))
+        } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
+          callback(new Error('最多允许输入两位小数'))
+        }
+        callback()
       }
     }
   }
