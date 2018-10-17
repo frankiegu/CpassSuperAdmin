@@ -191,9 +191,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import 'src/styles/variables.scss';
-  @import 'src/styles/common.scss';
-
   .main-content {
     .set-table-dialog {
       .panel {
