@@ -41,7 +41,7 @@
             class="width290px" filterable>
             <el-option
               v-for="itm in brandList" :key="itm.id"
-              :label="itm.spaceName" :value="itm.id"></el-option>
+              :label="itm.spaceName || '品牌id：' + itm.id" :value="itm.id"></el-option>
           </el-select>
         </el-form-item>
 
@@ -118,7 +118,7 @@
                 class="input-width" filterable>
                 <el-option
                   v-for="item in itm.brandList" :key="item.id"
-                  :label="item.spaceName" :value="item.id"></el-option>
+                  :label="itm.spaceName || '品牌id：' + itm.id" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
