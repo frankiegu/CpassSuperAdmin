@@ -1,4 +1,4 @@
-import { indexBannerAddOrUpdate, indexBannerDetail } from '@/service/market'
+import { indexBannerAdd, indexBannerUpdate, indexBannerDetail } from '@/service/market'
 export default {
   mixins: [],
   data () {
@@ -100,7 +100,11 @@ export default {
             appForwardUrl: this.formData.wxLink,
             wxappForwardUrl: this.formData.wxAppLink
           }
-          indexBannerAddOrUpdate(dataObj).then(res => {
+          let requestMethod = indexBannerAdd
+          if (this.bannerId) {
+            requestMethod = indexBannerUpdate
+          }
+          requestMethod(dataObj).then(res => {
             if (res.status === 'true') {
               this.noAllow = !this.noAllow
 
