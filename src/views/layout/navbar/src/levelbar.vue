@@ -4,7 +4,7 @@
       <el-breadcrumb-item v-for="(item, index) in levelList" :key="index">
 
         <span v-if="item.name">
-          <router-link class="nactive-bread" v-if="index < (levelList.length -1) " :to="item.redirect || item.path">{{item.name}}</router-link>
+          <span class="nactive-bread" v-if="index < (levelList.length -1) " @click="linkTo(item, index)">{{item.name}}</span>
           <span class="active-bread" v-else>{{item.name}}</span>
         </span>
         <span class="active-bread" v-else>{{navCrumb}}</span>
@@ -45,6 +45,14 @@
           matched = [{ name: '首页', path: '/' }]
         }
         this.levelList = matched
+      },
+      // 跳转路由
+      linkTo (item, index) {
+        // 禁止第二个路由跳转，涉及到权限跳转问题
+        if (index === 1) return
+        this.$router.push({
+          path: item.redirect || item.path
+        })
       }
     }
   }
@@ -60,6 +68,7 @@
     background-color: #fff;
     .nactive-bread {
       color: rgba(0,0,0,.45);
+      cursor: pointer;
     }
     .active-bread {
       color: rgba(0,0,0,.65);

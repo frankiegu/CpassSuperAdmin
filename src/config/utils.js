@@ -96,19 +96,31 @@ export function logoutNoToken() {
  * @return {Boolean} 返回权限判断结果
  */
 export const hasPermissions = (params) => {
-  let totalPermissions = store.getters.getPermissions || []
-  let paramsData = params
-
-  if ((typeof paramsData) === 'object') {
-    for (var item of paramsData) {
-      if (totalPermissions.includes(item)) {
-        return true
-      }
-    }
-  } else {
-    // includes方法返回一个布尔值，表示某个数组是否包含给定的值
-    return totalPermissions.includes(paramsData)
-  }
+  // TODO: 需要接口生效时候放开此方法
+  // let totalPermissions = store.getters.getPermissions || []
+  // let paramsData = params
+  //
+  // if ((typeof paramsData) === 'object') {
+  //   for (var item of paramsData) {
+  //     if (totalPermissions.includes(item)) {
+  //       return true
+  //     }
+  //   }
+  // } else {
+  //   // includes方法返回一个布尔值，表示某个数组是否包含给定的值
+  //   return totalPermissions.includes(paramsData)
+  // }
+  // console.log(params)
+  // if ((typeof params) === 'object') {
+  //   // if (params.includes('/supervisor/platformOrderRefund/list')) {
+  //   //   return false
+  //   // }
+  // } else {
+  //   // console.log(params)
+  //   // ['/supervisor/platformService/list', '/supervisor/platformServiceOrder/list']
+  //   if (params === '/supervisor/feedback/list') return false
+  // }
+  return true
 }
 
 /**

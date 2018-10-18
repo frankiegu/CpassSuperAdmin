@@ -10,10 +10,20 @@ export default [{
   redirect: '/market/banner',
   component: layout,
   icon: 'icon-Site',
+  ajaxPermissions: [
+    '/supervisor/indexBanner/list', // 首页banner
+    '/supervisor/marketing/list', // CPASS精选
+    '/supervisor/platformCoupon/list', // 优惠券
+    '/supervisor/platformVerifier/page', // 核销管理 - 核销员
+    '/supervisor/platformVerifyStation/page', // 核销管理 - 核销点
+    '/supervisor/platformVerifyRecord/page', // 核销管理 - 核销记录
+    '/supervisor/platformActivity/list' // 活动列表
+  ],
   children: [{
     name: '首页banner',
     path: 'banner',
-    component: _import('market/banner/list')
+    component: _import('market/banner/list'),
+    ajaxPermissions: '/supervisor/indexBanner/list'
   }, {
     name: '',
     path: 'banner/add',
@@ -25,7 +35,8 @@ export default [{
   {
     name: 'C-PASS精选',
     path: 'c-pass',
-    component: _import('market/c-pass/list')
+    component: _import('market/c-pass/list'),
+    ajaxPermissions: '/supervisor/marketing/list'
   }, {
     name: '',
     path: 'c-pass/com',
@@ -37,7 +48,8 @@ export default [{
   {
     name: '优惠券',
     path: 'coupon',
-    component: _import('market/coupon/coupon')
+    component: _import('market/coupon/coupon'),
+    ajaxPermissions: '/supervisor/platformCoupon/list'
   }, {
     name: '优惠券详情',
     path: 'coupon-detail',
@@ -61,6 +73,11 @@ export default [{
     path: '/write-off',
     redirect: '/write-off/member',
     component: _import('market/write-off/write-off'),
+    ajaxPermissions: [
+      '/supervisor/platformVerifier/page', // 核销管理 - 核销员
+      '/supervisor/platformVerifyStation/page', // 核销管理 - 核销点
+      '/supervisor/platformVerifyRecord/page' // 核销管理 - 核销记录
+    ],
     children: [{
       name: '核销员',
       path: 'member',
@@ -83,7 +100,8 @@ export default [{
   {
     name: '活动列表',
     path: '/activity',
-    component: _import('market/activity/list/list')
+    component: _import('market/activity/list/list'),
+    ajaxPermissions: '/supervisor/platformActivity/list'
   },
   {
     name: '添加/编辑/复制活动',

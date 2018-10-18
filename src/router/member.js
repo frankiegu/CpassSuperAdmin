@@ -10,6 +10,7 @@ export default [{
   redirect: '/member/list',
   component: layout,
   icon: 'icon-viip',
+  ajaxPermissions: ['/supervisor/appCustomer/list', '/supervisor/customer/list'],
   children: [{
     name: '会员列表',
     path: 'list',

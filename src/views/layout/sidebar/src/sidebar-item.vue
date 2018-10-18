@@ -3,8 +3,10 @@
     <template v-for="(item, key) in routes">
       <router-link
         :key="key"
-        v-if="!item.hidden && item.noDropdown && item.children.length > 0"
-        :to="item.redirect">
+        v-if="!item.hidden && item.noDropdown && item.children.length > 0
+         && handleHasPermissions(item.ajaxPermissions)"
+        :to="item.path">
+
         <el-menu-item :index="item.path">
           <lh-svg v-if='item.icon' :iconClass="item.icon" class="icon" /><span slot="title">{{item.children[0].name}}</span>
         </el-menu-item>
@@ -12,15 +14,15 @@
 
       <el-submenu
         :key="key"
-        v-if="(item.hidden === 'development') || (!item.noDropdown && !item.hidden)"
+        v-if="(item.hidden === 'development') || (!item.hidden && !item.noDropdown && handleHasPermissions(item.ajaxPermissions))"
         :index="item.name">
         <template slot="title">
           <lh-svg v-if='item.icon' :iconClass="item.icon" class="icon"></lh-svg>{{item.name}}
         </template>
 
-        <template
-          v-for="(child, idx2) in item.children"
-          v-if="(item.hidden === 'development') || !child.hidden">
+        <template v-for="(child, idx2) in item.children"
+                  v-if="(item.hidden === 'development') || (!child.hidden && handleHasPermissions(child.ajaxPermissions))">
+
           <router-link
             :key="idx2"
             v-if="child.path[0] === '/'"
@@ -30,10 +32,11 @@
             <el-menu-item :index="item.path+'/' + child.path">{{child.name}}</el-menu-item>
           </router-link>
 
-          <router-link :key="idx2"
+          <router-link
             v-else
-            :to="item.path+'/' + child.path"
-            class="menu-indent">
+            :key="idx2"
+            class="menu-indent"
+            :to="item.path+'/' + child.path">
 
             <el-menu-item :index="item.path+'/' + child.path">{{child.name}}</el-menu-item>
           </router-link>
@@ -49,7 +52,7 @@ export default {
     routes: { type: Array }
   },
   mounted () {
-    // console.log('sidebar-item: ', this.routes)
+    console.log('sidebar-item: ', this.routes)
     // console.log('space: ', this.handleHasPermissions('/manage/field/list'));
   }
 }
