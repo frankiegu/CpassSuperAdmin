@@ -130,7 +130,7 @@
                 class="btn-save width80px"
                 type="primary"
                 @click="postSave('userForm')">{{ this.userForm.id?'提交':'新增用户' }}</el-button>
-              <el-button @click="cancelSet('userForm')" class="btn-clear">取消</el-button>
+              <el-button  @click="cancelSet('userForm')" class="btn-clear width80px">取消</el-button>
           </div>
         </div>
 
