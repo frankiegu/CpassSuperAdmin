@@ -1,14 +1,15 @@
 /**
- * 用户管理
+ * 操作记录
  */
 import { _import } from '../config/env'
 import layout from '@/views/layout/layout.vue'
 
 export default [{
-  name: '操作记录',
+  name: '操作记录查询',
   path: '/action-log',
   redirect: '/action-log/list',
   component: layout,
+  noDropdown: true,
   icon: 'icon-order',
   children: [{
     name: '操作记录',
