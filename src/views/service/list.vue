@@ -36,11 +36,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作">
+        <el-table-column v-if="handleHasPermissions(['/supervisor/platformService/setOnTop', '/supervisor/platformService/togglePermitOpen'])" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="scope.row.statusCode === 1"
+            <el-button type="text" @click="handleSetTop(scope.row.id)" v-if="handleHasPermissions('/supervisor/platformService/setOnTop') && scope.row.statusCode === 1"
               class="operate-btn">置顶</el-button>
             <el-tooltip
+              v-if="handleHasPermissions('/supervisor/platformService/togglePermitOpen')"
               :content="scope.row.isPermitOpen === 1 ? '关闭将不在小程序服务列表展示' : '服务已被关闭,不能设置状态'"
               placement="top" style="margin-top: -5px">
               <!-- :disabled="!scope.row.isPermitOpen" -->
