@@ -118,7 +118,7 @@
                 class="input-width" filterable>
                 <el-option
                   v-for="item in itm.brandList" :key="item.id"
-                  :label="itm.spaceName || '品牌id：' + itm.id" :value="item.id"></el-option>
+                  :label="item.spaceName || '品牌id：' + item.id" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
