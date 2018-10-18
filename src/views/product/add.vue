@@ -107,8 +107,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  // import { permissionList } from '@/service/product'
-  // import { productAdd, productUpdate } from '@/service/product'
+  import { permissionList, productAdd, productUpdate } from '@/service/product'
   import dataMixins from './data.mixins'
 
   export default {
@@ -118,15 +117,13 @@
         id: this.$route.query.id,
         type: this.$route.query.type,
         title: this.$route.query.id ? '编辑产品版本' : '新增产品版本',
-        allPermisIds: [],
 
         ruleForm: {
           versionName: '',
           price: 0,
           description: '',
           status: 1,
-          permisIdList: [],
-          checkList: []
+          permisIdList: []
         },
 
         tableData: [],
@@ -200,56 +197,49 @@
         }
 
         this.tableData = this.modulePermis
-        this.tableData.forEach((child) => {
-          let topPermis = child.permission
-          this.$set(child, 'checked', false)
-          this.$set(child, 'isIndeterminate', false)
-          this.$set(child, 'allPermisIds', [])
-          this.$set(child, 'requiredList', [])
-          allPermisIds = []
-          requiredList = []
-          diffLen = topPermis.length
-          // 当顶级权限下面的权限全部为必选时，禁用该顶级权限
-          if (topPermis && topPermis.length > 0) {
-            topPermis.forEach(item1 => {
-              this.$set(item1, 'mustCheck', false)
-              if (item1.children.length) {
-                let permisList = item1.children
-                let checkLen = 0
-                permisList.forEach(item2 => {
-                  if (item2.mustCheck) {
-                    ++checkLen
-                    if (checkLen === permisList.length) {
-                      this.$set(item1, 'mustCheck', true)
-                    }
+        permissionList().then(res => {
+          if (res.status === 'true') {
+            this.tableData = res.info
+            // this.tableData = this.tableData.concat(this.modulePermis)
+            this.tableData.forEach((child) => {
+              let topPermis = child.permission
+              this.$set(child, 'checked', false)
+              this.$set(child, 'isIndeterminate', false)
+              this.$set(child, 'allPermisIds', [])
+              this.$set(child, 'requiredList', [])
+              allPermisIds = []
+              requiredList = []
+              diffLen = topPermis.length
+              // 当顶级权限下面的权限全部为必选时，禁用该顶级权限
+              if (topPermis && topPermis.length > 0) {
+                topPermis.forEach(item1 => {
+                  this.$set(item1, 'mustCheck', false)
+                  if (item1.children.length) {
+                    let permisList = item1.children
+                    let checkLen = 0
+                    permisList.forEach(item2 => {
+                      if (item2.mustCheck) {
+                        ++checkLen
+                        if (checkLen === permisList.length) {
+                          this.$set(item1, 'mustCheck', true)
+                        }
+                      }
+                    })
                   }
                 })
               }
+              traverse(child)
+              child.allPermisIds = allPermisIds
+              child.requiredList = requiredList
+              child.checked = child.allPermisIds.length === child.checkIdList.length + diffLen
+              child.isIndeterminate = child.allPermisIds.length !== child.checkIdList.length + diffLen
+              this.tableLoading = false
             })
+          } else {
+            this.tableLoading = false
+            this.setMsg('error', res.msg)
           }
-          traverse(child)
-          child.allPermisIds = allPermisIds
-          child.requiredList = requiredList
-          child.checked = child.allPermisIds.length === child.checkIdList.length + diffLen
-          child.isIndeterminate = child.allPermisIds.length !== child.checkIdList.length + diffLen
-          this.tableLoading = false
         })
-        // permissionList().then(res => {
-        //   if (res.status === 'true') {
-        //     this.tableData = res.info
-        //     // this.tableData = this.tableData.concat(this.modulePermis)
-        //     this.tableData.forEach((child) => {
-        //       child.allPermisIds = []
-        //       allPermisIds = []
-        //       traverse(child)
-        //       child.allPermisIds = allPermisIds
-        //       this.tableLoading = false
-        //     })
-        //   } else {
-        //     this.tableLoading = false
-        //     this.setMsg('error', res.msg)
-        //   }
-        // })
       },
 
       // 保存
@@ -268,40 +258,35 @@
               treeData = this.$refs['tree' + list.moduleId]
 
               if (treeData) {
-                for (let item of treeData.getCheckedKeys()) {
+                let leafOnly = true
+                for (let item of treeData.getCheckedKeys(leafOnly)) {
                   this.ruleForm.permisIdList.push(item)
                 }
               }
             }
-            // console.log('this.ruleForm.pushList', this.ruleForm.pushList)
-            // let pushList = []
-            // this.ruleForm.pushList.forEach(v => {
-            //   if (v.selected === 1) {
-            //     pushList.push(v.id)
-            //   }
-            // })
-            // let ajaxParameters = {
-            //   name: this.ruleForm.versionName,
-            //   description: this.ruleForm.description,
-            //   permisIdList: this.ruleForm.permisIdList
-            // }
+            let ajaxParameters = {
+              name: this.ruleForm.versionName,
+              description: this.ruleForm.description,
+              permisIdList: this.ruleForm.permisIdList,
+              status: this.ruleForm.status
+            }
 
-            // let requestWay = roleAdd
-            // // 实现复制功能，只在编辑的状态下才传id
-            // if (this.type === 'edit') {
-            //   ajaxParameters.id = this.id
-            //   requestWay = roleUpdate
-            // }
-            // requestWay(ajaxParameters).then(res => {
-            //   if (res.status === 'true') {
-            //     let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
-            //
-            //     this.setMsg('success', tipsText)
-            //     this.$router.replace('/job')
-            //   } else {
-            //     this.setMsg('error', res.msg)
-            //   }
-            // })
+            let requestWay = productAdd
+            // 只在编辑的状态下才传id
+            if (this.type === 'edit') {
+              ajaxParameters.id = this.id
+              requestWay = productUpdate
+            }
+            requestWay(ajaxParameters).then(res => {
+              if (res.status === 'true') {
+                let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
+
+                this.setMsg('success', tipsText)
+                this.$router.replace('/product/list')
+              } else {
+                this.setMsg('error', res.msg)
+              }
+            })
           } else {
             return false
           }
