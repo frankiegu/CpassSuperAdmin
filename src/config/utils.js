@@ -111,15 +111,15 @@ export const hasPermissions = (params) => {
   //   return totalPermissions.includes(paramsData)
   // }
   // console.log(params)
-  // if ((typeof params) === 'object') {
-  //   // if (params.includes('/supervisor/platformOrderRefund/list')) {
-  //   //   return false
-  //   // }
-  // } else {
-  //   // console.log(params)
-  //   // ['/supervisor/platformService/list', '/supervisor/platformServiceOrder/list']
-  //   if (params === '/supervisor/feedback/list') return false
-  // }
+  if ((typeof params) === 'object') {
+    // if (params.includes('/supervisor/storeStar/editStoreStar')) {
+    //   return false
+    // }
+  } else {
+    // console.log(params)
+    // ['/supervisor/platformService/list', '/supervisor/platformServiceOrder/list']
+    if (params === '/supervisor/appCustomer/changeStatus') return false
+  }
   return true
 }
 
