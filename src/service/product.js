@@ -19,3 +19,9 @@ export const productAdd = (obj) => fetch(API_PATH + '/supervisor/product/save', 
 
 // 产品库版本列表
 export const productList = (obj) => fetch(API_PATH + '/supervisor/product/selectPage', obj, 'GET')
+
+// 产品库禁用
+export const productClose = (obj) => fetch(API_PATH + '/supervisor/product/close', obj, 'GET')
+
+// 产品库恢复
+export const productOpen = (obj) => fetch(API_PATH + '/supervisor/product/open', obj, 'GET')

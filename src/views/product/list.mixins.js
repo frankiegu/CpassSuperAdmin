@@ -1,5 +1,5 @@
 import tableMixins from '@/mixins/table'
-import { productList } from '@/service/product'
+import { productList, productClose, productOpen } from '@/service/product'
 
 export default {
   mixins: [tableMixins],
@@ -48,12 +48,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '恢复成功!'
-        });
-        // 修改状态、刷新页面数据
-        this.getPageData()
+        productOpen({ id: id, status: 1 }).then(res => {
+          if (res.status === 'true') {
+            // 提示操作成功
+            this.$message({
+              type: 'success',
+              message: '恢复成功!'
+            });
+            // 修改状态、刷新页面数据
+            this.getPageData()
+          } else {
+            // 提示操作成功
+            this.$message({
+              type: 'error',
+              message: '恢复失败!'
+            });
+          }
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -69,12 +80,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '禁用成功!'
+        productClose({ id: id, status: 0 }).then(res => {
+          if (res.status === 'true') {
+            // 提示操作成功
+            this.$message({
+              type: 'success',
+              message: '禁用成功!'
+            })
+            // 修改状态、刷新页面数据
+            this.getPageData()
+          } else {
+            // 提示操作成功
+            this.$message({
+              type: 'error',
+              message: '禁用失败!'
+            });
+          }
         })
-        // 修改状态、刷新页面数据
-        this.getPageData()
       }).catch(() => {
         this.$message({
           type: 'info',
