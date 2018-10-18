@@ -14,6 +14,7 @@ import market from '@/router/market'               // 营销管理
 import statistics from '@/router/statistics'       // 统计
 import user from '@/router/user-management'        // 用户管理
 import resource from '@/router/resource'           // 权限资源管理
+import actionLog from '@/router/action-log'        // 操作记录
 
 export const constantRouterMap = [
   {
@@ -43,6 +44,7 @@ export const constantRouterMap = [
   ...statistics,
   ...register,
   ...resource,
+  ...actionLog,
   ...example,
   /* 必须保证404页面在最后引入，有坑 */
   {
