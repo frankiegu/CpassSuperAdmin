@@ -88,9 +88,8 @@
         </div>
 
         <el-form-item label-width="0" class="mt60">
-          <el-button
-            :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
-            class="width80px">取消
+          <el-button :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
+            class="width80px" @click="handleCancel">取消
           </el-button>
 
           <el-button
@@ -107,11 +106,9 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { permissionList, productAdd, productUpdate } from '@/service/product'
-  import dataMixins from './data.mixins'
+  import { permissionList, productAdd, productUpdate, productDetail } from '@/service/product'
 
   export default {
-    mixins: [dataMixins],
     data () {
       return {
         id: this.$route.query.id,
@@ -146,7 +143,7 @@
       }
 
       this.tableLoading = true
-      this.getPermissionList()
+      this.id ? this.getProductDetail() : this.getPermissionList()
     },
 
     methods: {
@@ -177,6 +174,21 @@
 
       // 获取权限列表
       getPermissionList() {
+        permissionList().then(res => {
+          if (res.status === 'true') {
+            this.tableData = res.info
+            // this.tableData = this.tableData.concat(this.modulePermis)
+            this.dealPermissionList()
+            this.tableLoading = false
+          } else {
+            this.tableLoading = false
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+
+      // 权限列表处理
+      dealPermissionList() {
         let allPermisIds = [] // 全部权限的id数组（包含顶级权限）
         let requiredList = [] // 必选权限的id数组
         let diffLen = 0 // 长度差（allPermisIds的长度 - 实际权限的长度）为顶级权限的长度
@@ -196,48 +208,59 @@
           }
         }
 
-        this.tableData = this.modulePermis
-        permissionList().then(res => {
-          if (res.status === 'true') {
-            this.tableData = res.info
-            // this.tableData = this.tableData.concat(this.modulePermis)
-            this.tableData.forEach((child) => {
-              let topPermis = child.permission
-              this.$set(child, 'checked', false)
-              this.$set(child, 'isIndeterminate', false)
-              this.$set(child, 'allPermisIds', [])
-              this.$set(child, 'requiredList', [])
-              allPermisIds = []
-              requiredList = []
-              diffLen = topPermis.length
-              // 当顶级权限下面的权限全部为必选时，禁用该顶级权限
-              if (topPermis && topPermis.length > 0) {
-                topPermis.forEach(item1 => {
-                  this.$set(item1, 'mustCheck', false)
-                  if (item1.children.length) {
-                    let permisList = item1.children
-                    let checkLen = 0
-                    permisList.forEach(item2 => {
-                      if (item2.mustCheck) {
-                        ++checkLen
-                        if (checkLen === permisList.length) {
-                          this.$set(item1, 'mustCheck', true)
-                        }
+        if (this.tableData.length > 0) {
+          this.tableData.forEach((child) => {
+            let topPermis = child.permission
+            this.$set(child, 'checked', false) // 设置响应的顶级权限的checked属性，默认为不勾选
+            this.$set(child, 'isIndeterminate', false) // 设置响应的isIndeterminate属性，默认为确定状态
+            this.$set(child, 'allPermisIds', []) // 设置响应的allPermisIds属性，存储全部权限ID的数组，默认为空
+            this.$set(child, 'requiredList', []) // 设置响应的requiredList属性，存储全部必选权限ID的数组，默认为空
+            allPermisIds = []
+            requiredList = []
+            diffLen = topPermis.length
+            // 当顶级权限下面的权限全部为必选时，禁用该顶级权限
+            if (topPermis && topPermis.length > 0) {
+              topPermis.forEach(item1 => {
+                this.$set(item1, 'mustCheck', false)
+                if (item1.children.length) {
+                  let permisList = item1.children
+                  let checkLen = 0
+                  permisList.forEach(item2 => {
+                    if (item2.mustCheck) {
+                      ++checkLen
+                      if (checkLen === permisList.length) {
+                        this.$set(item1, 'mustCheck', true)
                       }
-                    })
-                  }
-                })
-              }
-              traverse(child)
-              child.allPermisIds = allPermisIds
-              child.requiredList = requiredList
-              child.checked = child.allPermisIds.length === child.checkIdList.length + diffLen
-              child.isIndeterminate = child.allPermisIds.length !== child.checkIdList.length + diffLen
-              this.tableLoading = false
-            })
+                    }
+                  })
+                }
+              })
+            }
+            traverse(child)
+            child.allPermisIds = allPermisIds
+            child.requiredList = requiredList
+            child.checked = child.allPermisIds.length === child.checkIdList.length + diffLen
+            child.isIndeterminate = child.allPermisIds.length !== child.checkIdList.length + diffLen
+          })
+        }
+      },
+
+      // 获取产品版本详情
+      getProductDetail() {
+        productDetail({
+          id: +this.id
+        }).then(res => {
+          if (res.status === 'true' && res.info) {
+            this.ruleForm.versionName = res.info.name
+            this.ruleForm.description = res.info.description
+            this.ruleForm.status = res.info.status
+            this.ruleForm.price = res.info.price || 0
+            this.tableData = res.info.permission
+            this.dealPermissionList()
+            this.tableLoading = false
           } else {
             this.tableLoading = false
-            this.setMsg('error', res.msg)
+            this.setMsg('error', res.msg || '请求失败')
           }
         })
       },
@@ -266,6 +289,7 @@
             }
             let ajaxParameters = {
               name: this.ruleForm.versionName,
+              price: this.ruleForm.price,
               description: this.ruleForm.description,
               permisIdList: this.ruleForm.permisIdList,
               status: this.ruleForm.status
@@ -315,6 +339,17 @@
           callback(new Error('最多允许输入两位小数'))
         }
         callback()
+      },
+
+      // 取消
+      handleCancel() {
+        this.$confirm('此操作将不保存任何修改，是否确认取消？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.replace('/product/list')
+        }).catch(() => {})
       }
     }
   }

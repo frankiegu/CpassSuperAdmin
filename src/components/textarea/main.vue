@@ -50,7 +50,7 @@
     computed: {
       data: {
         get: function () {
-          return this.textData
+          return this.textData || ''
         },
         set: function () {}
       }
