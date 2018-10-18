@@ -20,7 +20,7 @@ export default {
       const paramsObj = {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        activityName: this.formData.name
+        name: this.formData.name
       }
 
       productList(paramsObj).then(res => {
