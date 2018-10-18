@@ -18,11 +18,13 @@
 
         <!--v-permissions="'/manage/coupon/add'"-->
         <router-link
+          v-if="handleHasPermissions('/supervisor/platformCoupon/manualCoupon')"
           :to="'/coupon/issue'"
           class="fl">
           <el-button type="primary">手动发券</el-button>
         </router-link>
         <router-link
+          v-if="handleHasPermissions('/supervisor/platformCoupon/add')"
           :to="'/coupon/add'"
           class="fl">
           <el-button class="ml16">添加优惠券</el-button>
