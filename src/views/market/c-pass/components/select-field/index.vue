@@ -16,7 +16,7 @@
       label-position="right">
       <!-- 添加标题 -->
       <div v-if="insertType === 'title'" key="1">
-        <el-form-item prop="titleType" label="标题类型" label-width="77px">
+        <el-form-item prop="titleType" label="标题类型" label-width="80px">
           <el-select
             v-model="dialogData.titleType"
             placeholder="选择类型"
@@ -33,7 +33,7 @@
         <el-form-item
           v-if="dialogData.titleType && dialogData.titleType !== 'arbitrarily'"
           prop="brandId"
-          label="品牌名" label-width="77px">
+          label="品牌名" label-width="80px">
           <el-select
             v-model="dialogData.brandId"
             @change="selectBrandId"
@@ -48,7 +48,7 @@
         <el-form-item
           v-if="dialogData.titleType === 'store' || dialogData.titleType === 'field'"
           prop="storeId"
-          label="空间名" label-width="77px">
+          label="空间名" label-width="80px">
           <el-select
             v-model="dialogData.storeId"
             @change="selectStoreId"
@@ -63,7 +63,7 @@
         <el-form-item
           v-if="dialogData.titleType === 'field'"
           prop="fieldId"
-          label="场地名" label-width="77px">
+          label="场地名" label-width="80px">
           <el-select
             v-model="dialogData.fieldId"
             placeholder="选择或搜索场地名"
@@ -78,7 +78,7 @@
         <el-form-item
           v-if="dialogData.titleType === 'arbitrarily'"
           prop="arbitrarilyName"
-          label="任意名" label-width="77px">
+          label="任意名" label-width="80px">
           <el-input
             v-model.trim="dialogData.arbitrarilyName"
             @keyup.native.enter="submitForm('dialogData')"
@@ -110,7 +110,7 @@
                 required: true, message: '品牌名不能为空', trigger: ['blur', 'change']
               }"
               label="品牌名"
-              label-width="77px">
+              label-width="80px">
               <el-select
                 v-model="itm.brandId"
                 placeholder="选择或搜索品牌名"
@@ -128,7 +128,7 @@
                 required: true, message: '空间名不能为空', trigger: ['blur', 'change']
               }"
               label="空间名"
-              label-width="77px">
+              label-width="80px">
               <el-select
                 v-model="itm.storeId"
                 @change="handleStoreId(idx + 1)"
@@ -147,7 +147,7 @@
                 required: true, message: '场地名不能为空', trigger: ['blur', 'change']
               }"
               label="场地名"
-              label-width="77px"
+              label-width="80px"
               :class="{'lh-form-item0': idx === 4}">
               <el-select
                 v-model="itm.fieldId"
