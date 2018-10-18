@@ -65,39 +65,39 @@
         <div class="panel scroll-panel">
           <h1 class=""><i @click="cancelSet('userForm')" class="el-icon-arrow-right fl callback theme-gray"></i>{{ userFormTitle }}</h1>
 
-          <div class="content mt40">
+          <div class="content mt22">
             <div class="content-form clearfix">
 
-              <el-form-item class="mt40" label="用户ID">
+              <el-form-item class="mt22" label="用户ID">
                 <span style="line-height: 31px;" v-if="userForm.userNumber">{{ userForm.userNumber }}</span>
                 <span style="line-height: 31px;" v-else>新增账号后由系统生成</span>
               </el-form-item>
 
-              <el-form-item class="mt40" label="用户名/手机号" prop="userName">
+              <el-form-item class="mt22" label="用户名/手机号" prop="userName">
                 <el-input
                   v-model.trim="userForm.userName"
                   placeholder="请输入手机号"></el-input>
               </el-form-item>
 
-              <el-form-item class="mt40" label="真实姓名" prop="realName">
+              <el-form-item class="mt22" label="真实姓名" prop="realName">
                 <el-input
                   v-model.trim="userForm.realName"
                   placeholder="请输入真实姓名"></el-input>
               </el-form-item>
 
-              <el-form-item class="mt40" label="邮箱" prop="email">
+              <el-form-item class="mt22" label="邮箱" prop="email">
                 <el-input
                   v-model.trim="userForm.email"
                   placeholder="请输入公司邮箱"></el-input>
               </el-form-item>
 
-              <el-form-item label="描述" prop="description">
+              <el-form-item class="mt22" label="描述" prop="description">
                 <el-input
                   type="textarea"
                   v-model.trim="userForm.description"></el-input>
               </el-form-item>
 
-              <el-form-item label="可用状态" prop="useState">
+              <el-form-item class="mt22" label="可用状态" prop="useState">
                 <el-switch
                   v-model.trim="userForm.useState"
                   active-color="#13ce66"
@@ -105,7 +105,7 @@
                   inactive-value="禁用"></el-switch>
               </el-form-item>
 
-              <el-form-item class="mt40" label="角色" prop="role">
+              <el-form-item class="mt22" label="角色" prop="role">
                 <el-select
                   clearable
                   v-model.trim="userForm.role"
