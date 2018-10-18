@@ -16,3 +16,6 @@ export const productUpdate = (obj) => fetch(API_PATH + '/supervisor/product/upda
 
 // 产品库新增
 export const productAdd = (obj) => fetch(API_PATH + '/supervisor/product/save', obj, 'POST')
+
+// 产品库版本列表
+export const productList = (obj) => fetch(API_PATH + '/supervisor/product/selectPage', obj, 'GET')

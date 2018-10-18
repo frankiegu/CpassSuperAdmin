@@ -1,18 +1,11 @@
 import tableMixins from '@/mixins/table'
-import { platformActivityList } from '@/service/market'
+import { productList } from '@/service/product'
 
 export default {
   mixins: [tableMixins],
   data () {
     return {
       id: '',
-      permisList: [
-        '空间管理',
-        '场地管理',
-        '场地订单管理',
-        '服务及服务商管理',
-        '服务商管理'
-      ],
       formData: {
         name: ''
       }
@@ -30,7 +23,7 @@ export default {
         activityName: this.formData.name
       }
 
-      platformActivityList(paramsObj).then(res => {
+      productList(paramsObj).then(res => {
         if (res.status === 'true') {
           let data = res.info
           if (data) {

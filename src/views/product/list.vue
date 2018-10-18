@@ -40,24 +40,29 @@
             <!--</router-link>-->
           </template>
         </el-table-column>
-        <el-table-column label="包含功能" prop="type" align="left" min-width="150">
+        <el-table-column label="包含功能" align="left" min-width="150">
           <template slot-scope="scope">
-            <span v-for="(item, index) in permisList">{{item}}<span v-if="index < permisList.length - 1">、</span></span>
+            <span v-for="(item, index) in scope.row.permisList">{{ item }}<span v-if="index < scope.row.permisList.length - 1">、</span></span>
           </template>
         </el-table-column>
         <el-table-column label="售价" align="left" width="120">
           <template slot-scope="scope">
-            <span>{{ scope.row.id.toFixed(2) }}</span>
+            <span v-if="scope.row.price">{{ scope.row.price.toFixed(2) }}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="签约数量" prop="id" align="left" width="120"></el-table-column>
+        <el-table-column label="签约数量" align="left" width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.signingAccount || 0 }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="可用状态" align="left" width="120">
           <template slot-scope="scope">
-            <el-tag type="success" v-if="true">可用</el-tag>
-            <el-tag type="danger" v-if="false">禁用</el-tag>
+            <el-tag type="success" v-if="scope.row.status === 1">可用</el-tag>
+            <el-tag type="danger" v-if="scope.row.status === 0">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="描述" prop="name" align="left"></el-table-column>
+        <el-table-column label="描述" prop="description" align="left" min-width="100"></el-table-column>
 
 
         <el-table-column label="操作" align="left" width="120">
@@ -68,10 +73,11 @@
 
             <span>
               <el-button type="text"
+                         v-if="scope.row.status === 1"
                          @click="disable(scope.row.id, 0)"
                          class="operate-btn">禁用</el-button>
               <el-button type="text"
-                         v-if="false"
+                         v-if="scope.row.status === 0"
                          @click="restore(scope.row.id, 1)"
                          class="operate-btn">恢复</el-button>
             </span>
