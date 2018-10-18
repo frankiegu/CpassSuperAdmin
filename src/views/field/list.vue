@@ -18,7 +18,7 @@
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="handleHasPermissions('/supervisor/field/exportFieldRevenue')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -65,9 +65,10 @@
 
           <el-table-column label="场地更新时间" prop="updated" align="left" width="105"></el-table-column>
 
-          <el-table-column label="操作" fixed="right" align="left">
+          <el-table-column v-if="handleHasPermissions(['/supervisor/field/open'])" label="操作" fixed="right" align="left">
             <template slot-scope="scope">
               <el-tooltip
+                v-if="handleHasPermissions('/supervisor/field/open')"
                 :content="scope.row.isOpen === 1 ? '点击停用场地' : '点击启用场地'"
                 placement="top"
                 class="margin-lr6">

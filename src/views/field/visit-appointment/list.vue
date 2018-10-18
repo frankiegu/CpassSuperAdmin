@@ -33,7 +33,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item v-if="handleHasPermissions('/supervisor/visitReservation/export')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
