@@ -94,6 +94,7 @@
 
           <el-button
             @click="submitForm('ruleForm')"
+            :loading="requestLoading"
             :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
             class="width80px mr30"
             type="primary">保 存</el-button>
@@ -124,7 +125,8 @@
         },
 
         tableData: [],
-        tableLoading: false
+        tableLoading: false,
+        requestLoading: false
       }
     },
 
@@ -254,7 +256,7 @@
             this.ruleForm.versionName = res.info.name
             this.ruleForm.description = res.info.description
             this.ruleForm.status = res.info.status
-            this.ruleForm.price = res.info.price || 0
+            this.ruleForm.price = (res.info.price / 100) || 0
             this.tableData = res.info.permission
             this.dealPermissionList()
             this.tableLoading = false
@@ -267,9 +269,11 @@
 
       // 保存
       submitForm(formName) {
+        this.requestLoading = true
         let treeData
 
         if (!this.ruleForm.versionName) {
+          this.requestLoading = false
           this.$refs.versionName.focus()
         }
         this.$refs[formName].validate((valid) => {
@@ -289,7 +293,7 @@
             }
             let ajaxParameters = {
               name: this.ruleForm.versionName,
-              price: this.ruleForm.price,
+              price: +this.ruleForm.price * 100,
               description: this.ruleForm.description,
               permisIdList: this.ruleForm.permisIdList,
               status: this.ruleForm.status
@@ -305,14 +309,16 @@
               if (res.status === 'true') {
                 let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
 
+                this.requestLoading = false
                 this.setMsg('success', tipsText)
                 this.$router.replace('/product/list')
               } else {
+                this.requestLoading = false
                 this.setMsg('error', res.msg)
               }
             })
           } else {
-            return false
+            this.requestLoading = false
           }
         })
       },
@@ -333,8 +339,8 @@
 
       // 自定义校验-售价
       checkAmount: (rule, value, callback) => {
-        if (isNaN(Number(value)) || Number(value) < 0) {
-          callback(new Error('请输入不小于0的数值'))
+        if (isNaN(Number(value)) || Number(value) < 0 || Number(value) > 999999.99) {
+          callback(new Error('请输入0-999999.99之间的数值'))
         } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
           callback(new Error('最多允许输入两位小数'))
         }
