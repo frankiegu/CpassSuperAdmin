@@ -33,11 +33,6 @@
         <el-table-column label="版本名称" prop="name" align="left">
           <template slot-scope="scope">
             {{ scope.row.name }}
-            <!--<router-link-->
-              <!--:to="{path: '/activity/detail', query: {id: scope.row.id}}"-->
-              <!--class="table-link">-->
-              <!--{{ scope.row.name }}-->
-            <!--</router-link>-->
           </template>
         </el-table-column>
         <el-table-column label="包含功能" align="left" min-width="150">
@@ -47,7 +42,7 @@
         </el-table-column>
         <el-table-column label="售价" align="left" width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.price">{{ scope.row.price.toFixed(2) }}</span>
+            <span v-if="scope.row.price">{{ parseFloat((scope.row.price / 100).toPrecision(12)).toFixed(2) }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
