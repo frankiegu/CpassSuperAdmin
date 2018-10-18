@@ -28,9 +28,10 @@
 
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
-              <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
+              <router-link v-if="handleHasPermissions('/supervisor/field/list')" :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
                 {{scope.row.fieldCount}}
               </router-link>
+              <div v-else>{{scope.row.fieldCount}}</div>
             </template>
           </el-table-column>
 
@@ -52,17 +53,22 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" width="140" align="left" header-align="center">
+          <el-table-column v-if="handleHasPermissions(['/supervisor/storeStar/editStoreStar', '/supervisor/storeStar/top', '/supervisor/storeStar/setWellChosen'])"
+                           label="操作"
+                           width="140"
+                           align="left"
+                           header-align="center">
             <template slot-scope="scope">
               <el-tooltip placement="top"
+                          v-if="handleHasPermissions('/supervisor/storeStar/setWellChosen')"
                 :content="starSpaceList.length === 1 ? '至少保留一个明星空间，不可取消' : '点击取消该明星空间'">
                 <span @click="setStarSpace(scope.row)">
                   <lh-svg icon-class="icon-love" class="ph4 fill-blue table-link"></lh-svg>
                 </span>
               </el-tooltip>
 
-              <el-button type="text" @click="openEditDialog(scope.row)" class="lh-table-btn">编辑</el-button>
-              <el-button type="text" @click="setTopSpace(scope.row.storeId)" v-if="scope.$index !== 0"
+              <el-button v-if="handleHasPermissions('/supervisor/storeStar/editStoreStar')" type="text" @click="openEditDialog(scope.row)" class="lh-table-btn">编辑</el-button>
+              <el-button type="text" @click="setTopSpace(scope.row.storeId)" v-if="scope.$index !== 0 && handleHasPermissions('/supervisor/storeStar/top')"
                 class="lh-table-btn ml0">置顶
               </el-button>
             </template>
@@ -104,9 +110,10 @@
 
           <el-table-column label="场地数" prop="fieldCount">
             <template slot-scope="scope">
-              <router-link :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
+              <router-link v-if="handleHasPermissions('/supervisor/field/list')" :to="'/field/list?storeId=' + scope.row.storeId" class="table-link">
                 {{scope.row.fieldCount}}
               </router-link>
+              <div v-else>{{scope.row.fieldCount}}</div>
             </template>
           </el-table-column>
 
@@ -128,16 +135,16 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作">
+          <el-table-column label="操作" v-if="handleHasPermissions(['/supervisor/storeStar/setWellChosen', '/supervisor/storeStar/editStoreStar'])">
             <template slot-scope="scope">
-              <el-tooltip placement="top">
+              <el-tooltip v-if="handleHasPermissions('/supervisor/storeStar/setWellChosen')" placement="top">
                 <p slot="content">{{starSpaceList.length < 5 ? '点击设置为明星空间' : '最多允许设置5个明星空间'}}</p>
                 <span @click="setStarSpace(scope.row)">
                   <lh-svg icon-class="icon-love" :class="['ph4', 'fill-grayish', {'table-link': starSpaceList.length < 5}]" />
                 </span>
               </el-tooltip>
 
-              <el-button type="text" class="lh-table-btn" @click="openEditDialog(scope.row)">编辑</el-button>
+              <el-button v-if="handleHasPermissions('/supervisor/storeStar/editStoreStar')" type="text" class="lh-table-btn" @click="openEditDialog(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>

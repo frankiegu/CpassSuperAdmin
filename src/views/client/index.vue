@@ -5,6 +5,7 @@
     <div class="lh-form-box">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <router-link
+          v-if="handleHasPermissions('/supervisor/client/add')"
           class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">
           &nbsp;新增客户
@@ -80,7 +81,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <el-form-item class="fr" v-if="handleHasPermissions('/supervisor/client/exportAll')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -132,6 +133,7 @@
           width="110">
           <template slot-scope="scope">
             <router-link
+              v-if="handleHasPermissions('/supervisor/client/updateAccount')"
               :to="{path: scope.row.adminUserId ? '/client/modify' : '/client/add', query: {id: scope.row.id}}"
               class="table-link mr5">
               编辑
