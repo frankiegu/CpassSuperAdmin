@@ -34,17 +34,28 @@
 
         <el-table-column label="角色名称" prop="name" align="center"></el-table-column>
         <el-table-column label="已分配用户" prop="userList" align="center"></el-table-column>
-        <el-table-column label="可用状态" prop="status" align="center" width="100"></el-table-column>
-        <el-table-column label="描述" prop="desc" align="left"></el-table-column>
+        <el-table-column label="可用状态" prop="status" align="center" width="100">
+          <template slot-scope="scope">
+            <el-tag type="success" size="mini">{{scope.row.status}}</el-tag>
+            <!--<el-tag type="danger" size="mini">未开放</el-tag>-->
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" prop="desc" align="left">
+          <template slot-scope="scope">
+            {{scope.row.desc || '-'}}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <router-link
-              to="/user-management/role/com?type=edit&&id=10"
-              class="table-link mr5">
-              编辑
-            </router-link>
-            <span class="table-link mr5" @click="handleChangeUseState('禁用')">禁用</span>
-            <span class="table-link" @click="handleChangeUseState('删除')">删除</span>
+            <el-button type="text">
+              <router-link
+                to="/user-management/role/com?type=edit&&id=10"
+                class="table-link mr5">
+                编辑
+              </router-link>
+            </el-button>
+            <el-button type="text" @click="handleChangeUseState('禁用')">禁用</el-button>
+            <el-button type="text" @click="handleChangeUseState('删除')">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
