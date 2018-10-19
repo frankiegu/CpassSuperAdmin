@@ -27,6 +27,7 @@ export default {
 
       // 左上角标题
       pageTitle: '',
+      quillUploadImg: false, // 富文本框图片上传状态
       // 请求头携带token
       headers: {
         token: sessionStorage.getItem('token')
@@ -73,7 +74,7 @@ export default {
       quillLoading: false,
       // 富文本框参数设置
       editorOption: {
-        placeholder: ' ',
+        placeholder: '从这里开始写正文',
         theme: 'snow',  // or 'bubble'
         modules: {
           toolbar: '.lh-toolbar'

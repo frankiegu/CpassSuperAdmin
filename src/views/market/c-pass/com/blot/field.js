@@ -54,7 +54,7 @@ export function renderFieldArrBlot(fieldData) {
               <span class="field-distance-unique">·距您${fieldItm.distance ? fieldItm.distance : '-m'}</span>
             </span>
             <span class="price">
-              <span class="price-statics">¥${fieldItm.priceRange || 0}</span>
+              <span class="price-statics">¥${fieldItm.minPrice === fieldItm.maxPrice ? fieldItm.minPrice : fieldItm.minPrice + '-'  + fieldItm.maxPrice}</span>
               <span class="text">${fieldItm.fieldType === 5 ? '元/月' : (fieldItm.fieldType === 3 ? '元/天' : '元/小时')}</span>
             </span>
           </div>

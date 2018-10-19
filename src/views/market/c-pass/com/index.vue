@@ -281,8 +281,8 @@ export default {
     }
   },
   mounted() {
-    this.quillLoading = true
     this.setPageTitle()
+    this.handleQuillImage()
   },
   methods: {
     clearEmoji(type) {
@@ -305,6 +305,7 @@ export default {
       this.setTitleName()
 
       if (this.fieldId) {
+        this.quillLoading = true
         this.getPageData()
         this.ajaxName = cPassEditWellChosen
       } else {
