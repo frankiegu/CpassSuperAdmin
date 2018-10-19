@@ -18,10 +18,10 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <!--TODO: 详情跟编辑在一起，需要处理这里-->
         <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
-            <span class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.spaceId, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
+            <span v-if="handleHasPermissions('/supervisor/platformVerifyStation/update')" class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.spaceId, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
+            <span v-else>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 

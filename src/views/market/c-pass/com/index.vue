@@ -187,14 +187,26 @@
           class="lh-btn-default mr12"
           plain>预览</el-button>
 
-        <!--TODO: 编辑和新增的保存需要拆分-->
-        <el-button
-          @click="submitForm('formData')"
-          type="primary"
-          :disabled="quillLoading"
-          class="lh-btn-default">
-          {{ noAllow ? '编辑' : '保存' }}
-        </el-button>
+        <div v-if="noAllow">
+          <el-button
+            v-if="handleHasPermissions('/supervisor/marketing/editWellChosen')"
+            @click="submitForm('formData')"
+            type="primary"
+            :disabled="quillLoading"
+            class="lh-btn-default">
+            编辑
+          </el-button>
+        </div>
+        <div v-else>
+          <el-button
+            @click="submitForm('formData')"
+            type="primary"
+            :disabled="quillLoading"
+            class="lh-btn-default">
+            保存
+          </el-button>
+        </div>
+
       </div>
     </el-form>
 
@@ -216,6 +228,7 @@
               <div v-else class="lh-quill-modules preview-html" v-html="formData.content"></div>
             </div>
 
+            <!--TODO: 编辑和新增的保存需要拆分-->
             <el-button
               v-if="!noAllow"
               @click="submitForm('formData')"
