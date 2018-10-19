@@ -5,7 +5,7 @@ export function renderBrandTitle(brandItm) {
   return `<img src="${brandItm.spaceLogo}">
           <div class="title-name">
             <span class="name">${brandItm.spaceName}</span>
-            <div class="num">共${brandItm.storeCount || 0}个门店</div>
+            <div class="num">共${brandItm.storeCount || 0}个空间</div>
           </div>`
 }
 

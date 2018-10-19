@@ -282,6 +282,7 @@ export default {
   },
   mounted() {
     this.setPageTitle()
+    this.handleQuillImage()
   },
   methods: {
     clearEmoji(type) {
