@@ -34,6 +34,7 @@ const permission = {
     getPermission: ({ commit }) => {
       return new Promise((resolve, reject) => {
         commit('SET_RESOURCES', 'yes') // 设置已经拿到权限资源
+        console.log('this is a permission resource list')
         resolve()
 
         // getByAdminUserId().then(res => {

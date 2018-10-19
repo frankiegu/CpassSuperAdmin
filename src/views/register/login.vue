@@ -40,6 +40,22 @@
             </el-input>
           </el-form-item>
 
+          <!--<el-form-item class="verificationCode" prop="verificationCode">-->
+            <!--<el-input-->
+              <!--class="width140px"-->
+              <!--name="verificationCode"-->
+              <!--type="text"-->
+              <!--autoComplete="on"-->
+              <!--:maxlength="4"-->
+              <!--v-model.trim="formData.verificationCode"-->
+              <!--@keyup.native.enter="handleLogin('formData')"-->
+              <!--placeholder="请输入验证码">-->
+              <!--&lt;!&ndash;<lh-svg slot="prefix" icon-class="icon-password" class="svg-icon" />&ndash;&gt;-->
+            <!--</el-input>-->
+
+
+          <!--</el-form-item>-->
+
           <!-- <span @click.native.prevent="handleLogin('formData')" class="login-btn width100 to-bottom-right">登录</span> -->
           <el-button
             @click.native.prevent="handleLogin('formData')"
