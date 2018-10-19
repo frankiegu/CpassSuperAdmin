@@ -150,8 +150,19 @@
         <el-table-column label="真实姓名" prop="realName" align="center" width="150"></el-table-column>
         <el-table-column label="邮箱地址" prop="email" align="center"></el-table-column>
         <el-table-column label="角色" prop="role" align="center"></el-table-column>
-        <el-table-column label="可用状态" prop="useState" align="center" width="100"></el-table-column>
-        <el-table-column label="描述" prop="descript" align="center"></el-table-column>
+        <el-table-column label="可用状态" prop="useState" align="center" width="100">
+          <template slot-scope="scope">
+            <div class="label-con">
+              <el-tag v-if="scope.row.useState === '可用'" type="success">可用</el-tag>
+              <el-tag v-else type="danger">禁用</el-tag>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" align="center">
+          <template slot-scope="scope">
+              {{ scope.row.description ? scope.row.description : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" prop="contact" align="center" width="150">
           <template v-if="scope.row.role !== 'root'" slot-scope="scope">
             <el-button @click="setUser(scope.row)" type="text">编辑</el-button>

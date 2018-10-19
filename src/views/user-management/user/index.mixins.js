@@ -74,7 +74,7 @@ export default {
         { id: 1, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', useState: '可用', description: '打工仔' },
         { id: 2, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', useState: '可用', description: '超级管理员' },
         { id: 3, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '禁用', description: '打工仔' },
-        { id: 4, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '可用', description: '打工仔' }
+        { id: 4, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '可用', description: '' }
       ]
     }
   },
