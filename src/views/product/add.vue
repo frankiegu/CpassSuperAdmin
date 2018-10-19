@@ -5,7 +5,8 @@
     <div class="card-padding card-padding-vertical">
       <el-form :model="ruleForm" ref="ruleForm" label-width="80px">
         <h3 class="grid-title">基础信息</h3>
-        <el-form-item label="版本名称" prop="versionName" :rules="[{ required: true, message: '请输入版本名称'}]">
+        <el-form-item label="版本名称" prop="versionName" :rules="[{ required: true, message: '请输入版本名称'},
+         { validator: checkName, trigger: 'blur' }]">
           <el-input
             v-model.trim="ruleForm.versionName"
             ref="versionName"
@@ -107,7 +108,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { permissionList, productAdd, productUpdate, productDetail } from '@/service/product'
+  import { permissionList, productAdd, productUpdate, productDetail, checkProductName } from '@/service/product'
 
   export default {
     data () {
@@ -345,6 +346,23 @@
           callback(new Error('最多允许输入两位小数'))
         }
         callback()
+      },
+
+      // 自定义校验-产品版本名称判重
+      checkName(rule, value, callback) {
+        if (value) {
+          let obj = {
+            name: value
+          }
+          if (this.type === 'edit') obj.id = this.id
+          checkProductName(obj).then(res => {
+            if (res.status === 'false' && res.code === '501') {
+              callback(new Error('版本名称重复，请重新输入'))
+            } else {
+              callback()
+            }
+          })
+        }
       },
 
       // 取消
