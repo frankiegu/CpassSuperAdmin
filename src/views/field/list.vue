@@ -33,7 +33,6 @@
       </el-tabs>
 
       <div class="card-body">
-        <!-- @#TODO 测试排序 排序规则：根据添加时间倒序显示，最近设置为对外开放的场地显示在最上方 -->
         <el-table
           :data="tableData"
           :empty-text="tableEmpty"

@@ -2,9 +2,9 @@
   <div class="order-field">
     <div class="card-padding">
       <el-form :inline="true" class="text-right mr-10 lh-card-head info-top">
-        <div class="fl to-bottom-right add-point" @click="isWopVisible = true">添加</div>
+        <div v-if="handleHasPermissions('/supervisor/platformVerifyStation/add')" class="fl to-bottom-right add-point" @click="isWopVisible = true">添加</div>
 
-        <el-form-item class="fr">
+        <el-form-item v-if="handleHasPermissions('/supervisor/platformVerifyStation/export')" class="fr">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -18,6 +18,7 @@
         v-loading="tableLoading"
         class="width100" border>
 
+        <!--TODO: 详情跟编辑在一起，需要处理这里-->
         <el-table-column label="核销点名称" fixed="left" align="left">
           <template slot-scope="scope">
             <span class="table-link" @click="EditPoint(scope.row.id, scope.row.name, scope.row.spaceId, scope.row.storeId, scope.row.provinceCode, scope.row.cityCode, scope.row.districtCode, scope.row.address)">{{ scope.row.name }}</span>
@@ -45,9 +46,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="left">
+        <el-table-column v-if="handleHasPermissions(['/supervisor/platformVerifyStation/delete', '/supervisor/platformVerifyStation/changeStatus'])" label="操作" align="left">
           <template slot-scope="scope">
             <el-tooltip
+              v-if="handleHasPermissions('/supervisor/platformVerifyStation/changeStatus')"
               :content="scope.row.status === 1 ? '点击停用' : '点击恢复'"
               placement="top"
               class="margin-lr6">
@@ -61,7 +63,9 @@
                 inactive-text=""
                 @change="handleUpdateStatus(scope.row.id, scope.row.status)"></el-switch>
             </el-tooltip>
-            <el-button type="text" @click="delectPoint(scope.row.id)"
+            <el-button type="text"
+                       v-if="handleHasPermissions('/supervisor/platformVerifyStation/delete')"
+                       @click="delectPoint(scope.row.id)"
                        class="operate-btn"><span>删除</span></el-button>
           </template>
         </el-table-column>

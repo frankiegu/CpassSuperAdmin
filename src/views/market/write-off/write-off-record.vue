@@ -64,7 +64,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <el-form-item v-if="handleHasPermissions('/supervisor/platformVerifyRecord/export')" class="fr">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>

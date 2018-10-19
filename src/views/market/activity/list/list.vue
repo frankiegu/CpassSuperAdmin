@@ -5,9 +5,9 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
 
-        <router-link :to="{path: '/activity/add'}">
+        <router-linkc :to="{path: '/activity/add'}">
           <div class="to-bottom-right fl add-btn">添加活动</div>
-        </router-link>
+        </router-linkc>
 
         <el-select
           v-model="formData.type"
@@ -87,13 +87,13 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="left">
+        <el-table-column v-if="handleHasPermissions(['/supervisor/platformActivity/update', '/supervisor/platformActivity/add'])" label="操作" align="left">
           <template slot-scope="scope">
-            <router-link v-if="scope.row.status === 0" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
+            <router-link v-if="handleHasPermissions('/supervisor/platformActivity/update') && scope.row.status === 0" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'edit'}}">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
-            <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
+            <router-link v-if="handleHasPermissions('/supervisor/platformActivity/add')" :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
               <el-button type="text"
                          class="operate-btn" :class="{'ml45' : scope.row.status !== 0}">复制</el-button>
             </router-link>
