@@ -3,10 +3,13 @@ export default {
     return {
       formData: {
         name: '',
+        company: '',
         reg_date: null,
         registerWay: '',
         // validaty: '',
-        productStatus: ''
+        productStatus: '',
+        businessType: '', // 商户类型
+        settlementWay: '' // 结算方式
       },
       channels: [
         { id: ' ', channel: '全部' },
@@ -24,6 +27,17 @@ export default {
         { value: 1, label: '正常', type: 'success' },
         { value: 0, label: '停用', type: 'danger' },
         { value: 2, label: '未开通', type: 'primary' }
+      ],
+      businessList: [
+        { id: ' ', businessName: '全部' },
+        { id: 1, businessName: '服务供应商' },
+        { id: 2, businessName: '场地提供方' }
+      ],
+      settlementList: [
+        { id: ' ', settlementName: '全部' },
+        { id: 1, settlementName: '结算至银行卡' },
+        { id: 2, settlementName: '结算至微信' },
+        { id: 3, settlementName: '结算至支付宝' }
       ]
     }
   },

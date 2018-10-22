@@ -1,4 +1,5 @@
 import tableMixins from '@/mixins/table'
+// import { platformActivityList } from '@/service/market'
 import { productList, productClose, productOpen } from '@/service/product'
 
 export default {
@@ -41,28 +42,33 @@ export default {
       })
     },
 
+    // 更改禁用、恢复状态
+    changeStatus(id, status) {
+      if (status === 1) {
+        // 恢复
+        this.restore(id)
+      } else {
+        // 禁用
+        this.disable(id)
+      }
+    },
+
     // 恢复状态
-    restore(id, status) {
-      this.$confirm('此操作将恢复该版本, 是否继续?', '提示', {
-        confirmButtonText: '确定',
+    restore(id) {
+      let target = this.tableData.find(item => item.id === id)
+      this.$confirm('此操作将恢复该版本, 是否继续?', '', {
+        confirmButtonText: '确定恢复',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         productOpen({ id: id, status: 1 }).then(res => {
           if (res.status === 'true') {
             // 提示操作成功
-            this.$message({
-              type: 'success',
-              message: '恢复成功!'
-            });
-            // 修改状态、刷新页面数据
-            this.getPageData()
+            this.$message({ type: 'success', message: '恢复成功!' })
           } else {
-            // 提示操作成功
-            this.$message({
-              type: 'error',
-              message: '恢复失败!'
-            });
+            // 提示恢复失败
+            this.$message({ type: 'error', message: '恢复失败!' })
+            target.status = 0
           }
         })
       }).catch(() => {
@@ -70,38 +76,32 @@ export default {
           type: 'info',
           message: '已取消恢复'
         })
+        target.status = 0
       })
     },
 
     // 禁用状态
-    disable(id, status) {
-      this.$confirm('此操作将禁用该版本, 是否继续?', '提示', {
-        confirmButtonText: '确定',
+    disable(id) {
+      let target = this.tableData.find(item => item.id === id)
+      this.$confirm('此操作将禁用该版本, 是否继续?', '', {
+        confirmButtonText: '确定禁用',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         productClose({ id: id, status: 0 }).then(res => {
           if (res.status === 'true') {
             // 提示操作成功
-            this.$message({
-              type: 'success',
-              message: '禁用成功!'
-            })
+            this.$message({ type: 'success', message: '禁用成功!' })
             // 修改状态、刷新页面数据
-            this.getPageData()
           } else {
             // 提示操作成功
-            this.$message({
-              type: 'error',
-              message: '禁用失败!'
-            });
+            this.$message({ type: 'error', message: '禁用失败!' })
+            target.status = 1
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消禁用'
-        })
+        this.$message({ type: 'info', message: '已取消禁用' })
+        target.status = 1
       })
     }
   }

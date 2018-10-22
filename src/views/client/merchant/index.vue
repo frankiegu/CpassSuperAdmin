@@ -3,28 +3,42 @@
     <lh-title title="商户列表"></lh-title>
 
     <div class="lh-form-box">
-      <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
+      <el-form :model="formData" :inline="true" class="text-right mr-20" @submit.native.prevent>
         <router-link
           class="fl el-icon-circle-plus to-bottom-right"
           to="/client/add" tag="a">
           &nbsp;新增商户
         </router-link>
 
-        <!-- TODO(jingyi) 搜索栏新增筛选项："公司名称"、"商户类型"、"结算方式" -->
-        <!--<el-form-item>-->
-          <!--<el-select-->
-            <!--v-model="formData.registerWay"-->
-            <!--@change="getPageData(1)"-->
-            <!--placeholder="请选择生成渠道"-->
-            <!--class="width150px"-->
-            <!--clearable>-->
-            <!--<el-option-->
-              <!--v-for="i in channels"-->
-              <!--:label="i.channel"-->
-              <!--:value="i.id"-->
-              <!--:key="i.id"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
+        <el-form-item>
+          <el-select
+            v-model="formData.businessType"
+            @change="getPageData(1)"
+            placeholder="请选择商户类型"
+            class="width150px"
+            clearable>
+            <el-option
+              v-for="i in businessList"
+              :label="i.businessName"
+              :value="i.id"
+              :key="i.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select
+            v-model="formData.settlementWay"
+            @change="getPageData(1)"
+            placeholder="请选择结算方式"
+            class="width150px"
+            clearable>
+            <el-option
+              v-for="i in settlementList"
+              :label="i.settlementName"
+              :value="i.id"
+              :key="i.id"></el-option>
+          </el-select>
+        </el-form-item>
 
         <!-- <el-form-item>
           <el-select
@@ -63,6 +77,17 @@
             v-model.trim="formData.name"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入品牌名称"
+            class="lh-form-input">
+
+            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-input
+            v-model.trim="formData.company"
+            @keyup.native.enter="getPageData(1)"
+            placeholder="请输入公司名称"
             class="lh-form-input">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -116,7 +141,17 @@
 
         <el-table-column label="取消规则" prop="companyName" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
+            <!--加入取消规则气泡提醒、若没有选择取消类型，则-->
+            <el-popover
+              v-if="!scope.row.companyName"
+              placement="right-start"
+              :title="scope.row.contact"
+              width="200"
+              trigger="click"
+              :content="scope.row.phone">
+              <div slot="reference">{{ scope.row.companyName || '-' }}</div>
+            </el-popover>
+            <span v-else>-</span>
           </template>
         </el-table-column>
 
@@ -284,5 +319,10 @@
       color: $theme-blue;
       margin: 0 7px;
     }
+  }
+</style>
+<style lang="scss">
+  .el-popover{
+    color: #818490;
   }
 </style>
