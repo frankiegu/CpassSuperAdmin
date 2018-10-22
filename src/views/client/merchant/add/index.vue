@@ -26,19 +26,38 @@
                 <el-form-item label="签约版本" prop="productId" ref="productId"
                   :rules="dataRules.productId" :required="isCreateAccount">
                   <el-select v-model="dataForm.productId" class="width100" :disabled="!isCreateAccount">
-                    <el-option v-for="(value, key) in productList" :key="key" :value="key" :label="value"></el-option>
+                    <el-option v-for="item in productList" :key="item.id" :value="item.id" :label="item.name" />
                   </el-select>
                 </el-form-item>
 
-                <el-form-item label="签约年限" prop="period" ref="period"
-                  :error="errorField === 'period' ? errorMsg : ''"
-                  :rules="dataRules.period" :required="isCreateAccount">
-                  <el-input
-                    type="number"
-                    v-model.trim="dataForm.period"
-                    class="width120px"
-                    :disabled="!isCreateAccount"></el-input>
-                  <span class="input-unit">年</span>
+                <!--<el-form-item label="签约年限" prop="period" ref="period"-->
+                  <!--:error="errorField === 'period' ? errorMsg : ''"-->
+                  <!--:rules="dataRules.period" :required="isCreateAccount">-->
+                  <!--<el-input-->
+                    <!--type="number"-->
+                    <!--v-model.trim="dataForm.period"-->
+                    <!--class="width120px"-->
+                    <!--:disabled="!isCreateAccount"></el-input>-->
+                  <!--<span class="input-unit">年</span>-->
+                <!--</el-form-item>-->
+
+                <el-form-item label="有效期至" :required="isCreateAccount && !dataForm.isPermanent">
+                  <el-form-item prop="validity" ref="validity" class="mb0"
+                    :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
+                    <el-date-picker
+                      v-model="dataForm.validity"
+                      :disabled="!isCreateAccount || !!dataForm.isPermanent"
+                      type="date"
+                      placeholder="结束日期"
+                      value-format="yyyy-MM-dd"
+                      :picker-options="pickerOptions"
+                      class="width100">
+                    </el-date-picker>
+                  </el-form-item>
+                  <!--<el-form-item class="fl mb0">-->
+                    <!--<el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"-->
+                      <!--:disabled="!isCreateAccount" @change="resetItemField('validity', true)">永久</el-checkbox>-->
+                  <!--</el-form-item>-->
                 </el-form-item>
 
                 <el-form-item label="服务费比例" prop="feeRatio" ref="feeRatio"
@@ -51,24 +70,37 @@
                   <span class="input-unit">%</span>
                 </el-form-item>
 
-                <!--<el-form-item label="有效期至" required>-->
-                  <!--<el-form-item prop="validity" ref="validity" class="fl mr20"-->
-                    <!--:rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">-->
-                    <!--<el-date-picker-->
-                      <!--v-model="dataForm.validity"-->
-                      <!--:disabled="!isCreateAccount || !!dataForm.isPermanent"-->
-                      <!--type="date"-->
-                      <!--placeholder="结束日期"-->
-                      <!--value-format="yyyy-MM-dd"-->
-                      <!--:picker-options="pickerOptions"-->
-                      <!--class="width100">-->
-                    <!--</el-date-picker>-->
-                  <!--</el-form-item>-->
-                  <!--<el-form-item class="fl">-->
-                    <!--<el-checkbox v-model="dataForm.isPermanent" :true-label="1" :false-label="0"-->
-                      <!--:disabled="!isCreateAccount" @change="resetItemField('validity', true)">永久</el-checkbox>-->
-                  <!--</el-form-item>-->
-                <!--</el-form-item>-->
+                <el-form-item label="结算周期" prop="settlementCycle" ref="settlementCycle"
+                  :error="errorField === 'settlementCycle' ? errorMsg : ''"
+                  :rules="[{ message: '请选择结算周期' }]" :required="isCreateAccount">
+                  <el-form-item>
+                    <el-radio v-model="dataForm.settlementCycle" label="1" :disabled="!isCreateAccount">
+                      固定日期
+                    </el-radio>
+                    <span class="input-unit">每月</span>
+                    <el-select v-model="dataForm.settlementDate" class="small-input"
+                      :disabled="!isCreateAccount || +dataForm.settlementCycle !== 1">
+                      <el-option v-for="i in 31" :key="i + '日'" :label="i + '日'" :value="i">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-radio v-model="dataForm.settlementCycle" label="2" :disabled="!isCreateAccount">
+                      周期结算
+                    </el-radio>
+                    <span class="input-unit">每</span>
+                    <el-input v-model.number.trim="dataForm.settlementDate" class="small-input"
+                      :disabled="!isCreateAccount || +dataForm.settlementCycle !== 2"
+                      style="margin-left: 1em"></el-input>
+                    <el-select v-model="dataForm.settlementCycleType" class="small-input"
+                      :disabled="!isCreateAccount || +dataForm.settlementCycle !== 2">
+                      <el-option v-for="item in settlementCycleTypeList" :key="item.name" :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form-item>
 
                 <el-form-item label="管理后台登录账户" prop="adminUsername" ref="adminUsername"
                   :error="errorField === 'adminUsername' ? errorMsg : ''"
@@ -353,16 +385,23 @@
       // 创建或更新客户资料
       createClient() {
         let clientObj = {
-          id: this.clientId,
-          name: this.dataForm.name,
+          merchantId: this.dataForm.merchantId,
+          companyName: this.dataForm.companyName,
+          brandName: this.dataForm.brandName,
           contact: this.dataForm.contact,
           phone: this.dataForm.phone,
           email: this.dataForm.email,
-          address: this.dataForm.address,
           weixin: this.dataForm.weixin,
+          officialWebsite: this.dataForm.officialWebsite,
+          countryId: this.dataForm.countryId,
+          provinceCode: this.dataForm.provinceCode,
+          cityCode: this.dataForm.cityCode,
+          regionCode: this.dataForm.regionCode,
+          address: this.dataForm.address,
           remark: this.dataForm.remark,
           saleManager: this.dataForm.saleManager
         }
+        if (this.clientId) clientObj.id = this.clientId
         this.createLoading = true
         // 编辑时有更改基础信息才调用更新基础信息的接口
         if (this.hasChangeInfo && !this.isCreateSuccess) {
@@ -497,6 +536,13 @@
     .input-unit {
       margin-left: 12px;
       vertical-align: middle;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+    .small-input {
+      width: 80px;
     }
   }
 </style>

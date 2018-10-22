@@ -144,6 +144,17 @@ export default {
 
       isCreateAccount: false,
       productList: {},
+      // 结算周期类型
+      settlementCycleTypeList: [{
+        id: 1,
+        name: '月'
+      }, {
+        id: 2,
+        name: '周'
+      }, {
+        id: 3,
+        name: '天'
+      }],
       uploadHeaders: { token: sessionStorage.getItem('token') },
       jsUploadPath: API_PATH + '/supervisor/client/uploadJsFile',
       p12UploadPath: API_PATH + '/supervisor/client/uploadPayCertFile',
@@ -177,6 +188,9 @@ export default {
         feeRatio: '', // 服务费比例
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
+        settlementCycle: '', // 结算周期 1-固定日期 2-周期结算
+        settlementDate: 1, // 日期
+        settlementCycleType: 1, // 周期单位
         adminUsername: '',
 
         // 开通公众服务号
@@ -451,7 +465,7 @@ export default {
       if (!status) {
         this.dataForm.isOpenWxService = false
         this.dataForm.isOpenPayment = false
-        this.resetItemField(['productId', 'period', 'feeRatio', 'adminUsername'], false)
+        this.resetItemField(['productId', 'validity', 'settlementCycle', 'feeRatio', 'adminUsername'], false)
       }
     }
   }
