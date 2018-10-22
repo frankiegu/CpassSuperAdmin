@@ -2,27 +2,32 @@
   <div class="service-list main-content">
     <lh-title></lh-title>
 
-    <div class="card-padding">
-      <el-form :model="formData" :inline="true" class="text-right mr-10">
+    <div class="lh-form-box">
+      <!-- 查询筛选 -->
+      <el-form :model="formData" :inline="true" class="sort-form-bar">
 
-        <router-link :to="{path: '/product/add'}">
-          <div class="to-bottom-right fl add-btn">新增版本</div>
+        <router-link
+          :to="'/product/add'"
+          class="fl">
+          <el-button class="el-icon-circle-plus to-bottom-right add-btn"> 新增版本</el-button>
         </router-link>
 
         <el-form-item>
           <el-input
-            v-model.trim="formData.name"
-            @keyup.native.enter="getPageData(1)"
-            placeholder="请输入版本名称"
-            class="width200px">
+          v-model.trim="formData.name"
+          @keyup.native.enter="getPageData(1)"
+          placeholder="请输入版本名称"
+          class="width200px">
 
-            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
+          <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
 
       </el-form>
+    </div>
 
-      <el-table
+    <div class="card-padding">
+     <el-table
         :data="tableData"
         :empty-text="tableEmpty"
         :slot="tableEmpty"
@@ -66,16 +71,9 @@
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
-            <span>
-              <el-button type="text"
-                         v-if="scope.row.status === 1"
-                         @click="disable(scope.row.id, 0)"
-                         class="operate-btn">禁用</el-button>
-              <el-button type="text"
-                         v-if="scope.row.status === 0"
-                         @click="restore(scope.row.id, 1)"
-                         class="operate-btn">恢复</el-button>
-            </span>
+            <el-tooltip :content="scope.row.status === 1 ? '点击禁用' : '点击恢复'" placement="top">
+              <el-switch v-model="scope.row.status" @change="changeStatus(scope.row.id, scope.row.status)" class="lh-table-switch" :active-value="1" :inactive-value="0" :active-color="switchActiveColor"></el-switch>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -122,5 +120,22 @@
     .ml45{
       margin-left: 45px;
     }
+  }
+</style>
+<style>
+  /*根据ui设计稿修改element样式*/
+  .el-message-box__content{
+    margin-bottom: 35px;
+  }
+  .el-message-box__status{
+    margin-left: 20px;
+  }
+  .el-message-box__message{
+    font-size:16px;
+    font-family:PingFangSC-Medium;
+    font-weight:500;
+    color:rgba(51,51,51,1);
+    line-height:22px;
+    margin-left: 20px;
   }
 </style>

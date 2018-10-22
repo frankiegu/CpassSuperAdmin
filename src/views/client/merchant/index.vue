@@ -147,7 +147,7 @@
               placement="right-start"
               :title="scope.row.contact"
               width="200"
-              trigger="hover"
+              trigger="click"
               :content="scope.row.phone">
               <div slot="reference">{{ scope.row.companyName || '-' }}</div>
             </el-popover>
@@ -319,5 +319,10 @@
       color: $theme-blue;
       margin: 0 7px;
     }
+  }
+</style>
+<style lang="scss">
+  .el-popover{
+    color: #818490;
   }
 </style>
