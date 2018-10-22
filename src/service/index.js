@@ -26,3 +26,9 @@ export * from './refund'
 
 // 广交会活动
 export * from './canton-fair'
+
+// 产品库
+export * from './product'
+
+// 城市维护
+export * from './city-maintain'

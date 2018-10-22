@@ -16,3 +16,10 @@ export const spaceList = (obj) => fetch(API_PATH + '/supervisor/space/list', obj
 
 // 获取空间
 export const storeList = (obj) => fetch(API_PATH + '/supervisor/store/list', obj, 'POST')
+
+// 商户类型
+export const merchantSelect = (obj) => fetch(API_PATH + '/common/general/merchantSelect', obj, 'GET')
+
+// 结算类型
+export const settlementTypeSelect = (obj) => fetch(API_PATH + '/common/general/settlementTypeSelect', obj, 'GET')
+

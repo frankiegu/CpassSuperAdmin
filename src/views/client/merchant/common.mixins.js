@@ -1,5 +1,5 @@
 import { PHONEREG, API_PATH } from '@/config/env'
-import { loadConstant, clientDetail, checkExistAccount } from '@/service'
+import { productSelect, clientDetail, checkExistAccount } from '@/service'
 
 export default {
   data () {
@@ -58,7 +58,7 @@ export default {
     const checkValidity = (rule, value, callback) => {
       if (this.isCreateAccount && !this.dataForm.isPermanent) {
         if (!value || value.length < 2) {
-          return callback(new Error('请选择有效期限或永久有效'))
+          return callback(new Error('请选择有效期限'))
         } else {
           let time = new Date(value)
           let today = new Date()
@@ -154,15 +154,19 @@ export default {
       dialogVisible: false,
       dataForm: {
         // 客户基础信息
-        clientType: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
-        name: '',
+        merchantId: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
+        brandName: '',
         companyName: '',
         contact: '',
         phone: '',
         email: '',
-        address: '',
         weixin: '',
-        webAddress: '',
+        address: '',
+        countryId: '',
+        provinceCode: '',
+        cityCode: '',
+        regionCode: '',
+        officialWebsite: '',
         remark: '',
         saleManager: '',
 
@@ -230,7 +234,7 @@ export default {
     }
 
     // 获取产品类型 productConst
-    loadConstant('productConst').then(res => {
+    productSelect().then(res => {
       if (res.status === 'true' && res.info) {
         this.productList = res.info
       } else {
@@ -374,7 +378,7 @@ export default {
       clientDetail(obj).then(res => {
         if (res.status === 'true' && res.info) {
           let dataSource = res.info
-          this.dataForm.name = dataSource.name
+          this.dataForm.brandName = dataSource.brandName
           this.dataForm.contact = dataSource.contact
           this.dataForm.phone = dataSource.phone
           this.dataForm.email = dataSource.email
