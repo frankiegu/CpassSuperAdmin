@@ -45,12 +45,33 @@ export default {
             case 'store':
             case 'field':
               if (brandIdx) {
-                this.dialogData.addArr[brandIdx - 1].storeList = resInfo
+                if (this.insertType === 'field') {
+                  this.dialogData.addArr[brandIdx - 1].storeList = resInfo
+                } else {
+                  // 需要排除前面寻找的空间名
+                  this.dialogData.addArr[brandIdx - 1].storeList = []
+                  let allIdArr = resInfo.map((list) => { return list.id })
+                  let selecetedArr = this.dialogData.addArr.map((list) => { return list.storeId })
+
+                  // console.log('allIdArr', allIdArr, 'selecetedArr', selecetedArr, this.dialogData.addArr)
+
+                  allIdArr.filter((itm) => {
+                    return !selecetedArr.includes(itm)
+                  }).forEach((itm, idx) => {
+                    resInfo.forEach((list) => {
+                      if (itm === list.id) {
+                        // console.log('可添加的项：', list);
+
+                        this.dialogData.addArr[brandIdx - 1].storeList.push(list)
+                      }
+                    })
+                  })
+                }
               } else {
                 this.dialogData.addArr[0].storeList = resInfo
               }
 
-              for (const itm of resInfo) {
+              for (let itm of resInfo) {
                 if (this.dialogData.addArr[brandIdx - 1].storeId === itm.id) {
                   this.dialogData.addArr[brandIdx - 1].storeItm = itm
                 }
@@ -81,7 +102,7 @@ export default {
         storeId: (this.insertType === 'title') ? this.dialogData.storeId : addArr[storeIdx - 1].storeId
       }).then(res => {
         if (res.status === 'true') {
-          const resInfo = res.info
+          let resInfo = res.info
           switch (this.insertType) {
             case 'title':
               this.fieldList = resInfo
@@ -91,7 +112,25 @@ export default {
                 if (this.dialogData.addArr[storeIdx - 1].fieldId) {
                   this.dialogData.addArr[storeIdx - 1].fieldId = null
                 }
-                this.dialogData.addArr[storeIdx - 1].fieldList = resInfo
+
+                // 需要排除前面寻找的空间名
+                this.dialogData.addArr[storeIdx - 1].fieldList = []
+                let allIdArr = resInfo.map((list) => { return list.id })
+                let selecetedArr = this.dialogData.addArr.map((list) => { return list.fieldId })
+
+                console.log('allIdArr', allIdArr, 'selecetedArr', selecetedArr, this.dialogData.addArr)
+
+                allIdArr.filter((itm) => {
+                  return !selecetedArr.includes(itm)
+                }).forEach((itm, idx) => {
+                  resInfo.forEach((list) => {
+                    if (itm === list.id) {
+                      console.log('可添加的项：', list);
+
+                      this.dialogData.addArr[storeIdx - 1].fieldList.push(list)
+                    }
+                  })
+                })
               } else {
                 this.dialogData.addArr[0].fieldList = resInfo
               }
