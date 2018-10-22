@@ -5,6 +5,16 @@
         <screenfull class="svg-style"></screenfull>
       </el-menu-item> -->
 
+      <el-menu-item index="1" class="notice-item svg-box" @click="handleToggleMsgBar">
+        <lh-svg v-if="messageNum === 0" :iconClass="'icon-bells'" class="icon svg-style fl"/>
+        <el-badge v-if="messageNum > 0 && messageNum <= 99" :value="messageNum" :max="99" class="red-point">
+          <lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>
+        </el-badge>
+        <el-badge v-if="messageNum > 99" :value="'···'" class="item red-point fl">
+          <lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>
+        </el-badge>
+      </el-menu-item>
+
       <el-submenu index="2" class="profile-box">
         <template slot="title">
           <div class="avatar-cont">
@@ -36,7 +46,8 @@
 
 <script>
 import screenfull from './screenfull'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import { wsUpdater } from '@/config/wsocket'
 export default {
   components: { screenfull },
   data () {
@@ -46,15 +57,24 @@ export default {
       orderNum: 0
     }
   },
+  watch: { '$route': 'closeMsgBar' },
   computed: {
     ...mapGetters([
       'name',
-      'avatar'
+      'avatar',
+      'messageNum'
     ])
   },
   methods: {
+    closeMsgBar() {
+      this.handleToggleMsgBar('close')
+    },
+    ...mapActions({
+      handleToggleMsgBar: 'toggleMsgBar'
+    }),
     logout () {
       this.$store.dispatch('logout').then(res => {
+        if (wsUpdater.socket != null) wsUpdater.socket.close()
         this.$router.push({
           path: '/login',
           query: {

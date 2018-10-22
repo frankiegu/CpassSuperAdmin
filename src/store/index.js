@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { app, permission, common, tagsView, counter, user } from './modules'
+import { app, permission, common, tagsView, counter, user, notice } from './modules'
 
 Vue.use(Vuex)
 
@@ -12,6 +12,7 @@ export default new Vuex.Store({
     common,
     tagsView,
     counter,
-    user
+    user,
+    notice
   }
 })
