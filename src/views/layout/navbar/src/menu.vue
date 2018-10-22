@@ -36,6 +36,7 @@
 
 <script>
 import screenfull from './screenfull'
+import { mapGetters } from 'vuex'
 export default {
   components: { screenfull },
   data () {
@@ -44,6 +45,12 @@ export default {
       totalNum: 0,
       orderNum: 0
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar'
+    ])
   },
   methods: {
     logout () {

@@ -52,7 +52,7 @@ export default {
     routes: { type: Array }
   },
   mounted () {
-    console.log('sidebar-item: ', this.routes)
+    // console.log('sidebar-item: ', this.routes)
     // console.log('space: ', this.handleHasPermissions('/manage/field/list'));
   }
 }
