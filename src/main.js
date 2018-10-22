@@ -13,12 +13,10 @@ import App from './App'
 // 后引入项目的 配置
 import comMixins from '@/mixins'                            // 全局的方法
 import './permission'                                       // 路由拦截
-import vuePermissions from './directive/permissions/index'  // 如果参数为true是，聚焦元素
 import { title, item, svg, card, datePicker } from '@/components'
 import './icons'
 
 Vue.use(ElementUI, { size: 'small' })
-Vue.use(vuePermissions)
 Vue.mixin(comMixins)
 
 // 全局注册组件
