@@ -8,8 +8,8 @@ export default {
         registerWay: '',
         // validaty: '',
         productStatus: '',
-        merchantType: '', // 商户类型
-        settlementWay: '' // 结算方式
+        merchantType: null, // 商户类型
+        settlementWay: null // 结算方式
       },
       channels: [
         { id: ' ', channel: '全部' },

@@ -156,7 +156,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="有效期" prop="productEndDate" align="left">
+        <el-table-column label="有效期" prop="productEndDate" align="left" width="100">
           <template slot-scope="scope">
             <span>{{scope.row.productEndDate || '-'}}</span>
           </template>
@@ -275,8 +275,8 @@
           productStatus: formData.productStatus,
           productStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
           productEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null,
-          merchantId: formData.merchantType,
-          settlementType: formData.settlementWay,
+          merchantId: formData.merchantType === 99 ? '' : formData.merchantType,
+          settlementType: formData.settlementWay === 99 ? '' : formData.settlementWay,
           companyName: formData.companyName
         }
 
@@ -326,6 +326,8 @@
         merchantSelect().then(res => {
           if (res.status === 'true') {
             this.merchantList = res.info
+            const list = { id: 99, name: '全部' }
+            this.merchantList.unshift(list)
           } else {
             this.setMsg('error', res.msg)
           }
@@ -336,6 +338,8 @@
         settlementTypeSelect().then(res => {
           if (res.status === 'true') {
             this.settlementList = res.info
+            const list = { id: 99, name: '全部' }
+            this.settlementList.unshift(list)
           } else {
             this.setMsg('error', res.msg)
           }
