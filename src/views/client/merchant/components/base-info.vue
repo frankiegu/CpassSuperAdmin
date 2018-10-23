@@ -1,6 +1,5 @@
 <template>
   <div class="base-info">
-    <!-- TODO(jingyi) 基础信息新增"品牌/公司名称"、"官方网址"、"联系地址"、"公司/品牌简介" -->
     <el-form-item label="商户类型" prop="merchantId" ref="merchantId" label-width="110px"
       :rules="[{ required: true, message: '商户类型不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.merchantId}}</p>
@@ -76,7 +75,7 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item class="mb0">
+      <el-form-item class="mb0" v-if="infoType !== 'detail'">
         <el-input v-model.trim="modelForm.address" class="width100" placeholder="请输入详细地址"
           :maxlength="300"></el-input>
       </el-form-item>

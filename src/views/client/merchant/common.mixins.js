@@ -56,6 +56,51 @@ export default {
       }
       callback()
     }
+    const checkSettlementCycle = (rule, value, callback) => {
+      if (this.isCreateAccount) {
+        if (!value) {
+          return callback(new Error('请选择结算周期！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkBankCardNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 3) {
+        if (!value) {
+          return callback(new Error('收款账号不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkBank = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 3) {
+        if (!value) {
+          return callback(new Error('开户行不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkWeixinPayNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 1) {
+        if (!value) {
+          return callback(new Error('微信号不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkAliPayNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 2) {
+        if (!value) {
+          return callback(new Error('支付宝账号不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
     const checkValidity = (rule, value, callback) => {
       if (this.isCreateAccount && !this.dataForm.isPermanent) {
         if (!value || value.length < 2) {
@@ -188,15 +233,17 @@ export default {
         productStatus: 1,
         productId: '',
         period: '', // 签约年限
-        feeRatio: '', // 服务费比例
+        serviceFeeProportion: '', // 服务费比例
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         settlementCycle: '', // 结算周期 1-固定日期 2-周期结算
         settlementDate: 1, // 日期
-        settlementCycleType: 1, // 周期单位
-        settlementType: 3, // 结算方式
+        settlementCycleType: 1, // 周期单位 1-月 2-周 3-天
+        settlementType: 3, // 结算方式 1-微信 2-支付宝 3-银行卡
         bankCardNum: '', // 银行账号
         bank: '', // 开户行
+        weixinPayNum: '', // 微信结算账号
+        aliPayNum: '', // 支付宝结算账号
         adminUsername: '',
 
         // 开通公众服务号
@@ -216,8 +263,13 @@ export default {
       dataRules: {
         productId: [{ validator: checkProduct, trigger: ['blur', 'change'] }],
         period: [{ validator: checkPeriod, trigger: ['blur', 'change'] }],
-        feeRatio: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
+        serviceFeeProportion: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
         validity: [{ validator: checkValidity, trigger: ['blur', 'change'] }],
+        settlementCycle: [{ validator: checkSettlementCycle, trigger: ['blur', 'change'] }],
+        bankCardNum: [{ validator: checkBankCardNum, trigger: ['blur', 'change'] }],
+        bank: [{ validator: checkBank, trigger: ['blur', 'change'] }],
+        weixinPayNum: [{ validator: checkWeixinPayNum, trigger: ['blur', 'change'] }],
+        aliPayNum: [{ validator: checkAliPayNum, trigger: ['blur', 'change'] }],
         adminUsername: [{ validator: checkTel, trigger: ['blur', 'change'] }],
         appId: [{ validator: checkAppId, trigger: ['blur', 'change'] }],
         appSecret: [{ validator: checkAppSecret, trigger: ['blur', 'change'] }],
@@ -473,22 +525,12 @@ export default {
       if (!status) {
         this.dataForm.isOpenWxService = false
         this.dataForm.isOpenPayment = false
-        this.resetItemField(['productId', 'validity', 'settlementCycle', 'feeRatio', 'adminUsername'], false)
+        this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'adminUsername', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum'], false)
       }
     },
 
     // 获取结算方式类型列表
     getSettlementType() {
-      this.settlementTypeList = [{
-        id: 1,
-        name: '微信'
-      }, {
-        id: 2,
-        name: '支付宝'
-      }, {
-        id: 3,
-        name: '银行卡'
-      }]
       settlementTypeSelect().then(res => {
         if (res.status === 'true') {
           this.settlementTypeList = res.info
