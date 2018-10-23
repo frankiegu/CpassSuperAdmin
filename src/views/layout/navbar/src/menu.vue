@@ -47,7 +47,6 @@
 <script>
 import screenfull from './screenfull'
 import { mapGetters, mapActions } from 'vuex'
-import { wsUpdater } from '@/config/wsocket'
 export default {
   components: { screenfull },
   data () {
@@ -74,7 +73,6 @@ export default {
     }),
     logout () {
       this.$store.dispatch('logout').then(res => {
-        if (wsUpdater.socket != null) wsUpdater.socket.close()
         this.$router.push({
           path: '/login',
           query: {
