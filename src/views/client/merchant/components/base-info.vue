@@ -1,8 +1,8 @@
 <template>
   <div class="base-info">
     <el-form-item label="商户类型" prop="merchantId" ref="merchantId" label-width="110px"
-      :rules="[{ required: true, message: '商户类型不能为空！', trigger: ['blur', 'change'] }]">
-      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.merchantId}}</p>
+      :rules="[{ required: infoType !== 'detail', message: '商户类型不能为空！', trigger: ['blur', 'change'] }]">
+      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.merchantName}}</p>
       <el-select v-model="modelForm.merchantId" class="width100" v-else>
         <el-option v-for="item in clientTypeList" :key="item.id" :value="+item.id" :label="item.name"></el-option>
       </el-select>
@@ -10,7 +10,7 @@
 
     <el-form-item label="品牌名称" prop="brandName" ref="brandName" label-width="110px"
       :error="errorField === 'brandName' ? errorMsg : ''"
-      :rules="[{ required: true, message: '品牌名称不能为空！', trigger: ['blur', 'change'] }]">
+      :rules="[{ required: infoType !== 'detail', message: '品牌名称不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.brandName}}</p>
       <el-input v-model.trim="modelForm.brandName" class="width100" placeholder="请输入品牌名称"
         :maxlength="30" v-else></el-input>
@@ -18,14 +18,14 @@
 
     <el-form-item label="公司名称" prop="companyName" ref="companyName" label-width="110px"
       :error="errorField === 'companyName' ? errorMsg : ''"
-      :rules="[{ required: true, message: '公司名称不能为空！', trigger: ['blur', 'change'] }]">
+      :rules="[{ required: infoType !== 'detail', message: '公司名称不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.companyName}}</p>
       <el-input v-model.trim="modelForm.companyName" class="width100" placeholder="请输入公司名称"
         :maxlength="30" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="联系人" prop="contact" ref="contact" label-width="110px"
-      :rules="[{ required: true, message: '联系人不能为空！', trigger: ['blur', 'change'] }]">
+      :rules="[{ required: infoType !== 'detail', message: '联系人不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.contact}}</p>
       <el-input v-model.trim="modelForm.contact" class="width100" placeholder="请输入联系人"
         :maxlength="100" v-else></el-input>
@@ -167,7 +167,7 @@
 
         isCreateAccount: false,
         checkTel: [
-          { required: true, validator: checkTel, trigger: ['blur', 'change'] }
+          { required: this.infoType !== 'detail', validator: checkTel, trigger: ['blur', 'change'] }
         ],
         checkEmail: [
           { validator: checkEmail, trigger: ['blur', 'change'] }

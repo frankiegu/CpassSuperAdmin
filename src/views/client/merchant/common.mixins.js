@@ -480,6 +480,7 @@ export default {
             this.dataForm.settlementDate1 = dataSource.settlementDate
           } else {
             this.dataForm.settlementDate2 = dataSource.settlementDate
+            this.dataForm.settlementCycleTypeName = dataSource.settlementCycleTypeName
           }
           this.dataForm.settlementCycleType = dataSource.settlementCycleType
           this.dataForm.settlementType = dataSource.settlementType

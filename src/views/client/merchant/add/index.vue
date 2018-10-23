@@ -1,6 +1,6 @@
 <template>
   <div class="main-content client-data">
-    <lh-title :title="$route.query.id ? dataForm.name : '新增客户'" :level2="true" @goBack="handleBackList"></lh-title>
+    <lh-title :title="$route.query.id ? dataForm.name : '新增商户'" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
         <el-row :gutter="40">
@@ -334,7 +334,7 @@
     mixins: [commonMixins],
     data() {
       return {
-        title: this.$route.query.id ? '修改客户基础信息' : '新增客户',
+        title: this.$route.query.id ? '修改商户基础信息' : '新增商户',
         dialogType: '',
         errorField: '',
         errorMsg: '',

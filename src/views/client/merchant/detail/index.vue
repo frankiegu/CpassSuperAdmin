@@ -9,37 +9,80 @@
 
     <div class="card-padding card-padding-vertical">
       <el-form label-width="160px" :model="dataForm" label-position="left">
-        <!-- 基础信息 -->
-        <h3 class="grid-title">基础信息</h3>
-        <base-info :model-form="dataForm" info-type="detail"></base-info>
+        <!-- 如该客户未开通账户，则“签约信息”和“客户微信服务号资料”内容隐藏 -->
+        <el-row :gutter="40">
+          <!-- 基础信息 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">基础信息</h3>
+            <base-info :model-form="dataForm" info-type="detail"></base-info>
+          </el-col>
 
-        <!-- 如该客户未开通账户，则“产品信息”和“客户微信服务号资料”内容隐藏 -->
-        <div v-if="isCreateAccount">
-          <!-- 产品信息 -->
-          <h3 class="grid-title">产品信息</h3>
-          <el-form-item label="产品版本"><p class="theme-red">{{dataForm.productName}}</p></el-form-item>
+          <!-- 签约信息 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" v-if="isCreateAccount">
+            <h3 class="grid-title">签约信息</h3>
+            <el-form-item label="签约版本"><p class="theme-red">{{dataForm.productName}}</p></el-form-item>
 
-          <el-form-item label="有效期">
-            <p v-if="!!dataForm.isPermanent" class="theme-red">永久</p>
-            <p class="theme-red" v-else>{{dataForm.productStartDate | formatTime}} 至 {{dataForm.productEndDate | formatTime}}</p>
-          </el-form-item>
+            <el-form-item label="有效期">
+              <p v-if="!!dataForm.isPermanent" class="theme-red">永久</p>
+              <p class="theme-red" v-else>
+                {{dataForm.productStartDate | formatTime}} 至 {{dataForm.productEndDate | formatTime}}</p>
+            </el-form-item>
 
-          <el-form-item label="使用状态">
-            <p class="theme-red">{{dataForm.productStatus === 1 ? '正常' : '停用'}}</p>
-          </el-form-item>
+            <el-form-item label="服务费比例">
+              <p>{{dataForm.serviceFeeProportion + '%'}}</p>
+            </el-form-item>
 
-          <el-form-item label="支付功能">
-            <p class="theme-red">{{dataForm.spaceWeixinPayStatus ? '已开通' : '关闭'}}</p>
-          </el-form-item>
+            <el-form-item label="结算周期">
+              <p>{{+dataForm.settlementCycle === 1 ? '固定日期 ' + '' : '周期结算 '}}
+                <span>{{+dataForm.settlementCycle === 1 ? '每月 ' : '每 '}}</span>
+                <span class="theme-red">{{dataForm.settlementDate}}</span>
+                <span>{{+dataForm.settlementCycle === 1 ? '日' : dataForm.settlementCycleTypeName}}</span>
+              </p>
+            </el-form-item>
 
-          <!-- 客户微信服务号资料 -->
-          <h3 class="grid-title">客户微信服务号资料</h3>
-          <el-form-item label="客户服务号AppID"><p class="label-content">{{dataForm.appId}}</p></el-form-item>
-          <el-form-item label="客户服务号AppSecret"><p class="label-content">{{dataForm.appSecret}}</p></el-form-item>
-          <!-- 如没有开通支付，则无mch_id和key信息 -->
-          <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId"><p class="label-content">{{dataForm.mchId}}</p></el-form-item>
-          <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId"><p class="label-content">{{dataForm.mchKey}}</p></el-form-item>
-        </div>
+            <el-form-item label="结算方式">
+              <div>{{'转账至' + dataForm.settlementTypeName}}
+                <p class="theme-red">{{dataForm.bankCardNum || dataForm.weixinPayNum || dataForm.aliPayNum}}</p>
+                <p v-if="+dataForm.settlementType === 3">{{dataForm.bank}}</p>
+              </div>
+            </el-form-item>
+
+            <el-form-item label="使用状态">
+              <p class="theme-red">{{dataForm.productStatus === 1 ? '正常' : '停用'}}</p>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="40" v-if="isCreateAccount">
+          <!-- 开通公众服务号 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">公众号</h3>
+            <el-form-item label="公众服务号">
+              <p class="theme-red">{{dataForm.appId ? '已开通' : '关闭'}}</p>
+            </el-form-item>
+
+            <div v-if="dataForm.appId">
+              <el-form-item label="客户服务号AppID"><p class="label-content">{{dataForm.appId}}</p></el-form-item>
+              <el-form-item label="客户服务号AppSecret"><p class="label-content">{{dataForm.appSecret}}</p></el-form-item>
+            </div>
+          </el-col>
+
+          <!-- 开通微信支付功能 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">微信支付</h3>
+            <el-form-item label="支付功能">
+              <p class="theme-red">{{dataForm.spaceWeixinPayStatus ? '已开通' : '关闭'}}</p>
+            </el-form-item>
+
+            <!-- 如没有开通支付，则无mch_id和key信息 -->
+            <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId">
+              <p class="label-content">{{dataForm.mchId}}</p>
+            </el-form-item>
+            <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId">
+              <p class="label-content">{{dataForm.mchKey}}</p>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </div>
   </div>
