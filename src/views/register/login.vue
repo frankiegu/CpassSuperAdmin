@@ -79,7 +79,7 @@
       return {
         redirectRouter: '',
         loading: false,
-        isShowImgCode: true,
+        isShowImgCode: false,
         imgCode: ''
       }
     },
