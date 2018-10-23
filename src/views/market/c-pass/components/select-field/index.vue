@@ -7,6 +7,9 @@
     :close-on-click-modal="false"
     class="component-store-com-team"
     width="420px">
+
+    <p v-show="repeatTip != '空间名重复：'" class="repeat-tip theme-red fz12">{{ repeatTip }}</p>
+
     <el-form
       :model="dialogData"
       :rules="dialogDataRule"
@@ -211,10 +214,75 @@ export default {
     }
   },
   methods: {
+    // 去重，拿到下标
+    // 插入空间、场地，并且数量大于1
+    duplicateRemoval() {
+      switch (this.insertType) {
+        case 'store':
+        case 'field':
+          let repeatIdxs = []
+
+          if (this.dialogData.addArr.length > 1) {
+            if (this.insertType == 'store') {
+              this.repeatTip = '空间名重复：'
+
+              this.dialogData.addArr.forEach((itm, idx) => {
+                this.dialogData.addArr.forEach((list, i) => {
+                  if (itm.storeId == list.storeId && idx != i) {
+                    if (!repeatIdxs.includes(idx)) {
+                      repeatIdxs.push(idx)
+                    }
+                    if (!repeatIdxs.includes(i)) {
+                      repeatIdxs.push(i)
+                    }
+                    // console.log('log: ', itm.storeId, list.storeId, repeatIdxs);
+                  }
+                })
+              })
+            } else {
+              this.repeatTip = '场地名重复：'
+
+              this.dialogData.addArr.forEach((itm, idx) => {
+                this.dialogData.addArr.forEach((list, i) => {
+                  if (itm.fieldId == list.fieldId && idx != i) {
+                    if (!repeatIdxs.includes(idx)) {
+                      repeatIdxs.push(idx)
+                    }
+                    if (!repeatIdxs.includes(i)) {
+                      repeatIdxs.push(i)
+                    }
+                  }
+                })
+              })
+            }
+
+            if (repeatIdxs.length) {
+              let tipText = (this.insertType == 'store') ? '空间' : '场地'
+
+              for (let i = 0, len = repeatIdxs.length; i < len; i++) {
+                if (repeatIdxs[i - 1] > repeatIdxs[i]) {
+                  this.repeatTip += '; '
+                } else {
+                  if (i > 0) {
+                    this.repeatTip += ','
+                  }
+                }
+
+                this.repeatTip += (tipText + (repeatIdxs[i] + 1))
+              }
+            }
+          }
+          // console.log('verify-repeat', repeatIdxs, this.repeatTip, this.dialogData.addArr);
+          break
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         // console.log('submitForm', valid, this.dialogData);
         if (valid) {
+          this.duplicateRemoval()
+
+          if (this.repeatTip != '空间名重复：') return
           this.closeDialog('save')
         } else {
         }

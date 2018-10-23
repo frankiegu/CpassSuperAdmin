@@ -8,6 +8,7 @@ export default {
        * 二级标题一个字段
        * 空间、场地一个字段，根据类型传参即可
        */
+      repeatTip: '空间名重复：',
       brandList: [],
       storeList: [],
       fieldList: [],

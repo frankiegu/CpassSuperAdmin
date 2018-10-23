@@ -66,14 +66,15 @@ export default {
             data.brandId = addArr.brandId
             data.brandList = addArr.brandList
 
-            let storeList = []
-            for (const itm of addArr.storeList) {
-              // 只要添加的下一个，去除前一个添加的id即可去重
-              if (itm.id !== addArr.storeId) {
-                storeList.push(itm)
-              }
-            }
-            data.storeList = storeList
+            // let storeList = []
+            // for (const itm of addArr.storeList) {
+            //   // 只要添加的下一个，去除前一个添加的id即可去重
+            //   if (itm.id !== addArr.storeId) {
+            //     storeList.push(itm)
+            //   }
+            // }
+            // data.storeList = storeList
+            data.storeList = addArr.storeList
             break
           case 'field':
             data.brandId = addArr.brandId
@@ -82,14 +83,15 @@ export default {
             data.storeId = addArr.storeId
             data.storeList = addArr.storeList
 
-            let fieldList = []
-            for (const itm of addArr.fieldList) {
-              // 只要添加的下一个，去除前一个添加的id即可去重
-              if (itm.id !== addArr.fieldId) {
-                fieldList.push(itm)
-              }
-            }
-            data.fieldList = fieldList
+            // let fieldList = []
+            // for (const itm of addArr.fieldList) {
+            //   // 只要添加的下一个，去除前一个添加的id即可去重
+            //   if (itm.id !== addArr.fieldId) {
+            //     fieldList.push(itm)
+            //   }
+            // }
+            // data.fieldList = fieldList
+            data.fieldList = addArr.fieldList
             break
           case 'title':
             break
