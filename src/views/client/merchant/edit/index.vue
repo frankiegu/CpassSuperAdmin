@@ -140,33 +140,34 @@
             <el-form-item label="开通公众服务号">
               <el-switch v-model="dataForm.isOpenWxService" :active-value="1" :inactive-value="0"
                 active-color="#7ED321" inactive-color="#A9ADBC"
-                :disabled="!isCreateAccount" @change="resetItemField(['appId', 'appSecret', 'jsFile'], false)">
+                :disabled="!isCreateAccount" @change="changeOfficeStatus">
               </el-switch>
             </el-form-item>
 
-            <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId" :required="true">
+            <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId"
+              :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
                 class="width300px"
-                :disabled="!dataForm.productStatus"
+                :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppID"></el-input>
             </el-form-item>
 
             <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
-              :rules="dataRules.appSecret" :required="true">
+              :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
                 class="width300px"
-                :disabled="!dataForm.productStatus"
+                :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
 
             <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
-              :rules="dataRules.jsFile" required>
+              :rules="dataRules.jsFile" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model="dataForm.jsFile"
                 readonly
-                :disabled="!dataForm.productStatus"
+                :disabled="!dataForm.isOpenWxService"
                 placeholder='选择后缀名为"txt"的JS接口文件'
                 class="width300px upload-input">
                 <el-upload
@@ -181,7 +182,7 @@
                   :on-change="changeInFile"
                   :before-upload="beforeUploadInFile"
                   :on-success="successUploadInFile"
-                  :disabled="!dataForm.productStatus"
+                  :disabled="!dataForm.isOpenWxService"
                   slot="suffix">
                   <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus}]"></span>
                 </el-upload>
@@ -306,11 +307,14 @@
         updateLoading: false,
         hasUpdateInfo: false,
         hasUpdateAccount: false,
+        hasUpdateOffice: false,
         hasUpdatePay: false,
 
         hasChangeInfo: false,
         hasChangeAccount: false,
         hasChangeAccountStatus: false,
+        hasChangeOffice: false,
+        hasChangeOfficeStatus: false,
         hasChangePay: false,
         hasChangePayStatus: false,
 
@@ -321,7 +325,11 @@
     props: {},
     components: { baseInfo },
     mounted() {},
-    watch: {},
+    watch: {
+      'hasChangePay'(val, old) {
+        console.log(val, old)
+      }
+    },
     computed: {
       hasUpdateComplete: function () {
         return this.hasUpdateAccount && this.hasUpdateInfo && this.hasUpdatePay
@@ -339,7 +347,13 @@
           this.hasChangeAccount = false
           this.hasChangePayStatus = false
           this.hasChangePay = false
+          this.hasChangeOffice = false
+          this.hasChangeOfficeStatus = false
         }
+      },
+      changeOfficeStatus() {
+        this.hasChangeOfficeStatus = true
+        this.resetItemField(['appId', 'appSecret', 'jsFile'], false)
       },
       changePayStatus() {
         this.hasChangePayStatus = true
@@ -378,15 +392,22 @@
       // 点击弹窗确定按钮更新客户资料
       handleUpdateClient() {
         this.updateLoading = true
-        // 表单根据新增时分为三个部分：基础信息、账户信息、支付信息
+        // 表单根据新增时分为四个部分：基础信息、账户信息、公众号信息、支付信息
         // 若基础信息未发生修改
         if (!this.hasChangeInfo) {
           this.hasUpdateInfo = true
           // 账户信息也未发生修改
           if (!this.hasChangeAccount && !this.hasChangeAccountStatus) {
             this.hasUpdateAccount = true
-            // 那支付信息一定发生了修改
-            this.updatePay()
+            // 公众号信息也未发生修改
+            if (!this.hasChangeOffice && !this.hasChangeOfficeStatus) {
+              this.hasUpdateOffice = true
+              // 那支付信息一定发生了修改
+              this.updatePay()
+            } else {
+              // TODO（jingyi）或公众号信息发生了修改（新开通或更新）
+              this.handleOpenOfficial()
+            }
           } else {
             // 或账户信息发生了修改
             this.updateAccount()
@@ -443,7 +464,7 @@
           }
         }
       },
-      // 更新产品信息
+      // TODO（jingyi）更新产品信息（拆解账户信息和公众号信息）
       updateAccount() {
         let accountObj = {
           clientId: this.clientId,

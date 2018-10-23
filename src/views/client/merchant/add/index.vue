@@ -165,7 +165,7 @@
             <el-form-item label="开通公众服务号">
               <el-switch v-model="dataForm.isOpenWxService" :active-value="1" :inactive-value="0"
                 active-color="#7ED321" inactive-color="#A9ADBC"
-                :disabled="!isCreateAccount" @change="resetItemField(['appId', 'appSecret', 'jsFile'], false)">
+                :disabled="!isCreateAccount" @change="closeOffice">
               </el-switch>
             </el-form-item>
 
@@ -223,7 +223,7 @@
             <el-form-item label="开通微信支付功能">
               <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
                 active-color="#7ED321" inactive-color="#A9ADBC"
-                :disabled="!isCreateAccount" @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
+                :disabled="!isCreateAccount || !dataForm.isOpenWxService" @change="resetItemField(['mchId', 'mchKey', 'certificate'], false)">
               </el-switch>
             </el-form-item>
 
@@ -360,6 +360,13 @@
     computed: {},
     filters: {},
     methods: {
+      // 关闭开通公众号
+      closeOffice() {
+        this.resetItemField(['appId', 'appSecret', 'jsFile'], false)
+        this.dataForm.isOpenPayment = 0
+        this.resetItemField(['mchId', 'mchKey', 'certificate'], false)
+      },
+
       // 【创建账户】收起时，点击【保存】丢弃已录入的开通资料
       resetAccountFrom() {
         let itemArr = [
@@ -471,7 +478,7 @@
         }
       },
       // 开通账户
-      openAccount() {
+      async openAccount() {
         let accountObj = {
           clientId: this.clientId,
           productId: this.dataForm.productId,
@@ -482,10 +489,7 @@
           serviceFeeProportion: this.dataForm.serviceFeeProportion,
           settlementCycle: this.dataForm.settlementCycle,
           settlementCycleType: this.dataForm.settlementCycleType,
-          settlementType: this.dataForm.settlementType,
-          appId: this.dataForm.appId,
-          appSecret: this.dataForm.appSecret,
-          jsFile: this.dataForm.jsFile
+          settlementType: this.dataForm.settlementType
         }
         accountObj.settlementDate = +this.dataForm.settlementCycle === 1
           ? this.dataForm.settlementDate1 : this.dataForm.settlementDate2
@@ -503,30 +507,38 @@
           default:
             break
         }
-        createAccount(accountObj).then(res => {
-          if (res.status === 'true') {
-            this.isOpenSuccess = true
+        let res = await createAccount(accountObj)
+        if (res.status === 'true') {
+          this.isOpenSuccess = true
+          if (this.dataForm.isOpenWxService && res.info) {
+            let hasOpenOfficial = await this.handleOpenOfficial(res.info.spaceId)
             if (!this.dataForm.isOpenPayment) {
               this.dialogVisible = true
               this.createLoading = false
               setTimeout(() => {
                 this.$router.replace('/client/detail?id=' + this.clientId)
               }, 1000)
-            } else {
+            } else if (hasOpenOfficial) {
               this.openPayment()
             }
           } else {
-            this.isOpenSuccess = false
+            this.dialogVisible = true
             this.createLoading = false
-            this.dialogVisible = false
-            this.$message.error(res.msg)
-            if (res.info) {
-              this.errorField = res.info
-              this.errorMsg = res.msg
-              this.$refs[res.info].$children[0].$refs.input.focus()
-            }
+            setTimeout(() => {
+              this.$router.replace('/client/detail?id=' + this.clientId)
+            }, 1000)
           }
-        })
+        } else {
+          this.isOpenSuccess = false
+          this.createLoading = false
+          this.dialogVisible = false
+          this.$message.error(res.msg)
+          if (res.info) {
+            this.errorField = res.info
+            this.errorMsg = res.msg
+            this.$refs[res.info].$children[0].$refs.input.focus()
+          }
+        }
       },
       // 开通支付
       openPayment() {

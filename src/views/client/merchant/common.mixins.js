@@ -1,5 +1,5 @@
 import { PHONEREG, API_PATH } from '@/config/env'
-import { productSelect, clientDetail, checkExistAccount } from '@/service'
+import { productSelect, clientDetail, checkExistAccount, openOfficialAccount } from '@/service'
 import { settlementTypeSelect } from '@/service/common'
 
 export default {
@@ -189,6 +189,7 @@ export default {
       },
 
       isCreateAccount: false,
+      hasOpenOfficial: false,
       productList: {},
       // 结算周期类型
       settlementCycleTypeList: [{
@@ -321,20 +322,25 @@ export default {
     dataFormStr: function () {
       return Object.values(this.dataForm).join('')
     },
-    // 拼接name字段到saleManager字段
+    // 拼接merchantId字段到saleManager字段
     infoStr: function () {
-      // console.log(Object.keys(this.dataForm).slice(0, 8))
-      return Object.values(this.dataForm).slice(0, 8).join('')
+      // console.log(Object.keys(this.dataForm).slice(0, 15))
+      return Object.values(this.dataForm).slice(0, 15).join('')
     },
-    // 拼接productId字段到jsFile字段
+    // 拼接productId字段到adminUsername字段
     accountStr: function () {
-      // console.log(Object.keys(this.dataForm).slice(9, 16))
-      return Object.values(this.dataForm).slice(9, 16).join('')
+      // console.log(Object.keys(this.dataForm).slice(16, 31))
+      return Object.values(this.dataForm).slice(16, 31).join('')
+    },
+    // 拼接appId字段到jsFile字段
+    officialStr: function () {
+      // console.log(Object.keys(this.dataForm).slice(32, 35))
+      return Object.values(this.dataForm).slice(32, 35).join('')
     },
     // 拼接spaceWeixinPayId字段到certificate字段
     payStr: function () {
-      // console.log(Object.keys(this.dataForm).slice(17))
-      return Object.values(this.dataForm).slice(17).join('')
+      // console.log(Object.keys(this.dataForm).slice(36, 40))
+      return Object.values(this.dataForm).slice(36, 40).join('')
     }
   },
   methods: {
@@ -482,8 +488,8 @@ export default {
             this.dataForm.settlementDate2 = dataSource.settlementDate
             this.dataForm.settlementCycleTypeName = dataSource.settlementCycleTypeName
           }
-          this.dataForm.settlementCycleType = dataSource.settlementCycleType
-          this.dataForm.settlementType = dataSource.settlementType
+          this.dataForm.settlementCycleType = dataSource.settlementCycleType || 1
+          this.dataForm.settlementType = dataSource.settlementType || 3
           this.dataForm.bankCardNum = dataSource.bankCardNum
           this.dataForm.bank = dataSource.bank
           this.dataForm.weixinPayNum = dataSource.weixinPayNum
@@ -502,6 +508,7 @@ export default {
           const initialForm = this.dataFormStr
           const initInfo = this.infoStr
           const initAccount = this.accountStr
+          const initOfficial = this.officialStr
           const initPay = this.payStr
           this.$watch('dataFormStr', {
             handler: function (newVal) {
@@ -530,6 +537,15 @@ export default {
               }
             }
           })
+          this.$watch('officialStr', {
+            handler: function (newVal) {
+              if (!newVal || newVal === initOfficial) {
+                this.hasChangeOffice = false
+              } else if (newVal !== initOfficial) {
+                this.hasChangeOffice = true
+              }
+            }
+          })
           this.$watch('payStr', {
             handler: function (newVal) {
               if (!newVal || newVal === initPay) {
@@ -543,6 +559,24 @@ export default {
           this.$message.error(res.msg)
         }
       })
+    },
+
+    // 开通公众服务号
+    async handleOpenOfficial(spaceId) {
+      let officialObj = {
+        clientId: this.clientId,
+        spaceId: spaceId,
+        appId: this.dataForm.appId,
+        appSecret: this.dataForm.appSecret,
+        jsFile: this.dataForm.jsFile
+      }
+      let res = await openOfficialAccount(officialObj)
+      if (res.status === 'true') {
+        this.hasOpenOfficial = true
+        return this.hasOpenOfficial
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
     changeCreateStatus(status) {
