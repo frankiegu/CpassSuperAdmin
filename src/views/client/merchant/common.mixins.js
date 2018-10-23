@@ -237,7 +237,8 @@ export default {
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         settlementCycle: '', // 结算周期 1-固定日期 2-周期结算
-        settlementDate: 1, // 日期
+        settlementDate1: 1, // 固定日期 日期
+        settlementDate2: 1, // 周期结算 日期
         settlementCycleType: 1, // 周期单位 1-月 2-周 3-天
         settlementType: 3, // 结算方式 1-微信 2-支付宝 3-银行卡
         bankCardNum: '', // 银行账号
@@ -473,8 +474,13 @@ export default {
           this.dataForm.productId = dataSource.productId
           this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
+          this.dataForm.serviceFeeProportion = dataSource.serviceFeeProportion
           this.dataForm.settlementCycle = dataSource.settlementCycle
-          this.dataForm.settlementDate = dataSource.settlementDate
+          if (+dataSource.settlementCycle === 1) {
+            this.dataForm.settlementDate1 = dataSource.settlementDate
+          } else {
+            this.dataForm.settlementDate2 = dataSource.settlementDate
+          }
           this.dataForm.settlementCycleType = dataSource.settlementCycleType
           this.dataForm.settlementType = dataSource.settlementType
           this.dataForm.bankCardNum = dataSource.bankCardNum

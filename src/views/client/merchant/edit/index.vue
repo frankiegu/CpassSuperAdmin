@@ -58,7 +58,7 @@
                   固定日期
                 </el-radio>
                 <span class="input-unit">每月</span>
-                <el-select v-model="dataForm.settlementDate" class="small-input"
+                <el-select v-model="dataForm.settlementDate1" class="small-input"
                   :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 1">
                   <el-option v-for="i in 31" :key="i + '日'" :label="i + '日'" :value="i">
                   </el-option>
@@ -71,7 +71,7 @@
                   周期结算
                 </el-radio>
                 <span class="input-unit">每</span>
-                <el-input v-model.number.trim="dataForm.settlementDate" class="small-input"
+                <el-input v-model.number.trim="dataForm.settlementDate2" class="small-input"
                   :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2"></el-input>
                 <el-select v-model="dataForm.settlementCycleType" class="small-input ml8"
                   :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2">
@@ -452,13 +452,14 @@
           isPermanent: this.dataForm.isPermanent,
           serviceFeeProportion: this.dataForm.serviceFeeProportion,
           settlementCycle: this.dataForm.settlementCycle,
-          settlementDate: this.dataForm.settlementDate,
           settlementCycleType: this.dataForm.settlementCycleType,
           settlementType: this.dataForm.settlementType,
           appId: this.dataForm.appId,
           appSecret: this.dataForm.appSecret,
           jsFile: this.dataForm.jsFile
         }
+        accountObj.settlementDate = +this.dataForm.settlementCycle === 1
+          ? this.dataForm.settlementDate1 : this.dataForm.settlementDate2
         switch (+this.dataForm.settlementType) {
           case 1:
             accountObj.weixinPayNum = this.dataForm.weixinPayNum
