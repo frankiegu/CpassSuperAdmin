@@ -312,6 +312,7 @@
         font-weight: normal;
 
         .field-num {
+          float: left;
           width: 60%;
           display: inline-block;
           font-size: 12px;
@@ -357,7 +358,7 @@
           color: rgba(129,132,144,1);
           text-align: right;
           float: right;
-          line-height: 20px;
+          line-height: 22px;
           padding-left: 8px;
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
