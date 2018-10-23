@@ -1,5 +1,4 @@
 import tableMixins from '@/mixins/table'
-// import { platformActivityList } from '@/service/market'
 import { productList, productClose, productOpen } from '@/service/product'
 
 export default {
