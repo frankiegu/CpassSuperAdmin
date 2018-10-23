@@ -40,18 +40,18 @@
             </el-input>
           </el-form-item>
 
-          <!--<el-form-item class="verificationCode" prop="verificationCode">-->
-            <!--<el-input-->
-              <!--class="width140px"-->
-              <!--name="verificationCode"-->
-              <!--type="text"-->
-              <!--autoComplete="on"-->
-              <!--:maxlength="4"-->
-              <!--v-model.trim="formData.verificationCode"-->
-              <!--@keyup.native.enter="handleLogin('formData')"-->
-              <!--placeholder="请输入验证码">-->
-              <!--&lt;!&ndash;<lh-svg slot="prefix" icon-class="icon-password" class="svg-icon" />&ndash;&gt;-->
-            <!--</el-input>-->
+          <el-form-item v-if="isShowImgCode" class="pwd-box" prop="verificationCode">
+            <el-input
+              autoComplete="off"
+              :maxlength="4"
+              v-model.trim="formData.verificationCode"
+              placeholder="输入图片验证码">
+              <lh-svg slot="prefix" iconClass="icon-password" class="svg-icon" />
+              <img slot="suffix" class="img-code" @click="getImgCode" :src="imgCode" alt="">
+
+            </el-input>
+
+          </el-form-item>
 
 
           <!--</el-form-item>-->
@@ -71,17 +71,21 @@
 <script>
   import store from '@/store'
   import loginMixins from './login.mixins'
+  import { API_PATH } from '@/config/env'
 
   export default {
     mixins: [loginMixins], // 长变量，可以抽出一个mixins
     data() {
       return {
         redirectRouter: '',
-        loading: false
+        loading: false,
+        isShowImgCode: true,
+        imgCode: ''
       }
     },
     mounted () {
       this.redirectRouter = encodeURI(this.$route.query.redirect || '')
+      this.getImgCode()
     },
     methods: {
       handleLogin (formName) {
@@ -97,10 +101,24 @@
             })
           }
         })
+      },
+      getImgCode () {
+        this.imgCode = API_PATH + '/manage/captcha/getResetPasswordCode' + '?random=' + Math.random()
       }
     }
   }
 </script>
+
+<style lang="scss">
+  .pwd-box {
+    .el-input__suffix {
+      position: absolute;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
+  }
+</style>
 
 <style lang="scss" scoped>
   @import 'src/styles/common.scss';
@@ -171,6 +189,27 @@
       .login-box-in {
         position: relative;
         padding: 0 16px;
+
+        .pwd-box {
+          .img-code {
+            float: right;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            width: 82px;
+            height: 100%;
+          }
+          .svg-container {
+            margin-left: 12px;
+            width: 20px;
+            height: 20px;
+            fill: $theme-light-gray;
+            transition: all ease .25s;
+
+            &.active-icon {
+              fill: $theme-blue;
+            }
+          }
+        }
 
         .login-btn {
           width: 100%;
