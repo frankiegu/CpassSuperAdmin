@@ -12,14 +12,14 @@
 
         <el-form-item>
           <el-select
-            v-model="formData.businessType"
+            v-model="formData.merchantType"
             @change="getPageData(1)"
             placeholder="请选择商户类型"
             class="width150px"
             clearable>
             <el-option
-              v-for="i in businessList"
-              :label="i.businessName"
+              v-for="i in merchantList"
+              :label="i.name"
               :value="i.id"
               :key="i.id"></el-option>
           </el-select>
@@ -34,7 +34,7 @@
             clearable>
             <el-option
               v-for="i in settlementList"
-              :label="i.settlementName"
+              :label="i.name"
               :value="i.id"
               :key="i.id"></el-option>
           </el-select>
@@ -74,9 +74,10 @@
 
         <el-form-item>
           <el-input
-            v-model.trim="formData.name"
+            v-model.trim="formData.brandName"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入品牌名称"
+            clearable
             class="lh-form-input">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -85,9 +86,10 @@
 
         <el-form-item>
           <el-input
-            v-model.trim="formData.company"
+            v-model.trim="formData.companyName"
             @keyup.native.enter="getPageData(1)"
             placeholder="请输入公司名称"
+            clearable
             class="lh-form-input">
 
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -115,7 +117,7 @@
             <router-link
               :to="{path: '/client/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.name }}
+              {{ scope.row.brandName || '-'}}
             </router-link>
           </template>
         </el-table-column>
@@ -127,7 +129,7 @@
         </el-table-column>
         <el-table-column label="商户类型" prop="companyName" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
+            <span>{{scope.row.merchantName || '-'}}</span>
           </template>
         </el-table-column>
 
@@ -138,42 +140,41 @@
         <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
         <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
 
-        <el-table-column label="取消规则" prop="companyName" align="left">
+        <el-table-column label="取消规则" prop="cancelName" align="left">
           <template slot-scope="scope">
             <!--加入取消规则气泡提醒、若没有选择取消类型，则-->
             <el-popover
-              v-if="!scope.row.companyName"
+              v-if="scope.row.cancelName"
               placement="right-start"
-              :title="scope.row.contact"
+              :title="scope.row.cancelName"
               width="200"
-              trigger="click"
-              :content="scope.row.phone">
-              <div slot="reference">{{ scope.row.companyName || '-' }}</div>
+              trigger="hover"
+              :content="scope.row.cancelName">
+              <div slot="reference" class="cancelRule">{{ scope.row.cancelName || '-' }}</div>
             </el-popover>
             <span v-else>-</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="有效期" prop="validaty" align="left"></el-table-column>
+        <el-table-column label="有效期" prop="productEndDate" align="left" width="100">
+          <template slot-scope="scope">
+            <span>{{scope.row.productEndDate || '-'}}</span>
+          </template>
+        </el-table-column>
 
-        <el-table-column label="结算方式" prop="companyName" align="left">
+        <el-table-column label="结算方式" prop="settlementTypeName" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
+            <span>{{scope.row.settlementTypeName || '-'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="门店" prop="companyName" align="left">
+        <el-table-column label="门店" prop="storeNum	" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
+            <span>{{scope.row.storeNum	 || '-'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="场地" prop="companyName" align="left">
+        <el-table-column label="场地" prop="fieldNum" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="企业/场地服务" prop="companyName" align="left">
-          <template slot-scope="scope">
-            <span>{{scope.row.companyName || '-'}}</span>
+            <span>{{scope.row.fieldNum || '-'}}</span>
           </template>
         </el-table-column>
 
@@ -230,6 +231,7 @@
   import pickerOptions from '@/mixins/pickerOptions'
   import { formatTimeString, downloadFile } from '@/config/utils'
   import { clientList } from '@/service/client'
+  import { merchantSelect, settlementTypeSelect } from '@/service/common'
 
   export default {
     mixins: [tableMixins, pickerOptions, indexMixins],
@@ -241,6 +243,8 @@
     },
     mounted () {
       this.getPageData()
+      this.getMerchant()
+      this.getSettlement()
     },
     methods: {
       changeStatus(page) {
@@ -266,12 +270,14 @@
         const paramsObj = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
-          name: formData.name,
-          // validaty: formData.validaty,
+          brandName: formData.brandName,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
           productStartDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[0]) : null,
-          productEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null
+          productEndDate: this.formData.reg_date ? formatTimeString(this.formData.reg_date[1]) : null,
+          merchantId: formData.merchantType === 99 ? '' : formData.merchantType,
+          settlementType: formData.settlementWay === 99 ? '' : formData.settlementWay,
+          companyName: formData.companyName
         }
 
         clientList(paramsObj).then(res => {
@@ -281,6 +287,12 @@
               this.pageTotal = data.total
               this.tableData = data.result
             }
+
+            this.tableData.forEach(item => {
+              if (item.productEndDate) {
+                item.productEndDate = item.productEndDate.substr(0, 10)
+              }
+            })
 
             this.tableLoading = false
             if (this.tableData.length === 0) {
@@ -297,15 +309,41 @@
         }
         const formData = this.formData
         const downParams = {
-          name: formData.name,
-          // validaty: formData.validaty,
+          brandName: formData.brandName,
           registerWay: formData.registerWay,
           productStatus: formData.productStatus,
-          createStartDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
-          createEndDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null
+          productStartDate: formData.reg_date ? formatTimeString(formData.reg_date[0]) : null,
+          productEndDate: formData.reg_date ? formatTimeString(formData.reg_date[1]) : null,
+          merchantId: formData.merchantType,
+          settlementType: formData.settlementWay,
+          companyName: formData.companyName
         }
         let url = API_PATH + '/supervisor/client/exportAll'
         downloadFile(url, downParams)
+      },
+      // 获取商户类型
+      getMerchant() {
+        merchantSelect().then(res => {
+          if (res.status === 'true') {
+            this.merchantList = res.info
+            const list = { id: 99, name: '全部' }
+            this.merchantList.unshift(list)
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
+      },
+      // 获取结算类型
+      getSettlement() {
+        settlementTypeSelect().then(res => {
+          if (res.status === 'true') {
+            this.settlementList = res.info
+            const list = { id: 99, name: '全部' }
+            this.settlementList.unshift(list)
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        })
       }
     }
   }
@@ -317,6 +355,9 @@
     .svg-icon {
       color: $theme-blue;
       margin: 0 7px;
+    }
+    .cancelRule{
+      cursor: pointer;
     }
   }
 </style>

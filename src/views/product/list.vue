@@ -37,12 +37,13 @@
 
         <el-table-column label="版本名称" prop="name" align="left">
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.name || '-' }}
           </template>
         </el-table-column>
         <el-table-column label="包含功能" align="left" min-width="150">
           <template slot-scope="scope">
             <span v-for="(item, index) in scope.row.permisList">{{ item }}<span v-if="index < scope.row.permisList.length - 1">、</span></span>
+            <span v-if="!scope.row.permisList || scope.row.permisList === null">-</span>
           </template>
         </el-table-column>
         <el-table-column label="售价" align="left" width="120">
@@ -62,7 +63,11 @@
             <el-tag type="danger" v-if="scope.row.status === 0">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="描述" prop="description" align="left" min-width="100"></el-table-column>
+        <el-table-column label="描述" prop="description" align="left" min-width="100">
+          <template slot-scope="scope">
+            <span>{{ scope.row.description || '-' }}</span>
+          </template>
+        </el-table-column>
 
 
         <el-table-column label="操作" align="left" width="120">
