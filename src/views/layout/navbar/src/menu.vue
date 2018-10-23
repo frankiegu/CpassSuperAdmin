@@ -5,15 +5,15 @@
         <screenfull class="svg-style"></screenfull>
       </el-menu-item> -->
 
-      <el-menu-item index="1" class="notice-item svg-box" @click="handleToggleMsgBar">
-        <lh-svg v-if="messageNum === 0" :iconClass="'icon-bells'" class="icon svg-style fl"/>
-        <el-badge v-if="messageNum > 0 && messageNum <= 99" :value="messageNum" :max="99" class="red-point">
-          <lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>
-        </el-badge>
-        <el-badge v-if="messageNum > 99" :value="'···'" class="item red-point fl">
-          <lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>
-        </el-badge>
-      </el-menu-item>
+      <!--<el-menu-item index="1" class="notice-item svg-box" @click="handleToggleMsgBar">-->
+        <!--<lh-svg v-if="messageNum === 0" :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--<el-badge v-if="messageNum > 0 && messageNum <= 99" :value="messageNum" :max="99" class="red-point">-->
+          <!--<lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--</el-badge>-->
+        <!--<el-badge v-if="messageNum > 99" :value="'···'" class="item red-point fl">-->
+          <!--<lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--</el-badge>-->
+      <!--</el-menu-item>-->
 
       <el-submenu index="2" class="profile-box">
         <template slot="title">

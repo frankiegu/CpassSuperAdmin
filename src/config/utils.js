@@ -79,7 +79,7 @@ export function getEndStartTime(time) {
  */
 export function logoutNoToken() {
   store.commit('SET_TOKEN', '')
-  store.commit('SET_RESOURCES', 'no')
+  store.commit('SET_LOGIN', 'no')
   sessionStorage.removeItem('token')
   store.commit('SET_PERMISSION', '')
 
@@ -118,7 +118,7 @@ export const hasPermissions = (params) => {
   } else {
     // console.log(params)
     // ['/supervisor/platformService/list', '/supervisor/platformServiceOrder/list']
-    if (params === '/supervisor/appCustomer/changeStatus') return false
+    if (params === '/supervisor/appCustomer/list') return false
   }
   return true
 }

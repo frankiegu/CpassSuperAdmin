@@ -38,6 +38,7 @@ const notice = {
       }
     },
     getMsgList: ({ commit }) => {
+      console.log('this is a webSocket')
       // let obj = {
       //   status: 0,
       //   pageNum: 1,

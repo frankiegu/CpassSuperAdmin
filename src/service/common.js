@@ -16,3 +16,6 @@ export const spaceList = (obj) => fetch(API_PATH + '/supervisor/space/list', obj
 
 // 获取空间
 export const storeList = (obj) => fetch(API_PATH + '/supervisor/store/list', obj, 'POST')
+
+// webSocket信息流
+export const informList = (obj) => fetch(API_PATH + '/manage/inform/list', obj, 'GET')

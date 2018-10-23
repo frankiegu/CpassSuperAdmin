@@ -29,6 +29,7 @@
           :backPosition="50"></scrool-top>
       </el-tooltip>
     </div>
+    <messagebar />
   </div>
 </template>
 
@@ -38,9 +39,10 @@ import navbar from './navbar'
 import sidebar from './sidebar'
 import { scroolTop } from '@/components'
 import tagsView from './components/tags-view'
+import messagebar from './messagebar'
 
 export default {
-  components: { navbar, sidebar, scroolTop, tagsView },
+  components: { navbar, sidebar, scroolTop, tagsView, messagebar },
   data () {
     return {
       // hideRouter: false,
