@@ -74,7 +74,7 @@
                   :error="errorField === 'settlementCycle' ? errorMsg : ''"
                   :required="isCreateAccount" :rules="dataRules.settlementCycle">
                   <el-form-item>
-                    <el-radio v-model="dataForm.settlementCycle" label="1" :disabled="!isCreateAccount">
+                    <el-radio v-model="dataForm.settlementCycle" :label="1" :disabled="!isCreateAccount">
                       固定日期
                     </el-radio>
                     <span class="input-unit">每月</span>
@@ -86,7 +86,7 @@
                   </el-form-item>
 
                   <el-form-item class="mb0">
-                    <el-radio v-model="dataForm.settlementCycle" label="2" :disabled="!isCreateAccount"
+                    <el-radio v-model="dataForm.settlementCycle" :label="2" :disabled="!isCreateAccount"
                       style="margin-right: 1em">
                       周期结算
                     </el-radio>

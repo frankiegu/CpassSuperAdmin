@@ -64,7 +64,7 @@
       <el-form-item v-else>
         <el-row justify="space-between" type="flex" :gutter="14" align="middle">
           <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-            <el-select placeholder="国家" v-model="modelForm.countryId" @change="getRegionList">
+            <el-select placeholder="国家" v-model="modelForm.countryId">
               <el-option v-for="item in countryList" :key="item.name" :value="item.id" :label="item.cnName"></el-option>
             </el-select>
           </el-col>
@@ -195,7 +195,13 @@
         this.getRegionList()
       }
     },
-    watch: {},
+    watch: {
+      'modelForm.countryId'(val, old) {
+        if (val) {
+          this.getRegionList()
+        }
+      }
+    },
     computed: {},
     filters: {},
     methods: {
@@ -211,9 +217,11 @@
       },
       // 获取省市区列表
       getRegionList() {
+        this.city = []
         regionList({ countryId: this.modelForm.countryId }).then(res => {
           if (res.status === 'true' && res.info) {
             this.cityTree = res.info.children
+            this.city = [this.modelForm.provinceCode, this.modelForm.cityCode, this.modelForm.regionCode]
           } else {
             this.$message.error('获取省市区列表：：' + res.msg)
           }

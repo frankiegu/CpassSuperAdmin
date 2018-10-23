@@ -453,16 +453,34 @@ export default {
         if (res.status === 'true' && res.info) {
           let dataSource = res.info
           this.dataForm.brandName = dataSource.brandName
+          this.dataForm.companyName = dataSource.companyName
           this.dataForm.contact = dataSource.contact
           this.dataForm.phone = dataSource.phone
           this.dataForm.email = dataSource.email
+          this.dataForm.countryId = dataSource.countryId
+          this.dataForm.provinceCode = dataSource.provinceCode
+          this.dataForm.cityCode = dataSource.cityCode
+          this.dataForm.regionCode = dataSource.regionCode
+          this.dataForm.countryName = dataSource.countryName
+          this.dataForm.provinceName = dataSource.provinceName
+          this.dataForm.cityName = dataSource.cityName
+          this.dataForm.regionName = dataSource.regionName
           this.dataForm.address = dataSource.address
           this.dataForm.weixin = dataSource.weixin
+          this.dataForm.officialWebsite = dataSource.officialWebsite
           this.dataForm.remark = dataSource.remark
           this.dataForm.saleManager = dataSource.saleManager
           this.dataForm.productId = dataSource.productId
           this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
+          this.dataForm.settlementCycle = dataSource.settlementCycle
+          this.dataForm.settlementDate = dataSource.settlementDate
+          this.dataForm.settlementCycleType = dataSource.settlementCycleType
+          this.dataForm.settlementType = dataSource.settlementType
+          this.dataForm.bankCardNum = dataSource.bankCardNum
+          this.dataForm.bank = dataSource.bank
+          this.dataForm.weixinPayNum = dataSource.weixinPayNum
+          this.dataForm.aliPayNum = dataSource.aliPayNum
           this.dataForm.adminUsername = ''
           this.dataForm.productStatus = dataSource.productStatus
           this.dataForm.appId = dataSource.appId
@@ -523,8 +541,8 @@ export default {
     changeCreateStatus(status) {
       this.isCreateAccount = status
       if (!status) {
-        this.dataForm.isOpenWxService = false
-        this.dataForm.isOpenPayment = false
+        this.dataForm.isOpenWxService = 0
+        this.dataForm.isOpenPayment = 0
         this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'adminUsername', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum'], false)
       }
     },
