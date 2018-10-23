@@ -8,7 +8,7 @@
     class="component-store-com-team"
     width="420px">
 
-    <p v-show="repeatTip != '空间名重复：'" class="repeat-tip theme-red fz12">{{ repeatTip }}</p>
+    <p v-show="repeatTipStatus" class="repeat-tip theme-red fz12">{{ repeatTip }}</p>
 
     <el-form
       :model="dialogData"
@@ -224,8 +224,6 @@ export default {
 
           if (this.dialogData.addArr.length > 1) {
             if (this.insertType == 'store') {
-              this.repeatTip = '空间名重复：'
-
               this.dialogData.addArr.forEach((itm, idx) => {
                 this.dialogData.addArr.forEach((list, i) => {
                   if (itm.storeId == list.storeId && idx != i) {
@@ -240,8 +238,6 @@ export default {
                 })
               })
             } else {
-              this.repeatTip = '场地名重复：'
-
               this.dialogData.addArr.forEach((itm, idx) => {
                 this.dialogData.addArr.forEach((list, i) => {
                   if (itm.fieldId == list.fieldId && idx != i) {
@@ -257,7 +253,14 @@ export default {
             }
 
             if (repeatIdxs.length) {
-              let tipText = (this.insertType == 'store') ? '空间' : '场地'
+              let tipText
+              if (this.insertType == 'store') {
+                tipText = '空间'
+                this.repeatTip = '空间名重复：'
+              } else {
+                tipText = '场地'
+                this.repeatTip = '场地名重复：'
+              }
 
               for (let i = 0, len = repeatIdxs.length; i < len; i++) {
                 if (repeatIdxs[i - 1] > repeatIdxs[i]) {
@@ -270,6 +273,9 @@ export default {
 
                 this.repeatTip += (tipText + (repeatIdxs[i] + 1))
               }
+              this.repeatTipStatus = true
+            } else {
+              this.repeatTipStatus = false
             }
           }
           // console.log('verify-repeat', repeatIdxs, this.repeatTip, this.dialogData.addArr);
@@ -282,7 +288,7 @@ export default {
         if (valid) {
           this.duplicateRemoval()
 
-          if (this.repeatTip != '空间名重复：') return
+          if (this.repeatTipStatus) return
           this.closeDialog('save')
         } else {
         }
@@ -300,6 +306,8 @@ export default {
 
       this.dialogData = { ...this.dialogData2 }
       this.dialogData.addArr = [...this.dialogData2.addArr]
+      this.repeatTip = ''
+      this.repeatTipStatus = false
 
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
