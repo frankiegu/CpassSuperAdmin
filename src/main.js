@@ -16,6 +16,11 @@ import './permission'                                       // 路由拦截
 import { title, item, svg, card, datePicker, tableEmpty } from '@/components'
 import './icons'
 
+// 开发环境引入mock
+if (process.env.NODE_ENV === 'development') {
+  require('./mock') // 需要在这里引入mock数据才可以全局拦截请求
+}
+
 Vue.use(ElementUI, { size: 'small' })
 Vue.mixin(comMixins)
 
