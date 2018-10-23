@@ -122,7 +122,6 @@
           </template>
         </el-table-column>
 
-        <!-- TODO(jingyi) 对接新增公司名称、商户类型、取消规则、结算方式、门店、场地、企业/场地服务column -->
         <el-table-column label="公司名称" prop="companyName" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.companyName || '-'}}</span>

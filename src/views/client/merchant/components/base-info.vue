@@ -1,6 +1,5 @@
 <template>
   <div class="base-info">
-    <!-- TODO(jingyi) 基础信息新增"品牌/公司名称"、"官方网址"、"联系地址"、"公司/品牌简介" -->
     <el-form-item label="商户类型" prop="merchantId" ref="merchantId" label-width="110px"
       :rules="[{ required: true, message: '商户类型不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.merchantId}}</p>
@@ -65,18 +64,18 @@
       <el-form-item v-else>
         <el-row justify="space-between" type="flex" :gutter="14" align="middle">
           <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-            <el-select placeholder="国家" v-model="modelForm.countryId" @change="getRegionList">
+            <el-select placeholder="国家" v-model="modelForm.countryId">
               <el-option v-for="item in countryList" :key="item.name" :value="item.id" :label="item.cnName"></el-option>
             </el-select>
           </el-col>
           <el-col :xs="18" :sm="18" :md="18" :lg="18" :xl="18">
             <el-cascader :options="cityTree" v-model="city" :props="cityProps" @change="changeCity" filterable
-              placeholder="请选择城市" class="width100">
+              placeholder="请选择城市" class="width100" :disabled="!modelForm.countryId">
             </el-cascader>
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item class="mb0">
+      <el-form-item class="mb0" v-if="infoType !== 'detail'">
         <el-input v-model.trim="modelForm.address" class="width100" placeholder="请输入详细地址"
           :maxlength="300"></el-input>
       </el-form-item>
@@ -190,13 +189,19 @@
     },
     components: {},
     mounted() {
-      // this.getMerchantList()
-      // this.getCountryList()
-      // if (this.modelForm.countryId) {
-      //   this.getRegionList()
-      // }
+      this.getMerchantList()
+      this.getCountryList()
+      if (this.modelForm.countryId) {
+        this.getRegionList()
+      }
     },
-    watch: {},
+    watch: {
+      'modelForm.countryId'(val, old) {
+        if (val) {
+          this.getRegionList()
+        }
+      }
+    },
     computed: {},
     filters: {},
     methods: {
@@ -212,9 +217,11 @@
       },
       // 获取省市区列表
       getRegionList() {
+        this.city = []
         regionList({ countryId: this.modelForm.countryId }).then(res => {
           if (res.status === 'true' && res.info) {
             this.cityTree = res.info.children
+            this.city = [this.modelForm.provinceCode, this.modelForm.cityCode, this.modelForm.regionCode]
           } else {
             this.$message.error('获取省市区列表：：' + res.msg)
           }

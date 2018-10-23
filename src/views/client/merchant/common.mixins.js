@@ -1,5 +1,6 @@
 import { PHONEREG, API_PATH } from '@/config/env'
 import { productSelect, clientDetail, checkExistAccount } from '@/service'
+import { settlementTypeSelect } from '@/service/common'
 
 export default {
   data () {
@@ -50,6 +51,51 @@ export default {
           callback(new Error('请输入0-100的正数'))
         } else if (value && (value.toString().indexOf('.') !== -1 && value.toString().split('.')[1].length > 2)) {
           callback(new Error('最多允许输入两位小数'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkSettlementCycle = (rule, value, callback) => {
+      if (this.isCreateAccount) {
+        if (!value) {
+          return callback(new Error('请选择结算周期！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkBankCardNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 3) {
+        if (!value) {
+          return callback(new Error('收款账号不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkBank = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 3) {
+        if (!value) {
+          return callback(new Error('开户行不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkWeixinPayNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 1) {
+        if (!value) {
+          return callback(new Error('微信号不能为空！'))
+        }
+        callback()
+      }
+      callback()
+    }
+    const checkAliPayNum = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementType === 2) {
+        if (!value) {
+          return callback(new Error('支付宝账号不能为空！'))
         }
         callback()
       }
@@ -155,6 +201,8 @@ export default {
         id: 3,
         name: '天'
       }],
+      // 结算方式类型
+      settlementTypeList: [],
       uploadHeaders: { token: sessionStorage.getItem('token') },
       jsUploadPath: API_PATH + '/supervisor/client/uploadJsFile',
       p12UploadPath: API_PATH + '/supervisor/client/uploadPayCertFile',
@@ -185,12 +233,17 @@ export default {
         productStatus: 1,
         productId: '',
         period: '', // 签约年限
-        feeRatio: '', // 服务费比例
+        serviceFeeProportion: '', // 服务费比例
         validity: '', // 有效期
         isPermanent: 0, // 是否永久有效
         settlementCycle: '', // 结算周期 1-固定日期 2-周期结算
         settlementDate: 1, // 日期
-        settlementCycleType: 1, // 周期单位
+        settlementCycleType: 1, // 周期单位 1-月 2-周 3-天
+        settlementType: 3, // 结算方式 1-微信 2-支付宝 3-银行卡
+        bankCardNum: '', // 银行账号
+        bank: '', // 开户行
+        weixinPayNum: '', // 微信结算账号
+        aliPayNum: '', // 支付宝结算账号
         adminUsername: '',
 
         // 开通公众服务号
@@ -210,8 +263,13 @@ export default {
       dataRules: {
         productId: [{ validator: checkProduct, trigger: ['blur', 'change'] }],
         period: [{ validator: checkPeriod, trigger: ['blur', 'change'] }],
-        feeRatio: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
+        serviceFeeProportion: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
         validity: [{ validator: checkValidity, trigger: ['blur', 'change'] }],
+        settlementCycle: [{ validator: checkSettlementCycle, trigger: ['blur', 'change'] }],
+        bankCardNum: [{ validator: checkBankCardNum, trigger: ['blur', 'change'] }],
+        bank: [{ validator: checkBank, trigger: ['blur', 'change'] }],
+        weixinPayNum: [{ validator: checkWeixinPayNum, trigger: ['blur', 'change'] }],
+        aliPayNum: [{ validator: checkAliPayNum, trigger: ['blur', 'change'] }],
         adminUsername: [{ validator: checkTel, trigger: ['blur', 'change'] }],
         appId: [{ validator: checkAppId, trigger: ['blur', 'change'] }],
         appSecret: [{ validator: checkAppSecret, trigger: ['blur', 'change'] }],
@@ -255,6 +313,8 @@ export default {
         this.$message.error(res.msg)
       }
     })
+
+    this.getSettlementType()
   },
   computed: {
     dataFormStr: function () {
@@ -393,16 +453,34 @@ export default {
         if (res.status === 'true' && res.info) {
           let dataSource = res.info
           this.dataForm.brandName = dataSource.brandName
+          this.dataForm.companyName = dataSource.companyName
           this.dataForm.contact = dataSource.contact
           this.dataForm.phone = dataSource.phone
           this.dataForm.email = dataSource.email
+          this.dataForm.countryId = dataSource.countryId
+          this.dataForm.provinceCode = dataSource.provinceCode
+          this.dataForm.cityCode = dataSource.cityCode
+          this.dataForm.regionCode = dataSource.regionCode
+          this.dataForm.countryName = dataSource.countryName
+          this.dataForm.provinceName = dataSource.provinceName
+          this.dataForm.cityName = dataSource.cityName
+          this.dataForm.regionName = dataSource.regionName
           this.dataForm.address = dataSource.address
           this.dataForm.weixin = dataSource.weixin
+          this.dataForm.officialWebsite = dataSource.officialWebsite
           this.dataForm.remark = dataSource.remark
           this.dataForm.saleManager = dataSource.saleManager
           this.dataForm.productId = dataSource.productId
           this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
+          this.dataForm.settlementCycle = dataSource.settlementCycle
+          this.dataForm.settlementDate = dataSource.settlementDate
+          this.dataForm.settlementCycleType = dataSource.settlementCycleType
+          this.dataForm.settlementType = dataSource.settlementType
+          this.dataForm.bankCardNum = dataSource.bankCardNum
+          this.dataForm.bank = dataSource.bank
+          this.dataForm.weixinPayNum = dataSource.weixinPayNum
+          this.dataForm.aliPayNum = dataSource.aliPayNum
           this.dataForm.adminUsername = ''
           this.dataForm.productStatus = dataSource.productStatus
           this.dataForm.appId = dataSource.appId
@@ -463,10 +541,21 @@ export default {
     changeCreateStatus(status) {
       this.isCreateAccount = status
       if (!status) {
-        this.dataForm.isOpenWxService = false
-        this.dataForm.isOpenPayment = false
-        this.resetItemField(['productId', 'validity', 'settlementCycle', 'feeRatio', 'adminUsername'], false)
+        this.dataForm.isOpenWxService = 0
+        this.dataForm.isOpenPayment = 0
+        this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'adminUsername', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum'], false)
       }
+    },
+
+    // 获取结算方式类型列表
+    getSettlementType() {
+      settlementTypeSelect().then(res => {
+        if (res.status === 'true') {
+          this.settlementTypeList = res.info
+        } else {
+          this.$message.error('结算方式类型下拉：：' + res.msg)
+        }
+      })
     }
   }
 }

@@ -3,151 +3,257 @@
     <lh-title :title="dataForm.name" :level2="true" @goBack="handleBackList"></lh-title>
     <div class="card-padding card-padding-vertical">
       <el-form label-width="180px" :model="dataForm" ref="dataForm">
-        <!-- 基础信息 -->
-        <h3 class="grid-title">基础信息</h3>
-        <base-info ref="baseInfo" :model-form="dataForm"
-          :error-field="errorField" :error-msg="errorMsg"
-          :has-account="true" @changeCreateStatus="changeCreateStatus"/>
+        <el-row :gutter="40">
+          <!-- 基础信息 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">基础信息</h3>
+            <base-info ref="baseInfo" :model-form="dataForm"
+              :error-field="errorField" :error-msg="errorMsg"
+              :has-account="true" @changeCreateStatus="changeCreateStatus"/>
+          </el-col>
 
-        <!-- 状态管理 -->
-        <h3 class="grid-title">状态管理</h3>
-        <el-form-item label="产品版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
-          <el-select v-model="dataForm.productId" class="width300px" :disabled="!dataForm.productStatus">
-            <el-option v-for="(value, key) in productList" :key="key" :value="parseInt(key)" :label="value"></el-option>
-          </el-select>
-        </el-form-item>
+          <!-- 签约信息 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">签约信息</h3>
+            <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
+              <el-select v-model="dataForm.productId" class="width300px" :disabled="!dataForm.productStatus">
+                <el-option v-for="item in productList" :key="item.id" :value="+item.id" :label="item.name"></el-option>
+              </el-select>
+            </el-form-item>
 
-        <el-form-item label="有效期至" required>
-          <el-form-item prop="validity" ref="validity" class="fl mr20"
-            :rules="dataRules.validity" :required="!dataForm.isPermanent">
-            <el-date-picker
-              v-model="dataForm.validity"
-              :disabled="!!dataForm.isPermanent || !dataForm.productStatus"
-              type="date"
-              placeholder="结束日期"
-              value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions"
-              style="width: 300px">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item class="fl">
-            <el-checkbox v-model="dataForm.isPermanent" :disabled="!dataForm.productStatus"
-              @change="resetItemField('validity', true)" :true-label="1" :false-label="0">永久
-            </el-checkbox>
-          </el-form-item>
-        </el-form-item>
+            <el-form-item label="有效期至" required>
+              <el-form-item prop="validity" ref="validity" class="mb0"
+                :rules="dataRules.validity" :required="!dataForm.isPermanent">
+                <el-date-picker
+                  v-model="dataForm.validity"
+                  :disabled="!!dataForm.isPermanent || !dataForm.productStatus"
+                  type="date"
+                  placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                  :picker-options="pickerOptions"
+                  style="width: 300px">
+                </el-date-picker>
+              </el-form-item>
+              <!--<el-form-item class="fl">-->
+                <!--<el-checkbox v-model="dataForm.isPermanent" :disabled="!dataForm.productStatus"-->
+                  <!--@change="resetItemField('validity', true)" :true-label="1" :false-label="0">永久-->
+                <!--</el-checkbox>-->
+              <!--</el-form-item>-->
+            </el-form-item>
 
-        <el-form-item label="使用控制">
-          <el-tooltip placement="top" content="关闭后微端和web-admin均不可使用">
-            <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
-              @change="changeUseStatus"></el-switch>
-          </el-tooltip>
-        </el-form-item>
+            <el-form-item label="服务费比例" prop="serviceFeeProportion" ref="serviceFeeProportion"
+              :error="errorField === 'serviceFeeProportion' ? errorMsg : ''"
+              :rules="dataRules.serviceFeeProportion" required>
+              <el-input
+                v-model.number.trim="dataForm.serviceFeeProportion"
+                class="width120px"
+                :disabled="!dataForm.productStatus"></el-input>
+              <span class="input-unit">%</span>
+            </el-form-item>
 
-        <!-- 开通资料 -->
-        <h3 class="grid-title">开通资料</h3>
-        <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId" :required="true">
-          <el-input
-            v-model.trim="dataForm.appId"
-            class="width300px"
-            :disabled="!dataForm.productStatus"
-            placeholder="客户微信服务号AppID"></el-input>
-        </el-form-item>
+            <el-form-item label="结算周期" prop="settlementCycle" ref="settlementCycle"
+              :error="errorField === 'settlementCycle' ? errorMsg : ''" required :rules="dataRules.settlementCycle">
+              <el-form-item>
+                <el-radio v-model="dataForm.settlementCycle" :label="1" :disabled="!dataForm.productStatus">
+                  固定日期
+                </el-radio>
+                <span class="input-unit">每月</span>
+                <el-select v-model="dataForm.settlementDate" class="small-input"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 1">
+                  <el-option v-for="i in 31" :key="i + '日'" :label="i + '日'" :value="i">
+                  </el-option>
+                </el-select>
+              </el-form-item>
 
-        <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
-          :rules="dataRules.appSecret" :required="true">
-          <el-input
-            v-model.trim="dataForm.appSecret"
-            class="width300px"
-            :disabled="!dataForm.productStatus"
-            placeholder="客户微信服务号AppSecret"></el-input>
-        </el-form-item>
+              <el-form-item class="mb0">
+                <el-radio v-model="dataForm.settlementCycle" :label="2" :disabled="!dataForm.productStatus"
+                  style="margin-right: 1em">
+                  周期结算
+                </el-radio>
+                <span class="input-unit">每</span>
+                <el-input v-model.number.trim="dataForm.settlementDate" class="small-input"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2"></el-input>
+                <el-select v-model="dataForm.settlementCycleType" class="small-input ml8"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2">
+                  <el-option v-for="item in settlementCycleTypeList" :key="item.name" :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form-item>
 
-        <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
-          :rules="dataRules.jsFile" required>
-          <el-input
-            v-model="dataForm.jsFile"
-            readonly
-            :disabled="!dataForm.productStatus"
-            placeholder='选择后缀名为"txt"的JS接口文件'
-            class="width300px upload-input">
-            <el-upload
-              v-show="!uploadLoading1"
-              :action="jsUploadPath"
-              accept="text/plain"
-              name="jsFile"
-              :multiple="false"
-              :headers="uploadHeaders"
-              :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
-              :show-file-list="false"
-              :on-change="changeInFile"
-              :before-upload="beforeUploadInFile"
-              :on-success="successUploadInFile"
-              :disabled="!dataForm.productStatus"
-              slot="suffix">
-              <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus}]"></span>
-            </el-upload>
-            <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
-          </el-input>
-        </el-form-item>
+            <el-form-item label="结算方式" required>
+              <el-form-item prop="settlementType" ref="settlementType"
+                :error="errorField === 'settlementType' ? errorMsg : ''"
+                :rules="[{required: true, message: '请选择结算方式' }]">
+                <el-select v-model="dataForm.settlementType" class="width100"
+                  :disabled="!dataForm.productStatus">
+                  <el-option v-for="item in settlementTypeList" :key="item.name" :label="'转账至' + item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
 
-        <el-form-item label="开通微信支付功能">
-          <el-tooltip placement="top" content="账户可用时才可以开启支付功能">
-            <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
-              :disabled="!dataForm.productStatus"
-              @change="changePayStatus">
-            </el-switch>
-          </el-tooltip>
-        </el-form-item>
+              <el-form-item prop="weixinPayNum" ref="weixinPayNum" v-show="+dataForm.settlementType === 1"
+                :required="+dataForm.settlementType === 1"
+                :rules="dataRules.weixinPayNum" class="mb0">
+                <el-input v-model.trim="dataForm.weixinPayNum" placeholder="请输入微信号"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementType !== 1"></el-input>
+              </el-form-item>
 
-        <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
-          :rules="dataRules.mchId" :required="!!dataForm.isOpenPayment">
-          <el-input
-            v-model.trim="dataForm.mchId"
-            class="width300px"
-            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
-            placeholder="客户微信支付商号mch_ID"></el-input>
-        </el-form-item>
+              <el-form-item prop="aliPayNum" ref="aliPayNum" v-show="+dataForm.settlementType === 2"
+                :required="+dataForm.settlementType === 2"
+                :rules="dataRules.aliPayNum" class="mb0">
+                <el-input v-model.trim="dataForm.aliPayNum" placeholder="请输入支付宝账号"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementType !== 2"></el-input>
+              </el-form-item>
 
-        <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
-          :rules="dataRules.mchKey" :required="!!dataForm.isOpenPayment">
-          <el-input
-            v-model.trim="dataForm.mchKey"
-            class="width300px"
-            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
-            placeholder="客户微信支付商号API密钥"></el-input>
-        </el-form-item>
+              <el-form-item prop="bankCardNum" ref="bankCardNum" v-show="+dataForm.settlementType === 3"
+                :required="+dataForm.settlementType === 3"
+                :rules="dataRules.bankCardNum">
+                <el-input v-model.trim="dataForm.bankCardNum" placeholder="请输入收款账号"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementType !== 3"></el-input>
+              </el-form-item>
 
-        <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
-          :rules="dataRules.certificate" :required="!!dataForm.isOpenPayment">
-          <el-input
-            v-model="dataForm.certificate"
-            readonly
-            :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
-            placeholder='选择后缀名为"p12"的支付证书文件'
-            class="width300px upload-input">
-            <el-upload
-              v-show="!uploadLoading2"
-              :action="p12UploadPath"
-              accept="application/x-pkcs12"
-              name="payCertFile"
-              :multiple="false"
-              :headers="uploadHeaders"
-              :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
-              :show-file-list="false"
-              :on-change="changeCeFile"
-              :before-upload="beforeUploadCeFile"
-              :on-success="successUploadCeFile"
-              :disabled="!dataForm.isOpenPayment"
-              slot="suffix">
-              <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.isOpenPayment}]"></span>
-            </el-upload>
-            <span v-show="uploadLoading2" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
-          </el-input>
-        </el-form-item>
+              <el-form-item prop="bank" ref="bank" v-show="+dataForm.settlementType === 3"
+                :required="+dataForm.settlementType === 3"
+                :rules="dataRules.bank" class="mb0">
+                <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行"
+                  :disabled="!dataForm.productStatus || +dataForm.settlementType !== 3"></el-input>
+              </el-form-item>
+            </el-form-item>
 
-        <el-form-item>
-          <el-button type="primary" class="width120px" @click="submitDataForm">保存</el-button>
+            <el-form-item label="使用控制">
+              <el-tooltip placement="top" content="关闭后微端和web-admin均不可使用">
+                <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
+                  active-color="#7ED321" inactive-color="#A9ADBC"
+                  @change="changeUseStatus"></el-switch>
+              </el-tooltip>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="40">
+          <!-- 开通公众服务号 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">公众号</h3>
+            <el-form-item label="开通公众服务号">
+              <el-switch v-model="dataForm.isOpenWxService" :active-value="1" :inactive-value="0"
+                active-color="#7ED321" inactive-color="#A9ADBC"
+                :disabled="!isCreateAccount" @change="resetItemField(['appId', 'appSecret', 'jsFile'], false)">
+              </el-switch>
+            </el-form-item>
+
+            <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId" :required="true">
+              <el-input
+                v-model.trim="dataForm.appId"
+                class="width300px"
+                :disabled="!dataForm.productStatus"
+                placeholder="客户微信服务号AppID"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
+              :rules="dataRules.appSecret" :required="true">
+              <el-input
+                v-model.trim="dataForm.appSecret"
+                class="width300px"
+                :disabled="!dataForm.productStatus"
+                placeholder="客户微信服务号AppSecret"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
+              :rules="dataRules.jsFile" required>
+              <el-input
+                v-model="dataForm.jsFile"
+                readonly
+                :disabled="!dataForm.productStatus"
+                placeholder='选择后缀名为"txt"的JS接口文件'
+                class="width300px upload-input">
+                <el-upload
+                  v-show="!uploadLoading1"
+                  :action="jsUploadPath"
+                  accept="text/plain"
+                  name="jsFile"
+                  :multiple="false"
+                  :headers="uploadHeaders"
+                  :data="{appId: dataForm.appId, appSecret: dataForm.appSecret}"
+                  :show-file-list="false"
+                  :on-change="changeInFile"
+                  :before-upload="beforeUploadInFile"
+                  :on-success="successUploadInFile"
+                  :disabled="!dataForm.productStatus"
+                  slot="suffix">
+                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus}]"></span>
+                </el-upload>
+                <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
+              </el-input>
+            </el-form-item>
+          </el-col>
+
+          <!-- 开通微信支付功能 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h3 class="grid-title">微信支付</h3>
+            <el-form-item label="开通微信支付功能">
+              <el-tooltip placement="top" content="账户可用时才可以开启支付功能">
+                <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
+                  active-color="#7ED321" inactive-color="#A9ADBC"
+                  :disabled="!dataForm.productStatus"
+                  @change="changePayStatus">
+                </el-switch>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
+              :rules="dataRules.mchId" :required="!!dataForm.isOpenPayment">
+              <el-input
+                v-model.trim="dataForm.mchId"
+                class="width300px"
+                :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
+                placeholder="客户微信支付商号mch_ID"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
+              :rules="dataRules.mchKey" :required="!!dataForm.isOpenPayment">
+              <el-input
+                v-model.trim="dataForm.mchKey"
+                class="width300px"
+                :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
+                placeholder="客户微信支付商号API密钥"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
+              :rules="dataRules.certificate" :required="!!dataForm.isOpenPayment">
+              <el-input
+                v-model="dataForm.certificate"
+                readonly
+                :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
+                placeholder='选择后缀名为"p12"的支付证书文件'
+                class="width300px upload-input">
+                <el-upload
+                  v-show="!uploadLoading2"
+                  :action="p12UploadPath"
+                  accept="application/x-pkcs12"
+                  name="payCertFile"
+                  :multiple="false"
+                  :headers="uploadHeaders"
+                  :data="{mchId: dataForm.mchId, key: dataForm.mchKey}"
+                  :show-file-list="false"
+                  :on-change="changeCeFile"
+                  :before-upload="beforeUploadCeFile"
+                  :on-success="successUploadCeFile"
+                  :disabled="!dataForm.isOpenPayment"
+                  slot="suffix">
+                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.isOpenPayment}]"></span>
+                </el-upload>
+                <span v-show="uploadLoading2" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label-width="0" class="mt60">
+          <el-button class="width100px" @click="handleBackList">取消</el-button>
+          <el-button type="primary" class="width100px" @click="submitDataForm">保存</el-button>
         </el-form-item>
       </el-form>
 
@@ -226,6 +332,8 @@
       // 关闭使用时置灰产品和有效期控件并清除校验
       changeUseStatus(currStatus) {
         this.hasChangeAccountStatus = true
+        this.dataForm.isOpenWxService = 0
+        this.dataForm.isOpenPayment = 0
         if (currStatus === 0) {
           this.resetItemField(['productId', 'validity', 'appId', 'appSecret', 'jsFile'])
           this.hasChangeAccount = false
@@ -287,12 +395,19 @@
           // 或基础信息发生了修改
           let clientObj = {
             id: this.clientId,
-            name: this.dataForm.name,
+            merchantId: this.dataForm.merchantId,
+            companyName: this.dataForm.companyName,
+            brandName: this.dataForm.brandName,
             contact: this.dataForm.contact,
             phone: this.dataForm.phone,
             email: this.dataForm.email,
-            address: this.dataForm.address,
             weixin: this.dataForm.weixin,
+            officialWebsite: this.dataForm.officialWebsite,
+            countryId: this.dataForm.countryId,
+            provinceCode: this.dataForm.provinceCode,
+            cityCode: this.dataForm.cityCode,
+            regionCode: this.dataForm.regionCode,
+            address: this.dataForm.address,
             remark: this.dataForm.remark,
             saleManager: this.dataForm.saleManager
           }
@@ -335,9 +450,28 @@
           productId: this.dataForm.productId,
           productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent,
+          serviceFeeProportion: this.dataForm.serviceFeeProportion,
+          settlementCycle: this.dataForm.settlementCycle,
+          settlementDate: this.dataForm.settlementDate,
+          settlementCycleType: this.dataForm.settlementCycleType,
+          settlementType: this.dataForm.settlementType,
           appId: this.dataForm.appId,
           appSecret: this.dataForm.appSecret,
           jsFile: this.dataForm.jsFile
+        }
+        switch (+this.dataForm.settlementType) {
+          case 1:
+            accountObj.weixinPayNum = this.dataForm.weixinPayNum
+            break
+          case 2:
+            accountObj.aliPayNum = this.dataForm.aliPayNum
+            break
+          case 3:
+            accountObj.bankCardNum = this.dataForm.bankCardNum
+            accountObj.bank = this.dataForm.bank
+            break
+          default:
+            break
         }
         setAccountStatus({
           clientId: this.clientId,
@@ -480,6 +614,17 @@
     }
     .el-upload {
       display: block;
+    }
+    .input-unit {
+      margin-left: 12px;
+      vertical-align: middle;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+    .small-input {
+      width: 80px;
     }
   }
 </style>
