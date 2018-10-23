@@ -11,7 +11,6 @@
   .ql-align-right {
     text-align: right;
   }
-
   .ql-editor {
     padding-left: 20px;
     padding-right: 20px;
@@ -70,7 +69,7 @@
       font-style: normal;
       font-size: 14px;
       font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-      padding-top: 28px;
+      padding-top: 20px;
       padding-left: 113px;
     }
 
@@ -110,6 +109,10 @@
     font-size: 16px !important;
     margin-top: 22px !important;
     line-height: 28px !important;
+
+    border-left: 4px solid #ccc;
+    margin-top: 5px;
+    padding-left: 16px;
   }
   .hr {
     height: 1px;
