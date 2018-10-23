@@ -85,20 +85,45 @@
                     </el-select>
                   </el-form-item>
 
-                  <el-form-item>
-                    <el-radio v-model="dataForm.settlementCycle" label="2" :disabled="!isCreateAccount">
+                  <el-form-item class="mb0">
+                    <el-radio v-model="dataForm.settlementCycle" label="2" :disabled="!isCreateAccount"
+                      style="margin-right: 1em">
                       周期结算
                     </el-radio>
                     <span class="input-unit">每</span>
                     <el-input v-model.number.trim="dataForm.settlementDate" class="small-input"
-                      :disabled="!isCreateAccount || +dataForm.settlementCycle !== 2"
-                      style="margin-left: 1em"></el-input>
-                    <el-select v-model="dataForm.settlementCycleType" class="small-input"
+                      :disabled="!isCreateAccount || +dataForm.settlementCycle !== 2"></el-input>
+                    <el-select v-model="dataForm.settlementCycleType" class="small-input ml8"
                       :disabled="!isCreateAccount || +dataForm.settlementCycle !== 2">
                       <el-option v-for="item in settlementCycleTypeList" :key="item.name" :label="item.name"
                         :value="item.id">
                       </el-option>
                     </el-select>
+                  </el-form-item>
+                </el-form-item>
+
+                <el-form-item label="结算方式" :required="isCreateAccount">
+                  <el-form-item prop="settlementType" ref="settlementType"
+                    :error="errorField === 'settlementType' ? errorMsg : ''"
+                    :rules="[{required: `isCreateAccount`, message: '请选择结算方式' }]">
+                    <el-select v-model="dataForm.settlementType" class="width100"
+                      :disabled="!isCreateAccount">
+                      <el-option v-for="item in settlementTypeList" :key="item.name" :label="'转账至' + item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <el-form-item prop="bankCardNum" :required="isCreateAccount && dataForm.settlementType === 3"
+                    :rules="[{ message: '收款账号不能为空', trigger: ['blur', 'change'] }]">
+                    <el-input v-model.trim="dataForm.bankCardNum" placeholder="请输入收款账号"
+                      :disabled="!isCreateAccount || +dataForm.settlementType !== 3"></el-input>
+                  </el-form-item>
+
+                  <el-form-item prop="bank" :required="isCreateAccount && dataForm.settlementType === 3"
+                    :rules="[{ message: '开户行不能为空', trigger: ['blur', 'change'] }]" class="mb0">
+                    <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行"
+                      :disabled="!isCreateAccount || +dataForm.settlementType !== 3"></el-input>
                   </el-form-item>
                 </el-form-item>
 

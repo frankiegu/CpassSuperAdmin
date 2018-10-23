@@ -1,5 +1,6 @@
 import { PHONEREG, API_PATH } from '@/config/env'
 import { productSelect, clientDetail, checkExistAccount } from '@/service'
+import { settlementTypeSelect } from '@/service/common'
 
 export default {
   data () {
@@ -155,6 +156,8 @@ export default {
         id: 3,
         name: '天'
       }],
+      // 结算方式类型
+      settlementTypeList: [],
       uploadHeaders: { token: sessionStorage.getItem('token') },
       jsUploadPath: API_PATH + '/supervisor/client/uploadJsFile',
       p12UploadPath: API_PATH + '/supervisor/client/uploadPayCertFile',
@@ -191,6 +194,9 @@ export default {
         settlementCycle: '', // 结算周期 1-固定日期 2-周期结算
         settlementDate: 1, // 日期
         settlementCycleType: 1, // 周期单位
+        settlementType: 3, // 结算方式
+        bankCardNum: '', // 银行账号
+        bank: '', // 开户行
         adminUsername: '',
 
         // 开通公众服务号
@@ -255,6 +261,8 @@ export default {
         this.$message.error(res.msg)
       }
     })
+
+    this.getSettlementType()
   },
   computed: {
     dataFormStr: function () {
@@ -467,6 +475,27 @@ export default {
         this.dataForm.isOpenPayment = false
         this.resetItemField(['productId', 'validity', 'settlementCycle', 'feeRatio', 'adminUsername'], false)
       }
+    },
+
+    // 获取结算方式类型列表
+    getSettlementType() {
+      this.settlementTypeList = [{
+        id: 1,
+        name: '微信'
+      }, {
+        id: 2,
+        name: '支付宝'
+      }, {
+        id: 3,
+        name: '银行卡'
+      }]
+      settlementTypeSelect().then(res => {
+        if (res.status === 'true') {
+          this.settlementTypeList = res.info
+        } else {
+          this.$message.error('结算方式类型下拉：：' + res.msg)
+        }
+      })
     }
   }
 }

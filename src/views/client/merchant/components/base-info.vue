@@ -71,7 +71,7 @@
           </el-col>
           <el-col :xs="18" :sm="18" :md="18" :lg="18" :xl="18">
             <el-cascader :options="cityTree" v-model="city" :props="cityProps" @change="changeCity" filterable
-              placeholder="请选择城市" class="width100">
+              placeholder="请选择城市" class="width100" :disabled="!modelForm.countryId">
             </el-cascader>
           </el-col>
         </el-row>
@@ -190,11 +190,11 @@
     },
     components: {},
     mounted() {
-      // this.getMerchantList()
-      // this.getCountryList()
-      // if (this.modelForm.countryId) {
-      //   this.getRegionList()
-      // }
+      this.getMerchantList()
+      this.getCountryList()
+      if (this.modelForm.countryId) {
+        this.getRegionList()
+      }
     },
     watch: {},
     computed: {},
