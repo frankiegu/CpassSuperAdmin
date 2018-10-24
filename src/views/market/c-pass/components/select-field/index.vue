@@ -220,18 +220,18 @@ export default {
       switch (this.insertType) {
         case 'store':
         case 'field':
-          let repeatIdxs = []
+          let repeatIdxs = new Map()
 
           if (this.dialogData.addArr.length > 1) {
             if (this.insertType == 'store') {
               this.dialogData.addArr.forEach((itm, idx) => {
                 this.dialogData.addArr.forEach((list, i) => {
                   if (itm.storeId == list.storeId && idx != i) {
-                    if (!repeatIdxs.includes(idx)) {
-                      repeatIdxs.push(idx)
+                    if (!repeatIdxs.has(idx)) {
+                      repeatIdxs.set(idx, itm.storeId)
                     }
-                    if (!repeatIdxs.includes(i)) {
-                      repeatIdxs.push(i)
+                    if (!repeatIdxs.has(i)) {
+                      repeatIdxs.set(i, list.storeId)
                     }
                     // console.log('log: ', itm.storeId, list.storeId, repeatIdxs);
                   }
@@ -241,18 +241,18 @@ export default {
               this.dialogData.addArr.forEach((itm, idx) => {
                 this.dialogData.addArr.forEach((list, i) => {
                   if (itm.fieldId == list.fieldId && idx != i) {
-                    if (!repeatIdxs.includes(idx)) {
-                      repeatIdxs.push(idx)
+                    if (!repeatIdxs.has(idx)) {
+                      repeatIdxs.set(idx, itm.fieldId)
                     }
-                    if (!repeatIdxs.includes(i)) {
-                      repeatIdxs.push(i)
+                    if (!repeatIdxs.has(i)) {
+                      repeatIdxs.set(i, list.fieldId)
                     }
                   }
                 })
               })
             }
 
-            if (repeatIdxs.length) {
+            if (repeatIdxs.size) {
               let tipText
               if (this.insertType == 'store') {
                 tipText = '空间'
@@ -262,17 +262,23 @@ export default {
                 this.repeatTip = '场地名重复：'
               }
 
-              for (let i = 0, len = repeatIdxs.length; i < len; i++) {
-                if (repeatIdxs[i - 1] > repeatIdxs[i]) {
-                  this.repeatTip += '; '
-                } else {
-                  if (i > 0) {
+              let arr = [...repeatIdxs.values()]
+              let keys = [...repeatIdxs.keys()]
+
+              for (let i = 0, len = arr.length; i < len; i++) {
+                // console.log('repeatIdxs-------map', arr[i - 1], arr[i]);
+
+                if (i > 0) {
+                  if (arr[i - 1] != arr[i]) {
+                    this.repeatTip += '; '
+                  } else {
                     this.repeatTip += ','
                   }
                 }
 
-                this.repeatTip += (tipText + (repeatIdxs[i] + 1))
+                this.repeatTip += (tipText + (keys[i] + 1))
               }
+
               this.repeatTipStatus = true
             } else {
               this.repeatTipStatus = false
