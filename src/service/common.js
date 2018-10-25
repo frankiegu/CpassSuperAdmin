@@ -19,3 +19,7 @@ export const storeList = (obj) => fetch(API_PATH + '/supervisor/store/list', obj
 
 // webSocket信息流
 export const informList = (obj) => fetch(API_PATH + '/manage/inform/list', obj, 'GET')
+
+// 获取管理员拥有的资源
+export const getByAdminUserId = (obj) => fetch(API_PATH + '/supervisor/supervisor/getResource', obj, 'GET')
+

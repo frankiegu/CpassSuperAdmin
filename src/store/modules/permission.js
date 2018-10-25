@@ -1,5 +1,5 @@
 import { constantRouterMap } from '@/router/src/routes'
-// import {getByAdminUserId} from '@/service'
+import { getByAdminUserId } from '@/service'
 // import {hasPermissions} from '@/config/utils'
 
 const permission = {
@@ -31,22 +31,22 @@ const permission = {
         console.log('this is a permission resource list')
         resolve()
 
-        // getByAdminUserId().then(res => {
-        //   if (res.status === 'true') {
-        //     const data = []
+        getByAdminUserId().then(res => {
+          if (res.status === 'true') {
+            const data = []
 
-        //     for (var item of res.info) {
-        //       data.push(item.url)
-        //     }
-        //     commit('SET_PERMISSION', data)
+            for (var item of res.info) {
+              data.push(item.url)
+            }
+            commit('SET_PERMISSION', data)
 
-        //     resolve(res)
-        //   } else {
-        //     reject(res.msg)
-        //   }
-        // }).catch(error => {
-        //   reject(error)
-        // })
+            resolve(res)
+          } else {
+            reject(res.msg)
+          }
+        }).catch(error => {
+          reject(error)
+        })
       })
     }
   }
