@@ -181,6 +181,7 @@ export default {
     }
     return {
       clientId: this.$route.query.id,
+      spaceId: '',
       hasChangeForm: false,
       pickerOptions: {
         disabledDate(time) {
@@ -477,6 +478,7 @@ export default {
           this.dataForm.officialWebsite = dataSource.officialWebsite
           this.dataForm.remark = dataSource.remark
           this.dataForm.saleManager = dataSource.saleManager
+
           this.dataForm.productId = dataSource.productId
           this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
           this.dataForm.isPermanent = dataSource.isPermanent
@@ -496,14 +498,18 @@ export default {
           this.dataForm.aliPayNum = dataSource.aliPayNum
           this.dataForm.adminUsername = ''
           this.dataForm.productStatus = dataSource.productStatus
+
+          this.dataForm.isOpenWxService = dataSource.swStatus || 0
           this.dataForm.appId = dataSource.appId
           this.dataForm.appSecret = dataSource.appSecret
           this.dataForm.jsFile = dataSource.jsFile
-          this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus
+
+          this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus || 0
           this.dataForm.spaceWeixinPayId = dataSource.spaceWeixinPayId
           this.dataForm.mchId = dataSource.mchId
           this.dataForm.mchKey = dataSource.mchKey
           this.dataForm.certificate = dataSource.payCertFileName
+          this.spaceId = dataSource.spaceId
           // 获取详情后再监听表单的变化
           const initialForm = this.dataFormStr
           const initInfo = this.infoStr
@@ -568,7 +574,8 @@ export default {
         spaceId: spaceId,
         appId: this.dataForm.appId,
         appSecret: this.dataForm.appSecret,
-        jsFile: this.dataForm.jsFile
+        jsFile: this.dataForm.jsFile,
+        status: this.dataForm.isOpenWxService
       }
       let res = await openOfficialAccount(officialObj)
       if (res.status === 'true') {

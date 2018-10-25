@@ -325,14 +325,10 @@
     props: {},
     components: { baseInfo },
     mounted() {},
-    watch: {
-      'hasChangePay'(val, old) {
-        console.log(val, old)
-      }
-    },
+    watch: {},
     computed: {
       hasUpdateComplete: function () {
-        return this.hasUpdateAccount && this.hasUpdateInfo && this.hasUpdatePay
+        return this.hasUpdateAccount && this.hasUpdateInfo && this.hasUpdatePay && this.hasUpdateOffice
       }
     },
     filters: {},
@@ -390,71 +386,83 @@
         })
       },
       // 点击弹窗确定按钮更新客户资料
-      handleUpdateClient() {
+      // 表单根据新增时分为四个部分：基础信息、账户信息、公众号信息、支付信息
+      async handleUpdateClient() {
         this.updateLoading = true
-        // 表单根据新增时分为四个部分：基础信息、账户信息、公众号信息、支付信息
-        // 若基础信息未发生修改
-        if (!this.hasChangeInfo) {
-          this.hasUpdateInfo = true
-          // 账户信息也未发生修改
-          if (!this.hasChangeAccount && !this.hasChangeAccountStatus) {
-            this.hasUpdateAccount = true
-            // 公众号信息也未发生修改
-            if (!this.hasChangeOffice && !this.hasChangeOfficeStatus) {
-              this.hasUpdateOffice = true
-              // 那支付信息一定发生了修改
-              this.updatePay()
-            } else {
-              // TODO（jingyi）或公众号信息发生了修改（新开通或更新）
-              this.handleOpenOfficial()
-            }
-          } else {
-            // 或账户信息发生了修改
-            this.updateAccount()
-          }
+        // 如果基础信息发生了修改
+        if (this.hasChangeInfo) {
+          this.updateClientInfo()
         } else {
-          // 或基础信息发生了修改
-          let clientObj = {
-            id: this.clientId,
-            merchantId: this.dataForm.merchantId,
-            companyName: this.dataForm.companyName,
-            brandName: this.dataForm.brandName,
-            contact: this.dataForm.contact,
-            phone: this.dataForm.phone,
-            email: this.dataForm.email,
-            weixin: this.dataForm.weixin,
-            officialWebsite: this.dataForm.officialWebsite,
-            countryId: this.dataForm.countryId,
-            provinceCode: this.dataForm.provinceCode,
-            cityCode: this.dataForm.cityCode,
-            regionCode: this.dataForm.regionCode,
-            address: this.dataForm.address,
-            remark: this.dataForm.remark,
-            saleManager: this.dataForm.saleManager
-          }
-          updateClientInfo(clientObj).then(res => {
-            if (res.status === 'true') {
-              this.hasUpdateInfo = true
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
-            } else {
-              this.hasUpdateInfo = false
-              this.$message.error(res.msg)
+          this.hasUpdateInfo = true
+          if (this.hasUpdateComplete) this.handleUpdateComplete()
+        }
+
+        // 如果账户信息发生了修改
+        if (this.hasChangeAccount || this.hasChangeAccountStatus) {
+          await this.updateAccount()
+
+          // 如果公众号信息发生了修改
+          if (this.hasChangeOffice || this.hasChangeOfficeStatus) {
+            let hasOpenOfficial = await this.handleOpenOfficial(this.spaceId)
+            if (hasOpenOfficial) {
+              this.hasUpdateOffice = true
               this.dialogVisible = false
               this.updateLoading = false
-              if (res.info) {
-                this.errorField = res.info
-                this.errorMsg = res.msg
-                this.$refs['baseInfo'].$refs[res.info].$children[0].$refs.input.focus()
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+
+              // 如果支付信息发生了修改
+              if (this.hasChangePay || this.hasChangePayStatus) {
+                this.updatePay()
+              } else {
+                this.hasUpdatePay = true
+                if (this.hasUpdateComplete) this.handleUpdateComplete()
               }
+            } else {
+              this.hasUpdateOffice = false
+              this.dialogVisible = false
+              this.updateLoading = false
             }
-          })
-          // 或账户信息发生了修改
-          if (this.hasChangeAccount || this.hasChangeAccountStatus) {
-            this.updateAccount()
           } else {
-            this.hasUpdateAccount = true
+            this.hasUpdateOffice = true
             if (this.hasUpdateComplete) this.handleUpdateComplete()
 
+            // 如果支付信息发生了修改
+            if (this.hasChangePay || this.hasChangePayStatus) {
+              this.updatePay()
+            } else {
+              this.hasUpdatePay = true
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+            }
+          }
+        } else {
+          this.hasUpdateAccount = true
+
+          // 如果公众号信息发生了修改
+          if (this.hasChangeOffice || this.hasChangeOfficeStatus) {
+            let hasOpenOfficial = await this.handleOpenOfficial(this.spaceId)
+            if (hasOpenOfficial) {
+              this.hasUpdateOffice = true
+              this.dialogVisible = false
+              this.updateLoading = false
+              if (this.hasUpdateComplete) this.handleUpdateComplete()
+
+              // 如果支付信息发生了修改
+              if (this.hasChangePay || this.hasChangePayStatus) {
+                this.updatePay()
+              } else {
+                this.hasUpdatePay = true
+                if (this.hasUpdateComplete) this.handleUpdateComplete()
+              }
+            } else {
+              this.hasUpdateOffice = false
+              this.dialogVisible = false
+              this.updateLoading = false
+            }
+          } else {
+            this.hasUpdateOffice = true
+            if (this.hasUpdateComplete) this.handleUpdateComplete()
+
+            // 如果支付信息发生了修改
             if (this.hasChangePay || this.hasChangePayStatus) {
               this.updatePay()
             } else {
@@ -464,8 +472,45 @@
           }
         }
       },
-      // TODO（jingyi）更新产品信息（拆解账户信息和公众号信息）
-      updateAccount() {
+
+      // 更新基础信息
+      async updateClientInfo() {
+        let clientObj = {
+          id: this.clientId,
+          merchantId: this.dataForm.merchantId,
+          companyName: this.dataForm.companyName,
+          brandName: this.dataForm.brandName,
+          contact: this.dataForm.contact,
+          phone: this.dataForm.phone,
+          email: this.dataForm.email,
+          weixin: this.dataForm.weixin,
+          officialWebsite: this.dataForm.officialWebsite,
+          countryId: this.dataForm.countryId,
+          provinceCode: this.dataForm.provinceCode,
+          cityCode: this.dataForm.cityCode,
+          regionCode: this.dataForm.regionCode,
+          address: this.dataForm.address,
+          remark: this.dataForm.remark,
+          saleManager: this.dataForm.saleManager
+        }
+        let res = await updateClientInfo(clientObj)
+        if (res.status === 'true') {
+          this.hasUpdateInfo = true
+          if (this.hasUpdateComplete) this.handleUpdateComplete()
+        } else {
+          this.hasUpdateInfo = false
+          this.$message.error(res.msg)
+          this.dialogVisible = false
+          this.updateLoading = false
+          if (res.info) {
+            this.errorField = res.info
+            this.errorMsg = res.msg
+            this.$refs['baseInfo'].$refs[res.info].$children[0].$refs.input.focus()
+          }
+        }
+      },
+      // 先更新产品使用状态， 再更新产品信息
+      async updateAccount() {
         let accountObj = {
           clientId: this.clientId,
           productId: this.dataForm.productId,
@@ -474,10 +519,7 @@
           serviceFeeProportion: this.dataForm.serviceFeeProportion,
           settlementCycle: this.dataForm.settlementCycle,
           settlementCycleType: this.dataForm.settlementCycleType,
-          settlementType: this.dataForm.settlementType,
-          appId: this.dataForm.appId,
-          appSecret: this.dataForm.appSecret,
-          jsFile: this.dataForm.jsFile
+          settlementType: this.dataForm.settlementType
         }
         accountObj.settlementDate = +this.dataForm.settlementCycle === 1
           ? this.dataForm.settlementDate1 : this.dataForm.settlementDate2
@@ -495,44 +537,36 @@
           default:
             break
         }
-        setAccountStatus({
+        let resAccountStatus = await setAccountStatus({
           clientId: this.clientId,
           status: this.dataForm.productStatus,
           productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent
-        }).then(res => {
-          if (res.status === 'true') {
-            // 1.更新账户使用状态成功后，关闭使用则无需更新产品信息
-            // 启用并且产品信息有更改，则更新产品信息
-            if (this.dataForm.productStatus === 1 && this.hasChangeAccount) {
-              updateAccount(accountObj).then(resp => {
-                if (resp.status === 'true') {
-                  this.hasUpdateAccount = true
-                  if (this.hasUpdateComplete) this.handleUpdateComplete()
-                } else {
-                  this.hasUpdateAccount = false
-                  this.$message.error(resp.msg)
-                }
-              })
-            } else {
+        })
+        if (resAccountStatus.status === 'true') {
+          // 1.更新账户使用状态成功后，关闭使用则无需更新产品信息
+          // 启用并且产品信息有更改，则更新产品信息
+          if (this.dataForm.productStatus === 1 && this.hasChangeAccount) {
+            let resAccount = await updateAccount(accountObj)
+            if (resAccount.status === 'true') {
               this.hasUpdateAccount = true
               if (this.hasUpdateComplete) this.handleUpdateComplete()
-            }
-            // 2.支付信息或支付状态发生了修改
-            if (this.hasChangePay || this.hasChangePayStatus) {
-              this.updatePay()
+              return resAccount
             } else {
-              this.hasUpdatePay = true
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
+              this.hasUpdateAccount = false
+              this.$message.error(resAccount.msg)
             }
           } else {
-            // 更新账户使用状态失败
-            this.hasUpdateAccount = false
-            this.$message.error(res.msg)
-            this.dialogVisible = false
-            this.updateLoading = false
+            this.hasUpdateAccount = true
+            if (this.hasUpdateComplete) this.handleUpdateComplete()
           }
-        })
+        } else {
+          // 更新账户使用状态失败
+          this.hasUpdateAccount = false
+          this.$message.error(resAccountStatus.msg)
+          this.dialogVisible = false
+          this.updateLoading = false
+        }
       },
       // 更新或开通支付
       updatePay() {

@@ -189,10 +189,12 @@
     },
     components: {},
     mounted() {
-      this.getMerchantList()
-      this.getCountryList()
-      if (this.modelForm.countryId) {
-        this.getRegionList()
+      if (this.infoType !== 'detail') {
+        this.getMerchantList()
+        this.getCountryList()
+        if (this.modelForm.countryId) {
+          this.getRegionList()
+        }
       }
     },
     watch: {

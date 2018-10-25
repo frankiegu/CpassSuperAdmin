@@ -592,13 +592,13 @@
   }
   span.el-icon-success {
     display: block;
-    margin: 10px auto;
+    margin: 0 auto 10px;
     font-size: 30px;
     color: $theme-blue;
   }
   .success-tip {
     font-size: 18px;
-    margin-bottom: 12px;
+    margin: 12px auto;
   }
 }
 
