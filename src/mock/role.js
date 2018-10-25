@@ -83,21 +83,33 @@ export const getScheduleList = () => {
   }
 }
 
-let spaceList = []
+let roleList = []
 for (let i = 0; i < count; i++) {
-  spaceList.push(Mock.mock({
-    storeId: i + 4,
-    storeName: Mock.Random.csentence(5, 30),
-    storeImg: 'http://shared-office.oss-cn-shenzhen.aliyuncs.com/shared-office/img/20180725/20180725161020862mxD.jpeg',
-    orderCount: Mock.Random.integer(1, 1220)
+  roleList.push(Mock.mock({
+    'id': i + 4,
+    'roleName': Mock.Random.ctitle(),
+    'roleDesc': Mock.Random.csentence(5, 30),
+    'supervisorCount': Mock.Random.integer(1, 50),
+    'status|1': [0, 1]
   }))
 }
 
-export const getSpaceList = () => {
+export const getRoleList = () => {
   return {
     'status': 'true',
     'code': '200',
     'msg': null,
-    'info': spaceList
+    'info': {
+      'name': null,
+      'page': {
+        'pageNum': 1,
+        'pageSize': 10,
+        'startRow': 0,
+        'endRow': 10,
+        'total': 38,
+        'pages': 4,
+        'result': roleList
+      }
+    }
   }
 }

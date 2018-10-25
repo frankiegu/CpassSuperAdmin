@@ -32,17 +32,17 @@
         v-loading="tableLoading"
         class="width100" border>
 
-        <el-table-column label="角色名称" prop="name" align="center"></el-table-column>
-        <el-table-column label="已分配用户" prop="userList" align="center"></el-table-column>
+        <el-table-column label="角色名称" prop="roleName" align="center"></el-table-column>
+        <el-table-column label="已分配用户" prop="supervisorCount" align="center"></el-table-column>
         <el-table-column label="可用状态" prop="status" align="center" width="100">
           <template slot-scope="scope">
-            <el-tag type="success" size="mini">{{scope.row.status}}</el-tag>
-            <!--<el-tag type="danger" size="mini">未开放</el-tag>-->
+            <el-tag v-if="scope.row.status === 1" type="success" size="mini">可用</el-tag>
+            <el-tag v-else type="danger" size="mini">不可用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="描述" prop="desc" align="left">
+        <el-table-column label="描述" prop="roleDesc" align="left">
           <template slot-scope="scope">
-            {{scope.row.desc || '-'}}
+            {{scope.row.roleDesc || '-'}}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -54,8 +54,9 @@
                 编辑
               </router-link>
             </el-button>
-            <el-button type="text" @click="handleChangeUseState('禁用')">禁用</el-button>
-            <el-button type="text" @click="handleChangeUseState('删除')">删除</el-button>
+            <el-button v-if="scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row.id)">禁用</el-button>
+            <el-button v-else type="text" @click="handleChangeUseState(2, scope.row.id)">恢复</el-button>
+            <el-button type="text" @click="handleChangeUseState(3, scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,7 +82,6 @@
     mixins: [tableMixins, indexMixins],
     data () {
       return {
-
       }
     }
   }
