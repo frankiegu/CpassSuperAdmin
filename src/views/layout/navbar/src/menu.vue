@@ -23,17 +23,17 @@
           <span class="fl user-name ml8">酷雷托</span>
         </template>
 
-        <el-menu-item class="a-link" index="2-1" disabled>
-          <!-- <router-link class="a-link" to="/profile">
-            <lh-svg class="mr8" icon-class="icon-custom-user" />个人信息
-          </router-link> -->
-          个人信息
+        <el-menu-item class="a-link" index="2-1">
+          <router-link to="/system/profile">
+            个人信息
+          </router-link>
+          <!--个人信息-->
         </el-menu-item>
 
-        <el-menu-item class="a-link" index="2-2" disabled>
-          <!-- <lh-svg icon-class="icon-setting1"></lh-svg> -->
-          设置
-        </el-menu-item>
+        <!--<el-menu-item class="a-link" index="2-2" disabled>-->
+          <!--&lt;!&ndash; <lh-svg icon-class="icon-setting1"></lh-svg> &ndash;&gt;-->
+          <!--设置-->
+        <!--</el-menu-item>-->
 
         <el-menu-item index="2-3" @click="logout" class="a-link">
           <!-- <lh-svg icon-class="icon-logout"></lh-svg> -->
