@@ -1,4 +1,5 @@
 import { checkPhone } from '@/config/utils'
+import { getUserList, openUser, closeUser, deleteUser } from '@/service'
 
 export default {
   data () {
@@ -28,7 +29,7 @@ export default {
       formData: {
         userName: '',
         realName: '',
-        rolaName: ''
+        roleId: ''
       },
       userForm: {
         id: '',
@@ -80,18 +81,32 @@ export default {
   },
   props: {},
   components: {},
-  mounted() {},
+  mounted() {
+    // this.getPageData()
+  },
   watch: {},
   computed: {},
   methods: {
-    handleDeleteUser (index, item) {
-      this.$confirm('确认删除此用户？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteUser(index)
-      }).catch(() => {})
+    // 获取用户列表
+    async getPageData(page) {
+      this.currentPage = page || this.currentPage
+      const params = {
+        username: this.formData.userName,
+        name: this.formData.realName,
+        role: this.formData.roleId,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+      const res = await getUserList(params)
+      if (res.status === 'true') {
+        const data = res.info.page
+        if (data) {
+          this.tableData = data.result
+          this.pageTotal = data.total
+        }
+      } else {
+        this.setMsg('error', res.msg)
+      }
     },
     handleChangeUseState (index, action) {
       this.$confirm(`确认${action}此用户？`, '提示', {
@@ -99,16 +114,30 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.changeUseState(index, action)
+        if (action === '删除') {
+          deleteUser({ id: this.tableData[index].id })
+            .then(res => {
+              if (res.status === 'true') {
+                this.getPageData()
+              } else {
+                this.setMsg('error', res.msg)
+              }
+            }).catch(() => {})
+        } else {
+          this.changeUseState(index, action)
+        }
       }).catch(() => {})
     },
-    deleteUser(index) {
-      console.log('删除了该用户！')
-      this.tableData.splice(index, 1)
-    },
     changeUseState(index, action) {
-      console.log('改变了该用户状态！')
-      this.tableData[index].useState = action === '禁用' ? '禁用' : '可用'
+      let actionMethod = action === '禁用' ? closeUser : openUser
+      actionMethod({ id: this.tableData[index].id })
+        .then(res => {
+          if (res.status === 'true') {
+            this.tableData[index].useState = action === '禁用' ? '禁用' : '可用'
+          } else {
+            this.setMsg('error', res.msg)
+          }
+        }).catch(() => {})
     },
     setUser (item) {
       if (item) {

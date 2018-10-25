@@ -36,7 +36,7 @@
 
         <el-form-item>
           <el-select
-            v-model="formData.rolaName"
+            v-model="formData.roleId"
             @change="getPageData(1)"
             placeholder="请选择角色"
             class="width150px"
@@ -160,7 +160,7 @@
         </el-table-column>
         <el-table-column label="描述" align="center">
           <template slot-scope="scope">
-              {{ scope.row.description ? scope.row.description : '-' }}
+              {{ scope.row.description || '-' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" prop="contact" align="center" width="150">
@@ -168,7 +168,7 @@
             <el-button @click="setUser(scope.row)" type="text">编辑</el-button>
             <el-button v-if="scope.row.useState === '可用'" @click="handleChangeUseState(scope.$index, '禁用')" type="text">禁用</el-button>
             <el-button v-else @click="handleChangeUseState(scope.$index, '恢复')" type="text">恢复</el-button>
-            <el-button @click="handleDeleteUser(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button @click="handleChangeUseState(scope.$index, '删除')" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
