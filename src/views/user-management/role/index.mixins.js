@@ -26,8 +26,11 @@ export default {
       }
       const res = await roleList(params)
       if (res.status === 'true') {
-        if (res.info.page) {
-          this.tableData = res.info.page.result
+        const data = res.info.page
+        if (data) {
+          this.tableData = data.result
+          this.pageTotal = data.total
+          this.tableData = data.result
         }
       } else {
         this.setMsg('error', res.msg)
