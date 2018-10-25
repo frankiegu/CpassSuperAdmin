@@ -170,7 +170,7 @@
             v-if="(dialogData.addArr.length === (idx + 1)) && idx < 4"
             icon="el-icon-circle-plus"
             type="primary"
-            class="add-store">新增空间数</el-button>
+            class="add-store">新增{{ insertType === 'store' ? '空间数' : '场地数' }}</el-button>
         </div>
       </div>
     </el-form>
