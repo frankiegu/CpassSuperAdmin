@@ -69,6 +69,7 @@
             <span v-if="scope.row.status === 10">待审批</span>
             <span v-else-if="scope.row.status === 20">已通过</span>
             <span v-else-if="scope.row.status === 30">已驳回</span>
+            <span v-else-if="scope.row.status === 40">已退款</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="left">

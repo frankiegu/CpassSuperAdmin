@@ -2,7 +2,7 @@
   <!-- 添加核销点弹窗 -->
   <el-dialog class="add-wop-dialog" title="编辑核销点" :lock-scroll="false" :visible.sync="isVisible"
     :before-close="closeDialog" width="500px">
-    <el-form :model="formData" label-width="100px" :rules="formRules" ref="addWop">
+    <el-form :model="formData" label-width="100px" :rules="formRules" ref="editWop">
       <el-form-item label="核销点名称" prop="name">
         <el-input v-model.trim="formData.name" placeholder="请输入核销点名称"></el-input>
       </el-form-item>
@@ -36,6 +36,7 @@
       const checkUnique = (rule, value, callback) => {
         if (value) {
           if (value === this.initialName) {
+            callback()
           } else {
             checkStationName({ name: value }).then(res => {
               if (res.status === 'false') {
@@ -119,7 +120,7 @@
       },
       // 提交表单
       submitForm() {
-        this.$refs['addWop'].validate((valid) => {
+        this.$refs['editWop'].validate((valid) => {
           if (valid) {
             let formData = this.formData
             let params = {

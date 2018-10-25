@@ -64,7 +64,7 @@
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 2">待审核</el-tag>
             <el-tag type="success" v-if="scope.row.status === 1">生效中</el-tag>
-            <el-tag type="warning" v-if="scope.row.status === 0">已停用</el-tag>
+            <el-tag type="warning" v-if="scope.row.status === 0 || scope.row.status === 5">已停用</el-tag>
             <el-tag type="danger" v-if="scope.row.status === 4">已过期</el-tag>
           </template>
         </el-table-column>
@@ -79,10 +79,10 @@
           <template slot-scope="scope">
             <el-button type="text" @click="operat(scope.row.id, scope.row.platformVerifyStationId, scope.row.name, scope.row.telephone, scope.row.merchantName, scope.row.community)" class="operate-btn">
               <span v-if="scope.row.status === 2">审核</span>
-              <span v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4">编辑</span>
+              <span v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4 || scope.row.status === 5">编辑</span>
             </el-button>
             <el-tooltip
-              v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4"
+              v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4 || scope.row.status === 5"
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
               class="margin-lr6">
@@ -207,7 +207,8 @@
               this.tableData = res.info.result || []
 
               this.tableData.forEach(item => {
-                if (item.status === 0 || item.status === 4) {
+                // 停用状态区分 0-停用核销员和5-停用核销点
+                if (item.status === 0 || item.status === 4 || item.status === 5) {
                   item.openStatus = 0
                 }
                 if (item.status === 1) {
