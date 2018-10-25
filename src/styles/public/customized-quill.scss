@@ -1,0 +1,650 @@
+/* 有关自定义quill的公共样式 */
+.lh-quill-modules {
+  /* 基本样式 */
+  #lh-toolbar {
+    border: 1px solid #F1F1F5 !important;
+    padding: 8px;
+  }
+  .ql-align-center {
+    text-align: center;
+  }
+  .ql-align-right {
+    text-align: right;
+  }
+  .ql-editor {
+    padding-left: 20px;
+    padding-right: 20px;
+    white-space: initial;
+
+    ol, ul {
+      margin-top: 22px;
+    }
+    li {
+      font-size: 16px;
+      line-height: 28px !important;
+    }
+  }
+  .ql-toolbar.ql-snow {
+    border-top: 0;
+    border-left: 0;
+
+    .ql-formats {
+      line-height: 24px;
+    }
+    .ql-btn {
+      display: inline-block;
+      background: none;
+      border: none;
+      cursor: pointer;
+      float: left;
+      height: 24px;
+      padding: 3px 5px;
+      width: 24px;
+      outline: none;
+    }
+    .ql-divider {
+      display: flex;
+      align-items: center;
+
+      &:hover .ql-hr {
+        background-color: #06c;
+      }
+      .ql-hr {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color:#444;
+      }
+    }
+  }
+  .ql-container {
+    // padding 左右 默认15
+    padding: 0 107px 24px;
+    min-height: 380px;
+    height: 380px;
+    overflow: auto;
+
+    .ql-editor::before {
+      color: #C0C4CC;
+      font-style: normal;
+      font-size: 14px;
+      font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+      padding-top: 20px;
+      padding-left: 113px;
+    }
+
+    // @#技巧：各屏幕大小，展示不同高度，实现类似fixed的效果
+    @media screen and (max-width: 1366px) {
+      max-height: 380px;
+
+      .ql-editor::before { padding-left: 86px; }
+    }
+    @media screen and (max-width: 1440px) {
+      max-height: 424px;
+    }
+    @media screen and (min-width: 1441px) {
+      max-height: 603px;
+    }
+  }
+  @media screen and (max-width: 1365px) {
+    .ql-container {
+      padding-left: 80px;
+      padding-right: 80px;
+    }
+  }
+  .ql-toolbar + .ql-container {
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+  }
+  .ql-toolbar {
+    border-top: 0;
+    border-left: 0;
+  }
+  ul li, ol li {
+    font-size: 16px;
+    line-height: 28px;
+  }
+  blockquote {
+    font-size: 16px !important;
+    margin-top: 22px !important;
+    line-height: 28px !important;
+
+    border-left: 4px solid #ccc;
+    margin-top: 5px;
+    padding-left: 16px;
+  }
+  .hr {
+    height: 1px;
+    margin-top: 24px;
+    margin-left: 0;
+    margin-right: 20px;
+    background-color: #E1E1E6;
+  }
+  p {
+    font-size: 16px;
+    color: #333;
+    line-height: 28px;
+    margin-top: 14px;
+    box-sizing: border-box;
+  }
+  p > br {
+    height: 0
+  }
+  & > img {
+    display: block;
+    width: 89.33%;
+    border-radius: 7px;
+    margin: 26px auto 0;
+  }
+  p > img {
+    display: block;
+    width: 100%;
+    border-radius: 7px;
+    margin: 26px auto 0;
+  }
+  .ql-snow .ql-picker.ql-header {
+    width: 65px;
+  }
+  .ql-toolbar.ql-snow .ql-formats {
+    margin-right: 10px;
+  }
+  .ql-snow .ql-picker.ql-header .ql-picker-label[data-label]:not([data-label=''])::before {
+    transform: translateY(-1px)
+  }
+  // 编辑器和预览都有用到
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 22px;
+    line-height: 28px;
+  }
+  .ql-editor {
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 18px; }
+    h4 { font-size: 16px; }
+    h5 { font-size: 14px; }
+    h6 { font-size: 12px; }
+  }
+  /* 关闭或删除状态 */
+  .quill-close {
+    position: absolute; z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    color: $theme-red;
+    font-weight: bold;
+    background-color: #ffffff82;
+    border: 1px solid $theme-red;
+    border-radius: 6px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* 二级标题
+  -------------------------- */
+  @mixin com {
+    position: relative;
+    margin-top: 46px;
+    width: 100%;
+    font-size: 18px;
+    color: #333;
+    font-family: PingFangSC-Medium;
+    font-weight: bold;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .title-brand, .title-store, .title-field {
+    @include com;
+
+    .quill-close {
+      background-color: #ffffffc9;
+      width: 100%;
+      font-weight: normal;
+      font-size: 14px;
+    }
+    img {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid #f2f2f2;
+      vertical-align: bottom;
+      float: left;
+      background-color: #fff;
+    }
+    .title-name {
+      float: left;
+      max-width: 78%;
+      margin-left: 8px;
+
+      .name {
+        font-size: 18px;
+        line-height: 18px;
+        color:#333;
+        font-family: PingFangSC-Medium;
+        font-weight: bold;
+        margin-top: 2px;
+      }
+      .num {
+        font-size: 12px;
+        color: rgba(129,132,144,1);
+        margin-top: 5px;
+      }
+    }
+  }
+  .title-arbitrarily {
+    @include com;
+  }
+  /* 门店，单个与多个 */
+  .store-list {
+    margin-top: 8px;
+
+    .store-item {
+      position: relative;
+      margin: 0 auto;
+      width: 100%;
+      height: 110px;
+      background: rgba(255,255,255,1);
+      box-shadow: 0 5px 14px 0px rgba(184,176,211,0.6);
+      padding: 10px 15px 10px 115px;
+      margin-top: 18px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      border-radius: 7px;
+
+      .img-wrapper {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        top: 50%;
+        left: 10px;
+        -webkit-transform: translate(0, -50%);
+        -moz-transform: translate(0, -50%);
+        -ms-transform: translate(0, -50%);
+        -o-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        border-radius: 2px;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          min-height: 90px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+          -moz-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          -o-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          border-radius: 2px;
+        }
+      }
+      .name {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        margin-top: 5px;
+        font-size: 16px;
+        line-height: 26px;
+        color: rgba(51,51,51,1);
+        font-weight: normal;
+      }
+      .addr {
+        line-height: 12px;
+        font-size: 12px;
+        margin-top: 7px;
+        color: rgba(129,132,144,1);
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        font-weight: normal;
+      }
+      .device {
+        margin-top: 18px;
+        line-height: 20px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        font-weight: normal;
+
+        .field-num {
+          float: left;
+          width: 60%;
+          display: inline-block;
+          font-size: 12px;
+          color: rgba(129,132,144,1);
+
+          .meeting {
+            display: inline-block;
+            float: left;
+            width: 50%;
+            overflow: hidden;
+            white-space: nowrap;
+            -ms-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+          }
+          .station {
+            display: inline-block;
+            float: right;
+            width: 50%;
+            overflow: hidden;
+            white-space: nowrap;
+            -ms-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+          }
+          .meeting-icon, .station-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .distance {
+          width: 40%;
+          vertical-align: middle;
+          display: block;
+          overflow: hidden;
+          word-break: break-all;
+          white-space: nowrap;
+          -ms-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          font-size: 12px;
+          color: rgba(129,132,144,1);
+          text-align: right;
+          float: right;
+          line-height: 22px;
+          padding-left: 8px;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
+  /* 单个场地  */
+  .field-one {
+    margin-top: 26px;
+    margin-bottom: 32px;
+
+    /*列表项*/
+    .field-one-item {
+      margin-bottom: 30px;
+      position: relative;
+      width: 100%;
+
+      .item-pic {
+        width: 100%;
+        height: 180px;
+        border-radius: 7px;
+        overflow: hidden;
+        position: relative;
+
+        img {
+          display: block;
+          width: 100%;
+          min-height: 180px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          margin: auto;
+        }
+      }
+      /*描述*/
+      .item-brief {
+        margin-top: 16px;
+        /*禁止选中文字*/
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        /*标题*/
+        .brief-title {
+          line-height: 16px;
+          font-size: 16px;
+          letter-spacing: 0;
+          color: #333333;
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          -ms-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          margin-top: 10px;
+          font-weight: normal;
+        }
+        .width78 {
+          width: 78%;
+        }
+
+        /*地址*/
+        .activity-address {
+          font-size: 12px;
+          letter-spacing: 0;
+          color: #818490;
+          font-weight: normal;
+          clear: both;
+          overflow: hidden;
+
+          .distance {
+            float: left;
+            font-size: 14px;
+            display: block;
+            max-width: 65%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 16px;
+
+            .field-type {
+              display: inline-block;
+              width: 60px;
+              height: 18px;
+              text-align: center;
+              line-height: 20px;
+              font-size: 12px;
+              color: #fff;
+              border-radius: 3px;
+              vertical-align: bottom;
+            }
+            .city-name {
+              display: inline-block;
+              vertical-align: bottom;
+              line-height: 16px;
+            }
+
+            .type-1 {
+              background-image: linear-gradient(135deg, #C483FF 0%, #8C68FE 100%);
+            }
+            .type-5 {
+              background-image: linear-gradient(135deg, #FFCC00 0%, #FFAE00 100%);
+            }
+            .type-3, .type-6 {
+              background:linear-gradient(136.3deg,rgba(91,241,153,1),rgba(29,216,185,1));
+            }
+            .type-2 {
+              background-image: linear-gradient(135deg, #FFA46C 0%, #FF4563 100%);
+            }
+            .type-4 {
+              background-image: linear-gradient(135deg, #70E0FF 0%, #519DFF 100%);
+            }
+          }
+          .price {
+            float: right;
+            font-size: 14px;
+            display: block;
+            max-width: 35%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 16px;
+            .price-statics {
+              color: #8C68FE;
+            }
+            .text {
+            }
+          }
+        }
+        .book-info {
+          position: relative;
+
+          .book-btn {
+            width: 70px;
+            height: 33px;
+            background:rgba(140,104,254,1);
+            box-shadow: 0 5px 14px 0 rgba(140,104,254,0.5);
+            border-radius: 7px;
+            line-height: 33px;
+            text-align: center;
+            color: #fff;
+            font-size: 15px;
+            position: absolute;
+            right: 0;
+            bottom: 2px;
+          }
+        }
+        /*时间*/
+        .activity-time {
+          line-height: 14px;
+          font-weight: normal;
+          font-size: 14px;
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          -ms-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          color: #818490;
+          letter-spacing: 0;
+          margin-top: 8px;
+        }
+        .max-width72 {
+          max-width: 72%;
+        }
+      }
+    }
+    .field-one-item:nth-last-child(1) {
+      margin-bottom: 0;
+    }
+  }
+  /* 多个场地  */
+  .field-list {
+    overflow-x:scroll;
+    white-space:nowrap;
+    margin: 0 -20px;
+    width: calc(100% + 40px);
+
+    .field-list-item {
+      position: relative;
+      margin-top: 26px;
+      display:inline-block;
+      width: 37.5%;
+
+      .quill-field-img-wrapper {
+        width: 100%;
+        height: 100px;
+        box-shadow: 0 3px 10px 0 rgba(18,0,76,0.3);
+        border-radius: 7px;
+        overflow: hidden;
+        position: relative;
+
+        .quill-field-img {
+          border-radius: 7px;
+          display: block;
+          width: 100%;
+          min-height: 100px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          margin: auto;
+        }
+      }
+
+      .quill-field-name {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        margin-top: 15px;
+        height: 22px;
+        font-size: 16px;
+        color: rgba(51,51,51,1);
+        text-align: left;
+      }
+
+      .field-type {
+        display: inline-block;
+        margin-top: 5px;
+        width: 60px;
+        height: 18px;
+        border-radius: 3px;
+        line-height: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+      }
+      /*工位*/
+      .type-3, .type-6 {
+        background:linear-gradient(136.3deg,rgba(91,241,153,1),rgba(29,216,185,1));
+      }
+      /*会议室*/
+      .type-1 {
+        background-image: linear-gradient(135deg, #C483FF 0%, #8C68FE 100%);
+      }
+      /*办公室*/
+      .type-5 {
+        background-image: linear-gradient(135deg, #FFCC00 0%, #FFAE00 100%);
+      }
+      /*路演厅*/
+      .type-2 {
+        background-image: linear-gradient(135deg, #FFA46C 0%, #FF4563 100%);
+      }
+      /*多功能*/
+      .type-4 {
+        background-image: linear-gradient(135deg, #70E0FF 0%, #519DFF 100%);
+      }
+
+      /*价格*/
+      .quill-field-price {
+        font-size: 12px;
+        margin-top: 5px;
+        .quill-field-price-num {
+          color: #8C68FE;
+        }
+        .quill-field-price-unit {
+          color: #818490;
+        }
+      }
+
+    }
+    .field-list-item + .field-list-item {
+      margin-left: 15px;
+    }
+    .field-list-item:nth-of-type(1) {
+      margin-left: 20px;
+
+      .quill-field-img-wrapper {
+        box-shadow: 0 3px 10px -4px rgba(18,0,76,0.3);
+      }
+    }
+    .field-list-item:nth-last-of-type(1) {
+      margin-right: 20px;
+    }
+  }
+}

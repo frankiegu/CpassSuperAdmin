@@ -50,9 +50,10 @@
 /* table内的icon，透明度默认0.45，特殊再做处理吧
 -------------------------- */
 table {
-  svg {
-    fill: $theme-light-gray !important;
-  }
+  // 每个模块需要的地方，自己加吧
+  // svg {
+  //   fill: $theme-light-gray !important;
+  // }
 }
 .el-button {
   &:hover, &:focus {

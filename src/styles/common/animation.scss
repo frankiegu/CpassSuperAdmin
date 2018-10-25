@@ -1,5 +1,13 @@
 /* css3 动画特效
 -------------------------- */
+@mixin tran3 {
+  transition: all .3s;
+}
+.tran3 {
+  * {
+    @include tran3;
+  }
+}
 
 .selectedBox {
   -webkit-transition: all ease .25s;
