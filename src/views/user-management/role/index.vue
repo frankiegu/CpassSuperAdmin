@@ -33,7 +33,7 @@
         class="width100" border>
 
         <el-table-column label="角色名称" prop="roleName" align="center"></el-table-column>
-        <el-table-column label="已分配用户" prop="supervisorCount" align="center"></el-table-column>
+        <el-table-column label="已分配用户" prop="supervisorCount" align="center" width="100"></el-table-column>
         <el-table-column label="可用状态" prop="status" align="center" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 1" type="success" size="mini">可用</el-tag>
