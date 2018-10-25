@@ -124,13 +124,13 @@
     },
     mounted () {
       if (this.type === 'add') {
-        document.title = '添加角色'
         this.title = '添加角色'
       } else if (this.type === 'edit') {
-        document.title = '编辑角色'
         this.title = '编辑角色'
       }
+      document.title = this.title
       this.$route.meta.title = this.title
+      this.$store.commit('NAV_CRUMB', this.title)
       if (!this.$route.name) {
         this.$store.dispatch('addVisitedViews', this.$route)
       }
