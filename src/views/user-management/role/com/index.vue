@@ -62,13 +62,13 @@
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane label="消息推送" name="information">
-                <template>
-                  <el-checkbox-group v-model="ruleForm.checkList" @change="getInfoPush">
-                    <el-checkbox :label="item.name" v-for="(item, idx) in ruleForm.pushList" :key="item.code" :checked="item.selected === 1" :class="{'mb16': (idx !== ruleForm.pushList.length - 1)}"></el-checkbox>
-                  </el-checkbox-group>
-                </template>
-              </el-tab-pane>
+              <!--<el-tab-pane label="消息推送" name="information">-->
+                <!--<template>-->
+                  <!--<el-checkbox-group v-model="ruleForm.checkList" @change="getInfoPush">-->
+                    <!--<el-checkbox :label="item.name" v-for="(item, idx) in ruleForm.pushList" :key="item.code" :checked="item.selected === 1" :class="{'mb16': (idx !== ruleForm.pushList.length - 1)}"></el-checkbox>-->
+                  <!--</el-checkbox-group>-->
+                <!--</template>-->
+              <!--</el-tab-pane>-->
             </el-tabs>
           </template>
         </div>
@@ -90,7 +90,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  // import { roleAdd, roleUpdate, getRoleDetail } from '@/service'
+  import { roleAdd, roleUpdate, getRoleDetail } from '@/service'
 
   export default {
     data () {
@@ -135,7 +135,7 @@
         this.$store.dispatch('addVisitedViews', this.$route)
       }
       this.tableLoading = true
-      // this.getPageData()
+      this.getPageData()
     },
     methods: {
       handleCheckChange(data, checked, indeterminate) {
@@ -151,24 +151,25 @@
         }
       },
       getPageData() {
-        // getRoleDetail({ roleId: this.id }).then(res => {
-        //   if (res.status === 'true') {
-        //     let data = res.info
-        //     this.ruleForm.pushList = res.info.pushPermisList
-        //     if (data.role) {
-        //       if (this.type !== 'copy') {
-        //         this.ruleForm.roleName = data.role.roleName
-        //         this.ruleForm.roleDesc = data.role.roleDesc
-        //       }
-        //     }
-        //
-        //     this.tableData = data.modulePermis
-        //     this.tableLoading = false
-        //     this.tableEmpty = '暂无数据'
-        //   } else {
-        //     this.setMsg('error', res.msg)
-        //   }
-        // })
+        getRoleDetail({ roleId: this.id }).then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            this.ruleForm.pushList = res.info.pushPermisList
+            if (data.role) {
+              if (this.type !== 'copy') {
+                this.ruleForm.roleName = data.role.roleName
+                this.ruleForm.roleDesc = data.role.roleDesc
+              }
+            }
+
+            this.tableData = data.modulePermis
+            this.tableLoading = false
+            this.tableEmpty = '暂无数据'
+          } else {
+            this.tableLoading = false
+            this.setMsg('error', res.msg)
+          }
+        })
       },
       submitForm(formName) {
         let treeData
@@ -197,29 +198,29 @@
                 pushList.push(v.id)
               }
             })
-            // let ajaxParameters = {
-            //   roleName: this.ruleForm.roleName,
-            //   roleDesc: this.ruleForm.roleDesc,
-            //   permisIds: this.ruleForm.permisIds,
-            //   pushPermisIds: this.pushListChange ? this.ruleForm.pushPermisIds : pushList
-            // }
+            let ajaxParameters = {
+              roleName: this.ruleForm.roleName,
+              roleDesc: this.ruleForm.roleDesc,
+              permisIds: this.ruleForm.permisIds,
+              pushPermisIds: this.pushListChange ? this.ruleForm.pushPermisIds : pushList
+            }
 
-            // let requestWay = roleAdd
-            // // 实现复制功能，只在编辑的状态下才传id
-            // if (this.type === 'edit') {
-            //   ajaxParameters.id = this.id
-            //   requestWay = roleUpdate
-            // }
-            // requestWay(ajaxParameters).then(res => {
-            //   if (res.status === 'true') {
-            //     let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
-            //
-            //     this.setMsg('success', tipsText)
-            //     this.$router.replace('/job')
-            //   } else {
-            //     this.setMsg('error', res.msg)
-            //   }
-            // })
+            let requestWay = roleAdd
+            // 实现复制功能，只在编辑的状态下才传id
+            if (this.type === 'edit') {
+              ajaxParameters.id = this.id
+              requestWay = roleUpdate
+            }
+            requestWay(ajaxParameters).then(res => {
+              if (res.status === 'true') {
+                let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
+
+                this.setMsg('success', tipsText)
+                this.$router.replace('/job')
+              } else {
+                this.setMsg('error', res.msg)
+              }
+            })
           } else {
 
           }

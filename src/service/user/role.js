@@ -8,10 +8,13 @@ import { API_PATH } from '../../config/env'
 export const roleList = (obj) => fetch(API_PATH + '/supervisor/role/list', obj, 'GET')
 
 // 新增角色
-export const addRole = (obj) => fetch(API_PATH + '/supervisor/role/add', obj, 'POST')
+export const roleAdd = (obj) => fetch(API_PATH + '/supervisor/role/add', obj, 'POST')
 
 // 编辑角色
-export const updateRole = (obj) => fetch(API_PATH + '/supervisor/role/update', obj, 'POST')
+export const roleUpdate = (obj) => fetch(API_PATH + '/supervisor/role/update', obj, 'POST')
+
+// 角色明细
+export const getRoleDetail = (obj) => fetch(API_PATH + '/supervisor/role/getRoleDetail', obj, 'GET')
 
 // 禁用角色
 export const closeRole = (obj) => fetch(API_PATH + '/supervisor/role/close', obj, 'GET')
