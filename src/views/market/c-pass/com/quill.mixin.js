@@ -24,7 +24,7 @@ export default {
     },
     // 富文本插入图片
     quillHandleAvatarSuccess(res, file) {
-      console.log('res, file', res, file);
+      // console.log('res, file', res, file);
 
       if (res.code === '200' && res.info.path !== null) {
         let range = this.editor.getSelection()
@@ -55,53 +55,53 @@ export default {
 
     /* 插入blot */
     insertDivider() {
-      console.log('insertDivider');
+      // console.log('insertDivider');
       let range = this.editor.getSelection(true)
       let len = range.index;
-      this.editor.insertEmbed(len, 'divider', true, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'divider', true)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertFields(fieldArr) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'fieldArr', fieldArr, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'fieldArr', fieldArr)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertStores(storeArr) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'storeArr', storeArr, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'storeArr', storeArr)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertFieldTitle(fieldItm) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'titleField', fieldItm, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'titleField', fieldItm)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertStoreTitle(storeItm) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'titleStore', storeItm, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'titleStore', storeItm)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertBrandTitle(brandItm) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'titleBrand', brandItm, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'titleBrand', brandItm)
+      this.editor.setSelection(len + 1)
     },
 
     handleInsertArbitrarilyTitle(arbitrarilyName) {
       let range = this.editor.getSelection(true)
       let len = range.index
-      this.editor.insertEmbed(len, 'titleArbitrarily', arbitrarilyName, this.quill.sources.USER)
-      this.editor.setSelection(len + 1, this.quill.sources.SILENT)
+      this.editor.insertEmbed(len, 'titleArbitrarily', arbitrarilyName)
+      this.editor.setSelection(len + 1)
     }
   }
 }

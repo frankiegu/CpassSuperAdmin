@@ -46,24 +46,26 @@ export default {
         case 'field':
           this.getStores()
           break
-        case 'brand':
-          for (const itm of this.brandList) {
-            if (this.dialogData.brandId === itm.id) {
-              this.dialogData.brandItm = itm
-            }
-          }
-          // console.log('brandItm', this.dialogData.brandItm);
-          break
-        case 'arbitrarily':
-          break
       }
+
+      if (this.dialogData.titleType != 'arbitrarily') {
+        for (let itm of this.brandList) {
+          // console.log('itm', this.dialogData.brandId, itm.id, this.dialogData.brandId == itm.id);
+
+          if (this.dialogData.brandId == itm.id) {
+            this.dialogData.brandItm = itm
+          }
+        }
+      }
+
+      // console.log('brandItm', this.dialogData.brandItm, this.dialogData.brandId, this.dialogData);
     },
 
     selectFieldId() {
       // console.log('selectFieldId');
       switch (this.insertType) {
         case 'title':
-          for (const itm of this.fieldList) {
+          for (let itm of this.fieldList) {
             if (this.dialogData.fieldId === itm.id) {
               this.dialogData.fieldItm = itm
             }
@@ -82,20 +84,19 @@ export default {
       }
 
       // 如果有子，就请求
+      if (this.dialogData.titleType == 'field') {
+        this.getFields()
+      }
+
       switch (this.dialogData.titleType) {
         case 'field':
-          this.getFields()
-          break
         case 'store':
-          for (const itm of this.storeList) {
+          for (let itm of this.storeList) {
             if (this.dialogData.storeId === itm.id) {
               this.dialogData.storeItm = itm
             }
           }
           // console.log('storeItm', this.dialogData.storeItm);
-          break
-        case 'brand':
-        case 'arbitrarily':
           break
       }
     }

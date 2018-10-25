@@ -37,10 +37,10 @@ export default {
       cPassFindUseStore(ajaxParam).then(res => {
         if (res.status === 'true') {
           const resInfo = res.info
+
           switch (this.insertType) {
             case 'title':
               this.storeList = resInfo
-              // console.log('getStores', this.storeList)
               break
             case 'store':
             case 'field':
@@ -83,11 +83,10 @@ export default {
                   this.dialogData.addArr[brandIdx - 1].fieldItm = null
                 }
               }
-              // console.log('storeItm', this.dialogData.addArr[brandIdx - 1].storeItm, this.dialogData.addArr[brandIdx - 1]);
               break
           }
 
-          // console.log('getStores', brandIdx);
+          // console.log('getStores', brandIdx, this.storeList, this.dialogData)
         } else {
           this.setMsg('error', res.msg)
         }
@@ -118,14 +117,14 @@ export default {
                 let allIdArr = resInfo.map((list) => { return list.id })
                 let selecetedArr = this.dialogData.addArr.map((list) => { return list.fieldId })
 
-                console.log('allIdArr', allIdArr, 'selecetedArr', selecetedArr, this.dialogData.addArr)
+                // console.log('allIdArr', allIdArr, 'selecetedArr', selecetedArr, this.dialogData.addArr)
 
                 allIdArr.filter((itm) => {
                   return !selecetedArr.includes(itm)
                 }).forEach((itm, idx) => {
                   resInfo.forEach((list) => {
                     if (itm === list.id) {
-                      console.log('可添加的项：', list);
+                      // console.log('可添加的项：', list);
 
                       this.dialogData.addArr[storeIdx - 1].fieldList.push(list)
                     }

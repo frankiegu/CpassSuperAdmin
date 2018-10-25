@@ -423,6 +423,8 @@ export default {
         case 'title':
           switch (insertData.titleType) {
             case 'brand':
+              // console.log('brand', insertData.brandItm, insertData);
+
               this.handleInsertBrandTitle(insertData.brandItm)
               break
             case 'store':
