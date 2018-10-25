@@ -244,7 +244,7 @@
   import { mixin as focusMixin } from 'vue-focus'
   import countdown from '@/mixins/countdown'
   import personalMixins from './personal.mixins'
-  import { adminUserDetail, resetUsername, sendResetUsernameCode, userIsExist, generateSecret, adminUserUpdate } from '@/service'
+  // import { adminUserDetail, resetUsername, sendResetUsernameCode, userIsExist, generateSecret, adminUserUpdate } from '@/service'
 
   export default {
     mixins: [countdown, focusMixin, personalMixins],
@@ -313,70 +313,70 @@
         }
       },
       showQrCode() {
-        generateSecret().then(res => {
-          if (res.status === 'true') {
-            this.secret = res.info
-
-            if (!this.spaceId) {
-              this.spaceId = this.$store.getters.getSpaceId
-            }
-            if (!this.domain) {
-              for (let item of this.hostnameList) {
-                if (this.locationHostname === item.admin) {
-                  this.domain = item.wx
-                }
-              }
-            }
-
-            this.qrUrl = this.locationProtocol + '//' + this.domain + '/#/' + this.spaceId + '/manager/administrator-bind?secret=' + this.secret
-            // demo: http://so-m-dev.tunnel.gzleihou.cn/#/1001/administrator-bind
-            // console.log('qrUrl: ', this.qrUrl, this.locationHostname, this.spaceId);
-
-            this.qrDialogVisible = true
-            // 访问智众后台管理：本地、测试、正式、symunity等环境，扫码跳转到微信端对应路由
-            // 考虑可以编辑的情况：
-            // 1. 点击添加或者编辑按钮，都要去轮询
-            // 2. 在退出弹出框的时候，需要再请求一次
-            // 3. 先是2秒轮询4次，之后，每次轮询的间隔为1秒，30秒之后停止轮询
-            // 4. 以上情况都是在打开的情况下，并且路由是个人信息，否则不去轮询
-            // 5. 判断是否绑定，有2种情况，1是从未绑定到绑定，另一个是更新的微信昵称微信昵称
-
-            if ((this.editQr === 1) && this.userInfo.openId) {
-              this.copyNickName = this.userInfo.nickName
-            }
-            this.editQr = 0
-            this.isEmptyJudge = 1
-            this.pollPersonInfo()
-          } else this.setMsg('error', res.msg)
-        })
+        // generateSecret().then(res => {
+        //   if (res.status === 'true') {
+        //     this.secret = res.info
+        //
+        //     if (!this.spaceId) {
+        //       this.spaceId = this.$store.getters.getSpaceId
+        //     }
+        //     if (!this.domain) {
+        //       for (let item of this.hostnameList) {
+        //         if (this.locationHostname === item.admin) {
+        //           this.domain = item.wx
+        //         }
+        //       }
+        //     }
+        //
+        //     this.qrUrl = this.locationProtocol + '//' + this.domain + '/#/' + this.spaceId + '/manager/administrator-bind?secret=' + this.secret
+        //     // demo: http://so-m-dev.tunnel.gzleihou.cn/#/1001/administrator-bind
+        //     // console.log('qrUrl: ', this.qrUrl, this.locationHostname, this.spaceId);
+        //
+        //     this.qrDialogVisible = true
+        //     // 访问智众后台管理：本地、测试、正式、symunity等环境，扫码跳转到微信端对应路由
+        //     // 考虑可以编辑的情况：
+        //     // 1. 点击添加或者编辑按钮，都要去轮询
+        //     // 2. 在退出弹出框的时候，需要再请求一次
+        //     // 3. 先是2秒轮询4次，之后，每次轮询的间隔为1秒，30秒之后停止轮询
+        //     // 4. 以上情况都是在打开的情况下，并且路由是个人信息，否则不去轮询
+        //     // 5. 判断是否绑定，有2种情况，1是从未绑定到绑定，另一个是更新的微信昵称微信昵称
+        //
+        //     if ((this.editQr === 1) && this.userInfo.openId) {
+        //       this.copyNickName = this.userInfo.nickName
+        //     }
+        //     this.editQr = 0
+        //     this.isEmptyJudge = 1
+        //     this.pollPersonInfo()
+        //   } else this.setMsg('error', res.msg)
+        // })
       },
       getUserInfo () {
-        adminUserDetail().then(res => {
-          if (res.status === 'true') {
-            let data = res.info
-            this.userInfo = {
-              id: data.adminUser.id,
-              name: data.adminUser.name,
-              email: data.adminUser.email,
-              username: data.adminUser.username || null,
-              headImgUrl: data.adminUser.headImgUrl || null,
-              isSuper: data.adminUser.isSuper,
-              openId: data.outh2AdminUser ? data.outh2AdminUser.openId : '',
-              nickName: data.outh2AdminUser ? data.outh2AdminUser.nickName : ''
-            }
-
-            this.pushPermis = res.info.pushPermis || []
-            this.statusList = [{}]
-
-            // 如果绑定成功了，就改变条件，不在调用接口
-            // console.log('test', !!(this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)), 'val', this.isEmptyJudge, 'nick', this.copyNickName, 'name', this.userInfo.nickName);
-            if (this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)) {
-              this.isEmpty = 1
-            }
-
-            this.replace.tel = data.adminUser.username
-          } else this.setMsg('error', res.msg)
-        })
+        // adminUserDetail().then(res => {
+        //   if (res.status === 'true') {
+        //     let data = res.info
+        //     this.userInfo = {
+        //       id: data.adminUser.id,
+        //       name: data.adminUser.name,
+        //       email: data.adminUser.email,
+        //       username: data.adminUser.username || null,
+        //       headImgUrl: data.adminUser.headImgUrl || null,
+        //       isSuper: data.adminUser.isSuper,
+        //       openId: data.outh2AdminUser ? data.outh2AdminUser.openId : '',
+        //       nickName: data.outh2AdminUser ? data.outh2AdminUser.nickName : ''
+        //     }
+        //
+        //     this.pushPermis = res.info.pushPermis || []
+        //     this.statusList = [{}]
+        //
+        //     // 如果绑定成功了，就改变条件，不在调用接口
+        //     // console.log('test', !!(this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)), 'val', this.isEmptyJudge, 'nick', this.copyNickName, 'name', this.userInfo.nickName);
+        //     if (this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)) {
+        //       this.isEmpty = 1
+        //     }
+        //
+        //     this.replace.tel = data.adminUser.username
+        //   } else this.setMsg('error', res.msg)
+        // })
       },
       closeQrDialog(done) {
         if (!this.copyNickName || (this.copyNickName === this.userInfo.nickName)) {
@@ -417,39 +417,39 @@
         }
       },
       getQrCode () {
-        if (this.isAble) return
+        if (this.isAble) return false
         // 验证用户是否存在之后，在确定要不要获取验证码
-        userIsExist({ telephone: this.replace.tel }).then(res => {
-          if (res.status === 'true') {
-            sendResetUsernameCode({ telephone: this.replace.newTel }).then(res => {
-              if (res.status === 'true') {
-                this.isAble = true
-                this.settime()
-
-                this.replace.qrFocused = true
-                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
-              } else this.setMsg('error', res.msg)
-            })
-          } else this.setMsg('error', res.msg)
-        })
+        // userIsExist({ telephone: this.replace.tel }).then(res => {
+        //   if (res.status === 'true') {
+        //     sendResetUsernameCode({ telephone: this.replace.newTel }).then(res => {
+        //       if (res.status === 'true') {
+        //         this.isAble = true
+        //         this.settime()
+        //
+        //         this.replace.qrFocused = true
+        //         this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
+        //       } else this.setMsg('error', res.msg)
+        //     })
+        //   } else this.setMsg('error', res.msg)
+        // })
       },
       replaceTel (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            resetUsername({
-              telephone: this.replace.newTel,
-              verifyCode: this.replace.qrCode
-            }).then(res => {
-              if (res.status === 'true') {
-                // 隐藏修改手机弹窗
-                this.replace.dialogFormVisible = false
-                // 弹出提示框
-                this.dialogVisible = true
-
-                // 显示倒计时
-                this.threeDown()
-              } else this.setMsg('error', res.msg)
-            })
+            // resetUsername({
+            //   telephone: this.replace.newTel,
+            //   verifyCode: this.replace.qrCode
+            // }).then(res => {
+            //   if (res.status === 'true') {
+            //     // 隐藏修改手机弹窗
+            //     this.replace.dialogFormVisible = false
+            //     // 弹出提示框
+            //     this.dialogVisible = true
+            //
+            //     // 显示倒计时
+            //     this.threeDown()
+            //   } else this.setMsg('error', res.msg)
+            // })
           } else {
             return false
           }
@@ -458,25 +458,25 @@
       replaceName (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let dataObj = {
-              id: this.userInfo.id,
-              name: this.userInfo.name,
-              email: this.userInfo.email,
-              headImgUrl: this.userInfo.headImgUrl,
-              contactTel: this.replace.tel
-            }
-            adminUserUpdate(dataObj).then(res => {
-              if (res.status === 'true') {
-                sessionStorage.setItem('username', this.userInfo.name)
-                this.$store.commit('SET_NAME', this.userInfo.name)
-
-                this.setMsg('success', '修改成功！')
-              } else this.setMsg('error', res.msg)
-            })
+            // let dataObj = {
+            //   id: this.userInfo.id,
+            //   name: this.userInfo.name,
+            //   email: this.userInfo.email,
+            //   headImgUrl: this.userInfo.headImgUrl,
+            //   contactTel: this.replace.tel
+            // }
+            // adminUserUpdate(dataObj).then(res => {
+            //   if (res.status === 'true') {
+            //     sessionStorage.setItem('username', this.userInfo.name)
+            //     this.$store.commit('SET_NAME', this.userInfo.name)
+            //
+            //     this.setMsg('success', '修改成功！')
+            //   } else this.setMsg('error', res.msg)
+            // })
           } else {
             return false
           }
-        });
+        })
       }
     }
   }

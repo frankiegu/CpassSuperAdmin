@@ -152,7 +152,7 @@
 </template>
 
 <script>
-  import { adminUserDetail, resetByPassword } from '@/service'
+  // import { adminUserDetail, resetByPassword } from '@/service'
   import Cookies from 'js-cookie'
   import personalMixins from './personal.mixins'
   export default {
@@ -198,43 +198,43 @@
         this.$refs[formName].resetFields()
       },
       getUserInfo () {
-        adminUserDetail().then(res => {
-          if (res.status === 'true') {
-            if (res.info) {
-              this.userInfo = res.info.adminUser || ''
-              if (this.userInfo) {
-                this.name = this.userInfo.name || ''
-                this.contactTel = this.userInfo.contactTel || ''
-                this.roleName = this.userInfo.roleName || ''
-                this.storeNames = this.userInfo.storeNames || ''
-                this.headImgUrl = this.userInfo.headImgUrl || ''
-                this.email = this.userInfo.email || ''
-              }
-              this.isSpaceKeeper = res.info.isSpaceKeeper || ''
-              this.pushPermis = res.info.pushPermis || []
-              this.outh2AdminUser = res.info.outh2AdminUser || null
-              this.statusList = [{}]
-            }
-          } else this.setMsg('error', res.msg)
-        })
+        // adminUserDetail().then(res => {
+        //   if (res.status === 'true') {
+        //     if (res.info) {
+        //       this.userInfo = res.info.adminUser || ''
+        //       if (this.userInfo) {
+        //         this.name = this.userInfo.name || ''
+        //         this.contactTel = this.userInfo.contactTel || ''
+        //         this.roleName = this.userInfo.roleName || ''
+        //         this.storeNames = this.userInfo.storeNames || ''
+        //         this.headImgUrl = this.userInfo.headImgUrl || ''
+        //         this.email = this.userInfo.email || ''
+        //       }
+        //       this.isSpaceKeeper = res.info.isSpaceKeeper || ''
+        //       this.pushPermis = res.info.pushPermis || []
+        //       this.outh2AdminUser = res.info.outh2AdminUser || null
+        //       this.statusList = [{}]
+        //     }
+        //   } else this.setMsg('error', res.msg)
+        // })
       },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            resetByPassword({
-              oldPassword: this.replacePwd.oldPwd,
-              newPassword: this.replacePwd.secondNewPwd
-            }).then(res => {
-              if (res.status === 'true') {
-              //                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
-                this.setMsg('success', '密码修改成功，请重新登录!')
-                this.dialogVisible = false
-                const self = this
-                setTimeout(() => {
-                  self.logout()
-                }, 2000);
-              } else this.setMsg('error', res.msg)
-            })
+            // resetByPassword({
+            //   oldPassword: this.replacePwd.oldPwd,
+            //   newPassword: this.replacePwd.secondNewPwd
+            // }).then(res => {
+            //   if (res.status === 'true') {
+            //   //                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
+            //     this.setMsg('success', '密码修改成功，请重新登录!')
+            //     this.dialogVisible = false
+            //     const self = this
+            //     setTimeout(() => {
+            //       self.logout()
+            //     }, 2000);
+            //   } else this.setMsg('error', res.msg)
+            // })
           } else {
             return false;
           }
