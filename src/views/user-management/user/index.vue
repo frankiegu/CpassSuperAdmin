@@ -69,19 +69,21 @@
             <div class="content-form clearfix">
 
               <el-form-item class="mt22" label="用户ID">
-                <span style="line-height: 31px;" v-if="userForm.userNumber">{{ userForm.userNumber }}</span>
+                <span style="line-height: 31px;" v-if="userForm.id">{{ userForm.id }}</span>
                 <span style="line-height: 31px;" v-else>新增账号后由系统生成</span>
               </el-form-item>
 
               <el-form-item class="mt22" label="用户名/手机号" prop="userName">
                 <el-input
                   v-model.trim="userForm.userName"
+                  maxlength="11"
                   placeholder="请输入手机号"></el-input>
               </el-form-item>
 
               <el-form-item class="mt22" label="真实姓名" prop="realName">
                 <el-input
                   v-model.trim="userForm.realName"
+                  maxlength="10"
                   placeholder="请输入真实姓名"></el-input>
               </el-form-item>
 
@@ -94,15 +96,16 @@
               <el-form-item class="mt22" label="描述" prop="description">
                 <el-input
                   type="textarea"
+                  maxlength="100"
                   v-model.trim="userForm.description"></el-input>
               </el-form-item>
 
-              <el-form-item class="mt22" label="可用状态" prop="useState">
+              <el-form-item class="mt22" label="可用状态" prop="userStateCode">
                 <el-switch
-                  v-model.trim="userForm.useState"
+                  v-model.trim="userForm.userStateCode"
                   active-color="#13ce66"
-                  active-value="可用"
-                  inactive-value="禁用"></el-switch>
+                  :active-value="1"
+                  :inactive-value="0"></el-switch>
               </el-form-item>
 
               <el-form-item class="mt22" label="角色" prop="role">
@@ -113,7 +116,7 @@
                   placeholder="请选择">
 
                   <el-option
-                    v-for="(item, index) in userForm.roles"
+                    v-for="(item, index) in roles"
                     :key="index"
                     :label="item.role"
                     :value="item.id">
@@ -125,7 +128,7 @@
           </div>
 
           <div class="footer">
-            <p class="theme-gray mb22" v-if="!userForm.userNumber">新增账号初始密码为手机号后6位</p>
+            <p class="theme-gray mb22" v-if="userForm.hasOwnProperty('id')">新增账号初始密码为手机号后6位</p>
               <el-button
                 class="btn-save width80px"
                 type="primary"
@@ -150,10 +153,10 @@
         <el-table-column label="真实姓名" prop="realName" align="center" width="150"></el-table-column>
         <el-table-column label="邮箱地址" prop="email" align="center"></el-table-column>
         <el-table-column label="角色" prop="role" align="center"></el-table-column>
-        <el-table-column label="可用状态" prop="useState" align="center" width="100">
+        <el-table-column label="可用状态" prop="userStateCode" align="center" width="100">
           <template slot-scope="scope">
             <div class="label-con">
-              <el-tag v-if="scope.row.useState === '可用'" type="success">可用</el-tag>
+              <el-tag v-if="scope.row.userStateCode === 1" type="success">可用</el-tag>
               <el-tag v-else type="danger">禁用</el-tag>
             </div>
           </template>
@@ -165,8 +168,8 @@
         </el-table-column>
         <el-table-column label="操作" prop="contact" align="center" width="150">
           <template v-if="scope.row.role !== 'root'" slot-scope="scope">
-            <el-button @click="setUser(scope.row)" type="text">编辑</el-button>
-            <el-button v-if="scope.row.useState === '可用'" @click="handleChangeUseState(scope.$index, '禁用')" type="text">禁用</el-button>
+            <el-button @click="setUser(scope.$index)" type="text">编辑</el-button>
+            <el-button v-if="scope.row.userStateCode === 1" @click="handleChangeUseState(scope.$index, '禁用')" type="text">禁用</el-button>
             <el-button v-else @click="handleChangeUseState(scope.$index, '恢复')" type="text">恢复</el-button>
             <el-button @click="handleChangeUseState(scope.$index, '删除')" type="text">删除</el-button>
           </template>

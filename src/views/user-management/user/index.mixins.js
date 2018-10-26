@@ -1,5 +1,5 @@
 import { checkPhone } from '@/config/utils'
-import { getUserList, openUser, closeUser, deleteUser } from '@/service'
+import { getUserList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
 
 export default {
   data () {
@@ -32,19 +32,18 @@ export default {
         roleId: ''
       },
       userForm: {
-        id: '',
         userName: '',
         realName: '',
         email: '',
         role: '',
         description: '',
-        useState: '可用',
-        roles: [
-          { id: 1, role: 'root' },
-          { id: 2, role: '管理员' },
-          { id: 3, role: '运营主管' }
-        ]
+        userStateCode: 1
       },
+      roles: [
+        { id: 1, role: 'root' },
+        { id: 2, role: '管理员' },
+        { id: 3, role: '运营主管' }
+      ],
       rules: {
         userName: [
           { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
@@ -60,29 +59,23 @@ export default {
         role: [
           { required: true, message: '请选择角色', trigger: ['blur', 'change'] }
         ],
-        useState: [
+        userStateCode: [
           { required: true, message: '请选择可用状态', trigger: ['blur', 'change'] }
         ]
       },
       isShowUserForm: false,
-      roles: [
-        { id: ' ', role: '全部' },
-        { id: 1, role: 'root' },
-        { id: 2, role: '管理员' },
-        { id: 3, role: '运营主管' }
-      ],
       tableData: [
-        { id: 1, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', useState: '可用', description: '打工仔' },
-        { id: 2, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', useState: '可用', description: '超级管理员' },
-        { id: 3, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '禁用', description: '打工仔' },
-        { id: 4, userNumber: '9527', userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', useState: '可用', description: '' }
+        { id: 1, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', userStateCode: 1, description: '打工仔' },
+        { id: 2, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', userStateCode: 1, description: '超级管理员' },
+        { id: 3, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', userStateCode: 0, description: '打工仔' },
+        { id: 4, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', userStateCode: 1, description: '' }
       ]
     }
   },
   props: {},
   components: {},
   mounted() {
-    // this.getPageData()
+    this.getPageData()
   },
   watch: {},
   computed: {},
@@ -108,58 +101,78 @@ export default {
         this.setMsg('error', res.msg)
       }
     },
+    // 改变用户账号状态
     handleChangeUseState (index, action) {
+      let actionList = {
+        '删除': deleteUser,
+        '禁用': closeUser,
+        '恢复': openUser
+      }
       this.$confirm(`确认${action}此用户？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (action === '删除') {
-          deleteUser({ id: this.tableData[index].id })
-            .then(res => {
-              if (res.status === 'true') {
+        return actionList[action]({ id: this.tableData[index].id })
+          .then(res => {
+            if (res.status === 'true') {
+              if (action === '删除') {
                 this.getPageData()
               } else {
-                this.setMsg('error', res.msg)
+                this.tableData[index].userStateCode = action === '禁用' ? 0 : 1
               }
-            }).catch(() => {})
-        } else {
-          this.changeUseState(index, action)
-        }
+            } else {
+              this.setMsg('error', res.msg)
+            }
+          })
       }).catch(() => {})
     },
-    changeUseState(index, action) {
-      let actionMethod = action === '禁用' ? closeUser : openUser
-      actionMethod({ id: this.tableData[index].id })
-        .then(res => {
-          if (res.status === 'true') {
-            this.tableData[index].useState = action === '禁用' ? '禁用' : '可用'
-          } else {
-            this.setMsg('error', res.msg)
-          }
-        }).catch(() => {})
-    },
-    setUser (item) {
-      if (item) {
+    // 新增编辑用户
+    setUser (index) {
+      if (arguments.length) {
         this.userFormTitle = '编辑用户'
-        Object.assign(this.userForm, item)
+        this.userForm.index = index
+        Object.assign(this.userForm, this.tableData[index])
       } else {
-        this.userForm.id = ''
-        this.userForm.userNumber = ''
+        delete this.userForm.index
+        delete this.userForm.id
         this.userFormTitle = '新增用户'
       }
       this.isShowUserForm = true
     },
+    // 关闭用户信息窗
     cancelSet (formName) {
       this.isShowUserForm = false
       this.$refs[formName].resetFields()
     },
+    // 保存更改
     postSave (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$message({ showClose: true, type: 'warning', message: '数据验证合格' })
-        } else {
-          this.$message({ showClose: true, type: 'warning', message: '数据验证失败' })
+          let actionList = {
+            '新增用户': createUser,
+            '编辑用户': updateUser
+          }
+          let params = {
+            username: this.userForm.userName,
+            name: this.userForm.realName,
+            email: this.userForm.email,
+            role: this.userForm.role,
+            statusCode: this.userForm.userStateCode,
+            supervisorDesc: this.userForm.description
+          }
+          if (this.userFormTitle === '编辑用户') {
+            params.id = this.userForm.id
+          }
+          actionList[this.userFormTitle](params)
+            .then(res => {
+              if (res.status === 'true') {
+                this.isShowUserForm = false
+                this.tableData[this.userForm.index] && Object.assign(this.tableData[this.userForm.index], this.userForm)
+              } else {
+                this.setMsg('error', res.msg)
+              }
+            }).catch(() => {})
         }
       })
     }
