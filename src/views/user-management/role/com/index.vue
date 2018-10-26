@@ -154,7 +154,7 @@
         getRoleDetail({ roleId: this.id }).then(res => {
           if (res.status === 'true') {
             let data = res.info
-            this.ruleForm.pushList = res.info.pushPermisList
+            // this.ruleForm.pushList = res.info.pushPermisList
             if (data.role) {
               if (this.type !== 'copy') {
                 this.ruleForm.roleName = data.role.roleName
@@ -191,18 +191,18 @@
                 }
               }
             }
-            console.log('this.ruleForm.pushList', this.ruleForm.pushList)
-            let pushList = []
-            this.ruleForm.pushList.forEach(v => {
-              if (v.selected === 1) {
-                pushList.push(v.id)
-              }
-            })
+            // console.log('this.ruleForm.pushList', this.ruleForm.pushList)
+            // let pushList = []
+            // this.ruleForm.pushList.forEach(v => {
+            //   if (v.selected === 1) {
+            //     pushList.push(v.id)
+            //   }
+            // })
             let ajaxParameters = {
               roleName: this.ruleForm.roleName,
               roleDesc: this.ruleForm.roleDesc,
-              permisIds: this.ruleForm.permisIds,
-              pushPermisIds: this.pushListChange ? this.ruleForm.pushPermisIds : pushList
+              permisIds: this.ruleForm.permisIds
+              // pushPermisIds: this.pushListChange ? this.ruleForm.pushPermisIds : pushList
             }
 
             let requestWay = roleAdd
@@ -238,7 +238,7 @@
         </span>);
       },
       handleClick(tab, event) {
-        console.log(tab, event);
+        // console.log(tab, event);
       },
       getInfoPush (val) {
         console.log('val', val)
