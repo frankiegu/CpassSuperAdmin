@@ -5,10 +5,13 @@ export default {
   data () {
     const checkEmail = (rule, value, callback) => {
       let emailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
-      if (!emailReg.test(value) && value) {
+      if (!value) {
+        callback(new Error('邮箱不能为空'))
+      } else if (!emailReg.test(value)) {
         callback(new Error('邮箱格式不正确'))
+      } else {
+        callback()
       }
-      callback()
     }
     const checkName = (rule, value, callback) => {
       if (!value) {

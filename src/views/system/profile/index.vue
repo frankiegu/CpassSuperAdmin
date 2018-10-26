@@ -10,9 +10,8 @@
         </div>
         <div class="user-info">
           <div class="info-up">
-            <span class="user-name">{{ name }}Keller</span>
+            <span class="user-name">{{ name }}</span>
             <el-tag v-if="roleName">{{ roleName }}</el-tag>
-            <el-tag type="success" v-if="isSpaceKeeper === 1">品牌管家</el-tag>
 
             <router-link to="/system/profile/edit">
               <el-button type="primary">编辑信息</el-button>
@@ -20,10 +19,6 @@
             <el-button @click="dialogVisible = true">修改密码</el-button>
           </div>
           <div class="info-down">
-            <!--<div class="info-site">-->
-            <!--<span class="site-title">所属空间：</span>-->
-            <!--<span class="site-desc">{{ storeNames || '尚无所属空间' }}</span>-->
-            <!--</div>-->
             <div class="info-site">
               <span class="site-title">联系电话：</span>
               <span class="site-desc">{{ contactTel || '未填写' }}</span>
@@ -152,7 +147,7 @@
 </template>
 
 <script>
-  // import { adminUserDetail, resetByPassword } from '@/service'
+  import { adminUserInfo, resetByPassword } from '@/service'
   import Cookies from 'js-cookie'
   import personalMixins from './personal.mixins'
   export default {
@@ -166,9 +161,7 @@
         contactTel: '', // 联系方式
         email: '', // 电子邮箱
         roleName: '', // 职务
-        storeNames: '', // 所属空间
         headImgUrl: '', // 用户头像
-        isSpaceKeeper: '', // 用户是否为品牌管家
         statusList: [],
 
         // 绑定微信模块
@@ -183,14 +176,14 @@
           six: true
         }],
 
-        outh2AdminUser: '', // 绑定微信相关
-        pushPermis: [], // 推送消息相关
+        // outh2AdminUser: '', // 绑定微信相关
+        // pushPermis: [], // 推送消息相关
         // 修改密码dialog
         dialogVisible: false
       }
     },
     mounted () {
-      // this.getUserInfo()
+      this.getUserInfo()
     },
     methods: {
       // 重置表单
@@ -198,43 +191,41 @@
         this.$refs[formName].resetFields()
       },
       getUserInfo () {
-        // adminUserDetail().then(res => {
-        //   if (res.status === 'true') {
-        //     if (res.info) {
-        //       this.userInfo = res.info.adminUser || ''
-        //       if (this.userInfo) {
-        //         this.name = this.userInfo.name || ''
-        //         this.contactTel = this.userInfo.contactTel || ''
-        //         this.roleName = this.userInfo.roleName || ''
-        //         this.storeNames = this.userInfo.storeNames || ''
-        //         this.headImgUrl = this.userInfo.headImgUrl || ''
-        //         this.email = this.userInfo.email || ''
-        //       }
-        //       this.isSpaceKeeper = res.info.isSpaceKeeper || ''
-        //       this.pushPermis = res.info.pushPermis || []
-        //       this.outh2AdminUser = res.info.outh2AdminUser || null
-        //       this.statusList = [{}]
-        //     }
-        //   } else this.setMsg('error', res.msg)
-        // })
+        adminUserInfo().then(res => {
+          if (res.status === 'true') {
+            if (res.info) {
+              this.userInfo = res.info || ''
+              if (this.userInfo) {
+                this.name = this.userInfo.name || ''
+                this.contactTel = this.userInfo.contactTel || ''
+                this.roleName = this.userInfo.roleName || ''
+                this.headImgUrl = this.userInfo.headImgUrl || ''
+                this.email = this.userInfo.email || ''
+              }
+              // this.pushPermis = res.info.pushPermis || []
+              // this.outh2AdminUser = res.info.outh2AdminUser || null
+              this.statusList = [{}]
+            }
+          } else this.setMsg('error', res.msg)
+        })
       },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            // resetByPassword({
-            //   oldPassword: this.replacePwd.oldPwd,
-            //   newPassword: this.replacePwd.secondNewPwd
-            // }).then(res => {
-            //   if (res.status === 'true') {
-            //   //                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
-            //     this.setMsg('success', '密码修改成功，请重新登录!')
-            //     this.dialogVisible = false
-            //     const self = this
-            //     setTimeout(() => {
-            //       self.logout()
-            //     }, 2000);
-            //   } else this.setMsg('error', res.msg)
-            // })
+            resetByPassword({
+              oldPassword: this.replacePwd.oldPwd,
+              newPassword: this.replacePwd.secondNewPwd
+            }).then(res => {
+              if (res.status === 'true') {
+              //                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
+                this.setMsg('success', '密码修改成功，请重新登录!')
+                this.dialogVisible = false
+                const self = this
+                setTimeout(() => {
+                  self.logout()
+                }, 2000);
+              } else this.setMsg('error', res.msg)
+            })
           } else {
             return false;
           }

@@ -118,11 +118,11 @@ let userInfo = {
   'id': 31,
   'name': 'CPASS前端',
   'username': '13800131004',
-  'email': null,
+  'contactTel': '13800131004',
+  'email': '2233768@qq.com',
   'statusCode': 0,
-  'roleName': null,
   'role': null,
-  'supervisorDesc': '前端',
+  'roleName': '前端',
   'headImgUrl': 'http://shared-office.oss-cn-shenzhen.aliyuncs.com/shared-office/img/20181026/20181026144540265CJ5.jpg'
 
 }

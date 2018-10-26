@@ -2,8 +2,8 @@
   <div class="admin-personal">
     <lh-title/>
 
-    <div class="lh-card-box">
-      <h3 class="desc-title">基础信息</h3>
+    <div class="card-padding pt0">
+      <h3 class="grid-title">基础信息</h3>
 
       <div class="lh-card-body">
 
@@ -16,7 +16,7 @@
 
           <el-row>
             <el-col :span="6">
-              <p class="mb16 mt6 input-title">登录名</p>
+              <p class="text-title mb16 mt6 input-title">登录名</p>
               <el-form-item class="ml85 mb6" prop="username">
                 <el-input class="phoneInput" :disabled="true" v-model.trim="userInfo.username"></el-input>
                 <!--<p style="color: #8492A6">暂不支持修改登录名</p>-->
@@ -26,19 +26,19 @@
             <el-col :span="6">
               <p class="text-title mb16 mt6 input-title">昵称</p>
               <el-form-item class="ml85" prop="name">
-                <el-input class="phoneInput" :maxlength="10" v-model.trim="userInfo.name" auto-complete="off"></el-input>
+                <el-input class="phoneInput" placeholder="请输入昵称"  :maxlength="10" v-model.trim="userInfo.name" auto-complete="off"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="6">
-              <p class="mb16 mt6 input-title">电子邮箱</p>
-              <el-form-item prop="email" class="ml85">
+              <p class="text-title mb16 mt6 input-title">电子邮箱</p>
+              <el-form-item class="ml85" prop="email">
                 <el-input class="phoneInput" placeholder="请输入邮箱" v-model.trim="userInfo.email" auto-complete="off"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="6">
-              <p class="mb16 mt6 input-title">手机号码</p>
+              <p class="text-title mb16 mt6 input-title">手机号码</p>
               <el-form-item class="ml85">
                 <el-input class="phoneInput" :disabled="true" v-model.trim="replace.tel" auto-complete="off"></el-input>
                 &nbsp;&nbsp;
@@ -110,41 +110,41 @@
     <!--</div>-->
 
     <!-- qr -->
-    <el-dialog
-      :visible.sync="qrDialogVisible"
-      :before-close="closeQrDialog"
-      width="298px"
-      class="qr-box-more">
+    <!--<el-dialog-->
+      <!--:visible.sync="qrDialogVisible"-->
+      <!--:before-close="closeQrDialog"-->
+      <!--width="298px"-->
+      <!--class="qr-box-more">-->
 
-      <div class="qr-box">
-        <qr-code
-          :text="qrUrl"
-          :size="258"
-          error-level="L"
-          title="微信扫码绑定微信号"></qr-code>
+      <!--<div class="qr-box">-->
+        <!--<qr-code-->
+          <!--:text="qrUrl"-->
+          <!--:size="258"-->
+          <!--error-level="L"-->
+          <!--title="微信扫码绑定微信号"></qr-code>-->
 
-        <!-- 未绑定和已绑定的状态 -->
-        <div class="theme-gray text-center mt10">
-          <!-- 可以区分添加和绑定 -->
-          <!-- 已经绑定 -->
-          <div v-if="this.userInfo.nickName">
+        <!--&lt;!&ndash; 未绑定和已绑定的状态 &ndash;&gt;-->
+        <!--<div class="theme-gray text-center mt10">-->
+          <!--&lt;!&ndash; 可以区分添加和绑定 &ndash;&gt;-->
+          <!--&lt;!&ndash; 已经绑定 &ndash;&gt;-->
+          <!--<div v-if="this.userInfo.nickName">-->
 
-          </div>
-          <p v-if="this.copyNickName" class="bind-style">
-            <span v-if="this.copyNickName !== this.userInfo.nickName">
-              <i class="el-icon-success theme-green mr5"></i>绑定成功
-            </span>
-            <span v-else>微信扫码重新绑定微信号</span>
-          </p>
-          <p v-else>
-            <span v-if="this.userInfo.nickName">
-              <i class="el-icon-success theme-green mr5"></i>绑定成功
-            </span>
-            <span v-else>微信扫码绑定微信号</span>
-          </p>
-        </div>
-      </div>
-    </el-dialog>
+          <!--</div>-->
+          <!--<p v-if="this.copyNickName" class="bind-style">-->
+            <!--<span v-if="this.copyNickName !== this.userInfo.nickName">-->
+              <!--<i class="el-icon-success theme-green mr5"></i>绑定成功-->
+            <!--</span>-->
+            <!--<span v-else>微信扫码重新绑定微信号</span>-->
+          <!--</p>-->
+          <!--<p v-else>-->
+            <!--<span v-if="this.userInfo.nickName">-->
+              <!--<i class="el-icon-success theme-green mr5"></i>绑定成功-->
+            <!--</span>-->
+            <!--<span v-else>微信扫码绑定微信号</span>-->
+          <!--</p>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</el-dialog>-->
 
     <!-- 修改手机号码 -->
     <el-dialog
@@ -245,6 +245,7 @@
   import countdown from '@/mixins/countdown'
   import personalMixins from './personal.mixins'
   // import { adminUserDetail, resetUsername, sendResetUsernameCode, userIsExist, generateSecret, adminUserUpdate } from '@/service'
+  import { adminUserInfo, adminUserUpdate } from '@/service'
 
   export default {
     mixins: [countdown, focusMixin, personalMixins],
@@ -287,7 +288,7 @@
       }
     },
     mounted () {
-      // this.getUserInfo()
+      this.getUserInfo()
     },
     methods: {
       // 添加的时候
@@ -351,32 +352,32 @@
         // })
       },
       getUserInfo () {
-        // adminUserDetail().then(res => {
-        //   if (res.status === 'true') {
-        //     let data = res.info
-        //     this.userInfo = {
-        //       id: data.adminUser.id,
-        //       name: data.adminUser.name,
-        //       email: data.adminUser.email,
-        //       username: data.adminUser.username || null,
-        //       headImgUrl: data.adminUser.headImgUrl || null,
-        //       isSuper: data.adminUser.isSuper,
-        //       openId: data.outh2AdminUser ? data.outh2AdminUser.openId : '',
-        //       nickName: data.outh2AdminUser ? data.outh2AdminUser.nickName : ''
-        //     }
-        //
-        //     this.pushPermis = res.info.pushPermis || []
-        //     this.statusList = [{}]
-        //
-        //     // 如果绑定成功了，就改变条件，不在调用接口
-        //     // console.log('test', !!(this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)), 'val', this.isEmptyJudge, 'nick', this.copyNickName, 'name', this.userInfo.nickName);
-        //     if (this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)) {
-        //       this.isEmpty = 1
-        //     }
-        //
-        //     this.replace.tel = data.adminUser.username
-        //   } else this.setMsg('error', res.msg)
-        // })
+        adminUserInfo().then(res => {
+          if (res.status === 'true') {
+            let data = res.info
+            this.userInfo = {
+              id: data.id,
+              name: data.name,
+              email: data.email,
+              username: data.username || null,
+              headImgUrl: data.headImgUrl || null
+              // isSuper: data.adminUser.isSuper,
+              // openId: data.outh2AdminUser ? data.outh2AdminUser.openId : '',
+              // nickName: data.outh2AdminUser ? data.outh2AdminUser.nickName : ''
+            }
+
+            // this.pushPermis = res.info.pushPermis || []
+            this.statusList = [{}]
+
+            // 如果绑定成功了，就改变条件，不在调用接口
+            // console.log('test', !!(this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)), 'val', this.isEmptyJudge, 'nick', this.copyNickName, 'name', this.userInfo.nickName);
+            if (this.isEmptyJudge && (this.copyNickName !== this.userInfo.nickName)) {
+              this.isEmpty = 1
+            }
+
+            this.replace.tel = data.username
+          } else this.setMsg('error', res.msg)
+        })
       },
       closeQrDialog(done) {
         if (!this.copyNickName || (this.copyNickName === this.userInfo.nickName)) {
@@ -458,21 +459,23 @@
       replaceName (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            // let dataObj = {
-            //   id: this.userInfo.id,
-            //   name: this.userInfo.name,
-            //   email: this.userInfo.email,
-            //   headImgUrl: this.userInfo.headImgUrl,
-            //   contactTel: this.replace.tel
-            // }
-            // adminUserUpdate(dataObj).then(res => {
-            //   if (res.status === 'true') {
-            //     sessionStorage.setItem('username', this.userInfo.name)
-            //     this.$store.commit('SET_NAME', this.userInfo.name)
-            //
-            //     this.setMsg('success', '修改成功！')
-            //   } else this.setMsg('error', res.msg)
-            // })
+            let dataObj = {
+              id: this.userInfo.id,
+              name: this.userInfo.name,
+              email: this.userInfo.email,
+              headImgUrl: this.userInfo.headImgUrl,
+              contactTel: this.replace.tel
+            }
+            adminUserUpdate(dataObj).then(res => {
+              if (res.status === 'true') {
+                sessionStorage.setItem('username', this.userInfo.name)
+                this.$store.commit('SET_NAME', this.userInfo.name)
+                sessionStorage.setItem('avatar', this.userInfo.headImgUrl)
+                this.$store.commit('SET_AVATAR', this.userInfo.headImgUrl)
+
+                this.setMsg('success', '修改成功！')
+              } else this.setMsg('error', res.msg)
+            })
           } else {
             return false
           }
