@@ -5,6 +5,7 @@
     <div class="lh-form-box">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <el-button
+          v-if="handleHasPermissions('/supervisor/supervisor/add')"
           class="fl add-account"
           type="primary"
           @click="setUser()"
@@ -53,7 +54,7 @@
     </div>
 
     <!-- 新增编辑用户 -->
-    <transition name="slide-fade">
+    <transition v-if="handleHasPermissions(['/supervisor/supervisor/update', '/supervisor/supervisor/add'])" name="slide-fade">
       <el-form
         :model="userForm"
         ref="userForm"
@@ -130,6 +131,9 @@
           <div class="footer">
             <p class="theme-gray mb22" v-if="userForm.hasOwnProperty('id')">新增账号初始密码为手机号后6位</p>
               <el-button
+                v-if="handleHasPermissions([
+                '/supervisor/supervisor/update',
+                '/supervisor/supervisor/add'])"
                 class="btn-save width80px"
                 type="primary"
                 @click="postSave('userForm')">{{ this.userForm.id?'提交':'新增用户' }}</el-button>
@@ -166,12 +170,21 @@
               {{ scope.row.description || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="contact" align="center" width="150">
+        <el-table-column
+          v-if="handleHasPermissions([
+          '/supervisor/supervisor/update',
+          '/supervisor/supervisor/open',
+          '/supervisor/supervisor/close',
+          '/supervisor/supervisor/delete'])"
+          label="操作"
+          prop="contact"
+          align="center"
+          width="150">
           <template v-if="scope.row.role !== 'root'" slot-scope="scope">
-            <el-button @click="setUser(scope.$index)" type="text">编辑</el-button>
-            <el-button v-if="scope.row.userStateCode === 1" @click="handleChangeUseState(scope.$index, '禁用')" type="text">禁用</el-button>
-            <el-button v-else @click="handleChangeUseState(scope.$index, '恢复')" type="text">恢复</el-button>
-            <el-button @click="handleChangeUseState(scope.$index, '删除')" type="text">删除</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/supervisor/update')" @click="setUser(scope.$index)" type="text">编辑</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/supervisor/close') && scope.row.userStateCode === 1" @click="handleChangeUseState(scope.$index, '禁用')" type="text">禁用</el-button>
+            <el-button v-else-if="handleHasPermissions('/supervisor/supervisor/open')" @click="handleChangeUseState(scope.$index, '恢复')" type="text">恢复</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/supervisor/delete')" @click="handleChangeUseState(scope.$index, '删除')" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
