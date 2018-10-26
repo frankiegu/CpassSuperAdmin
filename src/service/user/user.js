@@ -8,18 +8,15 @@ import { API_PATH } from '../../config/env'
 export const getUserList = obj => fetch(API_PATH + '/supervisor/supervisor/page', obj, 'GET')
 
 // 新增用户
-// export const userAdd = obj => fetch(API_PATH + '/supervisor/supervisor/add', obj, 'POST')
+export const createUser = obj => fetch(API_PATH + '/supervisor/supervisor/add', obj, 'POST')
 
 // 编辑用户
-// export const userUpdate = obj => fetch(API_PATH + '/supervisor/supervisor/update', obj, 'POST')
-
-// 用户明细
-// export const getuserDetail = obj => fetch(API_PATH + '/supervisor/supervisor/getuserDetail', obj, 'GET')
+export const updateUser = obj => fetch(API_PATH + '/supervisor/supervisor/update', obj, 'POST')
 
 // 禁用用户
 export const closeUser = obj => fetch(API_PATH + '/supervisor/supervisor/close', obj, 'POST')
 
-// 启用用户
+// 恢复用户
 export const openUser = obj => fetch(API_PATH + '/supervisor/supervisor/open', obj, 'POST')
 
 // 删除用户
