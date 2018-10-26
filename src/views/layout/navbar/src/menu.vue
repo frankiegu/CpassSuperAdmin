@@ -21,7 +21,7 @@
             <img v-if="avatar" :src="avatar">
             <img v-else src="/static/images/default-logo.png">
           </div>
-          <span class="fl user-name ml8">{{name}}</span>
+          <span class="fl user-name ml8">{{name || '雷猴'}}</span>
         </template>
 
         <el-menu-item class="a-link" index="2-1">
