@@ -18,9 +18,10 @@
       <el-submenu index="2" class="profile-box">
         <template slot="title">
           <div class="avatar-cont">
-            <img src="/static/images/default-logo.png">
+            <img v-if="avatar" :src="avatar">
+            <img v-else src="/static/images/default-logo.png">
           </div>
-          <span class="fl user-name ml8">酷雷托</span>
+          <span class="fl user-name ml8">{{name}}</span>
         </template>
 
         <el-menu-item class="a-link" index="2-1">

@@ -26,7 +26,7 @@
             <el-col :span="6">
               <p class="text-title mb16 mt6 input-title">昵称</p>
               <el-form-item class="ml85" prop="name">
-                <el-input class="phoneInput" v-model.trim="userInfo.name" auto-complete="off"></el-input>
+                <el-input class="phoneInput" :maxlength="10" v-model.trim="userInfo.name" auto-complete="off"></el-input>
               </el-form-item>
             </el-col>
 

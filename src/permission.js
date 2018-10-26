@@ -2,6 +2,9 @@ import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 import nProgress from 'nprogress'       // Progress 进度条
+import { Message } from 'element-ui'      // 在js中引入ele组件 message
+const notify = Message
+Vue.prototype.$Message = notify
 
 function catchErr (next, error) {
   Vue.prototype.$Message({
