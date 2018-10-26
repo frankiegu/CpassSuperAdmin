@@ -65,6 +65,17 @@ export default {
       }
       callback()
     }
+    const checkSettlementDate2 = (rule, value, callback) => {
+      if (this.isCreateAccount && +this.dataForm.settlementCycle === 2) {
+        if (!value) {
+          return callback(new Error('周期不能为空'))
+        } else if ((isNaN(value) || Number(value) < 0 || value.toString().indexOf('.') !== -1)) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+      callback()
+    }
     const checkBankCardNum = (rule, value, callback) => {
       if (this.isCreateAccount && +this.dataForm.settlementType === 3) {
         if (!value) {
@@ -269,6 +280,7 @@ export default {
         serviceFeeProportion: [{ validator: checkFeeRatio, trigger: ['blur', 'change'] }],
         validity: [{ validator: checkValidity, trigger: ['blur', 'change'] }],
         settlementCycle: [{ validator: checkSettlementCycle, trigger: ['blur', 'change'] }],
+        settlementDate2: [{ validator: checkSettlementDate2, trigger: ['blur', 'change'] }],
         bankCardNum: [{ validator: checkBankCardNum, trigger: ['blur', 'change'] }],
         bank: [{ validator: checkBank, trigger: ['blur', 'change'] }],
         weixinPayNum: [{ validator: checkWeixinPayNum, trigger: ['blur', 'change'] }],
@@ -591,7 +603,7 @@ export default {
       if (!status) {
         this.dataForm.isOpenWxService = 0
         this.dataForm.isOpenPayment = 0
-        this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'adminUsername', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum'], false)
+        this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'adminUsername', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum', 'settlementDate2'], false)
       }
     },
 

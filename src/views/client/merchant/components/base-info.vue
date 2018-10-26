@@ -44,12 +44,12 @@
         :maxlength="200" v-else></el-input>
     </el-form-item>
 
-    <!--<el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin" label-width="110px"-->
-      <!--:error="errorField === 'weixin' ? errorMsg : ''"-->
-      <!--v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">-->
-      <!--<p class="label-content" v-if="infoType === 'detail'">{{modelForm.weixin}}</p>-->
-      <!--<el-input v-model.trim="modelForm.weixin" class="width100" placeholder="请输入微信服务号" v-else></el-input>-->
-    <!--</el-form-item>-->
+    <el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin" label-width="110px"
+      :error="errorField === 'weixin' ? errorMsg : ''"
+      v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">
+      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.weixin}}</p>
+      <el-input v-model.trim="modelForm.weixin" class="width100" placeholder="请输入微信服务号" v-else></el-input>
+    </el-form-item>
 
     <el-form-item label="官方网址" prop="officialWebsite" :rules="checkIP" ref="officialWebsite" label-width="110px"
       :error="errorField === 'officialWebsite' ? errorMsg : ''"

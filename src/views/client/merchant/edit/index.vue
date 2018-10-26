@@ -71,8 +71,11 @@
                   周期结算
                 </el-radio>
                 <span class="input-unit">每</span>
-                <el-input v-model.number.trim="dataForm.settlementDate2" class="small-input"
-                  :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2"></el-input>
+                <el-form-item class="mb0 dib" prop="settlementDate2" ref="settlementDate2"
+                  :rules="dataRules.settlementDate2">
+                  <el-input v-model.number.trim="dataForm.settlementDate2" class="small-input"
+                    :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2"></el-input>
+                </el-form-item>
                 <el-select v-model="dataForm.settlementCycleType" class="small-input ml8"
                   :disabled="!dataForm.productStatus || +dataForm.settlementCycle !== 2">
                   <el-option v-for="item in settlementCycleTypeList" :key="item.name" :label="item.name"
