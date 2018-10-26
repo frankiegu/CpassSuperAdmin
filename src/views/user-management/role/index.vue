@@ -5,6 +5,7 @@
     <div class="lh-form-box">
       <el-form :model="formData" :inline="true" class="text-right mr-10" @submit.native.prevent>
         <router-link
+          v-if="handleHasPermissions('/supervisor/role/add')"
           class="fl el-icon-circle-plus to-bottom-right"
           to="/user-management/role/com?type=add" tag="a">
           &nbsp;新增角色
@@ -45,18 +46,24 @@
             {{scope.row.roleDesc || '-'}}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column
+          v-if="handleHasPermissions([
+          '/supervisor/role/update',
+          '/supervisor/role/close',
+          '/supervisor/role/delete'])"
+          label="操作"
+          align="center">
           <template slot-scope="scope">
-            <el-button type="text">
+            <el-button v-if="handleHasPermissions('/supervisor/role/update')" type="text">
               <router-link
                 to="/user-management/role/com?type=edit&&id=10"
                 class="table-link mr5">
                 编辑
               </router-link>
             </el-button>
-            <el-button v-if="scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row.id)">禁用</el-button>
-            <el-button v-else type="text" @click="handleChangeUseState(2, scope.row.id)">恢复</el-button>
-            <el-button type="text" @click="handleChangeUseState(3, scope.row.id)">删除</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/role/close') && scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row.id)">禁用</el-button>
+            <el-button v-else-if="handleHasPermissions('/supervisor/role/open')" type="text" @click="handleChangeUseState(2, scope.row.id)">恢复</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/role/delete')" type="text" @click="handleChangeUseState(3, scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
