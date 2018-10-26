@@ -75,10 +75,10 @@
             </el-form-item>
 
             <!-- 如没有开通支付，则无mch_id和key信息 -->
-            <el-form-item label="客户服务号mch_ID" v-if="dataForm.spaceWeixinPayId">
+            <el-form-item label="客户服务号mch_ID" v-if="dataForm.mchId">
               <p class="label-content">{{dataForm.mchId}}</p>
             </el-form-item>
-            <el-form-item label="客户服务号key" v-if="dataForm.spaceWeixinPayId">
+            <el-form-item label="客户服务号key" v-if="dataForm.mchKey">
               <p class="label-content">{{dataForm.mchKey}}</p>
             </el-form-item>
           </el-col>

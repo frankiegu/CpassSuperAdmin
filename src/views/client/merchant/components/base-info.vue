@@ -34,7 +34,7 @@
     <el-form-item label="联系电话" prop="phone" :rules="checkTel" ref="phone" label-width="110px">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.phone}}</p>
       <el-input v-model.trim="modelForm.phone" class="width100" placeholder="请输入联系电话"
-        :maxlength="100" v-else></el-input>
+        :maxlength="20" v-else></el-input>
     </el-form-item>
 
     <el-form-item label="邮箱" prop="email" :rules="checkEmail" ref="email" label-width="110px"
@@ -44,12 +44,12 @@
         :maxlength="200" v-else></el-input>
     </el-form-item>
 
-    <el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin" label-width="110px"
-      :error="errorField === 'weixin' ? errorMsg : ''"
-      v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">
-      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.weixin}}</p>
-      <el-input v-model.trim="modelForm.weixin" class="width100" placeholder="请输入微信服务号" v-else></el-input>
-    </el-form-item>
+    <!--<el-form-item label="微信服务号" prop="weixin" :rules="checkWeixin" ref="weixin" label-width="110px"-->
+      <!--:error="errorField === 'weixin' ? errorMsg : ''"-->
+      <!--v-if="infoType === 'detail' && (modelForm.weixin && !!modelForm.weixin.length) || !infoType">-->
+      <!--<p class="label-content" v-if="infoType === 'detail'">{{modelForm.weixin}}</p>-->
+      <!--<el-input v-model.trim="modelForm.weixin" class="width100" placeholder="请输入微信服务号" v-else></el-input>-->
+    <!--</el-form-item>-->
 
     <el-form-item label="官方网址" prop="officialWebsite" :rules="checkIP" ref="officialWebsite" label-width="110px"
       :error="errorField === 'officialWebsite' ? errorMsg : ''"
@@ -59,8 +59,11 @@
     </el-form-item>
 
     <el-form-item label="联系地址" ref="address" label-width="110px"
-      v-if="infoType === 'detail' && (modelForm.address && !!modelForm.address.length) || !infoType">
-      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.address}}</p>
+      v-if="infoType === 'detail' && (modelForm.countryName && !!modelForm.countryName.length) || !infoType">
+      <p class="label-content" v-if="infoType === 'detail'">
+        {{modelForm.countryName + ' ' + modelForm.provinceName + ' ' + modelForm.cityName + ' ' + modelForm.regionName}}<br />
+        {{modelForm.address}}<br />
+      </p>
       <el-form-item v-else>
         <el-row justify="space-between" type="flex" :gutter="14" align="middle">
           <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
@@ -84,16 +87,24 @@
     <el-form-item label="公司/品牌简介" ref="remark" label-width="110px"
       v-if="infoType === 'detail' && (modelForm.remark && !!modelForm.remark.length) || !infoType">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.remark}}</p>
-      <el-input type="textarea" v-model.trim="modelForm.remark" :rows="4"
-        class="width100" placeholder="请输入公司/品牌简介" :maxlength="300" v-else></el-input>
+      <!--<el-input type="textarea" v-model.trim="modelForm.remark" :rows="4"-->
+        <!--class="width100" placeholder="请输入公司/品牌简介" :maxlength="300" v-else></el-input>-->
+      <lh-textarea
+        class="width100"
+        :textData="modelForm.remark"
+        :maxlength="300"
+        placeholder="请输入公司/品牌简介"
+        :minRows="4"
+        :maxRows="4"
+        @input="val => modelForm.remark = val" v-else />
     </el-form-item>
 
-    <el-form-item label="销售经理" ref="saleManager" label-width="110px"
-      v-if="infoType === 'detail' && (modelForm.saleManager && !!modelForm.saleManager.length) || !infoType">
-      <p class="label-content" v-if="infoType === 'detail'">{{modelForm.saleManager}}</p>
-      <el-input v-model.trim="modelForm.saleManager" class="width100"
-        placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>
-    </el-form-item>
+    <!--<el-form-item label="销售经理" ref="saleManager" label-width="110px"-->
+      <!--v-if="infoType === 'detail' && (modelForm.saleManager && !!modelForm.saleManager.length) || !infoType">-->
+      <!--<p class="label-content" v-if="infoType === 'detail'">{{modelForm.saleManager}}</p>-->
+      <!--<el-input v-model.trim="modelForm.saleManager" class="width100"-->
+        <!--placeholder="填写负责跟进该客户的销售经理" :maxlength="100" v-else></el-input>-->
+    <!--</el-form-item>-->
 
     <!--<el-form-item label="创建智众账户" v-if="!infoType && !hasAccount">-->
       <!--<el-switch v-model="isCreateAccount" @change="changeCreateStatus"></el-switch>-->
@@ -199,7 +210,7 @@
     },
     watch: {
       'modelForm.countryId'(val, old) {
-        if (val) {
+        if (this.infoType !== 'detail' && val) {
           this.getRegionList()
         }
       }

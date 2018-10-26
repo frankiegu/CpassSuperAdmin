@@ -385,13 +385,14 @@
           }
         })
       },
+
       // 点击弹窗确定按钮更新客户资料
       // 表单根据新增时分为四个部分：基础信息、账户信息、公众号信息、支付信息
       async handleUpdateClient() {
         this.updateLoading = true
         // 如果基础信息发生了修改
         if (this.hasChangeInfo) {
-          this.updateClientInfo()
+          await this.updateClientInfo()
         } else {
           this.hasUpdateInfo = true
           if (this.hasUpdateComplete) this.handleUpdateComplete()
@@ -399,77 +400,40 @@
 
         // 如果账户信息发生了修改
         if (this.hasChangeAccount || this.hasChangeAccountStatus) {
+          // console.log('ACCOUNT START')
           await this.updateAccount()
-
-          // 如果公众号信息发生了修改
-          if (this.hasChangeOffice || this.hasChangeOfficeStatus) {
-            let hasOpenOfficial = await this.handleOpenOfficial(this.spaceId)
-            if (hasOpenOfficial) {
-              this.hasUpdateOffice = true
-              this.dialogVisible = false
-              this.updateLoading = false
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
-
-              // 如果支付信息发生了修改
-              if (this.hasChangePay || this.hasChangePayStatus) {
-                this.updatePay()
-              } else {
-                this.hasUpdatePay = true
-                if (this.hasUpdateComplete) this.handleUpdateComplete()
-              }
-            } else {
-              this.hasUpdateOffice = false
-              this.dialogVisible = false
-              this.updateLoading = false
-            }
-          } else {
-            this.hasUpdateOffice = true
-            if (this.hasUpdateComplete) this.handleUpdateComplete()
-
-            // 如果支付信息发生了修改
-            if (this.hasChangePay || this.hasChangePayStatus) {
-              this.updatePay()
-            } else {
-              this.hasUpdatePay = true
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
-            }
-          }
         } else {
           this.hasUpdateAccount = true
+          if (this.hasUpdateComplete) this.handleUpdateComplete()
+        }
 
-          // 如果公众号信息发生了修改
-          if (this.hasChangeOffice || this.hasChangeOfficeStatus) {
-            let hasOpenOfficial = await this.handleOpenOfficial(this.spaceId)
-            if (hasOpenOfficial) {
-              this.hasUpdateOffice = true
-              this.dialogVisible = false
-              this.updateLoading = false
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
-
-              // 如果支付信息发生了修改
-              if (this.hasChangePay || this.hasChangePayStatus) {
-                this.updatePay()
-              } else {
-                this.hasUpdatePay = true
-                if (this.hasUpdateComplete) this.handleUpdateComplete()
-              }
-            } else {
-              this.hasUpdateOffice = false
-              this.dialogVisible = false
-              this.updateLoading = false
-            }
-          } else {
+        // 如果公众号信息发生了修改
+        if (this.hasChangeOffice || this.hasChangeOfficeStatus) {
+          // console.log('OFFICE START')
+          let hasOpenOfficial = await this.handleOpenOfficial(this.spaceId)
+          if (hasOpenOfficial) {
+            // console.log('OFFICE UPDATED')
             this.hasUpdateOffice = true
+            this.dialogVisible = false
+            this.updateLoading = false
             if (this.hasUpdateComplete) this.handleUpdateComplete()
-
-            // 如果支付信息发生了修改
-            if (this.hasChangePay || this.hasChangePayStatus) {
-              this.updatePay()
-            } else {
-              this.hasUpdatePay = true
-              if (this.hasUpdateComplete) this.handleUpdateComplete()
-            }
+          } else {
+            this.hasUpdateOffice = false
+            this.dialogVisible = false
+            this.updateLoading = false
           }
+        } else {
+          this.hasUpdateOffice = true
+          if (this.hasUpdateComplete) this.handleUpdateComplete()
+        }
+
+        // 如果支付信息发生了修改
+        if (this.hasChangePay || this.hasChangePayStatus) {
+          // console.log('PAY START')
+          this.updatePay()
+        } else {
+          this.hasUpdatePay = true
+          if (this.hasUpdateComplete) this.handleUpdateComplete()
         }
       },
 
@@ -496,6 +460,7 @@
         let res = await updateClientInfo(clientObj)
         if (res.status === 'true') {
           this.hasUpdateInfo = true
+          // console.log('INFO UPDATED')
           if (this.hasUpdateComplete) this.handleUpdateComplete()
         } else {
           this.hasUpdateInfo = false
@@ -550,6 +515,7 @@
             let resAccount = await updateAccount(accountObj)
             if (resAccount.status === 'true') {
               this.hasUpdateAccount = true
+              // console.log('ACCOUNT UPDATED')
               if (this.hasUpdateComplete) this.handleUpdateComplete()
               return resAccount
             } else {
