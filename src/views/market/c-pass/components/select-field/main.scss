@@ -1,7 +1,11 @@
 @import "src/styles/common/var";
 
 .component-store-com-team {
-
+  .repeat-tip {
+    position: absolute; top: 58px;
+    width: calc(100% - 40px);
+    text-align: center;
+  }
   .width290px {
     width: 290px;
   }

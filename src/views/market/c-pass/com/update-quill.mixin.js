@@ -34,7 +34,7 @@ export default {
                 $('.copy-quill-con .title-brand')[i].innerHTML = `<img src="${brandItm.spaceLogo}">
                 <div class="title-name">
                   <span class="name">${brandItm.spaceName}</span>
-                  <div class="num">共${brandItm.storeCount || 0}个门店</div>
+                  <div class="num">共${brandItm.storeCount || 0}个空间</div>
                 </div>`
               }
             })
@@ -91,7 +91,7 @@ export default {
           }).forEach((itm, idx) => {
             titleStore.forEach((list, i) => {
               if (itm == list.dataset.id) {
-                list.innerHTML = list.innerHTML + `<div class="quill-close">已关闭的空间标题</div>`
+                list.innerHTML = list.innerHTML + `<div class="quill-close">空间已关闭</div>`
                 // console.log('已关闭的空间标题', list.dataset.id, list);
               }
             })
@@ -125,7 +125,7 @@ export default {
           }).forEach((itm, idx) => {
             titleField.forEach((list, i) => {
               if (itm == list.dataset.id) {
-                list.innerHTML = list.innerHTML + `<div class="quill-close">已关闭的场地标题</div>`
+                list.innerHTML = list.innerHTML + `<div class="quill-close">场地已关闭</div>`
                 // console.log('已关闭的场地标题', list.dataset.id, list);
               }
             })
@@ -231,7 +231,7 @@ export default {
                     <span>·距您${fieldItm.distance ? fieldItm.distance : '-m'}</span>
                   </span>
                   <span class="price">
-                    <span class="price-statics">¥${fieldItm.priceRange || 0}</span>
+                    <span class="price-statics">¥${fieldItm.minPrice === fieldItm.maxPrice ? fieldItm.minPrice : fieldItm.minPrice + '-'  + fieldItm.maxPrice}</span>
                     <span class="text">${fieldItm.fieldType === 5 ? '元/月' : (fieldItm.fieldType === 3 ? '元/天' : '元/小时')}</span>
                   </span>
                 </div>

@@ -7,6 +7,9 @@
     :close-on-click-modal="false"
     class="component-store-com-team"
     width="420px">
+
+    <p v-show="repeatTipStatus" class="repeat-tip theme-red fz12">{{ repeatTip }}</p>
+
     <el-form
       :model="dialogData"
       :rules="dialogDataRule"
@@ -167,7 +170,7 @@
             v-if="(dialogData.addArr.length === (idx + 1)) && idx < 4"
             icon="el-icon-circle-plus"
             type="primary"
-            class="add-store">新增空间数</el-button>
+            class="add-store">新增{{ insertType === 'store' ? '空间数' : '场地数' }}</el-button>
         </div>
       </div>
     </el-form>
@@ -211,10 +214,87 @@ export default {
     }
   },
   methods: {
+    // 去重，拿到下标
+    // 插入空间、场地，并且数量大于1
+    duplicateRemoval() {
+      switch (this.insertType) {
+        case 'store':
+        case 'field':
+          let repeatIdxs = new Map()
+
+          if (this.dialogData.addArr.length > 1) {
+            if (this.insertType == 'store') {
+              this.dialogData.addArr.forEach((itm, idx) => {
+                this.dialogData.addArr.forEach((list, i) => {
+                  if (itm.storeId == list.storeId && idx != i) {
+                    if (!repeatIdxs.has(idx)) {
+                      repeatIdxs.set(idx, itm.storeId)
+                    }
+                    if (!repeatIdxs.has(i)) {
+                      repeatIdxs.set(i, list.storeId)
+                    }
+                    // console.log('log: ', itm.storeId, list.storeId, repeatIdxs);
+                  }
+                })
+              })
+            } else {
+              this.dialogData.addArr.forEach((itm, idx) => {
+                this.dialogData.addArr.forEach((list, i) => {
+                  if (itm.fieldId == list.fieldId && idx != i) {
+                    if (!repeatIdxs.has(idx)) {
+                      repeatIdxs.set(idx, itm.fieldId)
+                    }
+                    if (!repeatIdxs.has(i)) {
+                      repeatIdxs.set(i, list.fieldId)
+                    }
+                  }
+                })
+              })
+            }
+
+            if (repeatIdxs.size) {
+              let tipText
+              if (this.insertType == 'store') {
+                tipText = '空间'
+                this.repeatTip = '空间名重复：'
+              } else {
+                tipText = '场地'
+                this.repeatTip = '场地名重复：'
+              }
+
+              let arr = [...repeatIdxs.values()]
+              let keys = [...repeatIdxs.keys()]
+
+              for (let i = 0, len = arr.length; i < len; i++) {
+                // console.log('repeatIdxs-------map', arr[i - 1], arr[i]);
+
+                if (i > 0) {
+                  if (arr[i - 1] != arr[i]) {
+                    this.repeatTip += '; '
+                  } else {
+                    this.repeatTip += ','
+                  }
+                }
+
+                this.repeatTip += (tipText + (keys[i] + 1))
+              }
+
+              this.repeatTipStatus = true
+            } else {
+              this.repeatTipStatus = false
+            }
+          }
+          // console.log('verify-repeat', repeatIdxs, this.repeatTip, this.dialogData.addArr);
+          break
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         // console.log('submitForm', valid, this.dialogData);
         if (valid) {
+          this.duplicateRemoval()
+
+          if (this.repeatTipStatus) return
           this.closeDialog('save')
         } else {
         }
@@ -232,6 +312,8 @@ export default {
 
       this.dialogData = { ...this.dialogData2 }
       this.dialogData.addArr = [...this.dialogData2.addArr]
+      this.repeatTip = ''
+      this.repeatTipStatus = false
 
       if (this.$refs.dialogData) {
         this.$refs.dialogData.resetFields()
