@@ -60,7 +60,7 @@
   }
   .ql-container {
     // padding 左右 默认15
-    padding: 0 107px 24px;
+    padding: 0 0 24px;
     min-height: 380px;
     height: 380px;
     overflow: auto;
@@ -71,14 +71,14 @@
       font-size: 14px;
       font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
       padding-top: 20px;
-      padding-left: 113px;
+      padding-left: 8px;
     }
 
     // @#技巧：各屏幕大小，展示不同高度，实现类似fixed的效果
     @media screen and (max-width: 1366px) {
       max-height: 380px;
 
-      .ql-editor::before { padding-left: 86px; }
+      // .ql-editor::before { padding-left: 86px; }
     }
     @media screen and (max-width: 1440px) {
       max-height: 424px;
@@ -89,8 +89,8 @@
   }
   @media screen and (max-width: 1365px) {
     .ql-container {
-      padding-left: 80px;
-      padding-right: 80px;
+      // padding-left: 80px;
+      // padding-right: 80px;
     }
   }
   .ql-toolbar + .ql-container {
