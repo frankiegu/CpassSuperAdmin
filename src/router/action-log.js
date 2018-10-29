@@ -11,9 +11,11 @@ export default [{
   component: layout,
   noDropdown: true,
   icon: 'icon-order',
+  ajaxPermissions: ['/supervisor/operationLog/listLogModule', '/supervisor/operationLog/list'],
   children: [{
     name: '操作记录',
     path: 'list',
-    component: _import('action-log/index')
+    component: _import('action-log/index'),
+    ajaxPermissions: ['/supervisor/operationLog/listLogModule', '/supervisor/operationLog/list']
   }]
 }]
