@@ -164,9 +164,9 @@
 </template>
 
 <script>
-  // import { getPermisList, getResourceList, updatePermisResource,
-  //   listPermisModule, addPermisModule, updatePermisModule, deletePermisModule,
-  //   addTopLevelPermis, addPermis, deletePermis, updatePermis } from '@/service'
+  import { getPermisList, getResourceList, updatePermisResource,
+    listPermisModule, addPermisModule, updatePermisModule, deletePermisModule,
+    addTopLevelPermis, addPermis, deletePermis, updatePermis } from '@/service'
   export default {
     name: 'resource',
     data () {
@@ -212,20 +212,19 @@
     props: {},
     components: {},
     mounted () {
-      // // 获取权限模块列表
-      // this.handleGetModuleList()
-      // // 获取权限列表
-      // this.handleGetPermisList()
-      //
-      // // 获取资源列表
-      // getResourceList().then(res => {
-      //   if (res.status === 'true' && res.info) {
-      //     this.firstNodeKey = res.info.id
-      //     this.resourceData.push(res.info)
-      //   } else {
-      //     return false
-      //   }
-      // })
+      // 获取权限模块列表
+      this.handleGetModuleList()
+      // 获取权限列表
+      this.handleGetPermisList()
+      // 获取资源列表
+      getResourceList().then(res => {
+        if (res.status === 'true' && res.info) {
+          this.firstNodeKey = res.info.id
+          this.resourceData.push(res.info)
+        } else {
+          return false
+        }
+      })
     },
     watch: {
       filterText(val) {
@@ -244,13 +243,13 @@
       },
       // 获取权限模块列表
       handleGetModuleList() {
-        // listPermisModule().then(res => {
-        //   if (res.status === 'true' && res.info) {
-        //     this.moduleList = res.info
-        //   } else {
-        //     console.log(res.msg, '获取权限模块列表')
-        //   }
-        // })
+        listPermisModule().then(res => {
+          if (res.status === 'true' && res.info) {
+            this.moduleList = res.info
+          } else {
+            console.log(res.msg, '获取权限模块列表')
+          }
+        })
       },
       // 展示编辑模块输入框
       handleShowInput(id) {
@@ -267,33 +266,33 @@
       },
       // 更新权限模块
       handleInputConfirm() {
-        // let obj = {
-        //   permisModuleId: this.targetModuleId,
-        //   moduleName: this.moduleForm.moduleName
-        // }
-        // updatePermisModule(obj).then(res => {
-        //   if (res.status === 'true') {
-        //     this.inputVisible = false
-        //     this.$message.success('修改成功！')
-        //     this.handleGetModuleList()
-        //     this.moduleForm.moduleName = ''
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        let obj = {
+          permisModuleId: this.targetModuleId,
+          moduleName: this.moduleForm.moduleName
+        }
+        updatePermisModule(obj).then(res => {
+          if (res.status === 'true') {
+            this.inputVisible = false
+            this.$message.success('修改成功！')
+            this.handleGetModuleList()
+            this.moduleForm.moduleName = ''
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 删除权限模块
       handleDeleteModule(id) {
-        // deletePermisModule({
-        //   permisModuleId: id
-        // }).then(res => {
-        //   if (res.status === 'true') {
-        //     this.$message.success('删除成功！')
-        //     this.handleGetModuleList()
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        deletePermisModule({
+          permisModuleId: id
+        }).then(res => {
+          if (res.status === 'true') {
+            this.$message.success('删除成功！')
+            this.handleGetModuleList()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 取消添加或更新模块
       cancelAddOrUpdate() {
@@ -303,13 +302,13 @@
 
       // 获取权限列表
       handleGetPermisList() {
-        // getPermisList().then(res => {
-        //   if (res.status === 'true' && res.info) {
-        //     this.permissionData = res.info
-        //   } else {
-        //     return false
-        //   }
-        // })
+        getPermisList().then(res => {
+          if (res.status === 'true' && res.info) {
+            this.permissionData = res.info
+          } else {
+            return false
+          }
+        })
       },
       // 切换权限选中事件
       handlePermisChange(data, checked) {
@@ -361,21 +360,21 @@
       },
       // 更新权限资源对应关系
       handleUpdate() {
-        // const selectedPermis = this.permisResourceForm.selectedPermis
-        // const selectedResourceIds = this.permisResourceForm.selectedResourceIds
-        // const params = {
-        //   permisId: selectedPermis && selectedPermis.length ? selectedPermis[0] : '',
-        //   resourceIds: selectedResourceIds
-        // }
-        // updatePermisResource(params).then(res => {
-        //   if (res.status === 'true') {
-        //     this.handleGetPermisList()
-        //     this.setCheckedKeys([])
-        //     this.$message.success('保存成功！')
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        const selectedPermis = this.permisResourceForm.selectedPermis
+        const selectedResourceIds = this.permisResourceForm.selectedResourceIds
+        const params = {
+          permisId: selectedPermis && selectedPermis.length ? selectedPermis[0] : '',
+          resourceIds: selectedResourceIds
+        }
+        updatePermisResource(params).then(res => {
+          if (res.status === 'true') {
+            this.handleGetPermisList()
+            this.setCheckedKeys([])
+            this.$message.success('保存成功！')
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
 
       // 自定义渲染资源中文名
@@ -415,36 +414,36 @@
       },
       // 新增权限模块
       handleAddModule() {
-        // let params = {
-        //   moduleName: this.moduleForm.moduleName
-        // }
-        // addPermisModule(params).then(res => {
-        //   if (res.status === 'true') {
-        //     this.inputVisible = false
-        //     this.moduleForm.moduleName = ''
-        //     this.handleGetModuleList()
-        //     this.$message.success('成功添加权限模块！')
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        let params = {
+          moduleName: this.moduleForm.moduleName
+        }
+        addPermisModule(params).then(res => {
+          if (res.status === 'true') {
+            this.inputVisible = false
+            this.moduleForm.moduleName = ''
+            this.handleGetModuleList()
+            this.$message.success('成功添加权限模块！')
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 新增顶级权限
       handleAddTopPermis() {
-        // let params = {
-        //   permisName: this.permisTopForm.permisName,
-        //   permisDesc: this.permisTopForm.permisDesc,
-        //   permisModuleId: this.permisTopForm.permisModuleId
-        // }
-        // addTopLevelPermis(params).then(res => {
-        //   if (res.status === 'true') {
-        //     this.dialogVisible2 = false
-        //     this.handleGetPermisList()
-        //     this.$message.success('成功添加顶级权限！')
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        let params = {
+          permisName: this.permisTopForm.permisName,
+          permisDesc: this.permisTopForm.permisDesc,
+          permisModuleId: this.permisTopForm.permisModuleId
+        }
+        addTopLevelPermis(params).then(res => {
+          if (res.status === 'true') {
+            this.dialogVisible2 = false
+            this.handleGetPermisList()
+            this.$message.success('成功添加顶级权限！')
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 增加权限弹窗
       handleAddPermis(data) {
@@ -457,20 +456,20 @@
       },
       // 新增权限
       handleAppendPermis() {
-        // let params = {
-        //   permisName: this.permissionForm.permisName,
-        //   permisDesc: this.permissionForm.permisDesc,
-        //   parentId: this.permissionForm.parentId
-        // }
-        // addPermis(params).then(res => {
-        //   if (res.status === 'true') {
-        //     this.dialogVisible3 = false
-        //     this.$message.success('成功添加权限！')
-        //     this.handleGetPermisList()
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
+        let params = {
+          permisName: this.permissionForm.permisName,
+          permisDesc: this.permissionForm.permisDesc,
+          parentId: this.permissionForm.parentId
+        }
+        addPermis(params).then(res => {
+          if (res.status === 'true') {
+            this.dialogVisible3 = false
+            this.$message.success('成功添加权限！')
+            this.handleGetPermisList()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       },
       // 编辑权限
       showEditDialog(data) {
@@ -483,20 +482,20 @@
         // console.log(data, data.permisName, data.permisDesc, 'edit')
       },
       handleEditComfirm() {
-        // let params = {
-        //   permisName: this.permissionForm.permisName,
-        //   permisDesc: this.permissionForm.permisDesc,
-        //   permisId: this.currId
-        // }
-        // updatePermis(params).then(res => {
-        //   if (res.status === 'true') {
-        //     this.dialogVisible3 = false
-        //     this.$message.success('修改成功！')
-        //     this.handleGetPermisList()
-        //   } else {
-        //     this.$message.error(res.code)
-        //   }
-        // })
+        let params = {
+          permisName: this.permissionForm.permisName,
+          permisDesc: this.permissionForm.permisDesc,
+          permisId: this.currId
+        }
+        updatePermis(params).then(res => {
+          if (res.status === 'true') {
+            this.dialogVisible3 = false
+            this.$message.success('修改成功！')
+            this.handleGetPermisList()
+          } else {
+            this.$message.error(res.code)
+          }
+        })
       },
       // 删除权限
       remove(node, data) {
@@ -526,14 +525,14 @@
               }
             }
             traverse(data)
-            // let params = {
-            //   permisIds: permisIds
-            // }
-            // deletePermis(params).then(res => {
-            //   if (res.status === 'true') {
-            //     this.$message.success('删除成功')
-            //   }
-            // })
+            let params = {
+              permisIds: permisIds
+            }
+            deletePermis(params).then(res => {
+              if (res.status === 'true') {
+                this.$message.success('删除成功')
+              }
+            })
           }).catch(_ => {
             this.$message.info('已取消删除')
           })
