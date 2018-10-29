@@ -420,9 +420,9 @@
       getQrCode () {
         if (this.isAble) return false
         // 验证用户是否存在之后，在确定要不要获取验证码
-        userIsExist({ telephone: this.replace.tel }).then(res => {
+        userIsExist({ contactTel: this.replace.tel }).then(res => {
           if (res.status === 'true') {
-            sendResetUsernameCode({ telephone: this.replace.newTel }).then(res => {
+            sendResetUsernameCode({ contactTel: this.replace.newTel }).then(res => {
               if (res.status === 'true') {
                 this.isAble = true
                 this.settime()
@@ -438,7 +438,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             resetUsername({
-              telephone: this.replace.newTel,
+              contactTel: this.replace.newTel,
               verifyCode: this.replace.qrCode
             }).then(res => {
               if (res.status === 'true') {
