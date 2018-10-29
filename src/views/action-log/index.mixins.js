@@ -1,7 +1,7 @@
 import { API_PATH } from '@/config/env'
 import { comPickerOptions } from '@/config/data/head'
 import { formatTimeString, downloadFile } from '@/config/utils'
-// import { logList, listLogModule, adminUserList } from '@/service'
+import { getActionLogListModule, getActionLogList } from '@/service'
 
 export default {
   data () {
@@ -9,10 +9,8 @@ export default {
       downloadLoading: false,
       selectDateRange: comPickerOptions,
       date: null,        // 选择日期
-      logModuleList: {}, // 日志模块列表
-      adminList: [],     // 管理账号列表
+      logModuleList: {}, // 纪录模块列表
       logSort: {         // 筛选条件
-        adminUserId: '',
         logModule: '',
         date: ''
       },
@@ -26,50 +24,42 @@ export default {
   props: {},
   components: {},
   mounted() {
-    // // 获取日志模块列表
-    // listLogModule().then(res => {
-    //   if (res.status === 'true') {
-    //     this.logModuleList = res.info
-    //   }
-    // })
-    // // 获取管理员账号列表
-    // adminUserList().then(res => {
-    //   if (res.status === 'true') {
-    //     this.adminList = res.info
-    //     this.adminList.unshift({ 'id': ' ', 'name': '全部' })
-    //   }
-    // })
-    // this.getPageData()
+    // 获取纪录模块列表
+    getActionLogListModule().then(res => {
+      if (res.status === 'true') {
+        this.logModuleList = res.info
+      }
+    })
+    this.getPageData()
   },
   watch: {},
   computed: {},
   methods: {
     getPageData(page) {
       this.currentPage = page || this.currentPage
-      // let logSort = this.logSort
-      // const paramsObj = {
-      //   pageNum: this.currentPage,
-      //   pageSize: this.pageSize,
-      //   startTime: logSort.date ? formatTimeString(logSort.date[0]) : '',
-      //   endTime: logSort.date ? formatTimeString(logSort.date[1]) : '',
-      //   adminUserId: logSort.adminUserId,
-      //   logModule: logSort.logModule
-      // }
-      // logList(paramsObj).then(res => {
-      //   if (res.status === 'true') {
-      //     let data = res.info
-      //     this.pageTotal = data.total
-      //     this.tableData = data.result
+      let logSort = this.logSort
+      const paramsObj = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        startTime: logSort.date ? formatTimeString(logSort.date[0]) : '',
+        endTime: logSort.date ? formatTimeString(logSort.date[1]) : '',
+        logModule: logSort.logModule
+      }
+      getActionLogList(paramsObj).then(res => {
+        if (res.status === 'true') {
+          let data = res.info
+          this.pageTotal = data.total
+          this.tableData = data.result
 
-      //     // table的交互
-      //     this.tableLoading = false
-      //     if (this.tableData.length === 0) {
-      //       this.tableEmpty = '暂无数据'
-      //     }
-      //   } else {
-      //     this.setMsg('error', res.msg)
-      //   }
-      // })
+          // table的交互
+          this.tableLoading = false
+          if (this.tableData.length === 0) {
+            this.tableEmpty = '暂无数据'
+          }
+        } else {
+          this.setMsg('error', res.msg)
+        }
+      })
     },
     exportExcel() {
       if (!this.tableData.length) {
@@ -78,11 +68,10 @@ export default {
       let logSort = this.logSort
       const downParams = {
         logModule: logSort.logModule,
-        adminUserId: logSort.adminUserId,
         startTime: logSort.date ? formatTimeString(logSort.date[0]) : '',
         endTime: logSort.date ? formatTimeString(logSort.date[1]) : ''
       }
-      let url = API_PATH + '/manage/operationLog/exportLogInfo'
+      let url = API_PATH + '/supervisor/operationLog/exportLogInfo'
       downloadFile(url, downParams)
     }
   }

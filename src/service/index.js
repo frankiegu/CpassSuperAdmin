@@ -30,5 +30,8 @@ export * from './canton-fair'
 // 角色&用户
 export * from './user'
 
+// 操作纪录
+export * from './action-log'
+
 // 系统
 export * from './system'

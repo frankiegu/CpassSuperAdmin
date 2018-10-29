@@ -50,6 +50,7 @@
 
       <div class="lh-form-table-head">
         <el-button
+          v-if="handleHasPermissions('/supervisor/operationLog/exportLogInfo')"
           @click="exportExcel"
           class="lh-btn-export fr">
           <lh-svg icon-class="icon-download" />导出
