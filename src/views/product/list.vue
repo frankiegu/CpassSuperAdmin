@@ -49,7 +49,7 @@
         <el-table-column label="售价" align="left" width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.price">{{ parseFloat((scope.row.price / 100).toPrecision(12)).toFixed(2) }}</span>
-            <span v-else>-</span>
+            <span v-else>0.00</span>
           </template>
         </el-table-column>
         <el-table-column label="签约数量" align="left" width="120">

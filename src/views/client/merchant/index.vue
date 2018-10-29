@@ -10,35 +10,35 @@
           &nbsp;新增商户
         </router-link>
 
-        <el-form-item>
-          <el-select
-            v-model="formData.merchantType"
-            @change="getPageData(1)"
-            placeholder="请选择商户类型"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="i in merchantList"
-              :label="i.name"
-              :value="i.id"
-              :key="i.id"></el-option>
-          </el-select>
-        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<el-select-->
+            <!--v-model="formData.merchantType"-->
+            <!--@change="getPageData(1)"-->
+            <!--placeholder="请选择商户类型"-->
+            <!--class="width150px"-->
+            <!--clearable>-->
+            <!--<el-option-->
+              <!--v-for="i in merchantList"-->
+              <!--:label="i.name"-->
+              <!--:value="i.id"-->
+              <!--:key="i.id"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
 
-        <el-form-item>
-          <el-select
-            v-model="formData.settlementWay"
-            @change="getPageData(1)"
-            placeholder="请选择结算方式"
-            class="width150px"
-            clearable>
-            <el-option
-              v-for="i in settlementList"
-              :label="i.name"
-              :value="i.id"
-              :key="i.id"></el-option>
-          </el-select>
-        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<el-select-->
+            <!--v-model="formData.settlementWay"-->
+            <!--@change="getPageData(1)"-->
+            <!--placeholder="请选择结算方式"-->
+            <!--class="width150px"-->
+            <!--clearable>-->
+            <!--<el-option-->
+              <!--v-for="i in settlementList"-->
+              <!--:label="i.name"-->
+              <!--:value="i.id"-->
+              <!--:key="i.id"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
 
         <!-- <el-form-item>
           <el-select
@@ -67,10 +67,10 @@
         </el-form-item>
 
         <!-- 选择的是到期时间，所以是往后选 -->
-        <el-form-item>
-          <lh-datePicker ref="lhDatePicker" label="到期时间" :optionType="false"
-            @datePickerChange="pickerChange"></lh-datePicker>
-        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<lh-datePicker ref="lhDatePicker" label="到期时间" :optionType="false"-->
+            <!--@datePickerChange="pickerChange"></lh-datePicker>-->
+        <!--</el-form-item>-->
 
         <el-form-item>
           <el-input
@@ -84,17 +84,17 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
-          <el-input
-            v-model.trim="formData.companyName"
-            @keyup.native.enter="getPageData(1)"
-            placeholder="请输入公司名称"
-            clearable
-            class="lh-form-input">
+        <!--<el-form-item>-->
+          <!--<el-input-->
+            <!--v-model.trim="formData.companyName"-->
+            <!--@keyup.native.enter="getPageData(1)"-->
+            <!--placeholder="请输入公司名称"-->
+            <!--clearable-->
+            <!--class="lh-form-input">-->
 
-            <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>
+            <!--<i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>-->
+          <!--</el-input>-->
+        <!--</el-form-item>-->
 
         <el-form-item class="fr">
           <el-button @click="exportExcel" class="lh-btn-export">
@@ -133,12 +133,24 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="联系人" prop="contact" align="left"></el-table-column>
-        <el-table-column label="联系电话" prop="phone" width="110" align="left"></el-table-column>
+        <el-table-column label="联系人" prop="contact" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.contact || '-'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="联系电话" prop="phone" width="110" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.phone || '-'}}</span>
+          </template>
+        </el-table-column>
         <!--<el-table-column label="联系邮箱" prop="email" align="left"></el-table-column>-->
         <!--<el-table-column label="生成时间" prop="createDate" align="left" width="155"></el-table-column>-->
         <!--<el-table-column label="生成渠道" prop="registerWay" align="left"></el-table-column>-->
-        <el-table-column label="签约版本" prop="productName" align="left"></el-table-column>
+        <el-table-column label="签约版本" prop="productName" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.productName || '-'}}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column label="取消规则" prop="cancelName" align="left">
           <template slot-scope="scope">
@@ -318,6 +330,7 @@
           settlementType: formData.settlementWay,
           companyName: formData.companyName
         }
+        console.log(downParams)
         let url = API_PATH + '/supervisor/client/exportAll'
         downloadFile(url, downParams)
       },
