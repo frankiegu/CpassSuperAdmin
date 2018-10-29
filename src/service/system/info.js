@@ -9,3 +9,12 @@ export const resetByPassword = obj => fetch(API_PATH + '/supervisor/supervisor/r
 
 // 编辑个人信息
 export const adminUserUpdate = obj => fetch(API_PATH + '/supervisor/supervisor/updateInfo', obj, 'POST')
+
+// 用户是否存在
+export const userIsExist = obj => fetch(API_PATH + '/supervisor/supervisor/isExist', obj, 'GET')
+
+// 发送验证码（修改手机号码）
+export const sendResetUsernameCode = (dataJson) => fetch(API_PATH + '/manage/message/sendResetUsernameCode', dataJson, 'GET')
+
+// 重置用户名
+export const resetUsername = (dataJson) => fetch(API_PATH + '/supervisor/supervisor/resetUsername', dataJson, 'POST')

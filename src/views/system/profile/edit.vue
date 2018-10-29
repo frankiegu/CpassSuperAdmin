@@ -244,8 +244,8 @@
   import { mixin as focusMixin } from 'vue-focus'
   import countdown from '@/mixins/countdown'
   import personalMixins from './personal.mixins'
-  // import { adminUserDetail, resetUsername, sendResetUsernameCode, userIsExist, generateSecret, adminUserUpdate } from '@/service'
-  import { adminUserInfo, adminUserUpdate } from '@/service'
+  import { adminUserInfo, resetUsername, sendResetUsernameCode, userIsExist, adminUserUpdate } from '@/service'
+  // import { adminUserInfo, adminUserUpdate } from '@/service'
 
   export default {
     mixins: [countdown, focusMixin, personalMixins],
@@ -420,37 +420,37 @@
       getQrCode () {
         if (this.isAble) return false
         // 验证用户是否存在之后，在确定要不要获取验证码
-        // userIsExist({ telephone: this.replace.tel }).then(res => {
-        //   if (res.status === 'true') {
-        //     sendResetUsernameCode({ telephone: this.replace.newTel }).then(res => {
-        //       if (res.status === 'true') {
-        //         this.isAble = true
-        //         this.settime()
-        //
-        //         this.replace.qrFocused = true
-        //         this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
-        //       } else this.setMsg('error', res.msg)
-        //     })
-        //   } else this.setMsg('error', res.msg)
-        // })
+        userIsExist({ telephone: this.replace.tel }).then(res => {
+          if (res.status === 'true') {
+            sendResetUsernameCode({ telephone: this.replace.newTel }).then(res => {
+              if (res.status === 'true') {
+                this.isAble = true
+                this.settime()
+
+                this.replace.qrFocused = true
+                this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
+              } else this.setMsg('error', res.msg)
+            })
+          } else this.setMsg('error', res.msg)
+        })
       },
       replaceTel (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            // resetUsername({
-            //   telephone: this.replace.newTel,
-            //   verifyCode: this.replace.qrCode
-            // }).then(res => {
-            //   if (res.status === 'true') {
-            //     // 隐藏修改手机弹窗
-            //     this.replace.dialogFormVisible = false
-            //     // 弹出提示框
-            //     this.dialogVisible = true
-            //
-            //     // 显示倒计时
-            //     this.threeDown()
-            //   } else this.setMsg('error', res.msg)
-            // })
+            resetUsername({
+              telephone: this.replace.newTel,
+              verifyCode: this.replace.qrCode
+            }).then(res => {
+              if (res.status === 'true') {
+                // 隐藏修改手机弹窗
+                this.replace.dialogFormVisible = false
+                // 弹出提示框
+                this.dialogVisible = true
+
+                // 显示倒计时
+                this.threeDown()
+              } else this.setMsg('error', res.msg)
+            })
           } else {
             return false
           }
