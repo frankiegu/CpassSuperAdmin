@@ -54,7 +54,6 @@
               <el-form-item prop="headImgUrl" class="ml85 mb4">
                 <lh-upload
                   :imgUrl="userInfo.headImgUrl ? userInfo.headImgUrl : '/static/images/default-avatar.png'"
-                  :disabled="hanPermission"
                   :size="128"
                   @uploadImg="val => userInfo.headImgUrl = val"
                   class="fl"></lh-upload>
@@ -256,7 +255,6 @@
     data() {
       return {
         checked: true,
-        hanPermission: !this.handleHasPermissions('/manage/space/updateSpaceInfo'),
         // 修改手机号码成功弹窗状态
         qrDialogVisible: false,  // qr状态
         dialogVisible: false,
