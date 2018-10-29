@@ -40,11 +40,11 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item v-if="isShowImgCode" class="pwd-box" prop="verificationCode">
+          <el-form-item v-if="isShowImgCode" class="pwd-box" prop="verifyCode">
             <el-input
               autoComplete="off"
               :maxlength="4"
-              v-model.trim="formData.verificationCode"
+              v-model.trim="formData.verifyCode"
               placeholder="输入图片验证码">
               <lh-svg slot="prefix" iconClass="icon-password" class="svg-icon" />
               <img slot="suffix" class="img-code" @click="getImgCode" :src="imgCode" alt="">

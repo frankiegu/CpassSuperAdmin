@@ -35,12 +35,12 @@ export default {
       formData: {
         username: Cookies.get('sospTelphone') || '',
         password: '',
-        verificationCode: ''
+        verifyCode: ''
       },
       formRules: {
         username: [{ required: true, trigger: ['blur', 'change'], validator: validateUserName }],
         password: [{ required: true, trigger: ['blur', 'change'], validator: validatePass }],
-        verificationCode: [{ required: true, trigger: ['blur', 'change'], validator: validateCode }]
+        verifyCode: [{ required: true, trigger: ['blur', 'change'], validator: validateCode }]
       }
     }
   }
