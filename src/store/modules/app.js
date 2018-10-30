@@ -30,7 +30,7 @@ const app = {
 
             resolve(res)
           } else {
-            reject(res.msg)
+            reject(res)
           }
         }).catch(error => {
           reject(error)
