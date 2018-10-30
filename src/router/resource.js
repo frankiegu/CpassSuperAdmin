@@ -10,6 +10,7 @@ export default [{
   redirect: '/resource/list',
   component: layout,
   icon: 'icon-order',
+  hidden: true,
   children: [{ // 权限资源管理
     name: '权限资源列表',
     path: 'list',
