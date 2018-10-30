@@ -33,5 +33,8 @@ export * from './user'
 // 操作纪录
 export * from './action-log'
 
+// 权限资源管理
+export * from './resource'
+
 // 系统
 export * from './system'
