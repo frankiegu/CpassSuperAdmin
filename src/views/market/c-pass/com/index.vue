@@ -13,7 +13,7 @@
       class="card-padding pv32">
       <el-form-item prop="title" label="精选标题">
         <el-input
-          placeholder="请输入精选标题"
+          placeholder="请输入精选标题（30字内）"
           v-model.trim="formData.title"
           @blur="clearEmoji('title')"
           :maxlength="30"
@@ -24,9 +24,9 @@
       <el-form-item prop="subhead" label="副标题">
         <el-input
           v-model.trim="formData.subhead"
-          :maxlength="15"
+          :maxlength="30"
           @blur="clearEmoji('subhead')"
-          placeholder="请输入副标题"
+          placeholder="请输入副标题（30字内）"
           :disabled="noAllow"
           class="width340px"></el-input>
       </el-form-item>
@@ -34,13 +34,13 @@
       <el-form-item label="作者名称">
         <el-input
           v-model.trim="formData.authorName"
-          placeholder="请输入作者名称"
+          placeholder="请输入作者名称（5字内）"
           :maxlength="5"
           :disabled="noAllow"
           class="width340px"></el-input>
       </el-form-item>
 
-      <el-form-item prop="bannerPath" label="活动banner">
+      <el-form-item prop="bannerPath" label="文章封面">
         <lh-upload
           @uploadImg="uploadImg"
           :imgUrl="formData.bannerPath"
