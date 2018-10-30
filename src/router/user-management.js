@@ -9,7 +9,7 @@ export default [{
   path: '/user-management',
   redirect: '/user-management/user',
   component: layout,
-  icon: 'icon-order',
+  icon: 'icon-user-manage',
   ajaxPermissions: ['/supervisor/supervisor/page', '/supervisor/role/list'],
   children: [{
     name: '用户列表',
