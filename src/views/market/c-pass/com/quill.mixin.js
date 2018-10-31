@@ -41,7 +41,7 @@ export default {
       this.verifyImage()
     },
     verifyImage() {
-      this.verifyImg = !this.formData.bannerPath ? '请上传活动banner' : ''
+      this.verifyImg = !this.formData.bannerPath ? '请上传文章封面' : ''
     },
     onTextChange({ editor, html, text }) {
       // console.log('test', editor, html, text);
