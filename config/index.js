@@ -55,8 +55,8 @@ module.exports = {
     // 需要 proxyTable 代理的接口（可跨域）,解决开发环境的跨域问题
     proxyTable: {
       '/proxy-api': {
-        // target: 'http://java.tt.curato.cn:9094', // 支线B
-        target: 'http://java.tt.curato.cn:9090', // 支线A
+        target: 'http://java.tt.curato.cn:9094', // 支线B
+        // target: 'http://java.tt.curato.cn:9090', // 支线A
         // target: 'http://192.168.1.105:8080',
         changeOrigin: true,
         pathRewrite: {
