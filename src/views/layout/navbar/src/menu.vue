@@ -19,7 +19,7 @@
         <template slot="title">
           <div class="avatar-cont">
             <img v-if="avatar" :src="avatar">
-            <img v-else src="/static/images/default-logo.png">
+            <img v-else src="/static/images/default-avatar.png">
           </div>
           <span class="fl user-name ml8">{{name || '雷猴'}}</span>
         </template>

@@ -49,6 +49,7 @@ export default {
         methodList[index]({ roleId: row.id }).then(res => {
           if (res.status === 'true') {
             this.getPageData()
+            this.setMsg('success', `${actionList[index]}成功`)
           } else {
             this.setMsg('error', res.msg)
           }

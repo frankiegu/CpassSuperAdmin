@@ -24,5 +24,5 @@ export const informList = (obj) => fetch(API_PATH + '/manage/inform/list', obj, 
 export const getByAdminUserId = (obj) => fetch(API_PATH + '/supervisor/supervisor/getResource', obj, 'GET')
 
 // 获取管理员信息
-export const adminUserInfo = (obj) => fetch(API_PATH + '/supervisor/supervisor/getInfo', obj, 'GET')
+export const adminUserInfo = (obj) => fetch(API_PATH + '/supervisor/supervisor/info', obj, 'GET')
 
