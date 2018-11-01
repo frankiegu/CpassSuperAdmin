@@ -37,16 +37,16 @@ export default {
       }
     },
     // 二次弹窗确认
-    handleChangeUseState (type, id) {
+    handleChangeUseState (type, row) {
       let index = type - 1
       const actionList = ['禁用', '恢复', '删除']
-      this.$confirm(`确认${actionList[index]}此用户？`, '提示', {
+      this.$confirm(`确认${actionList[index]}"${row.roleName}"用户？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         let methodList = [closeRole, openRole, deleteRole]
-        methodList[index]({ roleId: id }).then(res => {
+        methodList[index]({ roleId: row.id }).then(res => {
           if (res.status === 'true') {
             this.getPageData()
           } else {

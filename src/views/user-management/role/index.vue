@@ -65,9 +65,9 @@
                 编辑
               </router-link>
             </el-button>
-            <el-button v-if="handleHasPermissions('/supervisor/role/close') && scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row.id)">禁用</el-button>
-            <el-button v-else-if="handleHasPermissions('/supervisor/role/open')" type="text" @click="handleChangeUseState(2, scope.row.id)">恢复</el-button>
-            <el-button v-if="handleHasPermissions('/supervisor/role/delete')" type="text" @click="handleChangeUseState(3, scope.row.id)">删除</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/role/close') && scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row)">禁用</el-button>
+            <el-button v-else-if="handleHasPermissions('/supervisor/role/open')" type="text" @click="handleChangeUseState(2, scope.row)">恢复</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/role/delete')" type="text" @click="handleChangeUseState(3, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
