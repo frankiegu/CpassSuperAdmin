@@ -1,0 +1,52 @@
+@import "src/styles/common/var";
+
+.component-store-com-team {
+  .repeat-tip {
+    position: absolute; top: 58px;
+    width: calc(100% - 40px);
+    text-align: center;
+  }
+  .width290px {
+    width: 290px;
+  }
+  .add-box {
+    max-height: 374px;
+    overflow: auto;
+
+    .add-li-box {
+      padding: 14px 18px 0 14px;
+      margin-bottom: 18px;
+      border: 1px solid $border-gray;
+      border-radius: $radius-small;
+      overflow: hidden;
+      box-shadow: 0 1px 4px 0 rgba(0,21,41,.12);
+    }
+  }
+  .add-store {
+    float: right;
+    width: 100%;
+    margin: 4px 0 0;
+  }
+
+  .input-width {
+    width: 268px;
+  }
+  .store-tile {
+    padding-left: 4px;
+  }
+  .btn-delete {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    transform: translateY(-4px);
+    float: right;
+    color: $theme-gray;
+    cursor: pointer;
+    padding: 0 6px 0 12px;
+  }
+  .dialog-tip {
+    position: absolute;
+    top: 48px;
+    left: 20px;
+  }
+}

@@ -1,19 +1,28 @@
 <template>
   <div class="components-sidebar-wrapper">
-    <template v-for="item in routes">
-      <router-link v-if="!item.hidden && item.noDropdown && item.children.length > 0" :to="item.redirect">
+    <template v-for="(item, key) in routes">
+      <router-link
+        :key="key"
+        v-if="!item.hidden && item.noDropdown && item.children.length > 0"
+        :to="item.redirect">
         <el-menu-item :index="item.path">
           <lh-svg v-if='item.icon' :iconClass="item.icon" class="icon" /><span slot="title">{{item.children[0].name}}</span>
         </el-menu-item>
       </router-link>
 
-      <el-submenu v-if="(item.hidden === 'development') || (!item.noDropdown && !item.hidden)" :index="item.name">
+      <el-submenu
+        :key="key"
+        v-if="(item.hidden === 'development') || (!item.noDropdown && !item.hidden)"
+        :index="item.name">
         <template slot="title">
           <lh-svg v-if='item.icon' :iconClass="item.icon" class="icon"></lh-svg>{{item.name}}
         </template>
 
-        <template v-if="(item.hidden === 'development') || !child.hidden" v-for="child in item.children">
+        <template
+          v-for="(child, idx2) in item.children"
+          v-if="(item.hidden === 'development') || !child.hidden">
           <router-link
+            :key="idx2"
             v-if="child.path[0] === '/'"
             class="menu-indent"
             :to="child.path">
@@ -21,10 +30,10 @@
             <el-menu-item :index="item.path+'/' + child.path">{{child.name}}</el-menu-item>
           </router-link>
 
-          <router-link
+          <router-link :key="idx2"
             v-else
-            class="menu-indent"
-            :to="item.path+'/' + child.path">
+            :to="item.path+'/' + child.path"
+            class="menu-indent">
 
             <el-menu-item :index="item.path+'/' + child.path">{{child.name}}</el-menu-item>
           </router-link>
