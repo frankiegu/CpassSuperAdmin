@@ -152,17 +152,17 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="取消规则" prop="cancelName" align="left">
+        <el-table-column label="取消规则" align="left">
           <template slot-scope="scope">
             <!--加入取消规则气泡提醒、若没有选择取消类型，则-->
             <el-popover
-              v-if="scope.row.cancelName"
+              v-if="false"
               placement="right-start"
-              :title="scope.row.cancelName"
+              title="标题"
               width="200"
               trigger="hover"
-              :content="scope.row.cancelName">
-              <div slot="reference" class="cancelRule">{{ scope.row.cancelName || '-' }}</div>
+              content="内容">
+              <div slot="reference" class="cancelRule">-</div>
             </el-popover>
             <span v-else>-</span>
           </template>
