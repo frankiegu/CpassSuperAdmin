@@ -75,7 +75,7 @@
 
       </el-form>
 
-      <div class="align-left submit-fixed-bottom">
+      <div class="submit-fixed-bottom">
         <el-button
           @click="submitForm('ruleForm')"
           :class="{'ml272': sidebar.opened, 'ml116': !sidebar.opened}"
@@ -216,7 +216,7 @@
                 let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
 
                 this.setMsg('success', tipsText)
-                this.$router.replace('/job')
+                this.$router.replace('/user-management/role')
               } else {
                 this.setMsg('error', res.msg)
               }
@@ -298,7 +298,7 @@
     .text-box {
       width: 600px;
     }
-    .lh-card-body {
+    .card-padding {
       .table-header-dec {
         position: absolute;
         z-index: 1;
