@@ -1,14 +1,17 @@
-import { PWD_RRGULAR } from '@/config/env'
+import { PWD_RRGULAR, EMAILREG, LHEMAILE } from '@/config/env'
 import { checkPhone } from '@/config/utils'
 
 export default {
   data () {
     const checkEmail = (rule, value, callback) => {
-      let emailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
+      let emailReg = EMAILREG
+      let lhEmailReg = LHEMAILE
       if (!value) {
         callback(new Error('邮箱不能为空'))
       } else if (!emailReg.test(value)) {
         callback(new Error('邮箱格式不正确'))
+      } else if (!lhEmailReg.test(value)) {
+        callback(new Error('例：xx@gzleihou.cn，xx@cpass.net'))
       } else {
         callback()
       }
