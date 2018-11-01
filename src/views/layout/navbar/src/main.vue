@@ -3,8 +3,8 @@
     <router-link
       :class="{'sidebar-close': !sidebar.opened}"
       class="logo-box db" to="/" tag="a">
-      <img src="/static/images/default-logo.png">
-      <span>酷雷托总后台</span>
+      <img src="/static/images/cpass-logo.png">
+      <span>CPASS总后台</span>
     </router-link>
 
     <!-- 给变化加上transition，效果好上很多 -->
@@ -121,7 +121,7 @@
       span {
         position: absolute;
         left: 70px;
-        width: 110px;
+        width: 120px;
         height: 42px;
         display: -webkit-box;
         -webkit-line-clamp: 1;

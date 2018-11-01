@@ -8,9 +8,9 @@
       <el-submenu index="2" class="profile-box">
         <template slot="title">
           <div class="avatar-cont">
-            <img src="/static/images/default-logo.png">
+            <img src="/static/images/cpass-logo.png">
           </div>
-          <span class="fl user-name ml8">酷雷托</span>
+          <span class="fl user-name ml8">CPASS</span>
         </template>
 
         <el-menu-item class="a-link" index="2-1" disabled>
@@ -167,10 +167,11 @@ export default {
       font-weight: $font-bold;
     }
     img {
+      background: #fff;
       width: 24px;
       height: 24px;
       vertical-align: top;
-      border-radius: 50%;
+      /*border-radius: 50%;*/
     }
   }
   .lh-svg {

@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
     <div class="logo-box">
-      <img class="logo mr5" src="./imgs/leihou-logo.png">
-      酷雷托智能空间总管理后台
+      <img class="logo mr5" src="./imgs/cpass-login.png">
+      CPASS智能空间总管理后台
     </div>
 
     <el-form :model="formData" :rules="formRules" ref="formData" label-width="0px" class="card-box login-form">
@@ -122,7 +122,7 @@
       // transition: all .3s;
     }
     .logo-box {
-      color: $theme-blue;
+      color: #fff;
       font-size: 18px;
       font-weight: 500;
       line-height: 30px;
