@@ -33,7 +33,7 @@ export default [{
 
   // CPASS精选
   {
-    name: 'C-PASS精选',
+    name: 'CPASS精选',
     path: 'c-pass',
     component: _import('market/c-pass/list'),
     ajaxPermissions: '/supervisor/marketing/list'
