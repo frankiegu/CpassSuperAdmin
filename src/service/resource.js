@@ -23,7 +23,7 @@ export const deletePermisModule = obj => fetch(API_PATH + '/supervisor/resource/
 export const updatePermisModule = obj => fetch(API_PATH + '/supervisor/resource/updatePermisModule', obj, 'POST')
 
 // 更新权限资源对应关系
-export const updatePermisResource = obj => fetch(API_PATH + '/supervisor/resource/updatePermisResource', obj, 'GET')
+export const updatePermisResource = obj => fetch(API_PATH + '/supervisor/resource/updatePermisResource', obj, 'POST')
 
 // 新增顶级权限
 export const addTopLevelPermis = obj => fetch(API_PATH + '/supervisor/resource/addTopLevelPermis', obj, 'POST')
