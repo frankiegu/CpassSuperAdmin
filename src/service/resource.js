@@ -11,19 +11,19 @@ export const listPermisModule = obj => fetch(API_PATH + '/supervisor/resource/li
 export const getPermisList = obj => fetch(API_PATH + '/supervisor/permis/list', obj, 'GET')
 
 // 获取资源
-export const getResourceList = (obj) => fetch(API_PATH + '/supervisor/resource/list', obj, 'GET')
+export const getResourceList = obj => fetch(API_PATH + '/supervisor/resource/list', obj, 'GET')
 
 // 新增权限模块
 export const addPermisModule = obj => fetch(API_PATH + '/supervisor/resource/addPermisModule', obj, 'POST')
 
 // 删除权限模块
-export const deletePermisModule = obj => fetch(API_PATH + '/supervisor/resource/deletePermisModule', obj, 'POST')
+export const deletePermisModule = obj => fetch(API_PATH + '/supervisor/resource/deletePermisModule', obj, 'GET')
 
 // 修改权限模块
 export const updatePermisModule = obj => fetch(API_PATH + '/supervisor/resource/updatePermisModule', obj, 'POST')
 
 // 更新权限资源对应关系
-export const updatePermisResource = obj => fetch(API_PATH + '/supervisor/resource/updatePermisResource', obj, 'POST')
+export const updatePermisResource = obj => fetch(API_PATH + '/supervisor/resource/updatePermisResource', obj, 'GET')
 
 // 新增顶级权限
 export const addTopLevelPermis = obj => fetch(API_PATH + '/supervisor/resource/addTopLevelPermis', obj, 'POST')
@@ -32,7 +32,7 @@ export const addTopLevelPermis = obj => fetch(API_PATH + '/supervisor/resource/a
 export const addPermis = obj => fetch(API_PATH + '/supervisor/resource/addPermis', obj, 'POST')
 
 // 删除权限
-export const deletePermis = obj => fetch(API_PATH + '/supervisor/resource/deletePermis', obj, 'POST')
+export const deletePermis = obj => fetch(API_PATH + '/supervisor/resource/deletePermis', obj, 'GET')
 
 // 更新权限
 export const updatePermis = obj => fetch(API_PATH + '/supervisor/resource/updatePermis', obj, 'POST')
