@@ -92,6 +92,9 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.loading = true
+            if (!this.isShowImgCode) {
+              delete this.formData.verifyCode
+            }
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
               this.$router.push({ path: '/' })
@@ -99,7 +102,7 @@
               this.setMsg('error', err.msg)
               this.loading = false
               // 判断需要验证码（前提：同一个账户输入错误密码三次以及三次以上）
-              if (!err.info) {
+              if (err.info === false) {
                 this.isShowImgCode = true
               }
             })

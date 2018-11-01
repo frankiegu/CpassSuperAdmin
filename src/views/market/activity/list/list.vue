@@ -5,9 +5,9 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
 
-        <router-linkc :to="{path: '/activity/add'}">
+        <router-link :to="{path: '/activity/add'}">
           <div class="to-bottom-right fl add-btn">添加活动</div>
-        </router-linkc>
+        </router-link>
 
         <el-select
           v-model="formData.type"
