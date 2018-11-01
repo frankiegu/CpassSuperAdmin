@@ -28,9 +28,6 @@ const permission = {
   actions: {
     getPermission: ({ commit }) => {
       return new Promise((resolve, reject) => {
-        console.log('this is a permission resource list')
-        resolve()
-
         getByAdminUserId().then(res => {
           if (res.status === 'true') {
             const data = []

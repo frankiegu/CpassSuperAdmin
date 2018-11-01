@@ -18,6 +18,7 @@ export default [{
       path: '/opinion-feedback',
       redirect: '/opinion-feedback/manage-feedback',
       component: _import('feedback/opinion-feedback/opinion-feedback'),
+      ajaxPermissions: ['/supervisor/feedback/list', '/supervisor/platformFeedback/list'],
       children: [{
         name: '管理后台',
         path: 'manage-feedback',
