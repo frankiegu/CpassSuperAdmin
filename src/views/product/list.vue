@@ -72,11 +72,11 @@
 
         <el-table-column label="操作" align="left" width="120">
           <template slot-scope="scope">
-            <router-link :to="{path: '/product/add', query: {id: scope.row.id, type: 'edit'}}">
+            <router-link :to="{path: '/product/add', query: {id: scope.row.id, type: 'edit'}}" v-if="scope.row.id !== 1">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
-            <el-tooltip :content="scope.row.status === 1 ? '点击禁用' : '点击恢复'" placement="top">
+            <el-tooltip :content="scope.row.status === 1 ? '点击禁用' : '点击恢复'" placement="top" v-if="scope.row.id !== 1">
               <el-switch v-model="scope.row.status" @change="changeStatus(scope.row.id, scope.row.status)" class="lh-table-switch" :active-value="1" :inactive-value="0" :active-color="switchActiveColor"></el-switch>
             </el-tooltip>
           </template>

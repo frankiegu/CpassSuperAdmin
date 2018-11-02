@@ -114,7 +114,7 @@
 
         <el-table-column label="商户ID" fixed="left" align="left">
           <template slot-scope="scope">
-            {{ scope.row.id | filterMerchantId(scope.row.id) }}
+            {{ scope.row.id | filterMerchantId }}
           </template>
         </el-table-column>
 
