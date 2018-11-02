@@ -112,12 +112,18 @@
         v-loading="tableLoading"
         class="width100" border>
 
+        <el-table-column label="商户ID" fixed="left" align="left">
+          <template slot-scope="scope">
+            {{ scope.row.id | filterMerchantId(scope.row.id) }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="品牌名称" fixed="left" align="left">
           <template slot-scope="scope">
             <router-link
               :to="{path: '/client/detail', query: {id: scope.row.id}}"
               class="table-link">
-              {{ scope.row.brandName || '-'}}
+              {{ scope.row.brandName || '-' }}
             </router-link>
           </template>
         </el-table-column>
@@ -239,6 +245,7 @@
   import { API_PATH } from '@/config/env'
   import tableMixins from '@/mixins/table'
   import indexMixins from './index.mixins'
+  import filterMixins from './filter.mixins'
   import option from '@/components/option'
   import pickerOptions from '@/mixins/pickerOptions'
   import { formatTimeString, downloadFile } from '@/config/utils'
@@ -246,7 +253,7 @@
   import { merchantSelect, settlementTypeSelect } from '@/service/common'
 
   export default {
-    mixins: [tableMixins, pickerOptions, indexMixins],
+    mixins: [tableMixins, pickerOptions, indexMixins, filterMixins],
     components: {
       [option.name]: option
     },
