@@ -8,6 +8,10 @@
       </el-select>
     </el-form-item>
 
+    <el-form-item label="商户ID" label-width="110px" v-if="modelForm.id">
+      <p class="label-content">{{modelForm.id | filterMerchantId}}</p>
+    </el-form-item>
+
     <el-form-item label="品牌名称" prop="brandName" ref="brandName" label-width="110px"
       :error="errorField === 'brandName' ? errorMsg : ''"
       :rules="[{ required: infoType !== 'detail', message: '品牌名称不能为空！', trigger: ['blur', 'change'] }]">
@@ -115,8 +119,10 @@
 <script>
   import { PHONEREG, FIXPHONEREG, EMAILREG } from '@/config/env'
   import { merchantSelect, listCountry, regionList } from '@/service'
+  import filterMixins from '../filter.mixins'
   export default {
     name: 'base-info',
+    mixins: [filterMixins],
     data() {
       // 自定义手机号码校验规则
       var checkTel = (rule, value, callback) => {
@@ -265,4 +271,10 @@
   }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .base-info {
+    .el-form-item p {
+      line-height: 32px;
+    }
+  }
+</style>
