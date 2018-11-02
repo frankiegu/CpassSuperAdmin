@@ -169,30 +169,36 @@ export default {
     postSave (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let actionList = {
-            '新增用户': createUser,
-            '编辑用户': updateUser
-          }
-          let params = {
-            username: this.userForm.userName,
-            name: this.userForm.realName,
-            email: this.userForm.email,
-            role: this.userForm.role,
-            statusCode: this.userForm.userStateCode,
-            supervisorDesc: this.userForm.description
-          }
-          if (this.userFormTitle === '编辑用户') {
-            params.id = this.userForm.id
-          }
-          actionList[this.userFormTitle](params)
-            .then(res => {
-              if (res.status === 'true') {
-                this.isShowUserForm = false
-                this.userFormTitle === '编辑用户' ? this.getPageData() : this.getPageData(1)
-              } else {
-                this.setMsg('error', res.msg)
-              }
-            }).catch(() => {})
+          this.$confirm(`确认${this.userFormTitle}`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let actionList = {
+              '新增用户': createUser,
+              '编辑用户': updateUser
+            }
+            let params = {
+              username: this.userForm.userName,
+              name: this.userForm.realName,
+              email: this.userForm.email,
+              role: this.userForm.role,
+              statusCode: this.userForm.userStateCode,
+              supervisorDesc: this.userForm.description
+            }
+            if (this.userFormTitle === '编辑用户') {
+              params.id = this.userForm.id
+            }
+            return actionList[this.userFormTitle](params)
+              .then(res => {
+                if (res.status === 'true') {
+                  this.isShowUserForm = false
+                  this.userFormTitle === '编辑用户' ? this.getPageData() : this.getPageData(1)
+                } else {
+                  this.setMsg('error', res.msg)
+                }
+              })
+          }).catch(() => {})
         }
       })
     }
