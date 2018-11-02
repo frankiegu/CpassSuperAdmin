@@ -1,5 +1,5 @@
 import { checkPhone } from '@/config/utils'
-import { getUserList, roleList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
+import { getUserList, getRoleList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
 
 export default {
   data () {
@@ -94,7 +94,7 @@ export default {
     },
     // 获取角色列表
     getRoleList () {
-      roleList().then(res => {
+      getRoleList().then(res => {
         if (res.status === 'true') {
           let roles = []
           // 遍历列表，获取角色id和名称

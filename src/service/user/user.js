@@ -5,6 +5,9 @@
 import fetch from '../../config/fetch'
 import { API_PATH } from '../../config/env'
 
+// 角色列表
+export const getRoleList = obj => fetch(API_PATH + '/supervisor/supervisor/roleList', obj, 'GET')
+
 // 用户列表
 export const getUserList = obj => fetch(API_PATH + '/supervisor/supervisor/page', obj, 'GET')
 
