@@ -327,7 +327,7 @@ export default {
     const productIds = await productListPromise
     // 禁用完整版
     let target = this.productList.find(item => { return item.id === 1 })
-    target.disabled = true
+    this.$set(target, 'disabled', true)
     // 插入用户签约的但被禁用的版本
     if (this.clientId && productInfo && productIds && !productIds.includes(productInfo.id)) {
       productInfo.name += '（已禁用的版本）'
