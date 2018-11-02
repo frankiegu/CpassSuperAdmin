@@ -16,8 +16,9 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">签约信息</h3>
             <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
-              <el-select v-model="dataForm.productId" class="width300px" :disabled="!dataForm.productStatus">
-                <el-option v-for="item in productList" :key="item.id" :value="+item.id" :label="item.name"></el-option>
+              <el-select v-model="dataForm.productId" class="width100" :disabled="!dataForm.productStatus">
+                <el-option v-for="item in productList" :key="item.name" :value="+item.id" :label="item.name"
+                  :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
 
@@ -31,7 +32,7 @@
                   placeholder="结束日期"
                   value-format="yyyy-MM-dd"
                   :picker-options="pickerOptions"
-                  style="width: 300px">
+                  class="width100">
                 </el-date-picker>
               </el-form-item>
               <!--<el-form-item class="fl">-->
@@ -151,7 +152,7 @@
               :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppID"></el-input>
             </el-form-item>
@@ -160,7 +161,7 @@
               :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenWxService"
                 placeholder="客户微信服务号AppSecret"></el-input>
             </el-form-item>
@@ -172,7 +173,7 @@
                 readonly
                 :disabled="!dataForm.isOpenWxService"
                 placeholder='选择后缀名为"txt"的JS接口文件'
-                class="width300px upload-input">
+                class="width100 upload-input">
                 <el-upload
                   v-show="!uploadLoading1"
                   :action="jsUploadPath"
@@ -211,7 +212,7 @@
               :rules="dataRules.mchId" :required="!!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchId"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
                 placeholder="客户微信支付商号mch_ID"></el-input>
             </el-form-item>
@@ -220,7 +221,7 @@
               :rules="dataRules.mchKey" :required="!!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchKey"
-                class="width300px"
+                class="width100"
                 :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
                 placeholder="客户微信支付商号API密钥"></el-input>
             </el-form-item>
@@ -232,7 +233,7 @@
                 readonly
                 :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
                 placeholder='选择后缀名为"p12"的支付证书文件'
-                class="width300px upload-input">
+                class="width100 upload-input">
                 <el-upload
                   v-show="!uploadLoading2"
                   :action="p12UploadPath"

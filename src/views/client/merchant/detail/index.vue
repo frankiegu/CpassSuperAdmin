@@ -161,5 +161,9 @@
     .label-content{
       word-break: break-all;
     }
+
+    .el-form-item p {
+      line-height: 32px;
+    }
   }
 </style>

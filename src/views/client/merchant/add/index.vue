@@ -26,7 +26,8 @@
                 <el-form-item label="签约版本" prop="productId" ref="productId"
                   :rules="dataRules.productId" :required="isCreateAccount">
                   <el-select v-model="dataForm.productId" class="width100" :disabled="!isCreateAccount">
-                    <el-option v-for="item in productList" :key="item.id" :value="item.id" :label="item.name" />
+                    <el-option v-for="item in productList" :key="item.id" :value="item.id" :label="item.name"
+                      :disabled="item.disabled" />
                   </el-select>
                 </el-form-item>
 

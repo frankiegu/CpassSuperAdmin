@@ -225,6 +225,7 @@ export default {
       uploadLoading2: false,
       dialogVisible: false,
       dataForm: {
+        id: this.$route.query.id,
         // 客户基础信息
         merchantId: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
         brandName: '',
@@ -295,8 +296,7 @@ export default {
       }
     }
   },
-  mounted() {
-    if (this.clientId) this.handleGetDetail()
+  async mounted() {
     if (!this.clientId) {
       const initialForm = this.dataFormStr
       const initInfo = this.infoStr
@@ -319,17 +319,21 @@ export default {
         }
       })
     }
-
-    // 获取产品类型 productConst
-    productSelect().then(res => {
-      if (res.status === 'true' && res.info) {
-        this.productList = res.info
-      } else {
-        this.$message.error(res.msg)
-      }
-    })
-
     this.getSettlementType()
+
+    const detailPromise = this.clientId && this.handleGetDetail()
+    const productListPromise = this.getProductList()
+    const productInfo = await detailPromise
+    const productIds = await productListPromise
+    // 禁用完整版
+    let target = this.productList.find(item => { return item.id === 1 })
+    target.disabled = true
+    // 插入用户签约的但被禁用的版本
+    if (this.clientId && productInfo && productIds && !productIds.includes(productInfo.id)) {
+      productInfo.name += '（已禁用的版本）'
+      productInfo.disabled = true
+      this.productList.unshift(productInfo)
+    }
   },
   computed: {
     dataFormStr: function () {
@@ -467,116 +471,121 @@ export default {
     },
 
     // 获取客户详情
-    handleGetDetail() {
+    async handleGetDetail() {
       let obj = { clientId: this.clientId }
-      clientDetail(obj).then(res => {
-        if (res.status === 'true' && res.info) {
-          let dataSource = res.info
-          this.dataForm.brandName = dataSource.brandName
-          this.dataForm.companyName = dataSource.companyName
-          this.dataForm.contact = dataSource.contact
-          this.dataForm.phone = dataSource.phone
-          this.dataForm.email = dataSource.email
-          this.dataForm.countryId = dataSource.countryId
-          this.dataForm.provinceCode = dataSource.provinceCode
-          this.dataForm.cityCode = dataSource.cityCode
-          this.dataForm.regionCode = dataSource.regionCode
-          this.dataForm.countryName = dataSource.countryName
-          this.dataForm.provinceName = dataSource.provinceName
-          this.dataForm.cityName = dataSource.cityName
-          this.dataForm.regionName = dataSource.regionName
-          this.dataForm.address = dataSource.address
-          this.dataForm.weixin = dataSource.weixin
-          this.dataForm.officialWebsite = dataSource.officialWebsite
-          this.dataForm.remark = dataSource.remark
-          this.dataForm.saleManager = dataSource.saleManager
+      let res = await clientDetail(obj)
+      if (res.status === 'true' && res.info) {
+        let dataSource = res.info
+        this.dataForm.brandName = dataSource.brandName
+        this.dataForm.companyName = dataSource.companyName
+        this.dataForm.contact = dataSource.contact
+        this.dataForm.phone = dataSource.phone
+        this.dataForm.email = dataSource.email
+        this.dataForm.countryId = dataSource.countryId
+        this.dataForm.provinceCode = dataSource.provinceCode
+        this.dataForm.cityCode = dataSource.cityCode
+        this.dataForm.regionCode = dataSource.regionCode
+        this.dataForm.countryName = dataSource.countryName
+        this.dataForm.provinceName = dataSource.provinceName
+        this.dataForm.cityName = dataSource.cityName
+        this.dataForm.regionName = dataSource.regionName
+        this.dataForm.address = dataSource.address
+        this.dataForm.weixin = dataSource.weixin
+        this.dataForm.officialWebsite = dataSource.officialWebsite
+        this.dataForm.remark = dataSource.remark
+        this.dataForm.saleManager = dataSource.saleManager
 
-          this.dataForm.productId = dataSource.productId
-          this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
-          this.dataForm.isPermanent = dataSource.isPermanent
-          this.dataForm.serviceFeeProportion = dataSource.serviceFeeProportion
-          this.dataForm.settlementCycle = dataSource.settlementCycle
-          if (+dataSource.settlementCycle === 1) {
-            this.dataForm.settlementDate1 = dataSource.settlementDate
-          } else {
-            this.dataForm.settlementDate2 = dataSource.settlementDate
-            this.dataForm.settlementCycleTypeName = dataSource.settlementCycleTypeName
-          }
-          this.dataForm.settlementCycleType = dataSource.settlementCycleType || 1
-          this.dataForm.settlementType = dataSource.settlementType || 3
-          this.dataForm.bankCardNum = dataSource.bankCardNum
-          this.dataForm.bank = dataSource.bank
-          this.dataForm.weixinPayNum = dataSource.weixinPayNum
-          this.dataForm.aliPayNum = dataSource.aliPayNum
-          this.dataForm.adminUsername = ''
-          this.dataForm.productStatus = dataSource.productStatus
-
-          this.dataForm.isOpenWxService = dataSource.swStatus || 0
-          this.dataForm.appId = dataSource.appId
-          this.dataForm.appSecret = dataSource.appSecret
-          this.dataForm.jsFile = dataSource.jsFile
-
-          this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus || 0
-          this.dataForm.spaceWeixinPayId = dataSource.spaceWeixinPayId
-          this.dataForm.mchId = dataSource.mchId
-          this.dataForm.mchKey = dataSource.mchKey
-          this.dataForm.certificate = dataSource.payCertFileName
-          this.spaceId = dataSource.spaceId
-          // 获取详情后再监听表单的变化
-          const initialForm = this.dataFormStr
-          const initInfo = this.infoStr
-          const initAccount = this.accountStr
-          const initOfficial = this.officialStr
-          const initPay = this.payStr
-          this.$watch('dataFormStr', {
-            handler: function (newVal) {
-              if (!newVal || newVal === initialForm) {
-                this.hasChangeForm = false
-              } else if (newVal !== initialForm) {
-                this.hasChangeForm = true
-              }
-            }
-          })
-          this.$watch('infoStr', {
-            handler: function (newVal) {
-              if (!newVal || newVal === initInfo) {
-                this.hasChangeInfo = false
-              } else if (newVal !== initInfo) {
-                this.hasChangeInfo = true
-              }
-            }
-          })
-          this.$watch('accountStr', {
-            handler: function (newVal) {
-              if (!newVal || newVal === initAccount) {
-                this.hasChangeAccount = false
-              } else if (newVal !== initAccount) {
-                this.hasChangeAccount = true
-              }
-            }
-          })
-          this.$watch('officialStr', {
-            handler: function (newVal) {
-              if (!newVal || newVal === initOfficial) {
-                this.hasChangeOffice = false
-              } else if (newVal !== initOfficial) {
-                this.hasChangeOffice = true
-              }
-            }
-          })
-          this.$watch('payStr', {
-            handler: function (newVal) {
-              if (!newVal || newVal === initPay) {
-                this.hasChangePay = false
-              } else if (newVal !== initPay) {
-                this.hasChangePay = true
-              }
-            }
-          })
+        this.dataForm.productId = dataSource.productId
+        this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
+        this.dataForm.isPermanent = dataSource.isPermanent
+        this.dataForm.serviceFeeProportion = dataSource.serviceFeeProportion
+        this.dataForm.settlementCycle = dataSource.settlementCycle
+        if (+dataSource.settlementCycle === 1) {
+          this.dataForm.settlementDate1 = dataSource.settlementDate
         } else {
-          this.$message.error(res.msg)
+          this.dataForm.settlementDate2 = dataSource.settlementDate
+          this.dataForm.settlementCycleTypeName = dataSource.settlementCycleTypeName
         }
-      })
+        this.dataForm.settlementCycleType = dataSource.settlementCycleType || 1
+        this.dataForm.settlementType = dataSource.settlementType || 3
+        this.dataForm.bankCardNum = dataSource.bankCardNum
+        this.dataForm.bank = dataSource.bank
+        this.dataForm.weixinPayNum = dataSource.weixinPayNum
+        this.dataForm.aliPayNum = dataSource.aliPayNum
+        this.dataForm.adminUsername = ''
+        this.dataForm.productStatus = dataSource.productStatus
+
+        this.dataForm.isOpenWxService = dataSource.swStatus || 0
+        this.dataForm.appId = dataSource.appId
+        this.dataForm.appSecret = dataSource.appSecret
+        this.dataForm.jsFile = dataSource.jsFile
+
+        this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus || 0
+        this.dataForm.spaceWeixinPayId = dataSource.spaceWeixinPayId
+        this.dataForm.mchId = dataSource.mchId
+        this.dataForm.mchKey = dataSource.mchKey
+        this.dataForm.certificate = dataSource.payCertFileName
+        this.spaceId = dataSource.spaceId
+        // 获取详情后再监听表单的变化
+        const initialForm = this.dataFormStr
+        const initInfo = this.infoStr
+        const initAccount = this.accountStr
+        const initOfficial = this.officialStr
+        const initPay = this.payStr
+        this.$watch('dataFormStr', {
+          handler: function (newVal) {
+            if (!newVal || newVal === initialForm) {
+              this.hasChangeForm = false
+            } else if (newVal !== initialForm) {
+              this.hasChangeForm = true
+            }
+          }
+        })
+        this.$watch('infoStr', {
+          handler: function (newVal) {
+            if (!newVal || newVal === initInfo) {
+              this.hasChangeInfo = false
+            } else if (newVal !== initInfo) {
+              this.hasChangeInfo = true
+            }
+          }
+        })
+        this.$watch('accountStr', {
+          handler: function (newVal) {
+            if (!newVal || newVal === initAccount) {
+              this.hasChangeAccount = false
+            } else if (newVal !== initAccount) {
+              this.hasChangeAccount = true
+            }
+          }
+        })
+        this.$watch('officialStr', {
+          handler: function (newVal) {
+            if (!newVal || newVal === initOfficial) {
+              this.hasChangeOffice = false
+            } else if (newVal !== initOfficial) {
+              this.hasChangeOffice = true
+            }
+          }
+        })
+        this.$watch('payStr', {
+          handler: function (newVal) {
+            if (!newVal || newVal === initPay) {
+              this.hasChangePay = false
+            } else if (newVal !== initPay) {
+              this.hasChangePay = true
+            }
+          }
+        })
+        if (dataSource.productId) {
+          return { // 返回产品ID和产品名，用于判断产品列表中是否有该产品
+            id: dataSource.productId,
+            name: dataSource.productName
+          }
+        }
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
     // 开通公众服务号
@@ -616,6 +625,21 @@ export default {
           this.$message.error('结算方式类型下拉：：' + res.msg)
         }
       })
+    },
+
+    // 获取产品类型 productConst
+    async getProductList() {
+      let res = await productSelect()
+      if (res.status === 'true' && res.info) {
+        this.productList = res.info
+        let productIds = []
+        this.productList.forEach(item => {
+          productIds.push(item.id)
+        })
+        return productIds
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }
