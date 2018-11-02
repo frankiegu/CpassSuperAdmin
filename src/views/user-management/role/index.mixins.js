@@ -40,7 +40,7 @@ export default {
     handleChangeUseState (type, row) {
       let index = type - 1
       const actionList = ['禁用', '恢复', '删除']
-      this.$confirm(`确认${actionList[index]}"${row.roleName}"用户？`, '提示', {
+      this.$confirm(`确认${actionList[index]}"${row.roleName}"角色？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

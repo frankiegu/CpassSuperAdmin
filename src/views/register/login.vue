@@ -111,7 +111,7 @@
         })
       },
       getImgCode () {
-        this.imgCode = API_PATH + '/manage/captcha/getResetPasswordCode' + '?random=' + Math.random()
+        this.imgCode = API_PATH + '/supervisor/captcha/getLoginCode' + '?random=' + Math.random()
       }
     }
   }

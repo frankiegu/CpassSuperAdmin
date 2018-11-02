@@ -14,7 +14,7 @@ export const adminUserUpdate = obj => fetch(API_PATH + '/supervisor/supervisor/u
 export const userIsExist = obj => fetch(API_PATH + '/supervisor/supervisor/isExist', obj, 'GET')
 
 // 发送验证码（修改手机号码）
-export const sendResetUsernameCode = (dataJson) => fetch(API_PATH + '/manage/message/sendResetUsernameCode', dataJson, 'GET')
+export const sendResetUsernameCode = (dataJson) => fetch(API_PATH + '/supervisor/message/supervisorSendResetPasswordCode', dataJson, 'POST')
 
 // 重置用户名
 export const resetUsername = (dataJson) => fetch(API_PATH + '/supervisor/supervisor/resetUsername', dataJson, 'POST')
