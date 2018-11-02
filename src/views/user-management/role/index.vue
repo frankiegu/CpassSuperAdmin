@@ -34,7 +34,7 @@
         class="width100" border>
 
         <el-table-column label="角色名称" prop="roleName" align="center"></el-table-column>
-        <el-table-column label="已分配用户" prop="supervisorCount" align="center" width="100">
+        <el-table-column label="已分配用户" prop="adminUserCount" align="center" width="100">
           <template slot-scope="scope">
             {{scope.row.adminUserCount}}
           </template>
