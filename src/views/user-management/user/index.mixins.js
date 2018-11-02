@@ -1,5 +1,5 @@
 import { checkPhone } from '@/config/utils'
-import { getUserList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
+import { getUserList, roleList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
 
 export default {
   data () {
@@ -39,11 +39,7 @@ export default {
         description: '',
         userStateCode: 1
       },
-      roles: [
-        { id: 1, role: 'root' },
-        { id: 2, role: '管理员' },
-        { id: 3, role: '运营主管' }
-      ],
+      roles: [],
       rules: {
         userName: [
           { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
@@ -63,19 +59,14 @@ export default {
           { required: true, message: '请选择可用状态', trigger: ['blur', 'change'] }
         ]
       },
-      isShowUserForm: false,
-      tableData: [
-        { id: 1, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: '管理员', userStateCode: 1, description: '打工仔' },
-        { id: 2, userName: '18819901111', realName: '小明', email: 'test@gzleihou.cn', role: 'root', userStateCode: 1, description: '超级管理员' },
-        { id: 3, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', userStateCode: 0, description: '打工仔' },
-        { id: 4, userName: '18819901111', realName: '小明', email: 'test@cpass.net', role: '管理员', userStateCode: 1, description: '' }
-      ]
+      isShowUserForm: false
     }
   },
   props: {},
   components: {},
   mounted() {
     this.getPageData()
+    this.getRoleList()
   },
   watch: {},
   computed: {},
@@ -92,7 +83,7 @@ export default {
       }
       const res = await getUserList(params)
       if (res.status === 'true') {
-        const data = res.info.page
+        const data = res.info
         if (data) {
           this.tableData = data.result
           this.pageTotal = data.total
@@ -100,6 +91,29 @@ export default {
       } else {
         this.setMsg('error', res.msg)
       }
+    },
+    // 获取角色列表
+    getRoleList () {
+      roleList().then(res => {
+        if (res.status === 'true') {
+          let roles = []
+          // 遍历列表，获取角色id和名称
+          if (res.info.page.result) {
+            res.info.page.result.forEach(item => {
+              roles.push({
+                role: item.id,
+                roleName: item.roleName
+              })
+            })
+          }
+          this.roles = roles
+        } else {
+          self.$message({
+            type: 'error',
+            message: res.msg
+          });
+        }
+      })
     },
     // 改变用户账号状态
     handleChangeUseState (index, action) {
@@ -119,7 +133,7 @@ export default {
               if (action === '删除') {
                 this.getPageData()
               } else {
-                this.tableData[index].userStateCode = action === '禁用' ? 0 : 1
+                this.tableData[index].statusCode = action === '禁用' ? 0 : 1
               }
             } else {
               this.setMsg('error', res.msg)
@@ -132,7 +146,13 @@ export default {
       if (arguments.length) {
         this.userFormTitle = '编辑用户'
         this.userForm.index = index
-        Object.assign(this.userForm, this.tableData[index])
+        this.userForm.id = this.tableData[index].id
+        this.userForm.userName = this.tableData[index].username
+        this.userForm.realName = this.tableData[index].name
+        this.userForm.email = this.tableData[index].email
+        this.userForm.role = this.tableData[index].role
+        this.userForm.description = this.tableData[index].supervisorDesc
+        this.userForm.userStateCode = this.tableData[index].statusCode
       } else {
         delete this.userForm.index
         delete this.userForm.id
@@ -168,7 +188,7 @@ export default {
             .then(res => {
               if (res.status === 'true') {
                 this.isShowUserForm = false
-                this.tableData[this.userForm.index] && Object.assign(this.tableData[this.userForm.index], this.userForm)
+                this.userFormTitle === '编辑用户' ? this.getPageData() : this.getPageData(1)
               } else {
                 this.setMsg('error', res.msg)
               }
