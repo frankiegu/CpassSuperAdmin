@@ -1,7 +1,7 @@
 <template>
   <div class="client-account main-content">
     <lh-title
-      :title="pagaData.name + '账户信息'"
+      :title="pagaData.brandName + '账户信息'"
       @downloadPdf="downloadPdf"></lh-title>
 
     <div class="content-body card-body" id="captureDom">
@@ -84,7 +84,7 @@
         pagaData: {
           username: '',
           spaceId: '',
-          name: '',
+          brandName: '',
           manageUrl: '',
           wxUrl: ''
         }
@@ -112,7 +112,7 @@
         // 构造a标签并模拟点击
         let downloadQr = document.getElementById('downloadQr')
         downloadQr.setAttribute('href', url)
-        downloadQr.setAttribute('download', this.pagaData.name + '二维码.png')
+        downloadQr.setAttribute('download', this.pagaData.brandName + '二维码.png')
       },
       getPageData() {
         accountInfo({ clientId: this.clientId }).then(res => {
@@ -121,7 +121,7 @@
             this.pagaData = {
               username: data.username,
               spaceId: data.spaceId,
-              name: data.name,
+              brandName: data.brandName,
               manageUrl: data.manageUrl,
               wxUrl: data.wxUrl
             }
@@ -133,7 +133,7 @@
       downloadPdf() {
         // 第一个参数name: 客户名+账户信息
         // 第二个参数：下载的dom，默认<div id="captureDom"></div>
-        let name = this.pagaData.name + '账户信息'
+        let name = this.pagaData.brandName + '账户信息'
         this.capturePdf(name)
       },
       closeDialog(status) {
