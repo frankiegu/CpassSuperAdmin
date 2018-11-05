@@ -224,6 +224,8 @@ export default {
       uploadLoading1: false,
       uploadLoading2: false,
       dialogVisible: false,
+      initOfficeStatus: 0,
+      initPayStatus: 0,
       dataForm: {
         id: this.$route.query.id,
         // 客户基础信息
@@ -515,12 +517,12 @@ export default {
         this.dataForm.adminUsername = ''
         this.dataForm.productStatus = dataSource.productStatus
 
-        this.dataForm.isOpenWxService = dataSource.swStatus || 0
+        this.initOfficeStatus = this.dataForm.isOpenWxService = dataSource.swStatus || 0
         this.dataForm.appId = dataSource.appId
         this.dataForm.appSecret = dataSource.appSecret
         this.dataForm.jsFile = dataSource.jsFile
 
-        this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus || 0
+        this.initPayStatus = this.dataForm.isOpenPayment = dataSource.spaceWeixinPayStatus || 0
         this.dataForm.spaceWeixinPayId = dataSource.spaceWeixinPayId
         this.dataForm.mchId = dataSource.mchId
         this.dataForm.mchKey = dataSource.mchKey

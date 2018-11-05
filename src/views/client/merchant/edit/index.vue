@@ -351,12 +351,12 @@
           this.hasChangeOfficeStatus = false
         }
       },
-      changeOfficeStatus() {
-        this.hasChangeOfficeStatus = true
+      changeOfficeStatus(val) {
+        this.hasChangeOfficeStatus = +val !== +this.initOfficeStatus
         this.resetItemField(['appId', 'appSecret', 'jsFile'], false)
       },
-      changePayStatus() {
-        this.hasChangePayStatus = true
+      changePayStatus(val) {
+        this.hasChangePayStatus = +val !== +this.initPayStatus
         this.resetItemField(['mchId', 'mchKey', 'certificate'], false)
       },
 
