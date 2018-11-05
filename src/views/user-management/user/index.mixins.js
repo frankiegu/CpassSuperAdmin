@@ -193,7 +193,8 @@ export default {
               .then(res => {
                 if (res.status === 'true') {
                   this.isShowUserForm = false
-                  this.userFormTitle === '编辑用户' ? this.getPageData() : this.getPageData(1)
+                  this.$refs[formName].resetFields()
+                  this.getPageData()
                 } else {
                   this.setMsg('error', res.msg)
                 }
