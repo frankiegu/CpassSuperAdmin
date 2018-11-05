@@ -1,7 +1,7 @@
 <template>
   <div class="base-info">
-    <el-form-item label="商户ID" label-width="110px" v-if="modelForm.id">
-      <p class="label-content">{{modelForm.id | filterMerchantId}}</p>
+    <el-form-item label="商户ID" label-width="110px" v-if="clientId">
+      <p class="label-content">{{clientId | filterMerchantId}}</p>
     </el-form-item>
 
     <el-form-item label="商户类型" prop="merchantId" ref="merchantId" label-width="110px"
@@ -173,6 +173,7 @@
         callback()
       }
       return {
+        clientId: this.$route.query.id,
         clientTypeList: [], // 商户类型列表
         countryList: [], // 国家列表
         cityTree: [], // 省市区列表

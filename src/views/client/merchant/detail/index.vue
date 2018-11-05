@@ -20,6 +20,10 @@
           <!-- 签约信息 -->
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" v-if="isCreateAccount">
             <h3 class="grid-title">签约信息</h3>
+            <el-form-item label="可用状态">
+              <p class="theme-red">{{dataForm.productStatus === 1 ? '正常' : '停用'}}</p>
+            </el-form-item>
+
             <el-form-item label="签约版本"><p class="theme-red">{{dataForm.productName}}</p></el-form-item>
 
             <el-form-item label="有效期">
@@ -45,10 +49,6 @@
                 <p class="theme-red">{{dataForm.bankCardNum || dataForm.weixinPayNum || dataForm.aliPayNum}}</p>
                 <p v-if="+dataForm.settlementType === 3">{{dataForm.bank}}</p>
               </div>
-            </el-form-item>
-
-            <el-form-item label="使用状态">
-              <p class="theme-red">{{dataForm.productStatus === 1 ? '正常' : '停用'}}</p>
             </el-form-item>
           </el-col>
         </el-row>

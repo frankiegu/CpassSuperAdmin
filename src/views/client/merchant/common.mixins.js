@@ -206,7 +206,7 @@ export default {
 
       isCreateAccount: false,
       hasOpenOfficial: false,
-      productList: {},
+      productList: [],
       // 结算周期类型
       settlementCycleTypeList: [{
         id: 1,
@@ -231,7 +231,6 @@ export default {
       initOfficeStatus: 0,
       initPayStatus: 0,
       dataForm: {
-        id: this.$route.query.id,
         // 客户基础信息
         merchantId: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
         brandName: '',
@@ -307,7 +306,7 @@ export default {
       const initialForm = this.dataFormStr
       const initInfo = this.infoStr
       this.$watch('dataFormStr', {
-        handler: function (newVal, oldVal) {
+        handler: function (newVal) {
           if (!newVal || newVal === initialForm) {
             this.hasChangeForm = false
           } else if (newVal !== initialForm) {
@@ -423,7 +422,7 @@ export default {
       return isTxt
     },
     // JS接口文件上传成功
-    successUploadInFile(response, file, fileList) {
+    successUploadInFile(response) {
       if (response.status === 'true') {
         this.dataForm.jsFile = response.info
         this.uploadLoading1 = false
@@ -464,7 +463,7 @@ export default {
       return isP12
     },
     // 支付证书文件上传成功
-    successUploadCeFile(response, file, fileList) {
+    successUploadCeFile(response) {
       if (response.status === 'true') {
         this.dataForm.certificate = response.info
         this.uploadLoading2 = false

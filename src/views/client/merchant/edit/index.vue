@@ -15,6 +15,14 @@
           <!-- 签约信息 -->
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">签约信息</h3>
+            <el-form-item label="可用状态">
+              <el-tooltip placement="top" content="关闭后微端和web-admin均不可使用">
+                <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
+                  active-color="#7ED321" inactive-color="#A9ADBC"
+                  @change="changeUseStatus"></el-switch>
+              </el-tooltip>
+            </el-form-item>
+
             <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
               <el-select v-model="dataForm.productId" class="width100" :disabled="!dataForm.productStatus">
                 <el-option v-for="item in productList" :key="item.name" :value="+item.id" :label="item.name"
@@ -125,14 +133,6 @@
                 <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行"
                   :disabled="!dataForm.productStatus || +dataForm.settlementType !== 3"></el-input>
               </el-form-item>
-            </el-form-item>
-
-            <el-form-item label="使用控制">
-              <el-tooltip placement="top" content="关闭后微端和web-admin均不可使用">
-                <el-switch v-model="dataForm.productStatus" :inactive-value="0" :active-value="1"
-                  active-color="#7ED321" inactive-color="#A9ADBC"
-                  @change="changeUseStatus"></el-switch>
-              </el-tooltip>
             </el-form-item>
           </el-col>
         </el-row>
