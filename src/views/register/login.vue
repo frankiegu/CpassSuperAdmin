@@ -100,7 +100,7 @@
               this.loading = false
               this.$router.push({ path: '/' })
             }).catch(err => {
-              this.setMsg('error', err.msg)
+              this.setMsg('error', err.msg || '请输入验证码')
               this.loading = false
               // 判断需要验证码（前提：同一个账户输入错误密码三次以及三次以上）
               if (err.info === 'false') {
