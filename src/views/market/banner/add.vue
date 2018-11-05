@@ -56,7 +56,7 @@
 
       <el-form-item class="lh-form-item0">
         <div v-if="noAllow">
-          <el-button v-if="handleHasPermissions('/supervisor/indexBanner/Update')" @click="submitForm('formData')" type="primary" class="lh-btn-mini">编辑</el-button>
+          <el-button v-if="handleHasPermissions('/supervisor/indexBanner/update')" @click="submitForm('formData')" type="primary" class="lh-btn-mini">编辑</el-button>
         </div>
         <div v-else>
           <el-button @click="submitForm('formData')" type="primary" class="lh-btn-mini">保存</el-button>

@@ -44,6 +44,8 @@ const wsUpdater = {
       if (res.status === 'true' && res.type === 'inform' && res.info) {
         store.getters.messageList.unshift(res.info.informVo)
         store.dispatch('getMsgNum', res.info.unreadTotal)
+      } else if (res.status === 'true' && res.type === 'warning' && res.info) {
+        store.dispatch('logout')
       }
     }
 

@@ -198,6 +198,10 @@
             //     pushList.push(v.id)
             //   }
             // })
+            if (!this.ruleForm.permisIds.length) {
+              this.setMsg('error', '权限不能为空')
+              return
+            }
             let ajaxParameters = {
               roleName: this.ruleForm.roleName,
               roleDesc: this.ruleForm.roleDesc,
