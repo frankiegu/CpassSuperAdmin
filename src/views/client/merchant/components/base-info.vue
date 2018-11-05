@@ -1,15 +1,15 @@
 <template>
   <div class="base-info">
+    <el-form-item label="商户ID" label-width="110px" v-if="modelForm.id">
+      <p class="label-content">{{modelForm.id | filterMerchantId}}</p>
+    </el-form-item>
+
     <el-form-item label="商户类型" prop="merchantId" ref="merchantId" label-width="110px"
       :rules="[{ required: infoType !== 'detail', message: '商户类型不能为空！', trigger: ['blur', 'change'] }]">
       <p class="label-content" v-if="infoType === 'detail'">{{modelForm.merchantName}}</p>
       <el-select v-model="modelForm.merchantId" class="width100" v-else>
         <el-option v-for="item in clientTypeList" :key="item.id" :value="+item.id" :label="item.name"></el-option>
       </el-select>
-    </el-form-item>
-
-    <el-form-item label="商户ID" label-width="110px" v-if="modelForm.id">
-      <p class="label-content">{{modelForm.id | filterMerchantId}}</p>
     </el-form-item>
 
     <el-form-item label="品牌名称" prop="brandName" ref="brandName" label-width="110px"

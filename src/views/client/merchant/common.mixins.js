@@ -4,6 +4,8 @@ import { settlementTypeSelect } from '@/service/common'
 
 export default {
   data () {
+    // 自定义微信号校验规则
+    const WXREG = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/
     // 自定义校验规则
     const checkTel = (rule, value, callback) => {
       if (this.isCreateAccount) {
@@ -98,6 +100,8 @@ export default {
       if (this.isCreateAccount && +this.dataForm.settlementType === 1) {
         if (!value) {
           return callback(new Error('微信号不能为空！'))
+        } else if (!WXREG.test(value)) {
+          callback(new Error('请输入正确的微信号'))
         }
         callback()
       }
@@ -329,7 +333,7 @@ export default {
     const productIds = await productListPromise
     // 禁用完整版
     let target = this.productList.find(item => { return item.id === 1 })
-    this.$set(target, 'disabled', true)
+    if (target) this.$set(target, 'disabled', true)
     // 插入用户签约的但被禁用的版本
     if (this.clientId && productInfo && productIds && !productIds.includes(productInfo.id)) {
       productInfo.name += '（已禁用的版本）'

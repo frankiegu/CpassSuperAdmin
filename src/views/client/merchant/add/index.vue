@@ -421,8 +421,10 @@
                 // console.log(this.$refs['productId'].$children[0].$refs.reference.$refs.input)
                 // console.log(this.$refs['validity'].$children[0].$refs.reference.$refs.input)
                 // console.log(item.$children[0])
-                item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
-                  : item.$children[0].$refs.reference.$refs.input.focus()
+                if (Object.keys(item.$children[0].$refs).length !== 0) {
+                  item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
+                    : item.$children[0].$refs.reference.$refs.input.focus()
+                }
                 return true
               } else {
                 return false
