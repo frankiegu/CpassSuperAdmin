@@ -74,10 +74,13 @@ export default {
     };
     const validateNewTel = (rule, value, callback) => {
       if (!value) {
+        this.isAble = true
         callback(new Error('请输入您的手机号'));
       } else if (!checkPhone(value)) {
+        this.isAble = true
         callback(new Error('请输入正确的手机号'));
       } else if (value === this.replace.tel) {
+        this.isAble = true
         callback(new Error('两次输入了同一个手机号!'));
       } else {
         this.isAble = false
