@@ -3,7 +3,7 @@
     <lh-title :title="title"/>
 
     <div class="card-padding card-padding-vertical">
-      <el-form :model="ruleForm" ref="ruleForm" label-width="80px">
+      <el-form :model="ruleForm" ref="ruleForm" label-width="80px" :disabled="type === 'edit' && +ruleForm.status === 0">
         <h3 class="grid-title">基础信息</h3>
         <el-form-item label="版本名称" prop="versionName" :rules="[{ required: true, message: '请输入版本名称'},
          { validator: checkName, trigger: 'blur' }]">
@@ -30,6 +30,7 @@
             class="width420px"
             :textData="ruleForm.description"
             :maxlength="100"
+            :disabled="type === 'edit' && +ruleForm.status === 0"
             placeholder="请输入描述内容"
             :minRows="3"
             :maxRows="3"
