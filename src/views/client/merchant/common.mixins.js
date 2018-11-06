@@ -330,6 +330,7 @@ export default {
     const productListPromise = this.getProductList()
     const productInfo = await detailPromise
     const productIds = await productListPromise
+    this.isCreateAccount = +this.dataForm.productStatus === 1
     // 禁用完整版
     let target = this.productList.find(item => { return item.id === 1 })
     if (target) this.$set(target, 'disabled', true)

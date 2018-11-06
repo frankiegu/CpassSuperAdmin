@@ -23,16 +23,17 @@
               </el-tooltip>
             </el-form-item>
 
-            <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId" required>
+            <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId"
+              :required="isCreateAccount">
               <el-select v-model="dataForm.productId" class="width100" :disabled="!dataForm.productStatus">
                 <el-option v-for="item in productList" :key="item.name" :value="+item.id" :label="item.name"
                   :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="有效期至" required>
+            <el-form-item label="有效期至" :required="isCreateAccount">
               <el-form-item prop="validity" ref="validity" class="mb0"
-                :rules="dataRules.validity" :required="!dataForm.isPermanent">
+                :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
                 <el-date-picker
                   v-model="dataForm.validity"
                   :disabled="!!dataForm.isPermanent || !dataForm.productStatus"
@@ -52,7 +53,7 @@
 
             <el-form-item label="服务费比例" prop="serviceFeeProportion" ref="serviceFeeProportion"
               :error="errorField === 'serviceFeeProportion' ? errorMsg : ''"
-              :rules="dataRules.serviceFeeProportion" required>
+              :rules="dataRules.serviceFeeProportion" :required="isCreateAccount">
               <el-input
                 v-model.number.trim="dataForm.serviceFeeProportion"
                 class="width120px"
@@ -61,7 +62,8 @@
             </el-form-item>
 
             <el-form-item label="结算周期" prop="settlementCycle" ref="settlementCycle"
-              :error="errorField === 'settlementCycle' ? errorMsg : ''" required :rules="dataRules.settlementCycle">
+              :error="errorField === 'settlementCycle' ? errorMsg : ''" :required="isCreateAccount"
+              :rules="dataRules.settlementCycle">
               <el-form-item>
                 <el-radio v-model="dataForm.settlementCycle" :label="1" :disabled="!dataForm.productStatus">
                   固定日期
@@ -94,7 +96,7 @@
               </el-form-item>
             </el-form-item>
 
-            <el-form-item label="结算方式" required>
+            <el-form-item label="结算方式" :required="isCreateAccount">
               <el-form-item prop="settlementType" ref="settlementType"
                 :error="errorField === 'settlementType' ? errorMsg : ''"
                 :rules="[{required: true, message: '请选择结算方式' }]">
@@ -107,28 +109,28 @@
               </el-form-item>
 
               <el-form-item prop="weixinPayNum" ref="weixinPayNum" v-show="+dataForm.settlementType === 1"
-                :required="+dataForm.settlementType === 1"
+                :required="isCreateAccount && +dataForm.settlementType === 1"
                 :rules="dataRules.weixinPayNum" class="mb0">
                 <el-input v-model.trim="dataForm.weixinPayNum" placeholder="请输入微信号"
                   :disabled="!dataForm.productStatus || +dataForm.settlementType !== 1"></el-input>
               </el-form-item>
 
               <el-form-item prop="aliPayNum" ref="aliPayNum" v-show="+dataForm.settlementType === 2"
-                :required="+dataForm.settlementType === 2"
+                :required="isCreateAccount && +dataForm.settlementType === 2"
                 :rules="dataRules.aliPayNum" class="mb0">
                 <el-input v-model.trim="dataForm.aliPayNum" placeholder="请输入支付宝账号"
                   :disabled="!dataForm.productStatus || +dataForm.settlementType !== 2"></el-input>
               </el-form-item>
 
               <el-form-item prop="bankCardNum" ref="bankCardNum" v-show="+dataForm.settlementType === 3"
-                :required="+dataForm.settlementType === 3"
+                :required="isCreateAccount && +dataForm.settlementType === 3"
                 :rules="dataRules.bankCardNum">
                 <el-input v-model.trim="dataForm.bankCardNum" placeholder="请输入收款账号"
                   :disabled="!dataForm.productStatus || +dataForm.settlementType !== 3"></el-input>
               </el-form-item>
 
               <el-form-item prop="bank" ref="bank" v-show="+dataForm.settlementType === 3"
-                :required="+dataForm.settlementType === 3"
+                :required="isCreateAccount && +dataForm.settlementType === 3"
                 :rules="dataRules.bank" class="mb0">
                 <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行"
                   :disabled="!dataForm.productStatus || +dataForm.settlementType !== 3"></el-input>
@@ -306,7 +308,6 @@
     mixins: [commonMixins],
     data() {
       return {
-        isCreateAccount: true,
         dialogType: '',
         updateLoading: false,
         hasUpdateInfo: false,
@@ -339,11 +340,12 @@
     methods: {
       // 关闭使用时置灰产品和有效期控件并清除校验
       changeUseStatus(currStatus) {
+        this.isCreateAccount = +currStatus === 1
         this.hasChangeAccountStatus = true
         this.dataForm.isOpenWxService = 0
         this.dataForm.isOpenPayment = 0
         if (currStatus === 0) {
-          this.resetItemField(['productId', 'validity', 'appId', 'appSecret', 'jsFile'])
+          this.resetItemField(['productId', 'validity', 'settlementCycle', 'serviceFeeProportion', 'bank', 'bankCardNum', 'weixinPayNum', 'aliPayNum', 'settlementDate2'])
           this.hasChangeAccount = false
           this.hasChangePayStatus = false
           this.hasChangePay = false
@@ -443,6 +445,8 @@
 
       // 更新基础信息
       async updateClientInfo() {
+        this.errorField = ''
+        this.errorMsg = ''
         let clientObj = {
           id: this.clientId,
           merchantId: this.dataForm.merchantId,

@@ -27,7 +27,7 @@
                 <el-form-item label="签约版本" prop="productId" ref="productId"
                   :rules="dataRules.productId" :required="isCreateAccount">
                   <el-select v-model="dataForm.productId" class="width100" :disabled="!isCreateAccount">
-                    <el-option v-for="item in productList" :key="item.id" :value="item.id" :label="item.name"
+                    <el-option v-for="item in productList" :key="item.name" :value="item.id" :label="item.name"
                       :disabled="item.disabled" />
                   </el-select>
                 </el-form-item>
@@ -436,6 +436,8 @@
       },
       // 创建或更新商户资料
       createClient() {
+        this.errorField = ''
+        this.errorMsg = ''
         let clientObj = {
           merchantId: this.dataForm.merchantId,
           companyName: this.dataForm.companyName,
