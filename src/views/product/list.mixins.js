@@ -56,7 +56,7 @@ export default {
     restore(id) {
       let target = this.tableData.find(item => item.id === id)
       this.$confirm('此操作将恢复该版本, 是否继续?', '', {
-        confirmButtonText: '确定恢复',
+        confirmButtonText: '确认恢复',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
@@ -83,7 +83,7 @@ export default {
     disable(id) {
       let target = this.tableData.find(item => item.id === id)
       this.$confirm('此操作将禁用该版本, 是否继续?', '', {
-        confirmButtonText: '确定禁用',
+        confirmButtonText: '确认禁用',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
