@@ -9,7 +9,7 @@
 
     <div class="card-padding card-padding-vertical">
       <el-form label-width="160px" :model="dataForm" label-position="left">
-        <!-- 如该客户未开通账户，则“签约信息”和“客户微信服务号资料”内容隐藏 -->
+        <!-- 如该商户未开通账户，则“签约信息”和“商户微信服务号资料”内容隐藏 -->
         <el-row :gutter="40">
           <!-- 基础信息 -->
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -62,8 +62,8 @@
             </el-form-item>
 
             <div v-if="dataForm.appId">
-              <el-form-item label="客户服务号AppID"><p class="label-content">{{dataForm.appId}}</p></el-form-item>
-              <el-form-item label="客户服务号AppSecret"><p class="label-content">{{dataForm.appSecret}}</p></el-form-item>
+              <el-form-item label="商户服务号AppID"><p class="label-content">{{dataForm.appId}}</p></el-form-item>
+              <el-form-item label="商户服务号AppSecret"><p class="label-content">{{dataForm.appSecret}}</p></el-form-item>
             </div>
           </el-col>
 
@@ -75,10 +75,10 @@
             </el-form-item>
 
             <!-- 如没有开通支付，则无mch_id和key信息 -->
-            <el-form-item label="客户服务号mch_ID" v-if="dataForm.mchId">
+            <el-form-item label="商户服务号mch_ID" v-if="dataForm.mchId">
               <p class="label-content">{{dataForm.mchId}}</p>
             </el-form-item>
-            <el-form-item label="客户服务号key" v-if="dataForm.mchKey">
+            <el-form-item label="商户服务号key" v-if="dataForm.mchKey">
               <p class="label-content">{{dataForm.mchKey}}</p>
             </el-form-item>
           </el-col>
@@ -98,7 +98,7 @@
         clientId: this.$route.query.id,
         isCreateAccount: true,
         dataForm: {
-          // 客户基础信息
+          // 商户基础信息
           name: '',
           contact: '',
           phone: '',
@@ -120,8 +120,8 @@
           // 开通微信支付功能
           spaceWeixinPayStatus: 0,
           spaceWeixinPayId: '',
-          mchId: '', // 客户服务号mch_ID
-          mchKey: '' // 客户服务号key
+          mchId: '', // 商户服务号mch_ID
+          mchKey: '' // 商户服务号key
         }
       }
     },
@@ -140,7 +140,7 @@
       }
     },
     methods: {
-      // 获取客户详情
+      // 获取商户详情
       handleGetDetail() {
         let obj = { clientId: this.clientId }
         clientDetail(obj).then(res => {

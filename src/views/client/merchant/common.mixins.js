@@ -231,7 +231,7 @@ export default {
       initOfficeStatus: 0,
       initPayStatus: 0,
       dataForm: {
-        // 客户基础信息
+        // 商户基础信息
         merchantId: 1, // 商户类型： 1-场地提供方，2-服务供应商，3-场地提供方&服务供应商
         brandName: '',
         companyName: '',
@@ -275,8 +275,8 @@ export default {
         // 开通微信支付功能
         isOpenPayment: 0,
         spaceWeixinPayId: '',
-        mchId: '', // 客户服务号mch_ID
-        mchKey: '', // 客户服务号key
+        mchId: '', // 商户服务号mch_ID
+        mchKey: '', // 商户服务号key
         certificate: '' // 支付证书
       },
 
@@ -475,7 +475,7 @@ export default {
       }
     },
 
-    // 获取客户详情
+    // 获取商户详情
     async handleGetDetail() {
       let obj = { clientId: this.clientId }
       let res = await clientDetail(obj)

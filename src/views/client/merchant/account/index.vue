@@ -30,7 +30,7 @@
       <div class="lh-divider-horizontal mb32"></div>
 
       <div class="detail-box">
-        <div class="basics-title"> 客户微信公众号 </div>
+        <div class="basics-title"> 商户微信公众号 </div>
 
         <lh-item label="微信部署地址：" label-width="auto">
           {{ pagaData.wxUrl }}

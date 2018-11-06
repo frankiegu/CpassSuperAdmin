@@ -7,7 +7,8 @@
           <!-- 基础信息 -->
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">基础信息</h3>
-            <base-info :model-form="dataForm" @changeCreateStatus="changeCreateStatus"></base-info>
+            <base-info :model-form="dataForm" :error-field="errorField" :error-msg="errorMsg"
+              @changeCreateStatus="changeCreateStatus" ref="baseInfo"></base-info>
           </el-col>
 
           <!-- 签约信息 -->
@@ -173,26 +174,26 @@
               </el-switch>
             </el-form-item>
 
-            <el-form-item label="客户服务号AppID" prop="appId" ref="appId"
+            <el-form-item label="商户服务号AppID" prop="appId" ref="appId"
               :error="errorField === 'appId' ? errorMsg : ''"
               :rules="dataRules.appId" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
                 class="width100"
                 :disabled="!dataForm.isOpenWxService"
-                placeholder="客户微信服务号AppID"></el-input>
+                placeholder="商户微信服务号AppID"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
+            <el-form-item label="商户服务号AppSecret" prop="appSecret" ref="appSecret"
               :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
                 class="width100"
                 :disabled="!dataForm.isOpenWxService"
-                placeholder="客户微信服务号AppSecret"></el-input>
+                placeholder="商户微信服务号AppSecret"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
+            <el-form-item label="商户服务号JS接口文件" prop="jsFile" ref="jsFile"
               :rules="dataRules.jsFile" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model="dataForm.jsFile"
@@ -231,25 +232,25 @@
               </el-switch>
             </el-form-item>
 
-            <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
+            <el-form-item label="商户服务号mch_ID" prop="mchId" ref="mchId"
               :rules="dataRules.mchId" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchId"
                 class="width100"
                 :disabled="!dataForm.isOpenPayment"
-                placeholder="客户微信支付商号mch_ID"></el-input>
+                placeholder="商户微信支付商号mch_ID"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
+            <el-form-item label="商户服务号key" prop="mchKey" ref="mchKey"
               :rules="dataRules.mchKey" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchKey"
                 class="width100"
                 :disabled="!dataForm.isOpenPayment"
-                placeholder="客户微信支付商号API密钥"></el-input>
+                placeholder="商户微信支付商号API密钥"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
+            <el-form-item label="商户服务号支付证书" prop="certificate" ref="certificate"
               :rules="dataRules.certificate" :required="isCreateAccount && !!dataForm.isOpenPayment">
               <el-input
                 v-model="dataForm.certificate"
@@ -298,16 +299,16 @@
         :close-on-press-escape="false"
         center>
 
-        <!-- 仅创建客户确认弹窗内容 -->
+        <!-- 仅创建商户确认弹窗内容 -->
         <span class="text-center" v-if="dialogType === 'save'">
-          <p v-if="!clientId && !isCreateSuccess && !isOpenSuccess">是否确认仅创建客户资料？<br>（暂不开通客户账户）</p>
+          <p v-if="!clientId && !isCreateSuccess && !isOpenSuccess">是否确认仅创建商户资料？<br>（暂不开通商户账户）</p>
           <p v-if="clientId && !isCreateSuccess && !isOpenSuccess">确认保存修改内容？</p>
           <span v-if="isCreateSuccess || isOpenSuccess" class="el-icon-success"></span>
           <p v-if="isCreateSuccess && !isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '创建成功！'}}</p>
           <p v-if="isOpenSuccess" class="success-tip">{{clientId ? '已保存！' : '开通成功！'}}</p>
           <!--<p v-if="isOpenSuccess">-->
             <!--<router-link :to="'/client/detail?id=' + clientId" class="theme-blue">点击查看</router-link><br>-->
-            <!--或点击对应客户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看-->
+            <!--或点击对应商户操作区的 <i class="el-icon-edit theme-blue"></i> 按钮查看-->
           <!--</p>-->
         </span>
         <span slot="footer" v-if="!isCreateSuccess && !isOpenSuccess && dialogType === 'save'">
@@ -433,7 +434,7 @@
           }
         })
       },
-      // 创建或更新客户资料
+      // 创建或更新商户资料
       createClient() {
         let clientObj = {
           merchantId: this.dataForm.merchantId,
@@ -460,7 +461,7 @@
           promise.then(res => {
             if (res.status === 'true') {
               this.isCreateSuccess = true
-              // 如果仅创建客户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
+              // 如果仅创建商户，则1秒后关闭对话框并跳转至列表页；否则继续开通账户
               if (!this.isCreateAccount) {
                 this.createLoading = false
                 setTimeout(() => {
@@ -476,6 +477,10 @@
               this.isCreateSuccess = false
               this.dialogVisible = false
               this.createLoading = false
+              this.errorField = res.info
+              this.errorMsg = res.msg
+              // console.log(this.$refs['baseInfo'].$refs[res.info].$children[0])
+              this.$refs['baseInfo'].$refs[res.info].$children[0].$refs.input.focus()
             }
           })
         } else if (this.isCreateAccount) {

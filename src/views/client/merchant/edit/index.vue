@@ -148,25 +148,25 @@
               </el-switch>
             </el-form-item>
 
-            <el-form-item label="客户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId"
+            <el-form-item label="商户服务号AppID" prop="appId" ref="appId" :rules="dataRules.appId"
               :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appId"
                 class="width100"
                 :disabled="!dataForm.isOpenWxService"
-                placeholder="客户微信服务号AppID"></el-input>
+                placeholder="商户微信服务号AppID"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号AppSecret" prop="appSecret" ref="appSecret"
+            <el-form-item label="商户服务号AppSecret" prop="appSecret" ref="appSecret"
               :rules="dataRules.appSecret" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model.trim="dataForm.appSecret"
                 class="width100"
                 :disabled="!dataForm.isOpenWxService"
-                placeholder="客户微信服务号AppSecret"></el-input>
+                placeholder="商户微信服务号AppSecret"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号JS接口文件" prop="jsFile" ref="jsFile"
+            <el-form-item label="商户服务号JS接口文件" prop="jsFile" ref="jsFile"
               :rules="dataRules.jsFile" :required="isCreateAccount && !!dataForm.isOpenWxService">
               <el-input
                 v-model="dataForm.jsFile"
@@ -208,25 +208,25 @@
               </el-tooltip>
             </el-form-item>
 
-            <el-form-item label="客户服务号mch_ID" prop="mchId" ref="mchId"
+            <el-form-item label="商户服务号mch_ID" prop="mchId" ref="mchId"
               :rules="dataRules.mchId" :required="!!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchId"
                 class="width100"
                 :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
-                placeholder="客户微信支付商号mch_ID"></el-input>
+                placeholder="商户微信支付商号mch_ID"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号key" prop="mchKey" ref="mchKey"
+            <el-form-item label="商户服务号key" prop="mchKey" ref="mchKey"
               :rules="dataRules.mchKey" :required="!!dataForm.isOpenPayment">
               <el-input
                 v-model.trim="dataForm.mchKey"
                 class="width100"
                 :disabled="!dataForm.isOpenPayment || !dataForm.productStatus"
-                placeholder="客户微信支付商号API密钥"></el-input>
+                placeholder="商户微信支付商号API密钥"></el-input>
             </el-form-item>
 
-            <el-form-item label="客户服务号支付证书" prop="certificate" ref="certificate"
+            <el-form-item label="商户服务号支付证书" prop="certificate" ref="certificate"
               :rules="dataRules.certificate" :required="!!dataForm.isOpenPayment">
               <el-input
                 v-model="dataForm.certificate"
@@ -390,7 +390,7 @@
         })
       },
 
-      // 点击弹窗确定按钮更新客户资料
+      // 点击弹窗确定按钮更新商户资料
       // 表单根据新增时分为四个部分：基础信息、账户信息、公众号信息、支付信息
       async handleUpdateClient() {
         this.updateLoading = true
