@@ -1,4 +1,5 @@
 import { checkPhone } from '@/config/utils'
+import { EMAILREG, LHEMAILE } from '@/config/env'
 import { getUserList, getRoleList, openUser, closeUser, createUser, updateUser, deleteUser } from '@/service'
 
 export default {
@@ -14,8 +15,8 @@ export default {
     }
     // 验证邮箱
     let checkEmail = (rule, value, callback) => {
-      let emailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
-      let companyEmailReg = /^([a-zA-Z0-9_-])+@(gzleihou\.cn|cpass\.net)$/
+      let emailReg = EMAILREG
+      let companyEmailReg = LHEMAILE
       if (!emailReg.test(value)) {
         callback(new Error('邮箱格式不正确'))
       }
