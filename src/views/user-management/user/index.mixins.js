@@ -195,6 +195,7 @@ export default {
                   this.isShowUserForm = false
                   this.$refs[formName].resetFields()
                   this.getPageData()
+                  this.setMsg('success', `${this.userFormTitle}成功！`)
                 } else {
                   this.setMsg('error', res.msg)
                 }
