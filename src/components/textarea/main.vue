@@ -8,12 +8,13 @@
   <!--:maxRows="3"-->
   <!--@input="val => ruleForm.description = val" />-->
 <template>
-  <div class="lh-textarea">
+  <div :class="['lh-textarea', {'is-disabled': disabled}]">
     <el-input
       v-model.trim="data"
       type="textarea"
       :maxlength="maxlength"
       :placeholder="placeholder"
+      :disabled="disabled"
       :autosize="{ minRows: minRows, maxRows: maxRows }"
       @input="handleInput"></el-input>
     <span class="lh-textarea-limit">{{data.length + '/' + maxlength }}</span>
@@ -37,6 +38,10 @@
       placeholder: {
         type: String,
         default: '请输入'
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       },
       minRows: {
         type: Number,
@@ -70,6 +75,13 @@
     border: 1px solid #dcdfe6;
     border-radius: 4px;
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+    &.is-disabled {
+      background-color: #f5f7fa;
+      border-color: #e4e7ed;
+      color: #c0c4cc;
+      cursor: not-allowed;
+    }
 
     .lh-textarea-limit {
       position: absolute;
