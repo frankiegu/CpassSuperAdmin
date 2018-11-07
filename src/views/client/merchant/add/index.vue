@@ -66,7 +66,7 @@
                   :error="errorField === 'serviceFeeProportion' ? errorMsg : ''"
                   :rules="dataRules.serviceFeeProportion" :required="isCreateAccount">
                   <el-input
-                    v-model.number.trim="dataForm.serviceFeeProportion"
+                    v-model.trim="dataForm.serviceFeeProportion"
                     class="width120px"
                     :disabled="!isCreateAccount"></el-input>
                   <span class="input-unit">%</span>
@@ -499,7 +499,7 @@
           productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent,
           adminUsername: this.dataForm.adminUsername,
-          serviceFeeProportion: this.dataForm.serviceFeeProportion,
+          serviceFeeProportion: +this.dataForm.serviceFeeProportion,
           settlementCycle: this.dataForm.settlementCycle,
           settlementCycleType: this.dataForm.settlementCycleType,
           settlementType: this.dataForm.settlementType

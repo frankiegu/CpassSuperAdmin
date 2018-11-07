@@ -55,7 +55,7 @@
               :error="errorField === 'serviceFeeProportion' ? errorMsg : ''"
               :rules="dataRules.serviceFeeProportion" :required="isCreateAccount">
               <el-input
-                v-model.number.trim="dataForm.serviceFeeProportion"
+                v-model.trim="dataForm.serviceFeeProportion"
                 class="width120px"
                 :disabled="!dataForm.productStatus"></el-input>
               <span class="input-unit">%</span>
@@ -381,8 +381,10 @@
                 // console.log(this.$refs['productId'].$children[0].$refs.reference.$refs.input)
                 // console.log(this.$refs['validity'].$children[0].$refs.reference.$refs.input)
                 // console.log(item.$children[0])
-                item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
-                  : item.$children[0].$refs.reference.$refs.input.focus()
+                if (Object.keys(item.$children[0].$refs).length !== 0) {
+                  item.$children[0].$refs.input ? item.$children[0].$refs.input.focus()
+                    : item.$children[0].$refs.reference.$refs.input.focus()
+                }
                 return true
               } else {
                 return false
@@ -489,7 +491,7 @@
           productId: this.dataForm.productId,
           productEndDate: this.dataForm.validity,
           isPermanent: this.dataForm.isPermanent,
-          serviceFeeProportion: this.dataForm.serviceFeeProportion,
+          serviceFeeProportion: +this.dataForm.serviceFeeProportion,
           settlementCycle: this.dataForm.settlementCycle,
           settlementCycleType: this.dataForm.settlementCycleType,
           settlementType: this.dataForm.settlementType

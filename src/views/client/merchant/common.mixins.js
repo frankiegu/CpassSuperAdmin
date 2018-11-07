@@ -503,7 +503,7 @@ export default {
 
         this.dataForm.productId = dataSource.productId
         this.dataForm.validity = dataSource.productEndDate ? dataSource.productEndDate.split(' ')[0] : ''
-        this.dataForm.isPermanent = dataSource.isPermanent
+        this.dataForm.isPermanent = 0
         this.dataForm.serviceFeeProportion = dataSource.serviceFeeProportion
         this.dataForm.settlementCycle = dataSource.settlementCycle
         if (+dataSource.settlementCycle === 1) {
