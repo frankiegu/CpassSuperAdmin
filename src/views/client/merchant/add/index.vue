@@ -215,7 +215,7 @@
                   :on-success="successUploadInFile"
                   :disabled="!dataForm.isOpenWxService"
                   slot="suffix">
-                  <span class="el-input__icon el-icon-upload"></span>
+                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !isCreateAccount || !dataForm.isOpenWxService}]"></span>
                 </el-upload>
                 <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
               </el-input>

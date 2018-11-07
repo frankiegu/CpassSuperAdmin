@@ -190,7 +190,7 @@
                   :on-success="successUploadInFile"
                   :disabled="!dataForm.isOpenWxService"
                   slot="suffix">
-                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus}]"></span>
+                  <span :class="['el-input__icon', 'el-icon-upload', {'disabled-upload' : !dataForm.productStatus || !dataForm.isOpenWxService}]"></span>
                 </el-upload>
                 <span v-show="uploadLoading1" slot="suffix" class="el-input__icon el-icon-loading upload-loading"></span>
               </el-input>
@@ -201,13 +201,11 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <h3 class="grid-title">微信支付</h3>
             <el-form-item label="开通微信支付功能">
-              <el-tooltip placement="top" content="账户可用时才可以开启支付功能">
-                <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
-                  active-color="#7ED321" inactive-color="#A9ADBC"
-                  :disabled="!dataForm.productStatus"
-                  @change="changePayStatus">
-                </el-switch>
-              </el-tooltip>
+              <el-switch v-model="dataForm.isOpenPayment" :active-value="1" :inactive-value="0"
+                active-color="#7ED321" inactive-color="#A9ADBC"
+                :disabled="!dataForm.productStatus || !dataForm.isOpenWxService"
+                @change="changePayStatus">
+              </el-switch>
             </el-form-item>
 
             <el-form-item label="商户服务号mch_ID" prop="mchId" ref="mchId"
