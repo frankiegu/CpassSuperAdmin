@@ -109,7 +109,7 @@ export default {
           }
           this.roles = roles
         } else {
-          self.$message({
+          this.$message({
             type: 'error',
             message: res.msg
           });
