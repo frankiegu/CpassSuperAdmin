@@ -34,11 +34,10 @@
 
       <el-form-item>
         <el-input
-          v-model.trim="logSort.adminUserId"
+          v-model.trim="logSort.name"
           @keyup.native.enter="getPageData(1)"
           placeholder="请输入操作人"
-          class="lh-form-input"
-          clearable>
+          class="lh-form-input">
 
           <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
         </el-input>
