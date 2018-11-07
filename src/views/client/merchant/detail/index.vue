@@ -12,7 +12,7 @@
         <!-- 如该商户未开通账户，则“签约信息”和“商户微信服务号资料”内容隐藏 -->
         <el-row :gutter="40">
           <!-- 基础信息 -->
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="isCreateAccount ? 12 : 24" :lg="isCreateAccount ? 12 : 24" :xl="isCreateAccount ? 12 : 24">
             <h3 class="grid-title">基础信息</h3>
             <base-info :model-form="dataForm" info-type="detail"></base-info>
           </el-col>
