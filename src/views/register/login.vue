@@ -48,7 +48,7 @@
               @keyup.native.enter="handleLogin('formData')"
               placeholder="输入图片验证码">
               <lh-svg slot="prefix" iconClass="icon-qrcode" class="svg-icon" />
-              <img slot="suffix" class="img-code" @click="getImgCode" :src="imgCode" alt="">
+              <img v-if="imgCode" slot="suffix" class="img-code" @click="getImgCode" :src="imgCode" alt="">
 
             </el-input>
 
@@ -86,7 +86,6 @@
     },
     mounted () {
       this.redirectRouter = encodeURI(this.$route.query.redirect || '')
-      this.getImgCode()
     },
     methods: {
       handleLogin (formName) {
@@ -101,10 +100,14 @@
               this.$router.push({ path: '/' })
             }).catch(err => {
               this.setMsg('error', err.msg || '请输入验证码')
+              if (err.msg === '验证码错误') {
+                this.getImgCode()
+              }
               this.loading = false
               // 判断需要验证码（前提：同一个账户输入错误密码三次以及三次以上）
               if (err.info === 'false') {
                 this.isShowImgCode = true
+                this.getImgCode()
               }
             })
           }
