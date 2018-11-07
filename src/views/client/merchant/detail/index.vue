@@ -32,11 +32,11 @@
                 {{dataForm.productStartDate | formatTime}} 至 {{dataForm.productEndDate | formatTime}}</p>
             </el-form-item>
 
-            <el-form-item label="服务费比例">
+            <el-form-item label="服务费比例" v-if="dataForm.serviceFeeProportion">
               <p>{{dataForm.serviceFeeProportion + '%'}}</p>
             </el-form-item>
 
-            <el-form-item label="结算周期">
+            <el-form-item label="结算周期" v-if="dataForm.settlementDate">
               <p>{{+dataForm.settlementCycle === 1 ? '固定日期 ' + '' : '周期结算 '}}
                 <span>{{+dataForm.settlementCycle === 1 ? '每月 ' : '每 '}}</span>
                 <span class="theme-red">{{dataForm.settlementDate}}</span>
@@ -44,7 +44,7 @@
               </p>
             </el-form-item>
 
-            <el-form-item label="结算方式">
+            <el-form-item label="结算方式" v-if="dataForm.settlementTypeName">
               <div>{{'转账至' + dataForm.settlementTypeName}}
                 <p class="theme-red">{{dataForm.bankCardNum || dataForm.weixinPayNum || dataForm.aliPayNum}}</p>
                 <p v-if="+dataForm.settlementType === 3">{{dataForm.bank}}</p>

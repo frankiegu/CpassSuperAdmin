@@ -207,6 +207,7 @@ export default {
       isCreateAccount: false,
       hasOpenOfficial: false,
       productList: [],
+      selectedProduct: {}, // 当前选中的产品
       // 结算周期类型
       settlementCycleTypeList: [{
         id: 1,
@@ -340,6 +341,7 @@ export default {
       productInfo.disabled = true
       this.productList.unshift(productInfo)
     }
+    this.selectedProduct = this.productList.find(item => { return item.id === this.dataForm.productId })
   },
   computed: {
     dataFormStr: function () {

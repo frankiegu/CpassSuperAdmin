@@ -25,7 +25,8 @@
 
             <el-form-item label="签约版本" prop="productId" ref="productId" :rules="dataRules.productId"
               :required="isCreateAccount">
-              <el-select v-model="dataForm.productId" class="width100" :disabled="!dataForm.productStatus">
+              <el-select v-model="dataForm.productId" class="width100" :disabled="!dataForm.productStatus"
+                @change="getCurrProduct">
                 <el-option v-for="item in productList" :key="item.name" :value="+item.id" :label="item.name"
                   :disabled="item.disabled"></el-option>
               </el-select>
@@ -36,7 +37,7 @@
                 :rules="dataRules.validity" :required="isCreateAccount && !dataForm.isPermanent">
                 <el-date-picker
                   v-model="dataForm.validity"
-                  :disabled="!!dataForm.isPermanent || !dataForm.productStatus"
+                  :disabled="!dataForm.productStatus || selectedProduct.disabled"
                   type="date"
                   placeholder="结束日期"
                   value-format="yyyy-MM-dd"
@@ -336,6 +337,10 @@
     },
     filters: {},
     methods: {
+      // 获取当前选中的产品版本，所选版本已禁用
+      getCurrProduct(val) {
+        this.selectedProduct = this.productList.find(item => { return item.id === val })
+      },
       // 关闭使用时置灰产品和有效期控件并清除校验
       changeUseStatus(currStatus) {
         this.isCreateAccount = +currStatus === 1
