@@ -1,7 +1,7 @@
 <template>
   <div class="client-account main-content">
     <lh-title
-      :title="pagaData.brandName || '未知品牌' + '账户信息'"
+      :title="(pagaData.brandName || '未知品牌') + '账户信息'"
       @downloadPdf="downloadPdf"></lh-title>
 
     <div class="content-body card-body" id="captureDom">
