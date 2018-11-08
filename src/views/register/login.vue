@@ -49,6 +49,7 @@
               placeholder="输入图片验证码">
               <lh-svg slot="prefix" iconClass="icon-qrcode" class="svg-icon" />
               <img v-if="imgCode" slot="suffix" class="img-code" @click="getImgCode" :src="imgCode" alt="">
+              <span class="img-code" slot="suffix" v-else>加载中</span>
 
             </el-input>
 
@@ -66,18 +67,98 @@
         </div>
       </div>
     </el-form>
+
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :before-close="handleClose"
+      :show-close="false"
+      title="首次登录，请重置密码"
+      width="526px">
+
+      <el-form
+        :model="replacePwd"
+        ref="replacePwd"
+        :rules="rules2"
+        label-width="180px"
+        class="demo-ruleForm">
+
+        <el-form-item label="新密码" prop="newPwd">
+          <el-input
+            type="password"
+            style="width: 200px;"
+            v-model.trim="replacePwd.newPwd"
+            :maxlength="10"
+            placeholder="6-10位字母数字组合密码"></el-input></el-form-item>
+
+        <el-form-item label="再次输入" prop="secondNewPwd">
+          <el-input
+            type="password"
+            :maxlength="10"
+            style="width: 200px;"
+            v-model.trim="replacePwd.secondNewPwd"
+            placeholder="6-10位字母数字组合密码"></el-input></el-form-item>
+
+        <el-form-item class="align-left">
+          <el-button
+            @click="submitForm('replacePwd')"
+            class="width80px mt30"
+            type="primary">保 存</el-button>
+        </el-form-item>
+      </el-form>
+
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import store from '@/store'
   import loginMixins from './login.mixins'
-  import { API_PATH } from '@/config/env'
+  import { API_PATH, PWD_RRGULAR } from '@/config/env'
+  import { firstLoginResetPassword } from '@/service'
 
   export default {
     mixins: [loginMixins], // 长变量，可以抽出一个mixins
     data() {
+      const validateNewPwd = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入密码'));
+        } else if (value.length < 6) {
+          callback(new Error('密码不能小于6位'));
+        } else if (!PWD_RRGULAR.test(value)) {
+          callback(new Error('请输入6-10位字母数字组合密码'));
+        } else if (value === this.replacePwd.oldPwd) {
+          callback(new Error('新密码不能与旧密码相同'));
+        } else {
+          if (this.replacePwd.secondNewPwd !== '') {
+            this.$refs.replacePwd.validateField('secondNewPwd');
+          }
+          callback();
+        }
+      };
+      const validateSecondNewPwd = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请再次输入密码'));
+        } else if (value.length < 6) {
+          callback(new Error('密码不能小于6位'));
+        } else if (!PWD_RRGULAR.test(value)) {
+          callback(new Error('请输入6-10位字母数字组合密码'));
+        } else if (value !== this.replacePwd.newPwd) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
+        dialogVisible: false,
+        rules2: {
+          newPwd: [{ required: true, validator: validateNewPwd, trigger: 'blur' }],
+          secondNewPwd: [{ required: true, validator: validateSecondNewPwd, trigger: 'blur' }]
+        },
+        // 修改密码模块
+        replacePwd: {
+          newPwd: '',
+          secondNewPwd: ''
+        },
         redirectRouter: '',
         loading: false,
         isShowImgCode: false,
@@ -97,7 +178,12 @@
             }
             store.dispatch('loginByPhone', this.formData).then(() => {
               this.loading = false
-              this.$router.push({ path: '/' })
+              // 如果是第一次登录
+              if (store.getters.firstLogin === 1) {
+                this.dialogVisible = true
+              } else {
+                this.$router.push({ path: '/' })
+              }
             }).catch(err => {
               this.setMsg('error', err.msg || '请输入验证码')
               if (err.msg === '验证码错误') {
@@ -115,6 +201,32 @@
       },
       getImgCode () {
         this.imgCode = API_PATH + '/supervisor/captcha/getLoginCode' + '?random=' + Math.random()
+      },
+      // 阻止用户关闭弹窗
+      handleClose() {
+        this.$alert('用户首次登录需更改默认密码', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+          }
+        });
+      },
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            firstLoginResetPassword({
+              newPassword: this.replacePwd.secondNewPwd
+            }).then(res => {
+              if (res.status === 'true') {
+                // this.setMsg('success', '短信验证码已发送至您的手机，请注意查收!')
+                this.setMsg('success', '密码修改成功，请重新登录!')
+                this.dialogVisible = false
+                this.formData.password = ''
+              } else this.setMsg('error', res.msg)
+            })
+          } else {
+            return false;
+          }
+        });
       }
     }
   }
