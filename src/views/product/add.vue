@@ -3,7 +3,7 @@
     <lh-title :title="title"/>
 
     <div class="card-padding card-padding-vertical">
-      <el-form :model="ruleForm" ref="ruleForm" label-width="80px" :disabled="type === 'edit' && +ruleForm.status === 0">
+      <el-form :model="ruleForm" ref="ruleForm" label-width="80px" :disabled="type === 'edit' && isDisabledForm">
         <h3 class="grid-title">基础信息</h3>
         <el-form-item label="版本名称" prop="versionName" :rules="[{ required: true, message: '请输入版本名称'},
          { validator: checkName, trigger: 'blur' }]">
@@ -30,22 +30,22 @@
             class="width420px"
             :textData="ruleForm.description"
             :maxlength="100"
-            :disabled="type === 'edit' && +ruleForm.status === 0"
+            :disabled="type === 'edit' && isDisabledForm"
             placeholder="请输入描述内容"
             :minRows="3"
             :maxRows="3"
             @input="val => ruleForm.description = val" />
         </el-form-item>
 
-        <el-form-item class="align-bottom" label="可用状态" prop="status">
-          <el-switch
-            v-model="ruleForm.status"
-            :active-value="1"
-            :inactive-value="0"
-            :active-color="switchActiveColor"
-            active-text=""
-            inactive-text=""></el-switch>
-        </el-form-item>
+        <!--<el-form-item class="align-bottom" label="可用状态" prop="status" v-if="type !== 'edit'">-->
+          <!--<el-switch-->
+            <!--v-model="ruleForm.status"-->
+            <!--:active-value="1"-->
+            <!--:inactive-value="0"-->
+            <!--:active-color="switchActiveColor"-->
+            <!--active-text=""-->
+            <!--inactive-text=""></el-switch>-->
+        <!--</el-form-item>-->
 
         <!--功能模块-->
         <div class="access-information">
@@ -118,6 +118,7 @@
         type: this.$route.query.type,
         title: this.$route.query.id ? '编辑产品版本' : '新增产品版本',
 
+        isDisabledForm: false,
         ruleForm: {
           versionName: '',
           price: 0,
@@ -262,6 +263,7 @@
             this.tableData = res.info.permission
             this.dealPermissionList()
             this.tableLoading = false
+            this.isDisabledForm = +res.info.status === 0
           } else {
             this.tableLoading = false
             this.setMsg('error', res.msg || '请求失败')
@@ -298,7 +300,7 @@
               price: +this.ruleForm.price * 100,
               description: this.ruleForm.description,
               permisIdList: this.ruleForm.permisIdList,
-              status: this.ruleForm.status
+              status: 1
             }
 
             let requestWay = productAdd
