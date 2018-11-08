@@ -136,6 +136,7 @@ export default {
               } else {
                 this.tableData[index].statusCode = action === '禁用' ? 0 : 1
               }
+              this.setMsg('success', `${action}成功！`)
             } else {
               this.setMsg('error', res.msg)
             }
