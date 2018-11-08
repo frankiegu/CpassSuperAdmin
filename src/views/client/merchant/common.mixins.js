@@ -250,7 +250,7 @@ export default {
         saleManager: '',
 
         // 签约信息
-        productStatus: 1,
+        productStatus: 0,
         productId: '',
         period: '', // 签约年限
         serviceFeeProportion: '', // 服务费比例
