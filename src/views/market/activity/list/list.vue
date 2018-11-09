@@ -5,7 +5,7 @@
     <div class="card-padding">
       <el-form :model="formData" :inline="true" class="text-right mr-10">
 
-        <router-link :to="{path: '/activity/add'}">
+        <router-link :to="{path: '/activity/add'}" v-if="handleHasPermissions('/supervisor/platformActivity/add')">
           <div class="to-bottom-right fl add-btn">添加活动</div>
         </router-link>
 
