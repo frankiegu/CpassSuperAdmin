@@ -143,7 +143,7 @@
                   <el-form-item prop="bank" ref="bank" v-show="+dataForm.settlementType === 3"
                     :required="isCreateAccount && +dataForm.settlementType === 3"
                     :rules="dataRules.bank" class="mb0">
-                    <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行"
+                    <el-input v-model.trim="dataForm.bank" placeholder="请输入开户行" :maxlength="50"
                       :disabled="!isCreateAccount || +dataForm.settlementType !== 3"></el-input>
                   </el-form-item>
                 </el-form-item>
