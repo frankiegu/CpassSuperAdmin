@@ -221,6 +221,11 @@
                 this.setMsg('success', '密码修改成功，请重新登录!')
                 this.dialogVisible = false
                 this.formData.password = ''
+                // 判断是否有图形验证码，修改密码之后图形验证码需要刷新
+                if (this.isShowImgCode) {
+                  this.getImgCode()
+                  this.formData.verifyCode = ''
+                }
               } else this.setMsg('error', res.msg)
             })
           } else {
