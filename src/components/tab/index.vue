@@ -17,14 +17,14 @@ export default {
   created () {
     // 判断默认跳转的第一个路由是否有权限
     if (!this.handleHasPermissions(this.tabList[0].resource)) {
-      for (var i = 0, len = this.tabList.length; i < len - 1; i++) {
-        if (!this.handleHasPermissions(this.tabList[i].resource) && i < len - 1) {
+      this.tabList.some(item => {
+        if (this.handleHasPermissions(item.resource)) {
           this.$router.replace({
-            path: this.tabList[i + 1].name
+            path: item.name
           })
-          break;
+          return true
         }
-      }
+      })
     }
   }
 }

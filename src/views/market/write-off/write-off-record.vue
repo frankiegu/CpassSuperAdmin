@@ -187,10 +187,12 @@
       }
     },
     mounted () {
-      this.getspaceList()
-      this.getstoreList()
-      this.getStationList()
-      this.getPageData()
+      if (this.handleHasPermissions('/supervisor/platformVerifyRecord/page')) {
+        this.getspaceList()
+        this.getstoreList()
+        this.getStationList()
+        this.getPageData()
+      }
     },
     methods: {
       getPageData (page) {

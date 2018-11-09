@@ -187,8 +187,10 @@
       }
     },
     mounted () {
-      this.getPageData()
-      this.getPoint()
+      if (this.handleHasPermissions('/supervisor/platformVerifier/page')) {
+        this.getPageData()
+        this.getPoint()
+      }
     },
     methods: {
       getPageData(page) {

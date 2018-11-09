@@ -85,12 +85,14 @@
     </div>
 
     <!-- 添加核销点弹窗 -->
-    <add-wop-dialog :is-visible="isWopVisible"
+    <add-wop-dialog v-if="handleHasPermissions('/supervisor/platformVerifyStation/page')"
+                    :is-visible="isWopVisible"
                     @closeDialog="isWopVisible = false" @refreshData="refresh"></add-wop-dialog>
 
     <!-- 编辑核销点弹窗 -->
-    <edit-wop-dialog :is-visible="isEditWopVisible" :pointData="pointData" :initialName="initialName"
-                    @closeDialog="isEditWopVisible = false" @refreshData="refresh"></edit-wop-dialog>
+    <edit-wop-dialog v-if="handleHasPermissions('/supervisor/platformVerifyStation/page')"
+                     :is-visible="isEditWopVisible" :pointData="pointData" :initialName="initialName"
+                     @closeDialog="isEditWopVisible = false" @refreshData="refresh"></edit-wop-dialog>
   </div>
 </template>
 
@@ -126,7 +128,9 @@
     },
     mounted () {
       // 获取核销点列表
-      this.getPageData()
+      if (this.handleHasPermissions('/supervisor/platformVerifyStation/page')) {
+        this.getPageData()
+      }
     },
     methods: {
       getPageData() {
