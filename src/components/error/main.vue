@@ -11,7 +11,7 @@
         <span>{{ errorTitle }}</span>
       </h1>
       <p class="theme-light-gray">{{ errorDec }}</p>
-      <router-link to="/" class="to-bottom-right">返回首页</router-link>
+      <!--<router-link to="/" class="to-bottom-right">返回首页</router-link>-->
     </div>
   </div>
 </template>
