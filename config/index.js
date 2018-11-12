@@ -64,8 +64,10 @@ module.exports = {
         }
       },
       '/proxy-ws': {
-        target: 'ws://java.tt.curato.cn:9090',
+        target: 'ws://java.tt.curato.cn:9094',
         changeOrigin: true,
+        ws: true,
+        secure: false,
         pathRewrite: {
           '/proxy-ws': ''
         }

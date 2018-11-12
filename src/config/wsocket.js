@@ -1,32 +1,11 @@
 import store from '@/store'
-// import {WS_PATH} from './env'
-
-let productWs = ''
-switch (location.hostname) {
-  // 测试环境
-  case 'tt.so-admin.com':
-  case 'so-admin.tunnel.gzleihou.cn':
-    productWs = 'ws://java.tt.curato.cn:9092'
-    break
-  // uat环境
-  case 'soadmin.uat.gzleihou.cn':
-    productWs = 'ws://120.78.182.124:9092'
-    break
-  // 正式环境
-  case 'soadmin.gzleihou.cn':
-    productWs = 'ws://soadmin.gzleihou.cn:8082'
-    break
-  default:
-    // console.log(location.hostname)
-    break
-}
-const WS_PATH = process.env.NODE_ENV === 'production' ? productWs : 'ws://java.tt.curato.cn:9090'
+import { WS_PATH } from './env'
 
 const wsUpdater = {
   socket: null,
   start: function() {
     // console.log('ws start')
-    let url = WS_PATH + '/ws?token=' + sessionStorage.getItem('token')
+    let url = 'ws://' + location.host + WS_PATH + '/ws?token=' + sessionStorage.getItem('token')
     if (wsUpdater.socket == null) wsUpdater.socket = new WebSocket(url)
 
     wsUpdater.socket.onopen = function (event) {
@@ -41,11 +20,15 @@ const wsUpdater = {
       heartCheck.reset()
       // 转化数据格式，将消息插入消息列表顶部；未读消息数量更新
       const res = JSON.parse(event.data)
-      if (res.status === 'true' && res.type === 'inform' && res.info) {
+      console.log(event)
+      if (res.status === 'true' && res.type === 'notice' && res.info) {
         store.getters.messageList.unshift(res.info.informVo)
         store.dispatch('getMsgNum', res.info.unreadTotal)
-      } else if (res.status === 'true' && res.type === 'warning' && res.info) {
-        store.dispatch('logout')
+      }
+
+      if (res.status === 'true' && res.type === 'logout' && res.msg) {
+        store.dispatch('setLogoutStatus', true)
+        store.dispatch('setLogoutPrompt', res.msg)
       }
     }
 

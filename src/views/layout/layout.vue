@@ -30,11 +30,24 @@
       </el-tooltip>
     </div>
     <messagebar />
+
+    <el-dialog
+      title="提示"
+      :visible.sync="logoutStatus"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      width="30%">
+      <span>{{ logoutPrompt }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirmLogout">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import navbar from './navbar'
 import sidebar from './sidebar'
 import { scroolTop } from '@/components'
@@ -64,7 +77,9 @@ export default {
       return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     },
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'logoutStatus',
+      'logoutPrompt'
     ])
   },
   watch: {
@@ -74,6 +89,24 @@ export default {
   },
   mounted() {
     // this.hideRouter = this.hideRouters.includes(this.$route.path)
+  },
+  methods: {
+    ...mapActions([
+      'setLogoutStatus'
+    ]),
+    // 点击确定，退出登录
+    confirmLogout() {
+      // 去掉弹窗
+      this.setLogoutStatus(false)
+
+      // 退出登录，到登录页面
+      this.$store.dispatch('logout').then(res => {
+        this.$router.push({
+          path: '/login',
+          query: { redirect: this.$route.path }
+        })
+      })
+    }
   }
 }
 </script>

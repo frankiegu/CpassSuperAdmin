@@ -4,6 +4,7 @@
 
 // proxyTable代理的pathRewrite配置值（解决跨域问题）
 const API_PATH = '/proxy-api'
+const WS_PATH = '/proxy-ws'
 // 域名地址
 const baseUrl = ''
 // 图片所在域名地址
@@ -32,6 +33,7 @@ const REG_EMOJI = /\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g
 
 export {
   API_PATH,
+  WS_PATH,
   baseUrl,
   imgBaseUrl,
   routerMode,

@@ -92,7 +92,7 @@
       //     this.orderTypeList = res.info
       //   }
       // })
-      this.handleGetMsgList()
+      // this.handleGetMsgList()
 
       if (wsUpdater.socket == null) wsUpdater.start()
     },
