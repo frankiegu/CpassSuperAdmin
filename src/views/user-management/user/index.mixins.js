@@ -66,8 +66,10 @@ export default {
   props: {},
   components: {},
   mounted() {
-    this.getPageData()
-    this.getRoleList()
+    if (this.handleHasPermissions('/supervisor/supervisor/page')) {
+      this.getPageData()
+      this.getRoleList()
+    }
   },
   watch: {},
   computed: {},
