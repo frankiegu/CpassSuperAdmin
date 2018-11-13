@@ -32,12 +32,15 @@
     <messagebar />
 
     <el-dialog
-      title="提示"
       :visible.sync="logoutStatus"
       :show-close="false"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
       width="30%">
+      <div slot="title" class="fz18">
+        <i class="el-icon-warning theme-red"></i>
+        <span>提示</span>
+      </div>
       <span>{{ logoutPrompt }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirmLogout">确 定</el-button>

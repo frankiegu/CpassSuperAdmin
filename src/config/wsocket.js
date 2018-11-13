@@ -20,7 +20,6 @@ const wsUpdater = {
       heartCheck.reset()
       // 转化数据格式，将消息插入消息列表顶部；未读消息数量更新
       const res = JSON.parse(event.data)
-      console.log(event)
       if (res.status === 'true' && res.type === 'notice' && res.info) {
         store.getters.messageList.unshift(res.info.informVo)
         store.dispatch('getMsgNum', res.info.unreadTotal)
