@@ -60,7 +60,8 @@
           <template slot-scope="scope">
             <el-button v-if="handleHasPermissions('/supervisor/role/update')" type="text">
               <router-link
-                :to="`/user-management/role/com?type=edit&&id=${scope.row.id}`"
+                :to="{path: '/user-management/role/com', query: {type: 'edit', id: scope.row.id}}"
+                tag="a"
                 class="table-link mr5">
                 编辑
               </router-link>
