@@ -27,6 +27,7 @@ const wsUpdater = {
       }
 
       if (res.status === 'true' && res.type === 'logout' && res.msg) {
+        sessionStorage.removeItem('token')
         store.dispatch('setLogoutStatus', true)
         store.dispatch('setLogoutPrompt', res.msg)
       }
