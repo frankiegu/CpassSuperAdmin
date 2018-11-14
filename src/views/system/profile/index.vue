@@ -197,7 +197,7 @@
               this.userInfo = res.info || ''
               if (this.userInfo) {
                 this.name = this.userInfo.name || ''
-                this.contactTel = this.userInfo.contactTel || ''
+                this.contactTel = this.userInfo.username || ''
                 this.roleName = this.userInfo.roleName || ''
                 this.headImgUrl = this.userInfo.headImgUrl || ''
                 this.email = this.userInfo.email || ''
