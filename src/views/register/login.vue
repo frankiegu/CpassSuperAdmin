@@ -165,10 +165,17 @@
         imgCode: ''
       }
     },
+    beforeDestroy () {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler)
+    },
     mounted () {
       this.redirectRouter = encodeURI(this.$route.query.redirect || '')
+      window.addEventListener('beforeunload', this.beforeUnloadHandler)
     },
     methods: {
+      beforeUnloadHandler () {
+        sessionStorage.removeItem('token')
+      },
       handleLogin (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
