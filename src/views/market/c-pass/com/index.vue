@@ -52,7 +52,7 @@
             title=""
             width="180"
             trigger="hover">
-            <div class="tips">建议尺寸： 420PX * 480PX<br>支持格式： JPG / PNG</div>
+            <div class="tips">建议尺寸： 258PX * 288PX<br>支持格式： JPG / PNG</div>
           </el-popover>
           <span v-popover:tipPopover class="fl ml10 mt24">
             <lh-svg icon-class="icon-info" class="theme-gray cp"></lh-svg>
