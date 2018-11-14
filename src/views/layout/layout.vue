@@ -90,6 +90,11 @@ export default {
       // this.hideRouter = this.hideRouters.includes(this.$route.path)
     }
   },
+  destroyed () {
+    // this.$store.dispatch('delAllViews')
+    sessionStorage.visitedViews = []
+    this.$store.state.tagsView.visitedViews = []
+  },
   mounted() {
     // this.hideRouter = this.hideRouters.includes(this.$route.path)
   },
