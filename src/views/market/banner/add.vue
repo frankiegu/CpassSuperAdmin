@@ -27,7 +27,7 @@
 
         <i class="el-icon-question fl theme-light-gray mt8 mr5 ml15" @click="bannerUploadText = true"></i>
         <div v-if="bannerUploadText" class="fl">
-          <p>建议尺寸： 670PX * 260PX<br>支持格式： JPG / PNG</p>
+          <p>建议尺寸： 670PX * 280PX<br>支持格式： JPG / PNG</p>
         </div>
         <p class="theme-red fz12 clearfix mt-6 h6">{{ verifyBanner }}</p>
       </el-form-item>
