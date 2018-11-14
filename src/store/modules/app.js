@@ -28,14 +28,11 @@ const app = {
         supervisorLogin(userInfo).then(res => {
           if (res.status === 'true') {
             commit('SET_FIRST_LOGIN', res.info.firstLogin)
-            // 不是第一次登录才设置token
-            if (res.info.firstLogin === 0) {
-              const data = res.info.token
+            const data = res.info.token
 
-              Cookies.set('sospTelphone', userInfo.username)
-              sessionStorage.setItem('token', data)
-              commit('SET_TOKEN', data)
-            }
+            Cookies.set('sospTelphone', userInfo.username)
+            sessionStorage.setItem('token', data)
+            commit('SET_TOKEN', data)
             resolve(res)
           } else {
             reject(res)
