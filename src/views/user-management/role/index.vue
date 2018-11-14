@@ -58,14 +58,13 @@
           label="操作"
           align="center">
           <template slot-scope="scope">
-            <el-button v-if="handleHasPermissions('/supervisor/role/update')" type="text">
-              <router-link
-                :to="{path: '/user-management/role/com', query: {type: 'edit', id: scope.row.id}}"
-                tag="a"
-                class="table-link mr5">
-                编辑
-              </router-link>
-            </el-button>
+            <router-link
+              v-if="handleHasPermissions('/supervisor/role/update')"
+              :to="{path: '/user-management/role/com', query: {type: 'edit', id: scope.row.id}}"
+              tag="a"
+              class="table-link mr10">
+              <el-button type="text">编辑</el-button>
+            </router-link>
             <el-button v-if="handleHasPermissions('/supervisor/role/close') && scope.row.status === 1" type="text" @click="handleChangeUseState(1, scope.row)">禁用</el-button>
             <el-button v-else-if="handleHasPermissions('/supervisor/role/open')" type="text" @click="handleChangeUseState(2, scope.row)">恢复</el-button>
             <el-button v-if="handleHasPermissions('/supervisor/role/delete')" type="text" @click="handleChangeUseState(3, scope.row)">删除</el-button>
