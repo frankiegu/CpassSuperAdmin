@@ -47,7 +47,7 @@ export default {
       }).then(() => {
         // 如果是删除操作，需要判断该角色是否已分配了用户
         if (actionList[index] === '删除' && +row.adminUserCount > 0) {
-          this.setMsg('error', `此角色已配分配给${row.adminUserCount}名用户，不允许删除`)
+          this.setMsg('error', `此角色已分配给${row.adminUserCount}名用户，不允许删除`)
           return
         }
         let methodList = [closeRole, openRole, deleteRole]
