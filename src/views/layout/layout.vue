@@ -94,13 +94,16 @@ export default {
     // this.$store.dispatch('delAllViews')
     sessionStorage.visitedViews = []
     this.$store.state.tagsView.visitedViews = []
+    this.setLogoutStatus(false)
+    this.setLogoutPrompt('')
   },
   mounted() {
     // this.hideRouter = this.hideRouters.includes(this.$route.path)
   },
   methods: {
     ...mapActions([
-      'setLogoutStatus'
+      'setLogoutStatus',
+      'setLogoutPrompt'
     ]),
     // 点击确定，退出登录
     confirmLogout() {
