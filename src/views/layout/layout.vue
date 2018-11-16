@@ -90,7 +90,7 @@ export default {
       // this.hideRouter = this.hideRouters.includes(this.$route.path)
     }
   },
-  destroyed () {
+  beforeDestroy () {
     // this.$store.dispatch('delAllViews')
     sessionStorage.visitedViews = []
     this.$store.state.tagsView.visitedViews = []
@@ -109,6 +109,9 @@ export default {
     confirmLogout() {
       // 去掉弹窗
       this.setLogoutStatus(false)
+      this.setLogoutPrompt('')
+      sessionStorage.visitedViews = []
+      this.$store.state.tagsView.visitedViews = []
 
       // 退出登录，到登录页面
       this.$store.dispatch('logout').then(res => {
