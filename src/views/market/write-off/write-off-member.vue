@@ -69,7 +69,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="核销数" align="left" sortable sort-by="shopName">
+        <el-table-column label="核销数" align="left" sortable sort-by="verifyCount">
           <template slot-scope="scope">
             <span>{{ scope.row.verifyCount || 0 }}</span>
           </template>
