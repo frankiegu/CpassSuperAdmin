@@ -220,6 +220,14 @@
                 let tipsText = (this.type === 'edit' ? '保存成功！' : '创建成功！')
 
                 this.setMsg('success', tipsText)
+                // console.log('store', this.$store.state.tagsView.visitedViews)
+                let currentPath
+                this.$store.state.tagsView.visitedViews.forEach(v => {
+                  if (v.id === this.$route.query.id && v.path === this.$route.path) {
+                    currentPath = v
+                  }
+                })
+                this.$store.dispatch('delVisitedViews', currentPath)
                 this.$router.replace('/user-management/role')
               } else {
                 this.setMsg('error', res.msg)

@@ -54,28 +54,28 @@ export default {
   mounted () {
     // console.log('sidebar-item: ', this.routes)
     // console.log('space: ', this.handleHasPermissions('/manage/field/list'));
-    let firstRoutes, replaceRoute
-    // 第一个路由栏目
-    this.routes.some(item => {
-      if (item.ajaxPermissions) {
-        if (this.handleHasPermissions(item.ajaxPermissions)) {
-          firstRoutes = item
-          return true
-        }
-      }
-    })
-    // 第一个路由栏目的有权限路由
-    if (firstRoutes.children && firstRoutes.children.length) {
-      firstRoutes.children.some(item => {
-        if (this.handleHasPermissions(item.ajaxPermissions)) {
-          replaceRoute = `${firstRoutes.path}/${item.path}`
-          return true
-        }
-      })
-    }
-    this.$router.replace({
-      path: replaceRoute
-    })
+    // let firstRoutes, replaceRoute
+    // // 第一个路由栏目
+    // this.routes.some(item => {
+    //   if (item.ajaxPermissions) {
+    //     if (this.handleHasPermissions(item.ajaxPermissions)) {
+    //       firstRoutes = item
+    //       return true
+    //     }
+    //   }
+    // })
+    // // 第一个路由栏目的有权限路由
+    // if (firstRoutes.children && firstRoutes.children.length) {
+    //   firstRoutes.children.some(item => {
+    //     if (this.handleHasPermissions(item.ajaxPermissions)) {
+    //       replaceRoute = `${firstRoutes.path}/${item.path}`
+    //       return true
+    //     }
+    //   })
+    // }
+    // this.$router.replace({
+    //   path: replaceRoute
+    // })
   }
 }
 </script>

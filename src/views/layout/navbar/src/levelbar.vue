@@ -49,7 +49,7 @@
       // 跳转路由
       linkTo (item, index) {
         // 禁止第二个路由跳转，涉及到权限跳转问题
-        if (index === 0 || index === 1) return
+        if (index === 1) return
         this.$router.push({
           path: item.redirect || item.path
         })

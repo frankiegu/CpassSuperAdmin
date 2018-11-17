@@ -21,13 +21,14 @@ export const constantRouterMap = [
   {
     name: '首页',
     path: '',
-    redirect: '/user-management',
+    redirect: '/home',
     component: layout,
     hidden: true,
     children: [
       {
+        name: '',
         path: 'home',
-        component: _import('home'),
+        component: _import('home/index'),
         hidden: true
       },
       ...error
