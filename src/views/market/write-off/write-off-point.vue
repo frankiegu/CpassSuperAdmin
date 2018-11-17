@@ -130,6 +130,10 @@
       // 获取核销点列表
       if (this.handleHasPermissions('/supervisor/platformVerifyStation/page')) {
         this.getPageData()
+      } else {
+        this.$router.replace({
+          path: '/write-off/record'
+        })
       }
     },
     methods: {

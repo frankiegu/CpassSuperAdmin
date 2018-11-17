@@ -190,6 +190,10 @@
       if (this.handleHasPermissions('/supervisor/platformVerifier/page')) {
         this.getPageData()
         this.getPoint()
+      } else {
+        this.$router.replace({
+          path: '/write-off/point'
+        })
       }
     },
     methods: {
