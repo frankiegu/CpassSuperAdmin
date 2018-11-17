@@ -23,7 +23,7 @@
           <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         </router-link>
         <el-tooltip
-          v-if="handleHasPermissions('/supervisor/platformCoupon/changeStatus') && couponBaseInfo.status === 1 || couponBaseInfo.status === 3"
+          v-if="handleHasPermissions('/supervisor/platformCoupon/changeStatus') && (couponBaseInfo.status === 1 || couponBaseInfo.status === 3)"
           :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
