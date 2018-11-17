@@ -97,7 +97,7 @@ export default {
     },
     // 获取角色列表
     getRoleList () {
-      getRoleList().then(res => {
+      getRoleList({ pageNum: 1, pageSize: 1000 }).then(res => {
         if (res.status === 'true') {
           let roles = []
           // 遍历列表，获取角色id和名称
