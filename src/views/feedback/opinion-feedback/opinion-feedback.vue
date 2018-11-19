@@ -17,8 +17,8 @@
     data() {
       return {
         tabList: [
-          { type: 1, text: '管理后台', name: '/opinion-feedback/manage-feedback' },
-          { type: 2, text: 'CPASS', name: '/opinion-feedback/cpass-feedback' }
+          { type: 1, text: '管理后台', name: '/opinion-feedback/manage-feedback', resource: '/supervisor/feedback/list' },
+          { type: 2, text: 'CPASS', name: '/opinion-feedback/cpass-feedback', resource: '/supervisor/platformFeedback/list' }
         ]
       }
     },

@@ -16,14 +16,14 @@
 
       <div class="right-part fr mr15">
         <!-- 完成第一次发放后不可删除，按钮隐藏v-permissions="'/manage/coupon/delete'"  -->
-        <span v-if="couponBaseInfo.canEdit === 1" @click="deleteCoupon" class="delete-coupon coupon-created mr15">
+        <span v-if="handleHasPermissions('/supervisor/platformCoupon/delete') && couponBaseInfo.canEdit === 1" @click="deleteCoupon" class="delete-coupon coupon-created mr15">
           删除
         </span>
-        <router-link :to="'/coupon/add?id=' + couponId" v-if="couponBaseInfo.canEdit === 1">
+        <router-link :to="'/coupon/add?id=' + couponId" v-if="handleHasPermissions('/supervisor/platformCoupon/update') && couponBaseInfo.canEdit === 1">
           <el-button type="primary" size="small" class=" mr15">编辑</el-button>
         </router-link>
         <el-tooltip
-          v-if="couponBaseInfo.status === 1 || couponBaseInfo.status === 3"
+          v-if="handleHasPermissions('/supervisor/platformCoupon/changeStatus') && (couponBaseInfo.status === 1 || couponBaseInfo.status === 3)"
           :content="couponBaseInfo.fizenStatusText"
           placement="top"
           class="margin-lr6">
@@ -204,8 +204,8 @@
         </el-tab-pane>
         <!--领券详情标签页-->
         <el-tab-pane label="领券详情" name="receiveRecord" class="receive-list">
-          <el-button type="primary" @click="batchFreeze(1)" :disabled="multipleSelection.length <= 0">批量冻结</el-button>
-          <el-button type="primary" @click="batchFreeze(2)" :disabled="multipleSelection.length <= 0">批量恢复</el-button>
+          <el-button v-if="handleHasPermissions('/supervisor/platformCouponCustomer/batchFreeze')" type="primary" @click="batchFreeze(1)" :disabled="multipleSelection.length <= 0">批量冻结</el-button>
+          <el-button v-if="handleHasPermissions('/supervisor/platformCouponCustomer/batchRecover')" type="primary" @click="batchFreeze(2)" :disabled="multipleSelection.length <= 0">批量恢复</el-button>
           <div class="fr">
             <el-input
               class="lh-form-input mr15"
@@ -215,7 +215,7 @@
 
               <i slot="suffix" @click="getReceiveList(1)" class="el-input__icon el-icon-search"></i>
             </el-input>
-            <el-button class="lh-btn-export" icon="el-icon-download" @click="exportExcel">导出</el-button>
+            <el-button v-if="handleHasPermissions('/supervisor/platformCouponCustomer/export')" class="lh-btn-export" icon="el-icon-download" @click="exportExcel">导出</el-button>
           </div>
           <el-table
             ref="multipleTable"

@@ -9,7 +9,7 @@
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
     "@xkeshi/vue-qrcode": "github:xkeshi/vue-qrcode",
@@ -76,6 +76,7 @@
     "http-proxy-middleware": "^0.17.4",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.7.2",
     "opn": "^5.2.0",
     "optimize-css-assets-webpack-plugin": "^1.3.0",
@@ -87,6 +88,7 @@
     "showdown": "^1.8.6",
     "svg-sprite-loader": "^3.6.2",
     "url-loader": "^0.6.2",
+    "vue-focus": "^2.1.0",
     "vue-loader": "^14.1.0",
     "vue-style-loader": "^3.1.2",
     "vue-template-compiler": "^2.5.13",

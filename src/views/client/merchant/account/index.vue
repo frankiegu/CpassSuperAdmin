@@ -20,11 +20,11 @@
       </lh-item>
       <lh-item label="登录账户：" label-width="auto" con-width="350px">
         <span>{{ pagaData.username }}</span>
-        <el-button @click="showDialog('account')" class="fr mt-3" type="primary" size="mini">重置账户</el-button>
+        <el-button v-if="handleHasPermissions('/supervisor/client/resetAccount')" @click="showDialog('account')" class="fr mt-3" type="primary" size="mini">重置账户</el-button>
       </lh-item>
       <lh-item label="登录密码：" label-width="auto" con-width="350px">
         <span class="dib pt3">***********</span>
-        <el-button @click="showDialog('pwd')" class="fr mt-3" type="primary" size="mini">重置密码</el-button>
+        <el-button v-if="handleHasPermissions('/supervisor/client/resetPassword')" @click="showDialog('pwd')" class="fr mt-3" type="primary" size="mini">重置密码</el-button>
       </lh-item>
 
       <div class="lh-divider-horizontal mb32"></div>

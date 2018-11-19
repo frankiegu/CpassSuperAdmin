@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="110">
+        <el-table-column v-if="handleHasPermissions('/supervisor/platformServiceOrder/acceptOrder')" fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button type="text" v-if="scope.row.orderStatus===1"
               @click="handleClickOrders(scope.row.id)">接单</el-button>

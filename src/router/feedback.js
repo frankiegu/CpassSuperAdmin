@@ -7,10 +7,10 @@ import layout from '@/views/layout/layout.vue'
 export default [{
   name: '反馈',
   path: '/feedback',
-  redirect: '/feedback/opinion-feedback',
+  redirect: '/opinion-feedback/manage-feedback',
   component: layout,
-  hidden: false,
   icon: 'icon-peer_surface',
+  ajaxPermissions: ['/supervisor/feedback/list', '/supervisor/platformFeedback/list'],
   children: [
     // 意见反馈
     {
@@ -18,6 +18,7 @@ export default [{
       path: '/opinion-feedback',
       redirect: '/opinion-feedback/manage-feedback',
       component: _import('feedback/opinion-feedback/opinion-feedback'),
+      ajaxPermissions: ['/supervisor/feedback/list', '/supervisor/platformFeedback/list'],
       children: [{
         name: '管理后台',
         path: 'manage-feedback',

@@ -23,3 +23,13 @@ export const merchantSelect = (obj) => fetch(API_PATH + '/common/general/merchan
 // 结算类型
 export const settlementTypeSelect = (obj) => fetch(API_PATH + '/common/general/settlementTypeSelect', obj, 'GET')
 
+
+// webSocket信息流
+export const informList = (obj) => fetch(API_PATH + '/manage/inform/list', obj, 'GET')
+
+// 获取管理员拥有的资源
+export const getByAdminUserId = (obj) => fetch(API_PATH + '/supervisor/supervisor/getResource', obj, 'GET')
+
+// 获取管理员信息
+export const adminUserInfo = (obj) => fetch(API_PATH + '/supervisor/supervisor/info', obj, 'GET')
+

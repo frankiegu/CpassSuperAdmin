@@ -11,10 +11,12 @@ export default [{
   component: layout,
   noDropdown: false,
   icon: 'icon-kehu',
+  ajaxPermissions: ['/supervisor/client/list', '/supervisor/storeStar/storeList', '/supervisor/regionInfo/page'],
   children: [{
     name: '商户列表',
     path: 'list',
     component: _import('client/merchant/index')
+    ajaxPermissions: '/supervisor/client/list'
   }, {
     name: '',
     path: 'add',
@@ -51,7 +53,8 @@ export default [{
     name: '空间列表',
     path: 'space',
     component: _import('client/space/index'),
-    meta: { level2: true }
+    meta: { level2: true },
+    ajaxPermissions: '/supervisor/storeStar/storeList'
   },
 
   // 城市维护
@@ -59,6 +62,7 @@ export default [{
     name: '城市维护',
     path: 'city',
     component: _import('client/city-maintain/index'),
-    meta: { level2: true }
+    meta: { level2: true },
+    ajaxPermissions: '/supervisor/regionInfo/page'
   }]
 }]

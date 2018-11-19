@@ -4,6 +4,7 @@
 
 // proxyTable代理的pathRewrite配置值（解决跨域问题）
 const API_PATH = '/proxy-api'
+const WS_PATH = '/proxy-ws'
 // 域名地址
 const baseUrl = ''
 // 图片所在域名地址
@@ -18,6 +19,8 @@ const PHONEREG = /^(0|86|17951)?1[3-9][0-9]{9}$/
 const FIXPHONEREG = /^\d{3}-\d{7,8}|\d{4}-\d{7,8}$/
 // email正则
 const EMAILREG = /^\w+([-+.´]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+// 雷猴email正则
+const LHEMAILE = /^([a-zA-Z0-9._-])+@(gzleihou\.cn|cpass\.net)$/
 // 检验正整数
 const POSITIVE_INTEGER = /^[1-9]\d*$/
 // 自然数
@@ -30,6 +33,7 @@ const REG_EMOJI = /\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g
 
 export {
   API_PATH,
+  WS_PATH,
   baseUrl,
   imgBaseUrl,
   routerMode,
@@ -37,6 +41,7 @@ export {
   PHONEREG,
   FIXPHONEREG,
   EMAILREG,
+  LHEMAILE,
   POSITIVE_INTEGER,
   NATURAL_NUM,
   IP_REG,

@@ -43,7 +43,7 @@ module.exports = {
     // 运行测试页面的端口
     port: 8989,
 
-    // 项目npm run dev，autoOpenBrowser：true自动打开浏览器，访问localhost:8888
+    // 项目npm run dev，autoOpenBrowser：true自动打开浏览器，访问localhost:8989
     autoOpenBrowser: false,
 
     // 编译输出的二级目录
@@ -64,6 +64,15 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '/proxy-api': ''
+        }
+      },
+      '/proxy-ws': {
+        target: 'ws://java.tt.curato.cn:9094',
+        changeOrigin: true,
+        ws: true,
+        secure: false,
+        pathRewrite: {
+          '/proxy-ws': ''
         }
       }
     },

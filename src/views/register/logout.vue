@@ -13,7 +13,7 @@
     methods: {
       logout() {
         this.$store.commit('SET_TOKEN', '')
-        this.$store.commit('SET_RESOURCES', 'no')
+        this.$store.commit('SET_LOGIN', 'no')
         sessionStorage.removeItem('token')
         this.$store.commit('SET_PERMISSION', '')
 

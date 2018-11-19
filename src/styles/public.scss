@@ -629,3 +629,28 @@
     text-align: right;
   }
 }
+
+.submit-fixed-bottom {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 100%;
+  height: 55px;
+  line-height: 55px;
+  background-color: #fff;
+
+  .ml116 {
+    margin-left: 116px;
+  }
+  .ml272 {
+    margin-left: 272px;
+  }
+
+  .ml100 {
+    margin-left: 100px;
+  }
+  .ml256 {
+    margin-left: 256px;
+  }
+}

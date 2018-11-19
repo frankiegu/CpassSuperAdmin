@@ -5,25 +5,36 @@
         <screenfull class="svg-style"></screenfull>
       </el-menu-item> -->
 
+      <!--<el-menu-item index="1" class="notice-item svg-box" @click="handleToggleMsgBar">-->
+        <!--<lh-svg v-if="messageNum === 0" :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--<el-badge v-if="messageNum > 0 && messageNum <= 99" :value="messageNum" :max="99" class="red-point">-->
+          <!--<lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--</el-badge>-->
+        <!--<el-badge v-if="messageNum > 99" :value="'···'" class="item red-point fl">-->
+          <!--<lh-svg :iconClass="'icon-bells'" class="icon svg-style fl"/>-->
+        <!--</el-badge>-->
+      <!--</el-menu-item>-->
+
       <el-submenu index="2" class="profile-box">
         <template slot="title">
           <div class="avatar-cont">
-            <img src="/static/images/cpass-logo.png">
+            <img v-if="avatar" :src="avatar">
+            <img v-else src="/static/images/cpass-logo.png">
           </div>
-          <span class="fl user-name ml8">CPASS</span>
+          <span class="fl user-name ml8">{{name || 'CPASS'}}</span>
         </template>
 
-        <el-menu-item class="a-link" index="2-1" disabled>
-          <!-- <router-link class="a-link" to="/profile">
-            <lh-svg class="mr8" icon-class="icon-custom-user" />个人信息
-          </router-link> -->
-          个人信息
+        <el-menu-item class="a-link" index="2-1">
+          <router-link to="/system/profile">
+            个人信息
+          </router-link>
+          <!--个人信息-->
         </el-menu-item>
 
-        <el-menu-item class="a-link" index="2-2" disabled>
-          <!-- <lh-svg icon-class="icon-setting1"></lh-svg> -->
-          设置
-        </el-menu-item>
+        <!--<el-menu-item class="a-link" index="2-2" disabled>-->
+          <!--&lt;!&ndash; <lh-svg icon-class="icon-setting1"></lh-svg> &ndash;&gt;-->
+          <!--设置-->
+        <!--</el-menu-item>-->
 
         <el-menu-item index="2-3" @click="logout" class="a-link">
           <!-- <lh-svg icon-class="icon-logout"></lh-svg> -->
@@ -36,6 +47,7 @@
 
 <script>
 import screenfull from './screenfull'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: { screenfull },
   data () {
@@ -45,7 +57,21 @@ export default {
       orderNum: 0
     }
   },
+  watch: { '$route': 'closeMsgBar' },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'messageNum'
+    ])
+  },
   methods: {
+    closeMsgBar() {
+      this.handleToggleMsgBar('close')
+    },
+    ...mapActions({
+      handleToggleMsgBar: 'toggleMsgBar'
+    }),
     logout () {
       this.$store.dispatch('logout').then(res => {
         this.$router.push({

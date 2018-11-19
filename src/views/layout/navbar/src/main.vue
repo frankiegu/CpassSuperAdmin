@@ -1,11 +1,17 @@
 <template>
   <el-menu class="components-navbar" mode="horizontal">
-    <router-link
+    <!--<router-link-->
+      <!--:class="{'sidebar-close': !sidebar.opened}"-->
+      <!--class="logo-box db" to="/" tag="a">-->
+      <!--<img src="/static/images/default-logo.png">-->
+      <!--<span>酷雷托总后台</span>-->
+    <!--</router-link>-->
+    <div
       :class="{'sidebar-close': !sidebar.opened}"
-      class="logo-box db" to="/" tag="a">
-      <img src="/static/images/cpass-logo.png">
+      class="logo-box db">
+      <img src="/static/images/default-logo.png">
       <span>CPASS总后台</span>
-    </router-link>
+    </div>
 
     <!-- 给变化加上transition，效果好上很多 -->
     <transition name="fade" mode="out-in">
