@@ -15,7 +15,7 @@ export default [{
   children: [{
     name: '商户列表',
     path: 'list',
-    component: _import('client/merchant/index')
+    component: _import('client/merchant/index'),
     ajaxPermissions: '/supervisor/client/list'
   }, {
     name: '',

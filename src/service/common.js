@@ -23,7 +23,6 @@ export const merchantSelect = (obj) => fetch(API_PATH + '/common/general/merchan
 // 结算类型
 export const settlementTypeSelect = (obj) => fetch(API_PATH + '/common/general/settlementTypeSelect', obj, 'GET')
 
-
 // webSocket信息流
 export const informList = (obj) => fetch(API_PATH + '/manage/inform/list', obj, 'GET')
 
