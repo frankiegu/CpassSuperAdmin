@@ -11,6 +11,7 @@ export default [{
   component: layout,
   noDropdown: true,
   icon: 'icon-space',
+  ajaxPermissions: ['/supervisor/product/selectPage'],
   children: [{
     name: '产品库',
     path: 'list',

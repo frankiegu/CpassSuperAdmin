@@ -7,6 +7,7 @@
       <el-form :model="formData" :inline="true" class="sort-form-bar">
 
         <router-link
+          v-if="handleHasPermissions('/supervisor/product/save')"
           :to="'/product/add'"
           class="fl">
           <el-button class="el-icon-circle-plus to-bottom-right add-btn"> 新增版本</el-button>
@@ -70,13 +71,13 @@
         </el-table-column>
 
 
-        <el-table-column label="操作" align="left" width="120">
+        <el-table-column label="操作" align="left" width="120" v-if="handleHasPermissions(['/supervisor/product/update', '/supervisor/product/open', '/supervisor/product/close'])">
           <template slot-scope="scope">
-            <router-link :to="{path: '/product/add', query: {id: scope.row.id, type: 'edit'}}" v-if="scope.row.id !== 1 && scope.row.status">
+            <router-link :to="{path: '/product/add', query: {id: scope.row.id, type: 'edit'}}" v-if="handleHasPermissions('/supervisor/product/update') && scope.row.id !== 1 && scope.row.status">
               <el-button type="text" class="operate-btn">编辑</el-button>
             </router-link>
 
-            <el-tooltip :content="scope.row.status === 1 ? '点击禁用' : '点击恢复'" placement="top" v-if="scope.row.id !== 1" :class="{'ml48': scope.row.status === 0}">
+            <el-tooltip :content="scope.row.status === 1 ? '点击禁用' : '点击恢复'" placement="top" v-if="handleHasPermissions(['/supervisor/product/open', '/supervisor/product/close']) && scope.row.id !== 1" :class="{'ml48': scope.row.status === 0}">
               <el-switch v-model="scope.row.status" @change="changeStatus(scope.row.id, scope.row.status)" class="lh-table-switch" :active-value="1" :inactive-value="0" :active-color="switchActiveColor"></el-switch>
             </el-tooltip>
           </template>
