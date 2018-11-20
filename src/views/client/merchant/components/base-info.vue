@@ -65,7 +65,7 @@
     <el-form-item label="联系地址" ref="address" label-width="110px"
       v-if="infoType === 'detail' && (modelForm.countryName && !!modelForm.countryName.length) || !infoType">
       <p class="label-content" v-if="infoType === 'detail'">
-        {{modelForm.countryName + ' ' + modelForm.provinceName + ' ' + modelForm.cityName + ' ' + modelForm.regionName}}<br />
+        {{(modelForm.countryName || '') + ' ' + (modelForm.provinceName || '') + ' ' + (modelForm.cityName || '') + ' ' + (modelForm.regionName || '')}}<br />
         {{modelForm.address}}<br />
       </p>
       <el-form-item v-else>
