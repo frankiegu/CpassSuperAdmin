@@ -34,12 +34,12 @@ const wsUpdater = {
 
     // 连接发生错误时触发的回调
     wsUpdater.socket.onerror = function(event) {
-      // console.log(event)
+      console.log('onerror', event)
     }
 
     // 关闭链接时触发的回调
     wsUpdater.socket.onclose = function(event) {
-      // console.log(event, 'Connection closed.')
+      console.log(event, 'Connection closed.')
       // 连接关闭后移除该连接；清除心跳定时；10分钟后重新发起连接
       wsUpdater.socket = null
       heartCheck.end()
