@@ -4,7 +4,7 @@
 
     <div class="lh-form-box">
       <el-form :inline="true" :model="citySort" @submit.native.prevent>
-        <el-button type="primary" class="fl" @click="openAddDialog">添加城市</el-button>
+        <el-button v-if="handleHasPermissions('/supervisor/regionInfo/add')" type="primary" class="fl" @click="openAddDialog">添加城市</el-button>
         <el-form-item>
           <el-input v-model.trim="citySort.keyword" @keyup.native.enter="getPageData(1)" placeholder="请输入内容">
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
@@ -36,11 +36,11 @@
           <el-table-column label="城市名称" prop="cityAliasName"></el-table-column>
           <el-table-column label="空间数" prop="storeCount"></el-table-column>
 
-          <el-table-column label="操作">
+          <el-table-column v-if="handleHasPermissions(['/supervisor/regionInfo/update', '/supervisor/regionInfo/top', '/supervisor/regionInfo/openStatus'])" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" class="fl" @click="openEditDialog(scope.row.id)">编辑</el-button>
-              <el-button type="text" v-if="scope.row.sort !== 1" @click="setTopCity(scope.row.id)" class="ml0">置顶</el-button>
-              <el-tooltip :content="scope.row.status === 1 ? '点击关闭城市' : '点击开启城市'" placement="top" class="fr">
+              <el-button v-if="handleHasPermissions('/supervisor/regionInfo/update')" type="text" class="fl" @click="openEditDialog(scope.row.id)">编辑</el-button>
+              <el-button type="text" v-if="handleHasPermissions('/supervisor/regionInfo/top') && scope.row.sort !== 1" @click="setTopCity(scope.row.id)" class="ml0">置顶</el-button>
+              <el-tooltip v-if="handleHasPermissions('/supervisor/regionInfo/openStatus')" :content="scope.row.status === 1 ? '点击关闭城市' : '点击开启城市'" placement="top" class="fr">
                 <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
                   @change="changeCityStatus(scope.row.id, scope.row.status)"
                   :active-color="switchActiveColor" class="mt6"></el-switch>

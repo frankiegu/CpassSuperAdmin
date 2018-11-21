@@ -10,11 +10,13 @@ export default [{
   redirect: '/member/list',
   component: layout,
   icon: 'icon-viip',
+  ajaxPermissions: ['/supervisor/appCustomer/list', '/supervisor/customer/list'],
   children: [{
     name: '会员列表',
     path: 'list',
     redirect: '/member/list/app-list',
     component: _import('member/main'),
+    ajaxPermissions: ['/supervisor/appCustomer/list', '/supervisor/customer/list'],
     children: [{
       name: 'CPASS会员列表',
       path: 'app-list',

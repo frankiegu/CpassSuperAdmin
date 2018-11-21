@@ -3,7 +3,7 @@
     <lh-title />
 
     <el-form :inline="true" :model="formDate" class="lh-search-box" @submit.native.prevent>
-      <router-link to="/market/c-pass/com" class="el-icon-circle-plus to-bottom-right lh-form-btn">&nbsp;添加精选</router-link>
+      <router-link v-if="handleHasPermissions('/supervisor/marketing/addWellChosen')" to="/market/c-pass/com" class="el-icon-circle-plus to-bottom-right lh-form-btn">&nbsp;添加精选</router-link>
       <el-input v-model.trim="formDate.title" @keyup.native.enter="getPageData(1)"  placeholder="请输入精选标题" class="lh-form-item">
         <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
       </el-input>
@@ -36,16 +36,17 @@
             {{ scope.row.created.substring(0, 16) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作" v-if="handleHasPermissions(['/supervisor/marketing/setSelectionType', '/supervisor/marketing/editWellChosen', '/supervisor/marketing/top'])">
           <template slot-scope="scope">
             <div class="width110px tl mc">
               <el-tooltip placement="top"
+                          v-if="handleHasPermissions('/supervisor/marketing/setSelectionType')"
                 :content="showcaseData.length <= 1 ? '至少需要有一个精选内容' : '点击取消加精'">
                 <lh-svg @click.native="setRelease(scope.row.id, 0)" icon-class="icon-love" class="ph4 fill-blue cp"></lh-svg>
               </el-tooltip>
 
-              <router-link :to="'/market/c-pass/com?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
-              <span v-if="scope.$index !== 0" @click="setFirst(scope.row.id)" class="lh-table-btn">置顶</span>
+              <router-link v-if="handleHasPermissions('/supervisor/marketing/editWellChosen')" :to="'/market/c-pass/com?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+              <span v-if="handleHasPermissions('/supervisor/marketing/top') && scope.$index !== 0" @click="setFirst(scope.row.id)" class="lh-table-btn">置顶</span>
               </div>
           </template>
         </el-table-column>
@@ -83,17 +84,18 @@
             {{ scope.row.created.substring(0, 16) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作" v-if="handleHasPermissions(['/supervisor/marketing/setSelectionType', '/supervisor/marketing/editWellChosen', '/supervisor/marketing/delWellChosen', '/supervisor/marketing/setReleaseType'])">
           <template slot-scope="scope">
             <el-tooltip placement="top"
+                        v-if="handleHasPermissions('/supervisor/marketing/setSelectionType')"
               :content="scope.row.status === 1 ? (showcaseData.length >= 3 ? '最多允许展示3个加精内容' : '点击进行加精') : '开放状态下才能加精'">
               <lh-svg @click.native="setRelease(scope.row.id, 1, scope.row.status)" icon-class="icon-love" class="ph4 fill-grayish cp"></lh-svg>
             </el-tooltip>
 
-            <router-link :to="'/market/c-pass/com?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
-            <span @click="deleteField(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
+            <router-link v-if="handleHasPermissions('/supervisor/marketing/editWellChosen')" :to="'/market/c-pass/com?fieldId=' + scope.row.id" class="lh-table-btn">编辑</router-link>
+            <span v-if="handleHasPermissions('/supervisor/marketing/delWellChosen')" @click="deleteField(scope.row.id)" class="lh-table-btn theme-gray">删除</span>
 
-            <el-tooltip :content="scope.row.status === 1 ? '点击关闭精选' : '点击开启精选'" placement="top">
+            <el-tooltip v-if="handleHasPermissions('/supervisor/marketing/setReleaseType')" :content="scope.row.status === 1 ? '点击关闭精选' : '点击开启精选'" placement="top">
               <el-switch v-model="scope.row.status" @change="changeStatus(scope.row.id, scope.row.status)" class="lh-table-switch" :active-value="1" :inactive-value="0" :active-color="switchActiveColor"></el-switch>
             </el-tooltip>
           </template>

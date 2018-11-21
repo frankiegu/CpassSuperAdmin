@@ -120,7 +120,7 @@
           <!--审批的按钮出现的条件： 最后一条数据 并且是待审批 已驳回并且驳回次数小于2次时显示-->
           <el-row v-if="(index === platformOrderRefundLogVoList.length - 1) && (item.type === 10 || item.type === 30)">
             <el-col :span="24" class="margin-mid" v-if="(rejectTimes < 2 && rejectTimes >= 0)">
-              <div class="detail-info">
+              <div class="detail-info" v-if="handleHasPermissions('/supervisor/platformOrderRefund/approve')">
                 <el-button type="primary" @click="dialogStatus = true">审批</el-button>
               </div>
             </el-col>
@@ -139,7 +139,7 @@
             </el-col>
 
             <el-col :span="24" v-if="refundPayType === 10">
-              <lh-item label="" label-width="auto">
+              <lh-item label="" label-width="auto" v-if="handleHasPermissions('/supervisor/platformOrderRefund/approve')">
                 <el-button type="primary" @click="dialogStatus = true">审批</el-button>
               </lh-item>
             </el-col>

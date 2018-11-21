@@ -25,7 +25,7 @@
 
     <el-row>
       <el-row :span="24">
-        <el-button @click="exportExcel" class="lh-btn-export">
+        <el-button v-if="handleHasPermissions('/supervisor/appCustomer/export')" @click="exportExcel" class="lh-btn-export">
           <lh-svg icon-class="icon-download" />导出
         </el-button>
         <el-tabs @tab-click="getPageData(1)" class="el-col el-col-24" v-model="orderStatus">

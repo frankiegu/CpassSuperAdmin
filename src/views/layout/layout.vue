@@ -29,18 +29,36 @@
           :backPosition="50"></scrool-top>
       </el-tooltip>
     </div>
+    <messagebar />
+
+    <el-dialog
+      :visible.sync="logoutStatus"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      width="30%">
+      <div slot="title" class="fz18">
+        <i class="el-icon-warning theme-red"></i>
+        <span>提示</span>
+      </div>
+      <span>{{ logoutPrompt }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirmLogout">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import navbar from './navbar'
 import sidebar from './sidebar'
 import { scroolTop } from '@/components'
 import tagsView from './components/tags-view'
+import messagebar from './messagebar'
 
 export default {
-  components: { navbar, sidebar, scroolTop, tagsView },
+  components: { navbar, sidebar, scroolTop, tagsView, messagebar },
   data () {
     return {
       // hideRouter: false,
@@ -62,7 +80,9 @@ export default {
       return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     },
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'logoutStatus',
+      'logoutPrompt'
     ])
   },
   watch: {
@@ -70,8 +90,37 @@ export default {
       // this.hideRouter = this.hideRouters.includes(this.$route.path)
     }
   },
+  beforeDestroy () {
+    // this.$store.dispatch('delAllViews')
+    sessionStorage.visitedViews = []
+    this.$store.state.tagsView.visitedViews = []
+    this.setLogoutStatus(false)
+    this.setLogoutPrompt('')
+  },
   mounted() {
     // this.hideRouter = this.hideRouters.includes(this.$route.path)
+  },
+  methods: {
+    ...mapActions([
+      'setLogoutStatus',
+      'setLogoutPrompt'
+    ]),
+    // 点击确定，退出登录
+    confirmLogout() {
+      // 去掉弹窗
+      this.setLogoutStatus(false)
+      this.setLogoutPrompt('')
+      sessionStorage.visitedViews = []
+      this.$store.state.tagsView.visitedViews = []
+
+      // 退出登录，到登录页面
+      this.$store.dispatch('logout').then(res => {
+        this.$router.push({
+          path: '/login',
+          query: { redirect: this.$route.path }
+        })
+      })
+    }
   }
 }
 </script>

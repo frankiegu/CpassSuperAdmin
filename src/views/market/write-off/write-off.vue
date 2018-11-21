@@ -17,9 +17,9 @@
     data() {
       return {
         tabList: [
-          { type: 1, text: '核销员', name: '/write-off/member' },
-          { type: 2, text: '核销点', name: '/write-off/point' },
-          { type: 3, text: '核销记录', name: '/write-off/record' }
+          { type: 1, text: '核销员', name: '/write-off/member', resource: '/supervisor/platformVerifier/page' },
+          { type: 2, text: '核销点', name: '/write-off/point', resource: '/supervisor/platformVerifyStation/page' },
+          { type: 3, text: '核销记录', name: '/write-off/record', resource: '/supervisor/platformVerifyRecord/page' }
         ]
       }
     },

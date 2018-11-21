@@ -54,7 +54,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item v-if="handleHasPermissions('/supervisor/appCustomer/export')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -134,6 +134,7 @@
               <el-button type="text" class="lh-table-btn">详情</el-button>
             </router-link>
             <el-tooltip
+              v-if="handleHasPermissions('/supervisor/appCustomer/changeStatus')"
               :content="scope.row.status === 1 ? '点击停用会员' : '点击启用会员'"
               placement="top"
               class="margin-lr6">

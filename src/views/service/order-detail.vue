@@ -3,7 +3,6 @@
     <lh-title></lh-title>
     <div class="card-padding card-padding-vertical">
       <h3 class="grid-title">基础信息</h3>
-      <!-- TODO 数据对接 字段根据接口调整 -->
       <el-row>
         <el-row :gutter="20">
           <el-col :span="24">

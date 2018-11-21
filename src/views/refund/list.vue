@@ -72,7 +72,7 @@
             <span v-else-if="scope.row.status === 40">已退款</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="left">
+        <el-table-column v-if="handleHasPermissions('/supervisor/platformOrderRefund/approve')" label="操作" align="left">
           <template slot-scope="scope" v-if="scope.row.status === 10 || (scope.row.status === 30 && scope.row.rejectTimes === 1)">
             <router-link
               :to="{path: '/refund/detail', query: {id: scope.row.id}}"

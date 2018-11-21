@@ -11,7 +11,7 @@
       <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''"
         v-for="tag in Array.from(visitedViews)" :to="tag.lastPath"
         :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
-        {{tag.name}}
+        {{tag.path === '/home' ? '首页' : tag.name}}
         <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'
           v-if="tag.path !== visitedViews[0].path"></span>
       </router-link>
@@ -78,10 +78,12 @@ export default {
     moveToCurrentTag() {
       const tags = this.$refs.tag
       this.$nextTick(() => {
-        for (const tag of tags) {
-          if (tag.to === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag.$el)
-            break
+        if (tags) {
+          for (const tag of tags) {
+            if (tag.to === this.$route.path) {
+              this.$refs.scrollPane.moveToTarget(tag.$el)
+              break
+            }
           }
         }
       })

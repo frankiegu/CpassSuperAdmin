@@ -4,6 +4,7 @@
 
 // proxyTable代理的pathRewrite配置值（解决跨域问题）
 const API_PATH = '/proxy-api'
+const WS_PATH = '/proxy-ws'
 // 域名地址
 const baseUrl = ''
 // 图片所在域名地址
@@ -13,11 +14,13 @@ const routerMode = 'hash'
 // 只有在正式环境下才使用懒加载，解决了困扰多事的rebuild慢问题
 const _import = require('@/router/src/_import_' + process.env.NODE_ENV)
 // 手机号码正则
-const PHONEREG = /^(0|86|17951)?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/
+const PHONEREG = /^(0|86|17951)?1[3-9][0-9]{9}$/
 // 固定电话正则
 const FIXPHONEREG = /^\d{3}-\d{7,8}|\d{4}-\d{7,8}$/
 // email正则
 const EMAILREG = /^\w+([-+.´]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+// 雷猴email正则
+const LHEMAILE = /^([a-zA-Z0-9._-])+@(gzleihou\.cn|cpass\.net)$/
 // 检验正整数
 const POSITIVE_INTEGER = /^[1-9]\d*$/
 // 自然数
@@ -30,6 +33,7 @@ const REG_EMOJI = /\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g
 
 export {
   API_PATH,
+  WS_PATH,
   baseUrl,
   imgBaseUrl,
   routerMode,
@@ -37,6 +41,7 @@ export {
   PHONEREG,
   FIXPHONEREG,
   EMAILREG,
+  LHEMAILE,
   POSITIVE_INTEGER,
   NATURAL_NUM,
   IP_REG,
