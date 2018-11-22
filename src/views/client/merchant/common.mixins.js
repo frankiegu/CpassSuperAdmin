@@ -47,7 +47,7 @@ export default {
     }
     const checkFeeRatio = (rule, value, callback) => {
       if (this.isCreateAccount) {
-        if (!value) {
+        if (!(value.toString())) {
           return callback(new Error('服务费比例不能为空！'))
         } else if ((isNaN(value) || Number(value) < 0 || Number(value) > 100)) {
           callback(new Error('请输入0-100的正数'))
