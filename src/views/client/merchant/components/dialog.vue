@@ -19,7 +19,7 @@
         label="重置登录账户"
         prop="account">
         <el-input
-          class="fl width220px"
+          class="fl width240px"
           v-model.trim="dialogForm.account"
           :maxlength="11"
           placeholder="请输入新的空间管理后台登陆账号"></el-input>
