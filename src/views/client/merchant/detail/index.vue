@@ -1,9 +1,8 @@
 <template>
   <div class="main-content client-detail">
     <lh-title :title="dataForm.name" :level2="false">
-      <el-button v-if="handleHasPermissions('/supervisor/client/updateAccount')" size="mini" class="mr10 fr" type="primary">
-        <router-link v-if="isCreateAccount" :to="'/client/modify?id=' + clientId">编辑</router-link>
-        <router-link :to="'/client/add?id=' + clientId" v-else>编辑</router-link>
+      <el-button v-if="handleHasPermissions('/supervisor/client/updateAccount')"
+        size="mini" class="mr10 fr" type="primary" @click="linkToEdit">编辑
       </el-button>
     </lh-title>
 
@@ -140,6 +139,10 @@
       }
     },
     methods: {
+      linkToEdit() {
+        let url = this.isCreateAccount ? '/client/modify?id=' + this.clientId : '/client/add?id=' + this.clientId
+        this.$router.push(url)
+      },
       // 获取商户详情
       handleGetDetail() {
         let obj = { clientId: this.clientId }
