@@ -243,6 +243,9 @@
           margin-top: -100px;
           margin-bottom: 50px;
           clear: both;
+          .el-button {
+            width: 100px;
+          }
         }
         .clearfix:after {
           content: ".";
