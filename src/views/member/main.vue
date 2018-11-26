@@ -16,8 +16,8 @@
       return {
         isShow: true,
         tabList: [
-          { type: 1, text: 'CPASS会员', name: '/member/list/app-list' },
-          { type: 2, text: '小程序会员', name: '/member/list/wechat-list' }
+          { type: 1, text: 'CPASS会员', name: '/member/list/app-list', resource: '/supervisor/appCustomer/list' },
+          { type: 2, text: '小程序会员', name: '/member/list/wechat-list', resource: '/supervisor/customer/list' }
         ]
       }
     },

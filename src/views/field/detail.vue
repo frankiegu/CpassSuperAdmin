@@ -7,6 +7,7 @@
       </span>
 
       <el-tooltip
+        v-if="handleHasPermissions('/supervisor/field/open')"
         :content="isOpen === 1 ? '点击停用场地' : '点击开放场地'"
         placement="top"
         class="margin-lr6">

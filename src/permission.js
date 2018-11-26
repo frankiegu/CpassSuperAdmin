@@ -2,6 +2,9 @@ import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 import nProgress from 'nprogress'       // Progress 进度条
+import { Message } from 'element-ui'      // 在js中引入ele组件 message
+const notify = Message
+Vue.prototype.$Message = notify
 
 function catchErr (next, error) {
   Vue.prototype.$Message({
@@ -32,13 +35,16 @@ router.beforeEach((to, from, next) => {
       nProgress.done()
     } else {
       // 判断当前用户是否已拉取完user_info信息
-      if (store.getters.getResources === 'no') {
+      if (store.getters.getUserInfoed === 'no') {
         store.commit('SET_PERMISSION', '')
 
         // 拿到用户信息之后，马上设置了 hasResources = 'yes'
         store.dispatch('getPermission').then(() => {
-          // 要加上 {...to}，否则一刷新就是空白，要再访问另一个路由才能把路由添加进来
-          next({ ...to })
+          store.dispatch('getUserInfo').then(res => {
+            /* eslint-disable*/
+            next({...to}) // 要加上 {...to}，否则一刷新就是空白，要再访问另一个路由才能把路由添加进来
+            /* eslint-enable */
+          }).catch(err => catchErr(next, err))
         }).catch(err => catchErr(next, err))
       } else {
         next()

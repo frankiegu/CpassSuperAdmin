@@ -10,14 +10,17 @@ export default [{
   redirect: '/service/list',
   component: layout,
   icon: 'icon-service',
+  ajaxPermissions: ['/supervisor/platformService/list', '/supervisor/platformServiceOrder/list'],
   children: [{
     name: '服务列表',
     path: 'list',
-    component: _import('service/list')
+    component: _import('service/list'),
+    ajaxPermissions: '/supervisor/platformService/list'
   }, {
     name: '服务订单',
     path: 'order',
-    component: _import('service/order')
+    component: _import('service/order'),
+    ajaxPermissions: '/supervisor/platformServiceOrder/list'
   }, {
     name: '服务订单详情',
     path: 'order/detail',

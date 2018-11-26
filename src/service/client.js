@@ -22,6 +22,9 @@ export const updateClientInfo = (obj) => fetch(API_PATH + '/supervisor/client/up
 // 创建智众账户
 export const createAccount = (obj) => fetch(API_PATH + '/supervisor/client/createAccount', obj, 'POST')
 
+// 开通公众号服务
+export const openOfficialAccount = (obj) => fetch(API_PATH + '/supervisor/client/openAfficialAccount', obj, 'POST')
+
 // 设置智众账户状态
 export const setAccountStatus = (obj) => fetch(API_PATH + '/supervisor/client/setAccountStatus', obj, 'POST')
 

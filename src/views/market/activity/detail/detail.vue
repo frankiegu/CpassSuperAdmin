@@ -32,7 +32,7 @@
               <div class="info-title-id ml12">ID:{{ code }}</div>
 
               <el-tooltip
-                v-if="status === 0 || status === 1 || status === 2 || status === 4"
+                v-if="handleHasPermissions('/supervisor/platformActivity/changeStatus') && (status === 0 || status === 1 || status === 2 || status === 4)"
                 :content="isOpen === 0 ? '点击开启活动' : '点击暂停活动'"
                 placement="top"
                 class="margin-lr6 mt6">
@@ -46,10 +46,10 @@
                   inactive-text=""
                   :active-color="switchActiveColor"></el-switch>
               </el-tooltip>
-              <router-link :to="{path: '/activity/add', query: {id: activityId, type: 'edit'}}" v-if="canEdit">
+              <router-link v-if="handleHasPermissions('/supervisor/platformActivity/update') && canEdit" :to="{path: '/activity/add', query: {id: activityId, type: 'edit'}}">
                 <el-button type="primary" class="fr mr10">编辑</el-button>
               </router-link>
-              <el-button type="primary" plain class="fr mr10" @click="delectActivity" v-if="canEdit">删除</el-button>
+              <el-button v-if="handleHasPermissions('/supervisor/platformActivity/delete') && canEdit" type="primary" plain class="fr mr10" @click="delectActivity">删除</el-button>
             </el-row>
 
             <el-row :gutter="20">
@@ -175,7 +175,7 @@
                     :picker-options="pickerOptions"></el-date-picker>
                 </el-form-item>
 
-                <el-form-item class="fr">
+                <el-form-item v-if="handleHasPermissions('/supervisor/platformActivity/statisticsExport')" class="fr">
                   <el-button @click="exportExcel" class="lh-btn-export">
                     <lh-svg icon-class="icon-download" />导出
                   </el-button>

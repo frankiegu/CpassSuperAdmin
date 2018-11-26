@@ -22,14 +22,25 @@ export default {
         callback();
       }
     };
+    const validateCode = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入验证码'));
+      } else if (value.length < 4) {
+        callback(new Error('请输入4位验证码'));
+      } else {
+        callback();
+      }
+    };
     return {
       formData: {
         username: Cookies.get('sospTelphone') || '',
-        password: ''
+        password: '',
+        verifyCode: ''
       },
       formRules: {
         username: [{ required: true, trigger: ['blur', 'change'], validator: validateUserName }],
-        password: [{ required: true, trigger: ['blur', 'change'], validator: validatePass }]
+        password: [{ required: true, trigger: ['blur', 'change'], validator: validatePass }],
+        verifyCode: [{ required: true, trigger: ['blur', 'change'], validator: validateCode }]
       }
     }
   }

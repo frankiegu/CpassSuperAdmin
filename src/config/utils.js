@@ -1,6 +1,7 @@
 import store from '@/store'
 import router from '@/router'
 import { PHONEREG } from './env'
+import { wsUpdater } from '@/config/wsocket'
 
 /**
  * 模仿JQuery $
@@ -79,7 +80,7 @@ export function getEndStartTime(time) {
  */
 export function logoutNoToken() {
   store.commit('SET_TOKEN', '')
-  store.commit('SET_RESOURCES', 'no')
+  store.commit('SET_LOGIN', 'no')
   sessionStorage.removeItem('token')
   store.commit('SET_PERMISSION', '')
 
@@ -87,6 +88,9 @@ export function logoutNoToken() {
     path: '/login',
     query: { redirect: router.currentRoute.fullPath }
   })
+
+  // 如果停留在登录页面，webSocket需要关闭才能停止与后台建立联系
+  if (wsUpdater.socket != null) wsUpdater.socket.close()
 }
 
 /**

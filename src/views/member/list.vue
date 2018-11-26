@@ -15,7 +15,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item v-if="handleHasPermissions('/supervisor/customer/exportExcel')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>

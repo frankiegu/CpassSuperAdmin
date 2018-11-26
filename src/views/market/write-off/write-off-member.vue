@@ -13,7 +13,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <el-form-item class="fr" v-if="handleHasPermissions('/supervisor/platformVerifier/export')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -69,20 +69,20 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="核销数" align="left" sortable sort-by="shopName">
+        <el-table-column label="核销数" align="left" sortable sort-by="verifyCount">
           <template slot-scope="scope">
             <span>{{ scope.row.verifyCount || 0 }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="left" :min-width="110">
+        <el-table-column v-if="handleHasPermissions(['/supervisor/platformVerifier/review', '/supervisor/platformVerifier/changeStatus'])" label="操作" align="left" :min-width="110">
           <template slot-scope="scope">
-            <el-button type="text" @click="operat(scope.row.id, scope.row.platformVerifyStationId, scope.row.name, scope.row.telephone, scope.row.merchantName, scope.row.community)" class="operate-btn">
+            <el-button v-if="handleHasPermissions('/supervisor/platformVerifier/review')" type="text" @click="operat(scope.row.id, scope.row.platformVerifyStationId, scope.row.name, scope.row.telephone, scope.row.merchantName, scope.row.community)" class="operate-btn">
               <span v-if="scope.row.status === 2">审核</span>
               <span v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4 || scope.row.status === 5">编辑</span>
             </el-button>
             <el-tooltip
-              v-if="scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4 || scope.row.status === 5"
+              v-if="handleHasPermissions('/supervisor/platformVerifier/changeStatus') && (scope.row.status === 1 || scope.row.status === 0 || scope.row.status === 4 || scope.row.status === 5)"
               :content="scope.row.status === 1 ? '点击关闭审核' : '点击启用审核'"
               placement="top"
               class="margin-lr6">
@@ -187,8 +187,14 @@
       }
     },
     mounted () {
-      this.getPageData()
-      this.getPoint()
+      if (this.handleHasPermissions('/supervisor/platformVerifier/page')) {
+        this.getPageData()
+        this.getPoint()
+      } else {
+        this.$router.replace({
+          path: '/write-off/point'
+        })
+      }
     },
     methods: {
       getPageData(page) {

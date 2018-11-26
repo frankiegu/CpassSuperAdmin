@@ -1,4 +1,4 @@
-import { indexBannerDetail, indexBannerAdd, indexBannerUpdate } from '@/service/market'
+import { indexBannerAdd, indexBannerUpdate, indexBannerDetail } from '@/service/market'
 export default {
   mixins: [],
   data () {

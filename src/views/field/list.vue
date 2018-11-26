@@ -18,7 +18,7 @@
             <i slot="suffix" @click="getPageData(1)" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="handleHasPermissions('/supervisor/field/exportFieldRevenue')">
           <el-button @click="exportExcel" class="lh-btn-export">
             <lh-svg icon-class="icon-download" />导出
           </el-button>
@@ -33,7 +33,6 @@
       </el-tabs>
 
       <div class="card-body">
-        <!-- @#TODO 测试排序 排序规则：根据添加时间倒序显示，最近设置为对外开放的场地显示在最上方 -->
         <el-table
           :data="tableData"
           :empty-text="tableEmpty"
@@ -65,9 +64,10 @@
 
           <el-table-column label="场地更新时间" prop="updated" align="left" width="105"></el-table-column>
 
-          <el-table-column label="操作" fixed="right" align="left">
+          <el-table-column v-if="handleHasPermissions(['/supervisor/field/open'])" label="操作" fixed="right" align="left">
             <template slot-scope="scope">
               <el-tooltip
+                v-if="handleHasPermissions('/supervisor/field/open')"
                 :content="scope.row.isOpen === 1 ? '点击停用场地' : '点击启用场地'"
                 placement="top"
                 class="margin-lr6">
