@@ -57,7 +57,8 @@ module.exports = {
       '/proxy-api': {
         // target: 'http://java.tt.curato.cn:9090', // 支线A
         // target: 'http://java.tt.curato.cn:9094', // 支线B
-        target: 'http://java.tt.curato.cn:9088', // 产品库开发环境
+        // target: 'http://java.tt.curato.cn:9088', // 产品库开发环境
+        target: 'http://cpass.haomo-tech.com/api',  // 毫末测试环境
         // target: 'http://192.168.1.105:8080',
         // target: 'http://192.168.0.214:8080', // 产品库（邹波）
         // target: 'http://192.168.1.1:8080', // 产品库（俊辉）
@@ -67,7 +68,8 @@ module.exports = {
         }
       },
       '/proxy-ws': {
-        target: 'ws://java.tt.curato.cn:9094',
+        // target: 'ws://java.tt.curato.cn:9094',
+        target: 'ws://cpass.haomo-tech.com/api',  // 毫末测试环境
         changeOrigin: true,
         ws: true,
         secure: false,
