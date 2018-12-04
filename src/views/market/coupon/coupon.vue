@@ -81,6 +81,14 @@
             </template>
           </el-table-column>
 
+          <el-table-column
+            label="使用期限">
+
+            <template slot-scope="scope">
+              {{ scope.row.startDate }}
+            </template>
+          </el-table-column>
+
           <!-- 5 -->
           <el-table-column :label="sortFileName" prop="status"
             :filters="[{ text: '有效', value: 1 }, { text: '过期', value: 2 }, { text: '冻结', value: 3 }]"

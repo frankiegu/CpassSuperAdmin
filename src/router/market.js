@@ -114,5 +114,25 @@ export default [{
     path: '/activity/detail',
     hidden: true,
     component: _import('market/activity/detail/detail')
+  },
+
+  // 邀请活动列表
+  {
+    name: '邀请活动列表',
+    path: '/activityInvite',
+    component: _import('market/activity-invite/list/list'),
+    ajaxPermissions: '/supervisor/platformActivity/list'
+  },
+  {
+    name: '添加邀请活动',
+    path: '/activityInvite/add',
+    hidden: true,
+    component: _import('market/activity-invite/add/add')
+  },
+  {
+    name: '邀请人员列表',
+    path: '/activityInvite/users',
+    hidden: true,
+    component: _import('market/activity-invite/users/users')
   }]
 }]
