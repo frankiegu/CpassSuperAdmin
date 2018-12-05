@@ -86,11 +86,15 @@
       <div>
         <el-form :model="formData" :inline="true" class="text-right mr-10">
 
+          <el-select v-model="formData.type" @change="getDataTwo(1)" filterable placeholder="筛选填写实物奖" class="width150px" clearable>
+            <el-option v-for="item in typeList" :label="item.text" :value="item.val" :key="item.val"></el-option>
+          </el-select>
+
           <el-select v-model="formData.type" @change="getDataTwo(1)" filterable placeholder="筛选阶段" class="width150px" clearable>
             <el-option v-for="item in typeList" :label="item.text" :value="item.val" :key="item.val"></el-option>
           </el-select>
 
-          <el-form-item>
+          <el-form-item style="margin-right: 0px;">
             <el-input v-model.trim="formData.name" @keyup.native.enter="getDataTwo(1)" placeholder="检索收货人手机号" class="width200px">
               <i slot="suffix" @click="getDataTwo(1)" class="el-input__icon el-icon-search"></i>
             </el-input>
@@ -106,11 +110,12 @@
 
         <el-table :data="countData" :empty-text="tableEmptyTwo" :slot="tableEmptyTwo" border style="width: 100%">
 
+          <el-table-column label="会员ID" prop="memberId" align="left"></el-table-column>
           <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
           <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
-          <el-table-column label="会员ID" prop="memberId" align="left"></el-table-column>
           <el-table-column label="成功邀请人数" prop="inviteNum" align="left"></el-table-column>
           <el-table-column label="订单总数" prop="orderNum" align="left"></el-table-column>
+          <el-table-column label="已完成订单数" prop="orderNum" align="left"></el-table-column>
           <el-table-column label="订单金额" prop="orderMoney" align="left"></el-table-column>
           <el-table-column label="已完成订单总金额" prop="orderMoneyNum" align="left"></el-table-column>
           <el-table-column label="实物奖励" prop="reward" align="left"></el-table-column>

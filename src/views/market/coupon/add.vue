@@ -34,23 +34,21 @@
           </el-form-item>
 
           <el-form-item label="使用期限" prop="expireDate">
-            <el-checkbox-group v-model="couponForm.type">
-              <el-row>
-                <el-checkbox name="type">
-                  <el-date-picker
-                    format="yyyy-MM-dd HH:mm"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    style="width: 315px"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="pickerOptions"
-                    v-model="couponForm.expireDate"
-                    :default-time="['00:00:00', '23:59:59']"
-                    type="datetimerange">
-                  </el-date-picker>
-                </el-checkbox>
-              </el-row>
-              <el-checkbox name="type">
+            <el-checkbox-group v-model="couponForm.type" :max="1">
+              <el-checkbox style="display: block;">
+                <el-date-picker
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 315px"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions"
+                  v-model="couponForm.expireDate"
+                  :default-time="['00:00:00', '23:59:59']"
+                  type="datetimerange">
+                </el-date-picker>
+              </el-checkbox>
+              <el-checkbox style="margin-left: 0px;" label="city1" :key="2">
                 <span>领取后</span><el-input v-model="couponForm.quantity" style="margin-left: 10px;margin-right: 10px;width: 50px;"></el-input><span>天有效</span>
               </el-checkbox>
             </el-checkbox-group>
@@ -379,6 +377,7 @@
         couponForm: {
           name: '',
           desc: '',
+          type: [],
           quantity: '',
           expireDate: [],
           useLimit: '', // 使用限制
