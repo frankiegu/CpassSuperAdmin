@@ -19,6 +19,20 @@
             <el-input v-model="couponForm.quantity" class="width340px"></el-input>
           </el-form-item>
 
+          <el-form-item label="领取期限" prop="expireDate">
+            <el-date-picker
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 340px"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              v-model="couponForm.expireDate"
+              :default-time="['00:00:00', '23:59:59']"
+              type="datetimerange">
+            </el-date-picker>
+          </el-form-item>
+
           <el-form-item label="使用期限" prop="expireDate">
             <el-checkbox-group v-model="couponForm.type">
               <el-row>
