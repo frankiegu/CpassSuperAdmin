@@ -74,13 +74,13 @@
         </el-form-item>
 
         <el-form-item label="选择卡券" label-width="120px">
-          <el-button type="primary">选择卡券</el-button>
+          <el-button type="primary" @click="choiceCoupon = true">选择卡券</el-button>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button type="primary">添加场地1</el-button>
-          <el-button type="primary">添加场地2</el-button>
-          <el-button type="primary">添加场地3</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地1</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地2</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
@@ -89,31 +89,43 @@
 
         <el-form-item label="加码好礼" label-width="120px">
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" style="width:125px;">
+            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 110px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 110px;" placeholder="数量展示"></el-input>
-            <el-button type="primary">图片1</el-button>
+            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-upload name="file"
+                       style="display: inline-block;"
+                       :show-file-list="false">
+              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+            </el-upload>
           </el-row>
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" style="width:125px;">
+            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 110px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 110px;" placeholder="数量展示"></el-input>
-            <el-button type="primary">图片2</el-button>
+            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-upload name="file"
+                       style="display: inline-block;"
+                       :show-file-list="false">
+              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+            </el-upload>
           </el-row>
           <el-row>
-            <el-select placeholder="选择发放方式" style="width:125px;">
+            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 110px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 110px;" placeholder="数量展示"></el-input>
-            <el-button type="primary">图片3</el-button>
+            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-upload name="file"
+                       style="display: inline-block;"
+                       :show-file-list="false">
+              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+            </el-upload>
           </el-row>
         </el-form-item>
 
@@ -122,9 +134,13 @@
         </el-form-item>
 
         <el-form-item label="终极大奖" label-width="120px">
-          <el-input class="activity-name" style="width: 180px;" placeholder="奖品名称"></el-input>
-          <el-input class="activity-name" style="width: 180px;" placeholder="数量展示"></el-input>
-          <el-button type="primary">配图</el-button>
+          <el-input class="activity-name" style="width: 175px;" placeholder="奖品名称"></el-input>
+          <el-input class="activity-name" style="width: 175px;" placeholder="数量展示"></el-input>
+          <el-upload name="file"
+                     style="display: inline-block;"
+                     :show-file-list="false">
+            <el-button slot="trigger" size="medium" type="primary">配图</el-button>
+          </el-upload>
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
@@ -164,13 +180,13 @@
         </el-form-item>
 
         <el-form-item label="添加卡券" label-width="120px">
-          <el-button type="primary">添加卡券</el-button>
+          <el-button type="primary" @click="choiceCoupon = true">添加卡券</el-button>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button type="primary">添加场地1</el-button>
-          <el-button type="primary">添加场地2</el-button>
-          <el-button type="primary">添加场地3</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地1</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地2</el-button>
+          <el-button type="primary" @click="fieldAdd = true">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item label="广告banner" label-width="120px">
@@ -192,6 +208,74 @@
           type="primary">确认</el-button>
       </el-form>
     </div>
+    <el-dialog title="添加场地" :visible.sync="fieldAdd" width="30%" :show-close='true'>
+      <el-form :model="fieldAdd" ref="fieldAdd">
+        <el-form-item label="所属品牌" label-width="80px" style="margin-left: 35px;" class="mt40">
+          <el-select placeholder="所属品牌" style="width:300px;" v-model="fieldAdd.title">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属空间" label-width="80px" style="margin-left: 35px;" class="mt40">
+          <el-select placeholder="所属空间" style="width:300px;" v-model="fieldAdd.title">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="场地" label-width="80px" style="margin-left: 35px;" class="mt40">
+          <el-input v-model="fieldAdd.title" class="activity-name" style="width: 300px;" placeholder="场地"></el-input>
+        </el-form-item>
+      </el-form>
+      <div style="text-align: center;" class="mt40">
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="fieldAdd = false">取 消</el-button>
+          <el-button type="primary">确 定</el-button>
+        </span>
+      </div>
+    </el-dialog>
+    <el-dialog title="选择卡券" :visible.sync="choiceCoupon" width="65%" :show-close='true'>
+      <el-form>
+        <el-form-item class="range-cont clearfix">
+          <div class="list-cont fl">
+            <el-input placeholder="输入关键字进行过滤" class="fix-input"></el-input>
+            <div class="tree-cont">
+              <el-tree node-key="nodeKey" :data="treeData" empty-text="暂无数据" default-expand-all
+                       show-checkbox ref="rangeTree" class="range-tree">
+              </el-tree>
+
+            </div>
+          </div>
+
+          <div class="list-cont fl">
+            <p class="theme-gray clearfix fix-input">
+              已选优惠券
+              <span class="theme-blue ml12">1</span>
+              <span class="pointer-theme-blue fr">清空</span>
+            </p>
+
+            <!-- 选中的部分空间 -->
+            <el-table :data="selectedRange" height="360px" key="storeTable">
+              <el-table-column label="优惠券类型" prop="type"></el-table-column>
+              <el-table-column label="名称" prop="name"></el-table-column>
+              <el-table-column label="剩余数量" prop="num"></el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <span class="pointer-theme-gray">删除</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-form-item>
+      </el-form>
+
+      <div style="text-align: center;" class="mt40">
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="choiceCoupon = false">返回</el-button>
+          <el-button type="primary">确 定</el-button>
+        </span>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -229,8 +313,17 @@
           placeholder: '请填写活动规则',
           theme: 'snow'  // or 'bubble'
         },
+        treeData: [{
+          label: '全部',
+          children: [{ label: '优惠券1' },
+            { label: '优惠券2' },
+            { label: '优惠券3' }]
+        }], // 卡券树形结构的数据
+        selectedRange: [{ 'type': '代金券', 'name': '50元无门槛代金券', 'num': '499' }], // 已选择的优惠券
         onePartForm: {}, // 第一步的表单绑定的变量
-        twoPartForm: {} // 第二步的表单绑定的变量
+        twoPartForm: {}, // 第二步的表单绑定的变量
+        fieldAdd: false, // 是否展示添加场地弹窗
+        choiceCoupon: false // 是否展示选择卡券弹窗
       }
     },
     watch: {
@@ -486,6 +579,31 @@
 <style lang="scss" scoped>
   @import "../../../../styles/variables";
   .page-activity-com {
+    .range-cont {
+      margin-right: -12px;
+      .list-cont {
+        position: relative;
+        margin-right: 12px;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+        padding: 60px 12px 12px;
+        box-sizing: border-box;
+        width: calc(50% - 12px);
+        /*height: 420px;*/
+        overflow: hidden;
+        .tree-cont {
+          height: 360px;
+          overflow-y: auto;
+        }
+        .fix-input {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          z-index: 2;
+          width: calc(100% - 24px);
+        }
+      }
+    }
     .line-wrap {
       display: inline-block;
       width: 75px !important;

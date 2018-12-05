@@ -27,11 +27,17 @@
           </div>
         </el-form-item>
         <el-form-item label="首页弹窗">
-          <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
-            list-type="picture-card">
-            <i class="el-icon-plus"></i>
-          </el-upload>
+          <div style="width:400px;">
+            <el-upload style="width: 100px;display: inline-block;"
+                       action="https://jsonplaceholder.typicode.com/posts/"
+                       list-type="picture-card">
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <div style="width: 200px;display: inline-block;vertical-align: top;margin-left: 20px;">
+              <p>建议尺寸： 750 * 1206PX</p>
+              <p>支持格式： JPG / PNG</p>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
       <div style="margin-bottom: 80px;">
