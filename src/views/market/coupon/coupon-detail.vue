@@ -48,9 +48,15 @@
       <el-row>
         <el-col :span="24">
           <el-row :gutter="20">
-            <el-col>
+            <el-col :span="4">
               <p v-if="couponBaseInfo.description">卡券说明: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.description}}</p>
               <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: &nbsp;&nbsp;&nbsp;{{couponDiscountContent.worth}}元</p>
+            </el-col>
+            <el-col :span="7">
+              <p>领取期限: &nbsp;&nbsp;&nbsp;2018-12-05&nbsp;&nbsp;至&nbsp;&nbsp;2018-12-20</p>
+            </el-col>
+            <el-col :span="8">
+              <p>使用期限: &nbsp;&nbsp;&nbsp;领取30天有效</p>
             </el-col>
           </el-row>
 

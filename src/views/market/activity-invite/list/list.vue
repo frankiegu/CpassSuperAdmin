@@ -28,14 +28,13 @@
         </el-form-item>
         <el-form-item label="首页弹窗">
           <div style="width:400px;">
-            <el-upload style="width: 100px;display: inline-block;"
-                       action="https://jsonplaceholder.typicode.com/posts/"
-                       list-type="picture-card">
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <div style="width: 200px;display: inline-block;vertical-align: top;margin-left: 20px;">
+            <lh-upload
+              :imgUrl="onePartForm.topBanner" class="fl"
+              @uploadImg="showTopBanner"></lh-upload>
+            <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
+            <div v-if="isShowTopBanner">
               <p>建议尺寸： 750 * 1206PX</p>
-              <p>支持格式： JPG / PNG</p>
+              <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </div>
         </el-form-item>
@@ -150,10 +149,12 @@
 <script>
   // import { platformActivityList } from '@/service/market'
   import pageTab from '../components/page-tab.vue'
+  import upload from '@/components/upload'
 
   export default {
     mixins: [],
     components: {
+      [upload.name]: upload,
       [pageTab.name]: pageTab
     },
     data() {
@@ -200,10 +201,15 @@
           { 'code': '005', 'name': '统计5', 'memberId': '005', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
           { 'code': '006', 'name': '统计6', 'memberId': '006', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' }], // 活动数据统计展示数据
         tableEmptyOne: '', // 活动配置数据为空的提示信息
-        tableEmptyTwo: '' // 活动数据统计数据为空的提示信息
+        tableEmptyTwo: '', // 活动数据统计数据为空的提示信息
+        isShowTopBanner: false // 是否展示顶部banner的提示文字
       }
     },
     methods: {
+      showTopBanner(val) {
+        console.log(this.onePartForm)
+        this.$set(this.onePartForm, 'topBanner', val)
+      },
       /**
        * 点击tab页，切换
        */

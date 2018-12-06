@@ -14,27 +14,26 @@
       <!-- first step -->
       <el-form :model="onePartForm" v-show="activityTab === 1" ref="onePartForm">
         <el-form-item label="标题" label-width="120px" class="mt40">
-          <el-input v-model="onePartForm.title" class="activity-name" placeholder="标题"></el-input>
+          <el-input v-model="onePartForm.name" class="activity-name" placeholder="标题"></el-input>
         </el-form-item>
 
-        <el-form-item label="顶部banner" label-width="120px">
-          <el-upload style="width: 100px;display: inline-block;"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            list-type="picture-card">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <div style="width: 200px;display: inline-block;vertical-align: top;margin-left: 20px;">
+        <el-form-item label="顶部banner" label-width="120px" class="mt40">
+          <lh-upload
+            :imgUrl="onePartForm.topBanner" class="fl"
+            @uploadImg="showTopBanner"></lh-upload>
+          <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
+          <div v-if="isShowTopBanner">
             <p>建议尺寸： 750 * 1206PX</p>
-            <p>支持格式： JPG / PNG</p>
+            <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
 
         <el-form-item label="活动规则 " label-width="120px">
           <div class="editor-container quill-editor-box">
             <quill-editor
+              v-model.trim="onePartForm.regulation"
               ref="myQuillEditor1"
-              :options="editorOption1"
-              @change="onTextChange1($event)"></quill-editor>
+              :options="editorOption1"></quill-editor>
           </div>
         </el-form-item>
 
@@ -43,8 +42,8 @@
             <el-date-picker
               class="width340px"
               format="yyyy-MM-dd HH:mm"
+              v-model="onePartForm.rangeActivityDate"
               value-format="yyyy-MM-dd HH:mm"
-              @change="dateChange"
               :clearable="false"
               :picker-options="orderSortDate"
               start-placeholder="开始日期"
@@ -62,15 +61,16 @@
         </el-form-item>
 
         <el-form-item label="最高奖励金额" label-width="120px">
-          <el-input class="activity-name" placeholder="最高奖励金额"></el-input>
+          <el-input v-model="onePartForm.winningMaxTime" class="activity-name" placeholder="最高奖励金额"></el-input>
         </el-form-item>
 
         <el-form-item label="单次奖励" label-width="120px">
-          <el-input class="activity-name" placeholder="单次奖励"></el-input>
+          <el-input v-model="onePartForm.winningTime" class="activity-name" placeholder="单次奖励"></el-input>
         </el-form-item>
 
         <el-form-item label="成功邀请人数" label-width="120px">
-          <p>12</p>
+          <!--<p>12</p>-->
+          <el-input v-model="onePartForm.lotteryPlayer" class="activity-name" placeholder="单次奖励"></el-input>
         </el-form-item>
 
         <el-form-item label="选择卡券" label-width="120px">
@@ -84,7 +84,7 @@
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
-          <el-switch v-model="onePartForm.title"></el-switch>
+          <el-switch v-model="onePartForm.showMsg"></el-switch>
         </el-form-item>
 
         <el-form-item label="加码好礼" label-width="120px">
@@ -97,6 +97,7 @@
             <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        style="display: inline-block;"
+                       action="https://jsonplaceholder.typicode.com/posts/"
                        :show-file-list="false">
               <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
             </el-upload>
@@ -110,6 +111,7 @@
             <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        style="display: inline-block;"
+                       action="https://jsonplaceholder.typicode.com/posts/"
                        :show-file-list="false">
               <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
             </el-upload>
@@ -123,6 +125,7 @@
             <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        style="display: inline-block;"
+                       action="https://jsonplaceholder.typicode.com/posts/"
                        :show-file-list="false">
               <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
             </el-upload>
@@ -130,29 +133,30 @@
         </el-form-item>
 
         <el-form-item label="加码好礼获奖人数限制" label-width="120px">
-          <el-input class="activity-name" placeholder="加码好礼获奖人数限制"></el-input>
+          <el-input v-model="onePartForm.morePrizesLimit" class="activity-name" placeholder="加码好礼获奖人数限制"></el-input>
         </el-form-item>
 
         <el-form-item label="终极大奖" label-width="120px">
-          <el-input class="activity-name" style="width: 175px;" placeholder="奖品名称"></el-input>
-          <el-input class="activity-name" style="width: 175px;" placeholder="数量展示"></el-input>
+          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 175px;" placeholder="奖品名称"></el-input>
+          <el-input v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 175px;" placeholder="数量展示"></el-input>
           <el-upload name="file"
                      style="display: inline-block;"
+                     action="https://jsonplaceholder.typicode.com/posts/"
                      :show-file-list="false">
             <el-button slot="trigger" size="medium" type="primary">配图</el-button>
           </el-upload>
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
-          <el-switch v-model="onePartForm.title"></el-switch>
+          <el-switch v-model="onePartForm.showRankList"></el-switch>
         </el-form-item>
 
         <el-form-item label="截止名次" label-width="120px">
-          <el-input class="activity-name" placeholder="截止名次"></el-input>
+          <el-input v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
         </el-form-item>
 
         <el-form-item label="实付金额限制" label-width="120px">
-          <el-input class="activity-name" placeholder="实付金额限制"></el-input>
+          <el-input v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
         </el-form-item>
 
         <el-button
@@ -167,15 +171,14 @@
           <el-input v-model="twoPartForm.title" class="activity-name" placeholder="标题"></el-input>
         </el-form-item>
 
-        <el-form-item label="活动banner" label-width="120px">
-          <el-upload style="width: 100px;display: inline-block;"
-                     action="https://jsonplaceholder.typicode.com/posts/"
-                     list-type="picture-card">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <div style="width: 200px;display: inline-block;vertical-align: top;margin-left: 20px;">
+        <el-form-item label="活动banner" label-width="120px" class="mt40">
+          <lh-upload
+            :imgUrl="onePartForm.actBanner" class="fl"
+            @uploadImg="showActBanner"></lh-upload>
+          <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowActBanner = true"></i>
+          <div v-if="isShowActBanner">
             <p>建议尺寸： 750 * 1206PX</p>
-            <p>支持格式： JPG / PNG</p>
+            <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
 
@@ -190,14 +193,13 @@
         </el-form-item>
 
         <el-form-item label="广告banner" label-width="120px">
-          <el-upload style="width: 100px;display: inline-block;"
-                     action="https://jsonplaceholder.typicode.com/posts/"
-                     list-type="picture-card">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <div style="width: 200px;display: inline-block;vertical-align: top;margin-left: 20px;">
+          <lh-upload
+            :imgUrl="onePartForm.advBanner" class="fl"
+            @uploadImg="showAdvBanner"></lh-upload>
+          <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowAdvBanner = true"></i>
+          <div v-if="isShowAdvBanner">
             <p>建议尺寸： 750 * 1206PX</p>
-            <p>支持格式： JPG / PNG</p>
+            <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
 
@@ -320,19 +322,38 @@
             { label: '优惠券3' }]
         }], // 卡券树形结构的数据
         selectedRange: [{ 'type': '代金券', 'name': '50元无门槛代金券', 'num': '499' }], // 已选择的优惠券
-        onePartForm: {}, // 第一步的表单绑定的变量
+        onePartForm: {
+          rangeActivityDate: [] // 阶段活动时间
+        }, // 第一步的表单绑定的变量
         twoPartForm: {}, // 第二步的表单绑定的变量
         fieldAdd: false, // 是否展示添加场地弹窗
-        choiceCoupon: false // 是否展示选择卡券弹窗
+        choiceCoupon: false, // 是否展示选择卡券弹窗
+        isShowTopBanner: false, // 是否展示顶部banner的提示文字
+        isShowActBanner: false, // 是否展示活动banner的提示文字
+        isShowAdvBanner: false // 是否展示广告banner的提示文字
       }
     },
-    watch: {
-    },
+    watch: {},
     mounted() {
       // 设置标题之后，里面去填充页面内容
       this.setPageTitle()
     },
     methods: {
+      /**
+       * 上传图片之后展示上传图片
+       */
+      showTopBanner(val) { // 顶部图片
+        console.log(this.onePartForm)
+        this.$set(this.onePartForm, 'topBanner', val)
+      },
+      showActBanner(val) { // 活动图片
+        console.log(this.onePartForm)
+        this.$set(this.onePartForm, 'actBanner', val)
+      },
+      showAdvBanner(val) { // 广告图片
+        console.log(this.onePartForm)
+        this.$set(this.onePartForm, 'advBanner', val)
+      },
       /**
        * 根据type确定title展示文字
        */
@@ -356,7 +377,7 @@
         const self = this
         this.$refs.onePartForm.validate((valid) => {
           if (valid) {
-            console.log(valid)
+            console.log(self.onePartForm)
             self.activityTab = 2
           } else {
             self.$message({
@@ -397,90 +418,9 @@
         this.activityTab = val
       },
       /**
-       * 编辑活动是数据的渲染
+       * 编辑活动时数据的渲染
        */
       getPageData() {
-      },
-      /**
-       * part 1         // 带处理
-       * */
-      dateChange (val) {
-        if (val) {
-          let start = new Date(val[0])
-          let sy = start.getFullYear()
-          let sm = start.getMonth()
-          let sd = start.getDate()
-          let sH = start.getHours()
-          let sM = start.getMinutes()
-          let end = new Date(val[1])
-          let ey = end.getFullYear()
-          let em = end.getMonth()
-          let ed = end.getDate()
-          let eH = end.getHours()
-          let eM = end.getMinutes()
-
-          // 活动展示时间
-          this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
-          // 活动隐藏时间
-          this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
-          // 活动开始/结束日期
-          sm = sm + 1
-          sm = sm >= 10 ? sm : '0' + sm
-          sd = sd >= 10 ? sd : '0' + sd
-          sH = sH >= 10 ? sH : '0' + sH
-          sM = sM >= 10 ? sM : '0' + sM
-
-          em = em + 1
-          em = em >= 10 ? em : '0' + em
-          ed = ed >= 10 ? ed : '0' + ed
-          eH = eH >= 10 ? eH : '0' + eH
-          eM = eM >= 10 ? eM : '0' + eM
-          this.threePartForm.activityStart = sy + '-' + sm + '-' + sd + ' ' + sH + ':' + sM + ':00'
-          this.threePartForm.displayStartSubmit = this.threePartForm.activityStart
-          this.threePartForm.activityEnd = ey + '-' + em + '-' + ed + ' ' + eH + ':' + eM + ':59'
-          this.threePartForm.displayEndSubmit = this.threePartForm.activityEnd
-        }
-      },
-      /**
-       * part 3          // 待处理
-       */
-      displayStart (val) {
-        let start = new Date(val)
-        let sy = start.getFullYear()
-        let sm = start.getMonth()
-        let sd = start.getDate()
-        let sH = start.getHours()
-        let sM = start.getMinutes()
-
-        // 活动展示时间
-        this.threePartForm.activityDisplayStart = new Date(sy, sm, sd, sH, sM)
-        // 提交的展示时间
-        // threePartForm.activityDisplayStart
-        let dsm = sm + 1
-        dsm = dsm >= 10 ? dsm : '0' + dsm
-        let dsd = sd >= 10 ? sd : '0' + sd
-        let dsH = sH >= 10 ? sH : '0' + sH
-        let dsM = sM >= 10 ? sM : '0' + sM
-        this.threePartForm.displayStartSubmit = sy + '-' + dsm + '-' + dsd + ' ' + dsH + ':' + dsM + ':00'
-      },
-      displayEnd (val) {
-        let end = new Date(val)
-        let ey = end.getFullYear()
-        let em = end.getMonth()
-        let ed = end.getDate()
-        let eH = end.getHours()
-        let eM = end.getMinutes()
-
-        // 活动隐藏时间
-        this.threePartForm.activityDisplayEnd = new Date(ey, em, ed, eH, eM)
-        // 提交的展示时间
-        // threePartForm.activityDisplayEnd
-        let dem = em + 1
-        dem = dem >= 10 ? dem : '0' + dem
-        let ded = ed >= 10 ? ed : '0' + ed
-        let deH = eH >= 10 ? eH : '0' + eH
-        let deM = eM >= 10 ? eM : '0' + eM
-        this.threePartForm.displayEndSubmit = ey + '-' + dem + '-' + ded + ' ' + deH + ':' + deM + ':59'
       }
     }
   }
@@ -492,7 +432,7 @@
       background-color: #fbfdff;
       border-radius: 6px;
       box-sizing: border-box;
-      width: 100px;
+      width: 80px;
       height: 80px;
       cursor: pointer;
       line-height: 90px;
