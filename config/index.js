@@ -67,6 +67,13 @@ module.exports = {
           '/proxy-api': ''
         }
       },
+      '/api': {
+        target: 'http://cpass.haomo-tech.com/api',  // 毫末测试环境
+        changeOrigin: true,
+        pathRewrite: {
+          '/api': ''
+        }
+      },
       '/proxy-ws': {
         // target: 'ws://java.tt.curato.cn:9094',
         target: 'ws://cpass.haomo-tech.com/api',  // 毫末测试环境

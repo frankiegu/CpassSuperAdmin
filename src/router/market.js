@@ -124,7 +124,7 @@ export default [{
     ajaxPermissions: '/supervisor/platformActivity/list'
   },
   {
-    name: '添加邀请活动',
+    name: '添加/编辑邀请活动',
     path: '/activityInvite/add',
     hidden: true,
     component: _import('market/activity-invite/add/add')

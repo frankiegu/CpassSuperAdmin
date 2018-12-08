@@ -5,6 +5,7 @@
     <lh-page-tab
       :activityTab="activityTab"
       :tabList="tabList"
+      addEditType="1"
       @tabToggle="toggleTab" />
     <div class="card-padding" v-show="activityTab === 1">
       <!-- 查询筛选 -->
@@ -52,21 +53,19 @@
 
           <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
           <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
-          <el-table-column label="活动开始时间" prop="startTime" align="left"></el-table-column>
-          <el-table-column label="活动结束时间" prop="endTime" align="left"></el-table-column>
-          <el-table-column label="最高奖励金额" prop="topNum" align="left"></el-table-column>
-          <el-table-column label="单次奖励" prop="oneNum" align="left"></el-table-column>
+          <el-table-column label="活动开始时间" prop="startDate" align="left"></el-table-column>
+          <el-table-column label="活动结束时间" prop="endDate" align="left"></el-table-column>
+          <el-table-column label="最高奖励金额" prop="properties.max_prize" align="left"></el-table-column>
+          <el-table-column label="单次奖励" prop="properties.once_prize" align="left"></el-table-column>
           <el-table-column label="新人礼券" prop="newCard" align="left"></el-table-column>
-          <el-table-column label="创建时间" prop="createTime" align="left"></el-table-column>
+          <el-table-column label="创建时间" prop="created" align="left"></el-table-column>
           <el-table-column label="操作" align="left" width="120px">
             <template slot-scope="scope" style="display:block;">
               <router-link :to="{path: '/activityInvite/add', query: {id: scope.row.id, type: 'edit'}}">
                 <el-button type="text" class="operate-btn">编辑</el-button>
               </router-link>
 
-              <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
-                <el-button type="text" class="operate-btn">删除</el-button>
-              </router-link>
+              <el-button type="text" class="operate-btn" @click="deleteOne(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
 
@@ -75,7 +74,7 @@
         <div style="text-align: center;margin-top: 30px;">
           <el-pagination background ref="onePages" @size-change="handleSizeChangeOne" @current-change="handleCurrentChangeOne"
                          :current-page.sync="onePages.pageNo" :page-size="onePages.pageSize"
-                         :page-sizes="[10,20,50]" layout="total, sizes, prev, pager, next, jumper" :total="onePages.total">
+                         :page-sizes="[20,40,80,100]" layout="total, sizes, prev, pager, next, jumper" :total="onePages.total">
           </el-pagination>
         </div>
 
@@ -137,7 +136,7 @@
         <div style="text-align: center;margin-top: 30px;">
           <el-pagination background ref="twoPages" @size-change="handleSizeChangeTwo" @current-change="handleCurrentChangeTwo"
                          :current-page.sync="twoPages.pageNo" :page-size="twoPages.pageSize"
-                         :page-sizes="[10,20,50]" layout="total, sizes, prev, pager, next, jumper" :total="twoPages.total">
+                         :page-sizes="[20,40,80,100]" layout="total, sizes, prev, pager, next, jumper" :total="twoPages.total">
           </el-pagination>
         </div>
 
@@ -147,9 +146,9 @@
 </template>
 
 <script>
-  // import { platformActivityList } from '@/service/market'
   import pageTab from '../components/page-tab.vue'
   import upload from '@/components/upload'
+  import { platformActivityInviteList, platformActivityInviteDelete } from '@/service/market'
 
   export default {
     mixins: [],
@@ -170,10 +169,7 @@
             return time.getTime() < Date.now() - 3600 * 1000 * 24
           }
         },
-        configData: [{ 'code': '001', 'name': '活动配置1', 'startTime': '2018-12-03 13:30:00', 'endTime': '2018-12-30 23:59:59', 'topNum': '2000', 'oneNum': '100', 'newCard': '礼券1', 'createTime': '2018-12-03 13:00:00' },
-          { 'code': '002', 'name': '活动配置2', 'startTime': '2018-12-03 13:30:00', 'endTime': '2018-12-30 23:59:59', 'topNum': '2000', 'oneNum': '100', 'newCard': '礼券1', 'createTime': '2018-12-03 13:00:00' },
-          { 'code': '003', 'name': '活动配置3', 'startTime': '2018-12-03 13:30:00', 'endTime': '2018-12-30 23:59:59', 'topNum': '2000', 'oneNum': '100', 'newCard': '礼券1', 'createTime': '2018-12-03 13:00:00' },
-          { 'code': '004', 'name': '活动配置4', 'startTime': '2018-12-03 13:30:00', 'endTime': '2018-12-30 23:59:59', 'topNum': '2000', 'oneNum': '100', 'newCard': '礼券1', 'createTime': '2018-12-03 13:00:00' }], // 活动配置表格展示数据
+        configData: [], // 活动配置表格展示数据
         onePages: {
           pageSize: 10,
           pageNo: 1,
@@ -205,6 +201,11 @@
         isShowTopBanner: false // 是否展示顶部banner的提示文字
       }
     },
+    mounted() {
+      // 设置标题之后，里面去填充页面内容
+      this.getDataOne(1)
+      this.getDataTwo(1)
+    },
     methods: {
       showTopBanner(val) {
         console.log(this.onePartForm)
@@ -221,7 +222,8 @@
        * @param page
        */
       handleSizeChangeOne(val) {
-        this.onePages.pageSize = val
+        // this.onePages.pageSize = val
+        this.$set(this.onePages, 'pageSize', val)
         this.getDataOne(1)
       },
       /**
@@ -229,7 +231,8 @@
        * @param page
        */
       handleCurrentChangeOne(val) {
-        this.onePages.pageNo = val
+        // this.onePages.pageNo = val
+        this.$set(this.onePages, 'pageNo', val)
         this.getDataOne(1)
       },
       /**
@@ -237,10 +240,42 @@
        * @param page
        */
       getDataOne(page) {
+        const self = this
+        this.configData = []
         console.log('获取活动配置的数据')
-        if (this.configData.length === 0) {
-          this.tableEmptyOne = '暂时无数据'
-        }
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          page_no: page || this.onePages.pageNo,
+          page_size: self.onePages.pageSize
+        }).then(res => {
+          if (res.result.length === 0) {
+            this.tableEmptyOne = '暂时无数据'
+            this.onePages.total = 0
+          } else {
+            this.onePages.total = res.result.length
+            this.configData = res.result
+            for (let i = 0; i < res.result.length; i++) {
+              this.configData[i].properties = JSON.parse(res.result[0].properties)
+            }
+          }
+        })
+      },
+      /**
+       * 活动配置的单条删除
+       */
+      deleteOne(id) {
+        const self = this
+        console.log(id)
+        platformActivityInviteDelete(id).then(res => {
+          this.setMsg('success', '删除成功')
+          self.getDataOne(1)
+        })
       },
       /**
        * 活动数据统计的size-change

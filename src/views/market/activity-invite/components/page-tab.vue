@@ -15,7 +15,7 @@
 <script>
 export default {
   name: 'LhPageTab',
-  props: ['activityTab', 'tabList'],
+  props: ['activityTab', 'tabList', 'addEditType', 'tabSwitch'],
   data () {
     return {
       selectedTab: ''
@@ -31,13 +31,17 @@ export default {
   },
   methods: {
     tabToggle (index) {
-      console.log('tabIndex', index)
       /**
        * new ，需要完成第一步tab才能切换下一步，但是可以随便回到前面的步骤，类推
        * 添加的时候，门是否已经打开？
        * edit，随便切换tab
        */
-      this.selectedTab = index
+      if (!this.addEditType && index === 2 && !this.tabSwitch) {
+        this.setMsg('请先完成第一步的信息录入')
+        return
+      } else {
+        this.selectedTab = index
+      }
       this.$emit('tabToggle', index)
     }
   }

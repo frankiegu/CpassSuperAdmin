@@ -1,5 +1,5 @@
 import fetch from '../config/fetch'
-import { API_PATH } from '../config/env'
+import { API_PATH, API_PATH_HM } from '../config/env'
 
 // banner
 export * from './market/banner'
@@ -132,3 +132,19 @@ export const platformActivityAdd = (obj) => fetch(API_PATH + '/supervisor/platfo
 
 // 编辑活动
 export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platformActivity/update', obj, 'POST')
+
+/**
+ * 邀请活动管理
+ */
+
+// 展示邀请有礼列表
+export const platformActivityInviteList = (obj) => fetch(API_PATH_HM + '/platform_activities', obj, 'GET')
+
+// 添加邀请活动
+export const platformActivityInviteAdd = (obj) => fetch(API_PATH_HM + '/platform_activities/new', obj, 'POST')
+
+// 单条删除邀请活动
+export const platformActivityInviteDelete = (obj) => fetch(API_PATH_HM + '/platform_activities/' + obj + '/delete', '', 'POST')
+
+// 编辑邀请活动
+export const platformActivityInviteEdit = (obj, id) => fetch(API_PATH_HM + '/platform_activities/' + id + '/edit', obj, 'POST')

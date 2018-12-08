@@ -5,20 +5,22 @@
     <!-- tab 切换 -->
     <lh-page-tab
       :activityTab="activityTab"
+      :addEditType="addEditType"
       :tabList="tabList"
+      :tabSwitch="tabSwitch"
       @tabToggle="toggleTab" />
 
     <div class="lh-card-main lh-card-body">
       <h3 class="step-one-title" v-if="activityTab === 1">邀请有礼页配置</h3>
       <h3 class="step-one-title" v-if="activityTab === 2">新人活动页配置</h3>
       <!-- first step -->
-      <el-form :model="onePartForm" v-show="activityTab === 1" ref="onePartForm">
-        <el-form-item label="标题" label-width="120px" class="mt40">
+      <el-form :model="onePartForm" :rules="onePartFormRule" v-if="activityTab === 1" ref="onePartForm">
+        <el-form-item prop="name" label="标题" label-width="120px" class="mt40">
           <el-input v-model="onePartForm.name" class="activity-name" placeholder="标题"></el-input>
         </el-form-item>
 
-        <el-form-item label="顶部banner" label-width="120px" class="mt40">
-          <lh-upload
+        <el-form-item prop="topBanner" label="顶部banner" label-width="120px">
+          <lh-upload :accept="'.jpg,png'"
             :imgUrl="onePartForm.topBanner" class="fl"
             @uploadImg="showTopBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
@@ -28,7 +30,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="活动规则 " label-width="120px">
+        <el-form-item prop="regulation" label="活动规则 " label-width="120px">
           <div class="editor-container quill-editor-box">
             <quill-editor
               v-model.trim="onePartForm.regulation"
@@ -37,7 +39,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="阶段活动时间" label-width="120px">
+        <el-form-item prop="rangeActivityDate" label="阶段活动时间" label-width="120px">
           <div>
             <el-date-picker
               class="width340px"
@@ -60,17 +62,19 @@
 
         </el-form-item>
 
-        <el-form-item label="最高奖励金额" label-width="120px">
-          <el-input v-model="onePartForm.winningMaxTime" class="activity-name" placeholder="最高奖励金额"></el-input>
+        <el-form-item prop="winningMaxTime" label="最高奖励金额" label-width="120px">
+          <el-input v-model="onePartForm.winningMaxTime" class="activity-name" style="width: 400px;" placeholder="最高奖励金额"></el-input>
+          <p style="display: inline-block">&nbsp;&nbsp;元</p>
         </el-form-item>
 
-        <el-form-item label="单次奖励" label-width="120px">
-          <el-input v-model="onePartForm.winningTime" class="activity-name" placeholder="单次奖励"></el-input>
+        <el-form-item prop="winningTime" label="单次奖励" label-width="120px">
+          <el-input v-model="onePartForm.winningTime" class="activity-name" style="width: 400px;" placeholder="单次奖励"></el-input>
+          <p style="display: inline-block">&nbsp;&nbsp;元</p>
         </el-form-item>
 
         <el-form-item label="成功邀请人数" label-width="120px">
-          <!--<p>12</p>-->
-          <el-input v-model="onePartForm.lotteryPlayer" class="activity-name" placeholder="单次奖励"></el-input>
+          <p v-if="!onePartForm.winningTime || !onePartForm.winningMaxTime">0</p>
+          <p v-if="onePartForm.winningTime && onePartForm.winningMaxTime">{{onePartForm.winningMaxTime / onePartForm.winningTime}}</p>
         </el-form-item>
 
         <el-form-item label="选择卡券" label-width="120px">
@@ -84,96 +88,120 @@
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
-          <el-switch v-model="onePartForm.showMsg"></el-switch>
+          <el-switch active-value="true" inactive-value="false" v-model="onePartForm.showMsg"></el-switch>
         </el-form-item>
 
-        <el-form-item label="加码好礼" label-width="120px">
+        <el-form-item prop="grant" label="加码好礼" label-width="120px">
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType1" style="width:125px;">
+              <el-option label="online" value="online"></el-option>
+              <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantNum1" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
+                       :action="action"
+                       accept="image/png, image/jpeg"
+                       :headers="headers"
+                       v-model="onePartForm.grantImg1"
                        style="display: inline-block;"
-                       action="https://jsonplaceholder.typicode.com/posts/"
+                       :on-success="uploadGrantImg1"
                        :show-file-list="false">
               <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
             </el-upload>
           </el-row>
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType2" style="width:125px;">
+              <el-option label="online" value="online"></el-option>
+              <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantNum2" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
+                       :action="action"
+                       accept="image/png, image/jpeg"
+                       :headers="headers"
+                       v-model="onePartForm.grantImg2"
                        style="display: inline-block;"
-                       action="https://jsonplaceholder.typicode.com/posts/"
+                       :on-success="uploadGrantImg2"
                        :show-file-list="false">
-              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+              <el-button slot="trigger" size="medium" type="primary">图片2</el-button>
             </el-upload>
           </el-row>
           <el-row>
-            <el-select placeholder="选择发放方式" v-model="onePartForm.title" style="width:125px;">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType3" style="width:125px;">
+              <el-option label="online" value="online"></el-option>
+              <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
-            <el-input class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantNum3" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
+                       :action="action"
+                       accept="image/png, image/jpeg"
+                       :headers="headers"
+                       v-model="onePartForm.grantImg3"
                        style="display: inline-block;"
-                       action="https://jsonplaceholder.typicode.com/posts/"
+                       :on-success="uploadGrantImg3"
                        :show-file-list="false">
-              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+              <el-button slot="trigger" size="medium" type="primary">图片3</el-button>
             </el-upload>
           </el-row>
         </el-form-item>
 
-        <el-form-item label="加码好礼获奖人数限制" label-width="120px">
+        <el-form-item prop="morePrizesLimit" label="加码好礼获奖人数限制" label-width="120px">
           <el-input v-model="onePartForm.morePrizesLimit" class="activity-name" placeholder="加码好礼获奖人数限制"></el-input>
         </el-form-item>
 
-        <el-form-item label="终极大奖" label-width="120px">
-          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 175px;" placeholder="奖品名称"></el-input>
-          <el-input v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 175px;" placeholder="数量展示"></el-input>
-          <el-upload name="file"
-                     style="display: inline-block;"
-                     action="https://jsonplaceholder.typicode.com/posts/"
+        <el-form-item prop="bestPrize" label="终极大奖" label-width="120px">
+          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" placeholder="奖品名称"></el-input>
+          <el-input v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 125px;" placeholder="数量展示"></el-input>
+          <el-upload style="display: inline-block;"
+                     v-model="onePartForm.bestPrizeImg"
+                     :action="action"
+                     accept="image/png, image/jpeg"
+                     :headers="headers"
+                     :on-success="uploadBestImg"
                      :show-file-list="false">
             <el-button slot="trigger" size="medium" type="primary">配图</el-button>
+          </el-upload>
+          <el-upload style="display: inline-block;"
+                     v-model="onePartForm.winImg"
+                     :action="action"
+                     accept="image/png, image/jpeg"
+                     :headers="headers"
+                     :on-success="uploadWinImg"
+                     :show-file-list="false">
+            <el-button slot="trigger" size="medium" type="primary">获奖图片</el-button>
           </el-upload>
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
-          <el-switch v-model="onePartForm.showRankList"></el-switch>
+          <el-switch active-value="true" inactive-value="false" v-model="onePartForm.showRankList"></el-switch>
         </el-form-item>
 
-        <el-form-item label="截止名次" label-width="120px">
+        <el-form-item prop="limitNum" label="截止名次" label-width="120px">
           <el-input v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
         </el-form-item>
 
-        <el-form-item label="实付金额限制" label-width="120px">
+        <el-form-item prop="payLimit" label="实付金额限制" label-width="120px">
           <el-input v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
         </el-form-item>
 
         <el-button
-          @click="nextForm"
+          @click="nextForm('onePartForm')"
           class="to-bottom-right width80px mt30"
           type="primary">下一步</el-button>
       </el-form>
 
       <!-- second step -->
-      <el-form :model="twoPartForm" v-show="activityTab === 2" ref="twoPartForm">
-        <el-form-item label="标题" label-width="120px" class="mt40">
+      <el-form :model="twoPartForm" :rules="towPartFormRule" v-if="activityTab === 2" ref="twoPartForm">
+        <el-form-item prop="title" label="标题" label-width="120px" class="mt40">
           <el-input v-model="twoPartForm.title" class="activity-name" placeholder="标题"></el-input>
         </el-form-item>
 
-        <el-form-item label="活动banner" label-width="120px" class="mt40">
+        <el-form-item prop="actBanner" label="活动banner" label-width="120px">
           <lh-upload
-            :imgUrl="onePartForm.actBanner" class="fl"
+            :imgUrl="twoPartForm.actBanner" class="fl"
             @uploadImg="showActBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowActBanner = true"></i>
           <div v-if="isShowActBanner">
@@ -192,9 +220,9 @@
           <el-button type="primary" @click="fieldAdd = true">添加场地3</el-button>
         </el-form-item>
 
-        <el-form-item label="广告banner" label-width="120px">
-          <lh-upload
-            :imgUrl="onePartForm.advBanner" class="fl"
+        <el-form-item prop="advBanner" label="广告banner" label-width="120px">
+          <lh-upload :accept="'.jpg,png'"
+            :imgUrl="twoPartForm.advBanner" class="fl"
             @uploadImg="showAdvBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowAdvBanner = true"></i>
           <div v-if="isShowAdvBanner">
@@ -203,9 +231,8 @@
           </div>
         </el-form-item>
 
-        <el-button plain class="ml12" @click="toPrev(1)">上一步</el-button>
         <el-button
-          @click="sure"
+          @click="sure('twoPartForm')"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
@@ -285,6 +312,8 @@
   import upload from '@/components/upload'
   import pageTab from '../components/page-tab.vue'
   import { quillEditor } from 'vue-quill-editor'
+  import { API_PATH } from '@/config/env'
+  import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit } from '@/service/market'
 
   export default {
     mixins: [],
@@ -294,13 +323,167 @@
       quillEditor
     },
     data () {
+      const reg = /^[0-9]+$/
+      const onePartFormRuleName = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入标题'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleTopBanner = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请上传顶部图片'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleRegulation = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入活动规则'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleRangeActivityDate = (rule, value, callback) => {
+        if (value.length === 0) {
+          callback(new Error('请选择阶段活动时间'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleWinningMaxTime = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入最高奖励金额'));
+        } else if (!reg.test(value)) {
+          callback(new Error('请输入数字'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleWinningTime = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入单次奖励'));
+        } else if (!reg.test(value)) {
+          callback(new Error('请输入数字'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleGrant = (rule, value, callback) => {
+        if (!this.onePartForm.grantType1) {
+          callback(new Error('请选择奖品1的发放方式'));
+        } else if (!this.onePartForm.grantName1) {
+          callback(new Error('请输入奖品1的名称'));
+        } else if (!this.onePartForm.grantNum1) {
+          callback(new Error('请输入奖品1的数量'));
+        } else if (!this.onePartForm.grantImg1) {
+          callback(new Error('请上传奖品1的图片'));
+        } else if (!this.onePartForm.grantType2) {
+          callback(new Error('请选择奖品2的发放方式'));
+        } else if (!this.onePartForm.grantName2) {
+          callback(new Error('请输入奖品2的名称'));
+        } else if (!this.onePartForm.grantNum2) {
+          callback(new Error('请输入奖品2的数量'));
+        } else if (!this.onePartForm.grantImg2) {
+          callback(new Error('请上传奖品2的图片'));
+        } else if (!this.onePartForm.grantType3) {
+          callback(new Error('请选择奖品3的发放方式'));
+        } else if (!this.onePartForm.grantName3) {
+          callback(new Error('请输入奖品3的名称'));
+        } else if (!this.onePartForm.grantNum3) {
+          callback(new Error('请输入奖品3的数量'));
+        } else if (!this.onePartForm.grantImg3) {
+          callback(new Error('请上传奖品3的图片'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuLemorePrizesLimit = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入加码有礼获奖人数限制'));
+        } else if (!reg.test(value)) {
+          callback(new Error('请输入数字'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleBestPrize = (rule, value, callback) => {
+        if (!this.onePartForm.bestPrizeName) {
+          callback(new Error('请输入终极大奖的奖品名称'));
+        } else if (!this.onePartForm.grantName1) {
+          callback(new Error('请输入终极大奖的展示数量'));
+        } else if (!reg.test(this.onePartForm.grantNum1)) {
+          callback(new Error('展示数量仅支持输入数字'));
+        } else if (!this.onePartForm.bestPrizeImg) {
+          callback(new Error('请上传终极大奖的配图'));
+        } else if (!this.onePartForm.winImg) {
+          callback(new Error('请上传终极大奖的获奖图片'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleLimitNum = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入截止名次'));
+        } else if (!reg.test(value)) {
+          callback(new Error('请输入数字'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRulePayLimit = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入实付金额限制'));
+        } else if (!reg.test(value)) {
+          callback(new Error('请输入数字'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleActBanner = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请上传活动banner'));
+        } else {
+          callback();
+        }
+      };
+      const onePartFormRuleAdvBanner = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请上传广告banner'));
+        } else {
+          callback();
+        }
+      };
       return {
+        onePartFormRule: {
+          name: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
+          topBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleTopBanner }],
+          regulation: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleRegulation }],
+          rangeActivityDate: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleRangeActivityDate }],
+          winningMaxTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningMaxTime }],
+          winningTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningTime }],
+          grant: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleGrant }],
+          morePrizesLimit: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuLemorePrizesLimit }],
+          bestPrize: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleBestPrize }],
+          limitNum: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleLimitNum }],
+          payLimit: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRulePayLimit }]
+        },
+        towPartFormRule: {
+          title: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
+          actBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleActBanner }],
+          advBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleAdvBanner }]
+        },
+        headers: {
+          token: sessionStorage.getItem('token')
+        }, // 上传图片时设置请求头
+        action: API_PATH + '/supervisor/file/upload', // 图片上传路径
         activityId: this.$route.query.id, // 编辑的数据id
         type: this.$route.query.type, // 页面类型  add || edit
         titleName: '', // 页面展示的title
         tabList: ['① 邀请有礼页配置', '② 新人活动页配置'], // tab页显示文字
         activityTab: 1, // 当前展示tab页
-        // addEditType: 0, // 0:添加  1:编辑
+        addEditType: 0, // 0为新增  1为编辑
         orderSortDate: { // 日期选择范围
           disabledDate(time) {
             return time.getTime() < Date.now() - 3600 * 1000 * 24
@@ -323,14 +506,17 @@
         }], // 卡券树形结构的数据
         selectedRange: [{ 'type': '代金券', 'name': '50元无门槛代金券', 'num': '499' }], // 已选择的优惠券
         onePartForm: {
+          name: '',
           rangeActivityDate: [] // 阶段活动时间
         }, // 第一步的表单绑定的变量
+        tabSwitch: false, // 是否可以展示第二步
         twoPartForm: {}, // 第二步的表单绑定的变量
         fieldAdd: false, // 是否展示添加场地弹窗
         choiceCoupon: false, // 是否展示选择卡券弹窗
         isShowTopBanner: false, // 是否展示顶部banner的提示文字
         isShowActBanner: false, // 是否展示活动banner的提示文字
-        isShowAdvBanner: false // 是否展示广告banner的提示文字
+        isShowAdvBanner: false, // 是否展示广告banner的提示文字
+        submitObject: {} // "确定"按钮的参数对象
       }
     },
     watch: {},
@@ -348,11 +534,29 @@
       },
       showActBanner(val) { // 活动图片
         console.log(this.onePartForm)
-        this.$set(this.onePartForm, 'actBanner', val)
+        this.$set(this.twoPartForm, 'actBanner', val)
       },
       showAdvBanner(val) { // 广告图片
         console.log(this.onePartForm)
-        this.$set(this.onePartForm, 'advBanner', val)
+        this.$set(this.twoPartForm, 'advBanner', val)
+      },
+      /**
+       * 上传图片之后的赋值
+       */
+      uploadGrantImg1(response) {
+        this.onePartForm.grantImg1 = response.info.path
+      },
+      uploadGrantImg2(response) {
+        this.onePartForm.grantImg2 = response.info.path
+      },
+      uploadGrantImg3(response) {
+        this.onePartForm.grantImg3 = response.info.path
+      },
+      uploadBestImg(response) {
+        this.onePartForm.bestPrizeImg = response.info.path
+      },
+      uploadWinImg(response) {
+        this.onePartForm.winImg = response.info.path
       },
       /**
        * 根据type确定title展示文字
@@ -361,10 +565,10 @@
         let titleName
         if (this.type === 'add') {
           titleName = '添加活动'
-          // this.addEditType = 0
+          this.addEditType = 0
         } else if (this.type === 'edit') {
           titleName = '编辑活动'
-          // this.addEditType = 0
+          this.addEditType = 1
           this.getPageData()
         }
         this.titleName = titleName
@@ -375,11 +579,14 @@
        */
       nextForm() {
         const self = this
+        console.log(self.onePartForm)
         this.$refs.onePartForm.validate((valid) => {
           if (valid) {
             console.log(self.onePartForm)
             self.activityTab = 2
+            self.tabSwitch = true
           } else {
+            self.tabSwitch = false
             self.$message({
               message: '验证未通过',
               type: 'error'
@@ -391,11 +598,72 @@
       /**
        * 第二步："确定"按钮
        */
-      sure() {
+      sure(formName) {
         const self = this
-        this.$refs.twoPartForm.validate((valid) => {
+        this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(valid)
+            console.log(self.twoPartForm)
+            const properties = {
+              banner: self.onePartForm.topBanner, // 顶部banner
+              rule: self.onePartForm.regulation, // 活动规则
+              max_prize: self.onePartForm.winningMaxTime, // 最高奖励金额
+              once_prize: self.onePartForm.winningTime, // 单次奖励
+              show_msg: self.onePartForm.showMsg, // 显示消息烂
+              more_prizes: [  // 加码好礼
+                {
+                  delivery_mothod: self.onePartForm.grantType1, // 发放方式,
+                  name: self.onePartForm.grantName1,
+                  num: self.onePartForm.grantNum1, // 数量,
+                  img: self.onePartForm.grantImg1 // 图片
+                },
+                {
+                  delivery_mothod: self.onePartForm.grantType2, // 发放方式,
+                  name: self.onePartForm.grantName2,
+                  num: self.onePartForm.grantNum2, // 数量,
+                  img: self.onePartForm.grantImg2 // 图片
+                },
+                {
+                  delivery_mothod: self.onePartForm.grantType3, // 发放方式,
+                  name: self.onePartForm.grantName3,
+                  num: self.onePartForm.grantNum3, // 数量,
+                  img: self.onePartForm.grantImg3 // 图片
+                }
+              ],
+              more_prizes_limit: self.onePartForm.morePrizesLimit,  // 加码好礼人数限制,
+              best_prize: {
+                name: self.onePartForm.bestPrizeName,
+                num: self.onePartForm.bestPrizeMum, // 数量
+                img: self.onePartForm.bestPrizeImg, // 图片
+                win_img: self.onePartForm.winImg // 大奖获奖图片
+              },
+              show_rank_list: self.onePartForm.showRankList, // 显示排行榜,
+              limit_num: self.onePartForm.limitNum, // 截止名次,
+              pay_limit: self.onePartForm.payLimit, // 实付金额限制,
+              title: self.twoPartForm.title, // 新人活动的标题
+              newuser_banner: self.twoPartForm.actBanner, // 新人活动banner,
+              newuser_adv_banner: self.twoPartForm.advBanner // 新人广告banner,
+            }
+            console.log(properties)
+            self.submitObject = {
+              name: self.onePartForm.name,
+              type: 3,
+              template: 1,
+              code: 31,
+              start_date: JSON.stringify(self.onePartForm.rangeActivityDate[0]),
+              end_date: JSON.stringify(self.onePartForm.rangeActivityDate[1]),
+              properties: JSON.stringify(properties)
+            }
+            if (self.addEditType) {
+              console.log('编辑的确定按钮')
+              platformActivityInviteEdit(this.submitObject, self.activityId).then(res => {
+                this.$router.push('/activityInvite')
+              })
+            } else {
+              console.log('新增的确定按钮')
+              platformActivityInviteAdd(this.submitObject).then(res => {
+                this.$router.push('/activityInvite')
+              })
+            }
           } else {
             self.$message({
               message: '验证未通过',
@@ -404,12 +672,6 @@
             return false
           }
         });
-      },
-      /**
-       * 第二步："上一步"按钮
-       */
-      toPrev(val) {
-        this.activityTab = val
       },
       /**
        * 点击tab页，切换步骤
@@ -421,6 +683,48 @@
        * 编辑活动时数据的渲染
        */
       getPageData() {
+        const self = this
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'id': {
+                equalTo: self.activityId
+              }
+            }
+          }
+        }).then(res => {
+          console.log(res.result[0])
+          self.$set(self.onePartForm, 'name', res.result[0].name)
+          self.$set(self.onePartForm, 'topBanner', JSON.parse(res.result[0].properties).banner)
+          self.$set(self.onePartForm, 'regulation', JSON.parse(res.result[0].properties).rule)
+          self.$set(self.onePartForm, 'rangeActivityDate', [res.result[0].startDate, res.result[0].endDate])
+          self.$set(self.onePartForm, 'winningMaxTime', JSON.parse(res.result[0].properties).max_prize)
+          self.$set(self.onePartForm, 'winningTime', JSON.parse(res.result[0].properties).once_prize)
+          self.$set(self.onePartForm, 'showMsg', JSON.parse(res.result[0].properties).show_msg)
+          self.$set(self.onePartForm, 'grantType1', JSON.parse(res.result[0].properties).more_prizes[0].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName1', JSON.parse(res.result[0].properties).more_prizes[0].name)
+          self.$set(self.onePartForm, 'grantNum1', JSON.parse(res.result[0].properties).more_prizes[0].num)
+          self.$set(self.onePartForm, 'grantImg1', JSON.parse(res.result[0].properties).more_prizes[0].img)
+          self.$set(self.onePartForm, 'grantType2', JSON.parse(res.result[0].properties).more_prizes[1].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName2', JSON.parse(res.result[0].properties).more_prizes[1].name)
+          self.$set(self.onePartForm, 'grantNum2', JSON.parse(res.result[0].properties).more_prizes[1].num)
+          self.$set(self.onePartForm, 'grantImg2', JSON.parse(res.result[0].properties).more_prizes[1].img)
+          self.$set(self.onePartForm, 'grantType3', JSON.parse(res.result[0].properties).more_prizes[2].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName3', JSON.parse(res.result[0].properties).more_prizes[2].name)
+          self.$set(self.onePartForm, 'grantNum3', JSON.parse(res.result[0].properties).more_prizes[2].num)
+          self.$set(self.onePartForm, 'grantImg3', JSON.parse(res.result[0].properties).more_prizes[2].img)
+          self.$set(self.onePartForm, 'morePrizesLimit', JSON.parse(res.result[0].properties).more_prizes_limit)
+          self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.result[0].properties).best_prize.name)
+          self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.result[0].properties).best_prize.num)
+          self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.result[0].properties).best_prize.img)
+          self.$set(self.onePartForm, 'winImg', JSON.parse(res.result[0].properties).best_prize.win_img)
+          self.$set(self.onePartForm, 'showRankList', JSON.parse(res.result[0].properties).show_rank_list)
+          self.$set(self.onePartForm, 'limitNum', JSON.parse(res.result[0].properties).limit_num)
+          self.$set(self.onePartForm, 'payLimit', JSON.parse(res.result[0].properties).pay_limit)
+          self.$set(self.twoPartForm, 'title', JSON.parse(res.result[0].properties).title)
+          self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.result[0].properties).newuser_banner)
+          self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.result[0].properties).newuser_adv_banner)
+        })
       }
     }
   }
