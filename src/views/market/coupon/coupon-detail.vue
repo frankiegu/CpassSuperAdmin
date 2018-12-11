@@ -52,11 +52,12 @@
               <p v-if="couponBaseInfo.description">卡券说明: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.description}}</p>
               <p :class="{'mt10': couponBaseInfo.description}" v-if="couponDiscountContent.worth">卡券价值: &nbsp;&nbsp;&nbsp;{{couponDiscountContent.worth}}元</p>
             </el-col>
-            <el-col :span="7">
-              <p>领取期限: &nbsp;&nbsp;&nbsp;2018-12-05&nbsp;&nbsp;至&nbsp;&nbsp;2018-12-20</p>
+            <el-col :span="8">
+              <p>领取期限: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.startDate}}&nbsp;&nbsp;至&nbsp;&nbsp;{{couponBaseInfo.endDate}}</p>
             </el-col>
             <el-col :span="8">
-              <p>使用期限: &nbsp;&nbsp;&nbsp;领取30天有效</p>
+              <p v-if="couponBaseInfo.startTime">使用期限: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.startTime}}&nbsp;&nbsp;至&nbsp;&nbsp;{{couponBaseInfo.endTime}}</p>
+              <p v-if="couponBaseInfo.vaild">使用期限: &nbsp;&nbsp;&nbsp;领取{{couponBaseInfo.vaild}}天有效</p>
             </el-col>
           </el-row>
 
@@ -337,7 +338,7 @@
 <script>
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
-  import { couponBatchFreeze, couponBatchRecover, couponDetail, couponReceiveList, couponDelete, couponChangeStatus } from '@/service/market'
+  import { couponBatchFreeze, couponBatchRecover, couponDetail, couponReceiveList, couponDelete } from '@/service/market'
   export default {
     data () {
       return {
@@ -573,31 +574,43 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-          let params = {
-            id: _this.couponId,
-            status: _this.couponStatus === 1 ? 0 : 1
+          // let params = {
+          //   id: _this.couponId,
+          //   status: _this.couponStatus === 1 ? 0 : 1
+          // }
+          if (_this.couponStatus === 1) {
+            this.$message({
+              type: 'success',
+              message: '冻结成功!'
+            });
+          } else {
+            this.$message({
+              type: 'success',
+              message: '开启成功!'
+            });
           }
-          couponChangeStatus(params).then(res => {
-            if (res.status === 'true') {
-              if (_this.couponStatus === 1) {
-                this.$message({
-                  type: 'success',
-                  message: '冻结成功!'
-                });
-              } else {
-                this.$message({
-                  type: 'success',
-                  message: '开启成功!'
-                });
-              }
-              _this.getPageData()
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.msg
-              });
-            }
-          })
+          _this.getPageData()
+          // couponChangeStatus(params).then(res => {
+          //   if (res.status === 'true') {
+          //     if (_this.couponStatus === 1) {
+          //       this.$message({
+          //         type: 'success',
+          //         message: '冻结成功!'
+          //       });
+          //     } else {
+          //       this.$message({
+          //         type: 'success',
+          //         message: '开启成功!'
+          //       });
+          //     }
+          //     _this.getPageData()
+          //   } else {
+          //     this.$message({
+          //       type: 'error',
+          //       message: res.msg
+          //     });
+          //   }
+          // })
         }).catch(() => {
           this.$message({
             type: 'info',

@@ -16,7 +16,7 @@
       <!-- first step -->
       <el-form :model="onePartForm" :rules="onePartFormRule" v-if="activityTab === 1" ref="onePartForm">
         <el-form-item prop="name" label="标题" label-width="120px" class="mt40">
-          <el-input v-model="onePartForm.name" class="activity-name" placeholder="标题"></el-input>
+          <el-input v-model="onePartForm.name" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="topBanner" label="顶部banner" label-width="120px">
@@ -43,9 +43,9 @@
           <div>
             <el-date-picker
               class="width340px"
-              format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH:mm:ss"
               v-model="onePartForm.rangeActivityDate"
-              value-format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :clearable="false"
               :picker-options="orderSortDate"
               start-placeholder="开始日期"
@@ -77,14 +77,15 @@
           <p v-if="onePartForm.winningTime && onePartForm.winningMaxTime">{{onePartForm.winningMaxTime / onePartForm.winningTime}}</p>
         </el-form-item>
 
-        <el-form-item label="选择卡券" label-width="120px">
-          <el-button type="primary" @click="choiceCoupon = true">选择卡券</el-button>
+        <el-form-item prop="inviteCard" label="选择卡券" label-width="120px">
+          <el-button v-model="onePartForm.inviteCard" type="primary" @click="choiceCard('inviteCard')">选择卡券</el-button>
+          <p style="display: inline-block" v-if="onePartForm.inviteCard && onePartForm.inviteCard.length > 0">已选择{{onePartForm.inviteCard.length}}张优惠券</p>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button type="primary" @click="fieldAdd = true">添加场地1</el-button>
-          <el-button type="primary" @click="fieldAdd = true">添加场地2</el-button>
-          <el-button type="primary" @click="fieldAdd = true">添加场地3</el-button>
+          <el-button v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
+          <el-button v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
+          <el-button v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
@@ -97,7 +98,7 @@
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input v-model="onePartForm.grantNum1" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
@@ -115,7 +116,7 @@
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input v-model="onePartForm.grantNum2" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
@@ -133,7 +134,7 @@
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" placeholder="奖品名称"></el-input>
+            <el-input v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input v-model="onePartForm.grantNum3" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
@@ -153,7 +154,7 @@
         </el-form-item>
 
         <el-form-item prop="bestPrize" label="终极大奖" label-width="120px">
-          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" placeholder="奖品名称"></el-input>
+          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" :maxlength="10" placeholder="奖品名称"></el-input>
           <el-input v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 125px;" placeholder="数量展示"></el-input>
           <el-upload style="display: inline-block;"
                      v-model="onePartForm.bestPrizeImg"
@@ -180,11 +181,11 @@
         </el-form-item>
 
         <el-form-item prop="limitNum" label="截止名次" label-width="120px">
-          <el-input v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
+          <el-input :disabled="onePartForm.showRankList !== 'true'" v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
         </el-form-item>
 
         <el-form-item prop="payLimit" label="实付金额限制" label-width="120px">
-          <el-input v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
+          <el-input :disabled="onePartForm.showRankList !== 'true'" v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
         </el-form-item>
 
         <el-button
@@ -196,7 +197,7 @@
       <!-- second step -->
       <el-form :model="twoPartForm" :rules="towPartFormRule" v-if="activityTab === 2" ref="twoPartForm">
         <el-form-item prop="title" label="标题" label-width="120px" class="mt40">
-          <el-input v-model="twoPartForm.title" class="activity-name" placeholder="标题"></el-input>
+          <el-input v-model="twoPartForm.title" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="actBanner" label="活动banner" label-width="120px">
@@ -210,14 +211,15 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="添加卡券" label-width="120px">
-          <el-button type="primary" @click="choiceCoupon = true">添加卡券</el-button>
+        <el-form-item label="添加卡券" prop="inviteCard" label-width="120px">
+          <el-button v-model="twoPartForm.inviteCard" type="primary" @click="choiceCard('inviteCard2')">添加卡券</el-button>
+          <p style="display: inline-block" v-if="twoPartForm.inviteCard && twoPartForm.inviteCard.length > 0">已选择{{twoPartForm.inviteCard.length}}张优惠券</p>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button type="primary" @click="fieldAdd = true">添加场地1</el-button>
-          <el-button type="primary" @click="fieldAdd = true">添加场地2</el-button>
-          <el-button type="primary" @click="fieldAdd = true">添加场地3</el-button>
+          <el-button v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
+          <el-button v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
+          <el-button v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item prop="advBanner" label="广告banner" label-width="120px">
@@ -237,60 +239,64 @@
           type="primary">确认</el-button>
       </el-form>
     </div>
-    <el-dialog title="添加场地" :visible.sync="fieldAdd" width="30%" :show-close='true'>
+    <el-dialog title="添加场地" :visible.sync="isFieldAdd" width="30%" :show-close='true'>
       <el-form :model="fieldAdd" ref="fieldAdd">
         <el-form-item label="所属品牌" label-width="80px" style="margin-left: 35px;" class="mt40">
-          <el-select placeholder="所属品牌" style="width:300px;" v-model="fieldAdd.title">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select placeholder="请选择所属品牌" @change="getSpace" style="width:300px;" v-model="fieldAdd.stroe">
+            <el-option v-for="(item, index) in stroeeData" :key="index" :label="item.name" :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属空间" label-width="80px" style="margin-left: 35px;" class="mt40">
-          <el-select placeholder="所属空间" style="width:300px;" v-model="fieldAdd.title">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select placeholder="请选择所属空间" @change="getField" style="width:300px;" v-model="fieldAdd.space">
+            <el-option v-for="(item, index) in spaceData" :key="index" :label="item.name" :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="场地" label-width="80px" style="margin-left: 35px;" class="mt40">
-          <el-input v-model="fieldAdd.title" class="activity-name" style="width: 300px;" placeholder="场地"></el-input>
+          <el-select placeholder="请选择场地" style="width:300px;" v-model="fieldAdd.field">
+            <el-option v-for="(item, index) in fieldData" :key="index" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div style="text-align: center;" class="mt40">
         <span slot="footer" class="dialog-footer">
-          <el-button @click="fieldAdd = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button @click="isFieldAdd = false">取 消</el-button>
+          <el-button type="primary" @click="addFieldSure">确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="选择卡券" :visible.sync="choiceCoupon" width="65%" :show-close='true'>
+    <el-dialog title="选择卡券" :visible.sync="choiceCoupon" width="65%" :show-close='true' v-if="choiceCoupon">
       <el-form>
         <el-form-item class="range-cont clearfix">
           <div class="list-cont fl">
-            <el-input placeholder="输入关键字进行过滤" class="fix-input"></el-input>
+            <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤" class="fix-input"></el-input>
             <div class="tree-cont">
-              <el-tree node-key="nodeKey" :data="treeData" empty-text="暂无数据" default-expand-all
-                       show-checkbox ref="rangeTree" class="range-tree">
+              <el-tree node-key="id" :data="treeData" empty-text="暂无数据"
+                       :filter-node-method="filterNode" default-expand-all :props="treeProp" :default-checked-keys="submitData"
+                       show-checkbox ref="rangeTree" class="range-tree" @check-change="handleCheckChange">
               </el-tree>
-
+              <p class="theme-light-gray mt60" style="text-align: center" v-if="isFilterNoData">暂无数据</p>
             </div>
           </div>
 
           <div class="list-cont fl">
             <p class="theme-gray clearfix fix-input">
               已选优惠券
-              <span class="theme-blue ml12">1</span>
-              <span class="pointer-theme-blue fr">清空</span>
+              <span class="theme-blue ml12">{{selectedCoupons.length}}</span>
+              <span class="pointer-theme-blue fr" @click="removeSelected()">清空</span>
             </p>
 
             <!-- 选中的部分空间 -->
-            <el-table :data="selectedRange" height="360px" key="storeTable">
+            <el-table :data="selectedCoupons" height="360px" key="storeTable">
               <el-table-column label="优惠券类型" prop="type"></el-table-column>
               <el-table-column label="名称" prop="name"></el-table-column>
-              <el-table-column label="剩余数量" prop="num"></el-table-column>
+              <el-table-column label="剩余数量" prop="surplus"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span class="pointer-theme-gray">删除</span>
+                  <span class="pointer-theme-gray" @click="removeSelected(scope.row.id)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -301,7 +307,7 @@
       <div style="text-align: center;" class="mt40">
         <span slot="footer" class="dialog-footer">
           <el-button @click="choiceCoupon = false">返回</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button type="primary" @click="selectCardSure">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -313,7 +319,12 @@
   import pageTab from '../components/page-tab.vue'
   import { quillEditor } from 'vue-quill-editor'
   import { API_PATH } from '@/config/env'
-  import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit } from '@/service/market'
+  import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit, findUsableCoupon,
+    platformActivityInviteCardAdd, platformActivityInviteCardDelete, platformActivityInviteCardList,
+    platformActivityInviteCardNewAdd, platformActivityInviteCardNewDelete, platformActivityInviteCardNewList,
+    stroeList } from '@/service/market'
+  import { listSpace } from '@/service/space'
+  import { fieldList } from '@/service/field'
 
   export default {
     mixins: [],
@@ -324,6 +335,8 @@
     },
     data () {
       const reg = /^[0-9]+$/
+      const reg1 = /^[1-9]\d{0,2}$/
+      const reg2 = /^([1-9]|[1-9]\d|100)$/
       const onePartFormRuleName = (rule, value, callback) => {
         if (!value) {
           callback(new Error('请输入标题'));
@@ -357,6 +370,8 @@
           callback(new Error('请输入最高奖励金额'));
         } else if (!reg.test(value)) {
           callback(new Error('请输入数字'));
+        } else if (!reg1.test(value)) {
+          callback(new Error('请输入大于0小于等于999的整数'));
         } else {
           callback();
         }
@@ -366,37 +381,58 @@
           callback(new Error('请输入单次奖励'));
         } else if (!reg.test(value)) {
           callback(new Error('请输入数字'));
+        } else if (!reg1.test(value)) {
+          callback(new Error('请输入大于0小于等于999的整数'));
         } else {
           callback();
         }
       };
       const onePartFormRuleGrant = (rule, value, callback) => {
-        if (!this.onePartForm.grantType1) {
-          callback(new Error('请选择奖品1的发放方式'));
-        } else if (!this.onePartForm.grantName1) {
-          callback(new Error('请输入奖品1的名称'));
-        } else if (!this.onePartForm.grantNum1) {
-          callback(new Error('请输入奖品1的数量'));
-        } else if (!this.onePartForm.grantImg1) {
-          callback(new Error('请上传奖品1的图片'));
-        } else if (!this.onePartForm.grantType2) {
-          callback(new Error('请选择奖品2的发放方式'));
-        } else if (!this.onePartForm.grantName2) {
-          callback(new Error('请输入奖品2的名称'));
-        } else if (!this.onePartForm.grantNum2) {
-          callback(new Error('请输入奖品2的数量'));
-        } else if (!this.onePartForm.grantImg2) {
-          callback(new Error('请上传奖品2的图片'));
-        } else if (!this.onePartForm.grantType3) {
-          callback(new Error('请选择奖品3的发放方式'));
-        } else if (!this.onePartForm.grantName3) {
-          callback(new Error('请输入奖品3的名称'));
-        } else if (!this.onePartForm.grantNum3) {
-          callback(new Error('请输入奖品3的数量'));
-        } else if (!this.onePartForm.grantImg3) {
-          callback(new Error('请上传奖品3的图片'));
-        } else {
-          callback();
+        let isShow = false
+        if (this.onePartForm.grantType1) {
+          if (!this.onePartForm.grantName1) {
+            callback(new Error('请输入奖品1的名称'));
+            isShow = false
+          } else if (!this.onePartForm.grantNum1) {
+            callback(new Error('请输入奖品1的数量'));
+            isShow = false
+          } else if (!this.onePartForm.grantImg1) {
+            callback(new Error('请上传奖品1的图片'));
+            isShow = false
+          } else {
+            isShow = true
+          }
+        }
+        if (this.onePartForm.grantType2) {
+          if (!this.onePartForm.grantName2) {
+            callback(new Error('请输入奖品2的名称'));
+            isShow = false
+          } else if (!this.onePartForm.grantNum2) {
+            callback(new Error('请输入奖品2的数量'));
+            isShow = false
+          } else if (!this.onePartForm.grantImg2) {
+            callback(new Error('请上传奖品2的图片'));
+            isShow = false
+          } else {
+            isShow = true
+          }
+        }
+        if (this.onePartForm.grantType3) {
+          if (!this.onePartForm.grantName3) {
+            callback(new Error('请输入奖品3的名称'));
+            isShow = false
+          } else if (!this.onePartForm.grantNum3) {
+            callback(new Error('请输入奖品3的数量'));
+            isShow = false
+          } else if (!this.onePartForm.grantImg3) {
+            callback(new Error('请上传奖品3的图片'));
+            isShow = false
+          } else {
+            isShow = true
+          }
+        }
+        if (isShow) {
+          callback()
         }
       };
       const onePartFormRuLemorePrizesLimit = (rule, value, callback) => {
@@ -404,51 +440,63 @@
           callback(new Error('请输入加码有礼获奖人数限制'));
         } else if (!reg.test(value)) {
           callback(new Error('请输入数字'));
+        } else if (!reg1.test(value)) {
+          callback(new Error('请输入大于0小于等于999的整数'));
         } else {
           callback();
         }
       };
       const onePartFormRuleBestPrize = (rule, value, callback) => {
-        if (!this.onePartForm.bestPrizeName) {
-          callback(new Error('请输入终极大奖的奖品名称'));
-        } else if (!this.onePartForm.grantName1) {
-          callback(new Error('请输入终极大奖的展示数量'));
-        } else if (!reg.test(this.onePartForm.grantNum1)) {
+        if (this.onePartForm.bestPrizeMum && !reg.test(this.onePartForm.bestPrizeMum)) {
           callback(new Error('展示数量仅支持输入数字'));
-        } else if (!this.onePartForm.bestPrizeImg) {
-          callback(new Error('请上传终极大奖的配图'));
-        } else if (!this.onePartForm.winImg) {
-          callback(new Error('请上传终极大奖的获奖图片'));
+        } else if (this.onePartForm.bestPrizeMum && !reg2.test(this.onePartForm.bestPrizeMum)) {
+          callback(new Error('请输入大于0小于等于100的整数'));
         } else {
           callback();
         }
       };
       const onePartFormRuleLimitNum = (rule, value, callback) => {
-        if (!value) {
-          callback(new Error('请输入截止名次'));
-        } else if (!reg.test(value)) {
-          callback(new Error('请输入数字'));
+        if (this.onePartForm.showRankList === 'true') {
+          if (!value) {
+            callback(new Error('请输入截止名次'));
+          } else if (!reg.test(value)) {
+            callback(new Error('请输入数字'));
+          } else {
+            callback();
+          }
         } else {
-          callback();
+          callback()
         }
       };
       const onePartFormRulePayLimit = (rule, value, callback) => {
-        if (!value) {
-          callback(new Error('请输入实付金额限制'));
-        } else if (!reg.test(value)) {
-          callback(new Error('请输入数字'));
+        if (this.onePartForm.showRankList === 'true') {
+          if (!value) {
+            callback(new Error('请输入实付金额限制'));
+          } else if (!reg.test(value)) {
+            callback(new Error('请输入数字'));
+          } else {
+            callback();
+          }
+        } else {
+          callback()
+        }
+      };
+      const twoPartFormRuleInviteCard = (rule, value, callback) => {
+        console.log('inviteCard', this.twoPartForm.inviteCard)
+        if (this.twoPartForm.inviteCard.length === 0) {
+          callback(new Error('请添加卡券'));
         } else {
           callback();
         }
       };
-      const onePartFormRuleActBanner = (rule, value, callback) => {
+      const twoPartFormRuleActBanner = (rule, value, callback) => {
         if (!value) {
           callback(new Error('请上传活动banner'));
         } else {
           callback();
         }
       };
-      const onePartFormRuleAdvBanner = (rule, value, callback) => {
+      const twoPartFormRuleAdvBanner = (rule, value, callback) => {
         if (!value) {
           callback(new Error('请上传广告banner'));
         } else {
@@ -463,16 +511,18 @@
           rangeActivityDate: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleRangeActivityDate }],
           winningMaxTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningMaxTime }],
           winningTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningTime }],
-          grant: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleGrant }],
+          grant: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleGrant }],
           morePrizesLimit: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuLemorePrizesLimit }],
-          bestPrize: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleBestPrize }],
-          limitNum: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleLimitNum }],
-          payLimit: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRulePayLimit }]
+          bestPrize: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleBestPrize }],
+          limitNum: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleLimitNum }],
+          payLimit: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRulePayLimit }],
+          inviteCard: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleInviteCard }]
         },
         towPartFormRule: {
           title: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
-          actBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleActBanner }],
-          advBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleAdvBanner }]
+          inviteCard: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleInviteCard }],
+          actBanner: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleActBanner }],
+          advBanner: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleAdvBanner }]
         },
         headers: {
           token: sessionStorage.getItem('token')
@@ -498,38 +548,128 @@
           placeholder: '请填写活动规则',
           theme: 'snow'  // or 'bubble'
         },
-        treeData: [{
-          label: '全部',
-          children: [{ label: '优惠券1' },
-            { label: '优惠券2' },
-            { label: '优惠券3' }]
-        }], // 卡券树形结构的数据
-        selectedRange: [{ 'type': '代金券', 'name': '50元无门槛代金券', 'num': '499' }], // 已选择的优惠券
         onePartForm: {
-          name: '',
-          rangeActivityDate: [] // 阶段活动时间
+          rangeActivityDate: [], // 阶段活动时间
+          inviteCard: [], // 邀请新人的选择卡券
+          recommendField1: {}, // 推荐场地1
+          recommendField2: {}, // 推荐场地2
+          recommendField3: {}, // 推荐场地3
+          showRankList: 'true',
+          showMsg: 'true' //
         }, // 第一步的表单绑定的变量
         tabSwitch: false, // 是否可以展示第二步
-        twoPartForm: {}, // 第二步的表单绑定的变量
-        fieldAdd: false, // 是否展示添加场地弹窗
+        twoPartForm: {
+          inviteCard: [], // 邀请新人的选择卡券
+          recommendField1: {}, // 推荐场地1
+          recommendField2: {}, // 推荐场地2
+          recommendField3: {} // 推荐场地3
+        }, // 第二步的表单绑定的变量
+        isFieldAdd: false, // 是否展示添加场地弹窗
+        stroeeData: [], // 所属品牌的下拉数据
+        spaceData: [], // 所属空间的下拉数据
+        fieldData: [], // 场地的下拉数据
+        fieldAdd: {
+          stroe: '',
+          space: '',
+          field: ''
+        }, // 推荐场地弹窗中绑定的对象
         choiceCoupon: false, // 是否展示选择卡券弹窗
+        treeData: [{
+          name: '全部',
+          id: 1,
+          children: [{
+            name: '小时券',
+            id: 2,
+            children: []
+          }, {
+            name: '代金券',
+            id: 3,
+            children: []
+          }, {
+            name: '礼品券',
+            id: 4,
+            children: []
+          }]
+        }], // 选择卡券弹窗左侧的树形结构数据
+        treeProp: {
+          label: 'name',
+          disabled: (data) => {
+            return !data.type && (!data.children || !data.children.length)
+          }
+        }, // 选择卡券左侧树形结构数据的规则
+        filterText: '', // 选择卡券树形结构筛选
+        selectedCoupons: [], // 选中的优惠券信息
+        submitData: [], // 存放选择卡券的数组id数组
+        isFilterNoData: false, // 是否显示树形结构物数据的提示
         isShowTopBanner: false, // 是否展示顶部banner的提示文字
         isShowActBanner: false, // 是否展示活动banner的提示文字
         isShowAdvBanner: false, // 是否展示广告banner的提示文字
-        submitObject: {} // "确定"按钮的参数对象
+        submitObject: {}, // "确定"按钮的参数对象
+        currentCode: '' // 当前字段
       }
     },
-    watch: {},
+    watch: {
+      filterText(val) {
+        this.$refs.rangeTree.filter(val)
+      }
+    },
     mounted() {
       // 设置标题之后，里面去填充页面内容
       this.setPageTitle()
     },
+    created() {
+      this.getStroe()
+    },
     methods: {
+      /**
+       * 查询品牌列表
+       */
+      getStroe() {
+        listSpace({
+          pageSize: 1000
+        }).then(res => {
+          this.stroeeData.push({ 'id': 92, 'name': '备用1' })
+          this.stroeeData.push({ 'id': 93, 'name': '备用2' })
+          // res.info.result.forEach((item, index) => {
+          // this.spaceData.push({ 'id': item.storeId, 'name': item.storeName })
+          // })
+        })
+      },
+      /**
+       * 查询空间列表
+       */
+      getSpace() {
+        const self = this
+        self.fieldAdd.space = ''
+        self.fieldAdd.field = ''
+        console.log(self.fieldAdd.stroe)
+        stroeList({
+          pageSize: 1000
+        }).then(res => {
+          console.log('res.info', res.info)
+          res.info.forEach((item, index) => {
+            this.spaceData.push({ 'id': item.id, 'name': item.storeName })
+          })
+        })
+      },
+      /**
+       * 查询场地列表
+       */
+      getField() {
+        const self = this
+        self.fieldAdd.field = ''
+        fieldList({
+          pageSize: 1000
+        }).then(res => {
+          res.info.result.forEach((item, index) => {
+            this.fieldData.push({ 'id': item.fieldId, 'name': item.fieldName })
+          })
+        })
+      },
       /**
        * 上传图片之后展示上传图片
        */
       showTopBanner(val) { // 顶部图片
-        console.log(this.onePartForm)
         this.$set(this.onePartForm, 'topBanner', val)
       },
       showActBanner(val) { // 活动图片
@@ -575,6 +715,151 @@
         document.title = titleName
       },
       /**
+       * 添加推荐场地
+       */
+      addRecommendField(code) {
+        this.isFieldAdd = true
+        this.fieldAdd = {
+          stroe: '',
+          space: '',
+          field: ''
+        }
+        this.currentCode = code
+      },
+      /**
+       * 推荐场地的"确认"按钮
+       */
+      addFieldSure() {
+        console.log(this.currentCode)
+        if (this.activityTab === 1) {
+          this.onePartForm[this.currentCode] = this.fieldAdd
+        } else if (this.activityTab === 2) {
+          this.twoPartForm[this.currentCode] = this.fieldAdd
+        }
+        this.isFieldAdd = false
+      },
+      /**
+       * 选择卡券
+       */
+      choiceCard(data) {
+        const self = this
+        this.currentCode = data
+        findUsableCoupon().then(res => {
+          if (res.status === 'true' && res.info) {
+            if (!res.info.couponList.length) {
+              self.treeData = []
+              this.choiceCoupon = true
+            } else {
+              res.info.couponList.forEach((item, index) => {
+                item.id = item.id
+                if (item.type === 1) { // 小时券
+                  self.treeData[0].children[0]['children'] = []
+                  self.treeData[0].children[0]['children'].push(item)
+                } else if (item.type === 2) { // 代金券
+                  self.treeData[0].children[1]['children'] = []
+                  self.treeData[0].children[1]['children'].push(item)
+                } else if (item.type === 3) { // 礼品券
+                  self.treeData[0].children[2]['children'] = []
+                  self.treeData[0].children[2]['children'].push(item)
+                }
+                self.choiceCoupon = true
+              })
+              console.log(self.treeData[0])
+              if (self.addEditType) {
+                self.submitData = []
+                console.log('编辑的选择卡券')
+                self.submitData = []
+                if (self.activityTab === 1) {
+                  if (self.onePartForm.inviteCard.length === 0) {
+                    self.removeSelected()
+                  } else {
+                    self.submitData = self.onePartForm.inviteCard
+                  }
+                } else if (self.activityTab === 2) {
+                  if (self.twoPartForm.inviteCard.length === 0) {
+                    self.removeSelected()
+                  } else {
+                    self.submitData = self.twoPartForm.inviteCard
+                  }
+                }
+              } else {
+                console.log('新增的选择卡券')
+                self.removeSelected()
+              }
+              setTimeout(function () {
+                self.selectedCoupons = self.$refs.rangeTree.getCheckedNodes(true)
+              }, 10)
+            }
+          }
+        })
+      },
+      /**
+       * 选择卡券树形数据过滤
+       */
+      filterNode(value, data, node) {
+        this.$nextTick(() => {
+          this.isFilterNoData = this.$refs['rangeTree'].$el.offsetHeight === 0
+        })
+        if (!value) return true
+        if (data.name && data.name.indexOf(value) !== -1) {
+          return true
+        } else if (node.parent.data.name && node.parent.data.name.indexOf(value) !== -1) {
+          return true
+        } else if (node.parent.parent && node.parent.parent.level > 0 &&
+          node.parent.parent.data.name.indexOf(value) !== -1) {
+          return true
+        }
+      },
+      /**
+       * 选择卡券的树节点，返回优惠券的节点信息
+       */
+      getCheckedNodes() {
+        const checkedNodes = this.$refs.rangeTree.getCheckedNodes(true)
+        const storeNodes = []
+        for (let i = 0; i < checkedNodes.length; i++) {
+          if (checkedNodes[i].id && !checkedNodes[i].disabled) {
+            storeNodes.push(checkedNodes[i])
+          }
+        }
+        return storeNodes
+      },
+      /**
+       * 复选框change时更新节点
+       */
+      handleCheckChange(data, checked, indeterminate) {
+        this.selectedCoupons = this.getCheckedNodes()
+        this.submitData = []
+        for (let i = 0; i < this.selectedCoupons.length; i++) {
+          this.submitData.push(this.selectedCoupons[i].id)
+          // debugger
+          // this.$set(this.selectedCoupons, 'surplus', this.selectedCoupons[i].quantity - this.selectedCoupons[i].statistics.received)
+          // this.selectedCoupons.surplus = this.selectedCoupons[i].quantity - this.selectedCoupons[i].statistics.received
+        }
+      },
+      /**
+       * 移除选中的节点
+       */
+      removeSelected(nodeKey) {
+        // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
+        let treeName = 'rangeTree'
+        if (!nodeKey) {
+          this.$refs[treeName].setCheckedKeys([])
+        } else {
+          this.$refs[treeName].setChecked(nodeKey, false, true)
+        }
+      },
+      /**
+       * 选择卡券的"确定"按钮
+       */
+      selectCardSure() {
+        if (this.activityTab === 1) {
+          this.onePartForm.inviteCard = this.submitData
+        } else if (this.activityTab === 2) {
+          this.twoPartForm.inviteCard = this.submitData
+        }
+        this.choiceCoupon = false
+      },
+      /**
        * 第一步："下一步"按钮
        */
       nextForm() {
@@ -600,6 +885,8 @@
        */
       sure(formName) {
         const self = this
+        console.log(self.onePartForm)
+        console.log(self.twoPartForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(self.twoPartForm)
@@ -649,19 +936,103 @@
               type: 3,
               template: 1,
               code: 31,
-              start_date: JSON.stringify(self.onePartForm.rangeActivityDate[0]),
-              end_date: JSON.stringify(self.onePartForm.rangeActivityDate[1]),
+              start_date: self.onePartForm.rangeActivityDate[0],
+              end_date: self.onePartForm.rangeActivityDate[1],
               properties: JSON.stringify(properties)
             }
             if (self.addEditType) {
               console.log('编辑的确定按钮')
               platformActivityInviteEdit(this.submitObject, self.activityId).then(res => {
-                this.$router.push('/activityInvite')
+                // this.$router.push('/activityInvite')
+                this.$message({
+                  type: 'success',
+                  message: '修改成功!'
+                });
+                console.log('res', res)
+                platformActivityInviteCardList({
+                  filters: {
+                    act_inv_coupon: {
+                      platformActivityId: {
+                        equalTo: res.info.id
+                      }
+                    }
+                  },
+                  page_size: 1000
+                }).then(resList => {
+                  console.log('resList', resList)
+                  const deleArr = []
+                  resList.info.result.forEach((item, index) => {
+                    deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+                  })
+                  deleArr.forEach((item, index) => { // 模拟批量删除接口，之后用进行替换
+                    platformActivityInviteCardDelete(item).then(resp => {
+                      if (index === deleArr.length - 1) {
+                        self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                          platformActivityInviteCardAdd({
+                            plat_coupon_id: item,
+                            platform_activity_id: res.info.id,
+                            is_delete: 1
+                          })
+                        })
+                      }
+                    })
+                  })
+                })
+                platformActivityInviteCardNewList({
+                  filters: {
+                    act_inv_coupon: {
+                      platformActivityId: {
+                        equalTo: res.info.id
+                      }
+                    }
+                  },
+                  page_size: 1000
+                }).then(resList => {
+                  console.log('resList', resList)
+                  const deleArr = []
+                  resList.info.result.forEach((item, index) => {
+                    deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+                  })
+                  deleArr.forEach((item, index) => { // 模拟批量删除接口，之后用进行替换
+                    platformActivityInviteCardNewDelete(item).then(resp => {
+                      if (index === deleArr.length - 1) {
+                        self.twoPartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                          platformActivityInviteCardNewAdd({
+                            plat_coupon_id: item,
+                            platform_activity_id: res.info.id,
+                            is_delete: 1
+                          })
+                        })
+                      }
+                    })
+                  })
+                })
               })
             } else {
               console.log('新增的确定按钮')
               platformActivityInviteAdd(this.submitObject).then(res => {
-                this.$router.push('/activityInvite')
+                this.$message({
+                  type: 'success',
+                  message: '保存成功!'
+                });
+                // console.log(res)
+                self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                  platformActivityInviteCardAdd({
+                    plat_coupon_id: item,
+                    platform_activity_id: res.info.id,
+                    is_delete: 1
+                  })
+                })
+                self.twoPartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                  platformActivityInviteCardNewAdd({
+                    plat_coupon_id: item,
+                    platform_activity_id: res.info.id,
+                    is_delete: 1
+                  })
+                })
+                // platformActivityInviteFieldAdd()
+                // platformActivityInviteFieldNewAdd()
+                // this.$router.push('/activityInvite')
               })
             }
           } else {
@@ -693,37 +1064,39 @@
             }
           }
         }).then(res => {
-          console.log(res.result[0])
-          self.$set(self.onePartForm, 'name', res.result[0].name)
-          self.$set(self.onePartForm, 'topBanner', JSON.parse(res.result[0].properties).banner)
-          self.$set(self.onePartForm, 'regulation', JSON.parse(res.result[0].properties).rule)
-          self.$set(self.onePartForm, 'rangeActivityDate', [res.result[0].startDate, res.result[0].endDate])
-          self.$set(self.onePartForm, 'winningMaxTime', JSON.parse(res.result[0].properties).max_prize)
-          self.$set(self.onePartForm, 'winningTime', JSON.parse(res.result[0].properties).once_prize)
-          self.$set(self.onePartForm, 'showMsg', JSON.parse(res.result[0].properties).show_msg)
-          self.$set(self.onePartForm, 'grantType1', JSON.parse(res.result[0].properties).more_prizes[0].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName1', JSON.parse(res.result[0].properties).more_prizes[0].name)
-          self.$set(self.onePartForm, 'grantNum1', JSON.parse(res.result[0].properties).more_prizes[0].num)
-          self.$set(self.onePartForm, 'grantImg1', JSON.parse(res.result[0].properties).more_prizes[0].img)
-          self.$set(self.onePartForm, 'grantType2', JSON.parse(res.result[0].properties).more_prizes[1].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName2', JSON.parse(res.result[0].properties).more_prizes[1].name)
-          self.$set(self.onePartForm, 'grantNum2', JSON.parse(res.result[0].properties).more_prizes[1].num)
-          self.$set(self.onePartForm, 'grantImg2', JSON.parse(res.result[0].properties).more_prizes[1].img)
-          self.$set(self.onePartForm, 'grantType3', JSON.parse(res.result[0].properties).more_prizes[2].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName3', JSON.parse(res.result[0].properties).more_prizes[2].name)
-          self.$set(self.onePartForm, 'grantNum3', JSON.parse(res.result[0].properties).more_prizes[2].num)
-          self.$set(self.onePartForm, 'grantImg3', JSON.parse(res.result[0].properties).more_prizes[2].img)
-          self.$set(self.onePartForm, 'morePrizesLimit', JSON.parse(res.result[0].properties).more_prizes_limit)
-          self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.result[0].properties).best_prize.name)
-          self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.result[0].properties).best_prize.num)
-          self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.result[0].properties).best_prize.img)
-          self.$set(self.onePartForm, 'winImg', JSON.parse(res.result[0].properties).best_prize.win_img)
-          self.$set(self.onePartForm, 'showRankList', JSON.parse(res.result[0].properties).show_rank_list)
-          self.$set(self.onePartForm, 'limitNum', JSON.parse(res.result[0].properties).limit_num)
-          self.$set(self.onePartForm, 'payLimit', JSON.parse(res.result[0].properties).pay_limit)
-          self.$set(self.twoPartForm, 'title', JSON.parse(res.result[0].properties).title)
-          self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.result[0].properties).newuser_banner)
-          self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.result[0].properties).newuser_adv_banner)
+          console.log(res.info.result[0])
+          self.$set(self.onePartForm, 'name', res.info.result[0].name)
+          self.$set(self.onePartForm, 'topBanner', JSON.parse(res.info.result[0].properties).banner)
+          self.$set(self.onePartForm, 'regulation', JSON.parse(res.info.result[0].properties).rule)
+          self.$set(self.onePartForm, 'rangeActivityDate', [res.info.result[0].startDate, res.info.result[0].endDate])
+          self.$set(self.onePartForm, 'winningMaxTime', JSON.parse(res.info.result[0].properties).max_prize)
+          self.$set(self.onePartForm, 'winningTime', JSON.parse(res.info.result[0].properties).once_prize)
+          self.$set(self.onePartForm, 'inviteCard', [24])
+          self.$set(self.onePartForm, 'showMsg', JSON.parse(res.info.result[0].properties).show_msg)
+          self.$set(self.onePartForm, 'grantType1', JSON.parse(res.info.result[0].properties).more_prizes[0].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName1', JSON.parse(res.info.result[0].properties).more_prizes[0].name)
+          self.$set(self.onePartForm, 'grantNum1', JSON.parse(res.info.result[0].properties).more_prizes[0].num)
+          self.$set(self.onePartForm, 'grantImg1', JSON.parse(res.info.result[0].properties).more_prizes[0].img)
+          self.$set(self.onePartForm, 'grantType2', JSON.parse(res.info.result[0].properties).more_prizes[1].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName2', JSON.parse(res.info.result[0].properties).more_prizes[1].name)
+          self.$set(self.onePartForm, 'grantNum2', JSON.parse(res.info.result[0].properties).more_prizes[1].num)
+          self.$set(self.onePartForm, 'grantImg2', JSON.parse(res.info.result[0].properties).more_prizes[1].img)
+          self.$set(self.onePartForm, 'grantType3', JSON.parse(res.info.result[0].properties).more_prizes[2].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName3', JSON.parse(res.info.result[0].properties).more_prizes[2].name)
+          self.$set(self.onePartForm, 'grantNum3', JSON.parse(res.info.result[0].properties).more_prizes[2].num)
+          self.$set(self.onePartForm, 'grantImg3', JSON.parse(res.info.result[0].properties).more_prizes[2].img)
+          self.$set(self.onePartForm, 'morePrizesLimit', JSON.parse(res.info.result[0].properties).more_prizes_limit)
+          self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.info.result[0].properties).best_prize.name)
+          self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.info.result[0].properties).best_prize.num)
+          self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.info.result[0].properties).best_prize.img)
+          self.$set(self.onePartForm, 'winImg', JSON.parse(res.info.result[0].properties).best_prize.win_img)
+          self.$set(self.onePartForm, 'showRankList', JSON.parse(res.info.result[0].properties).show_rank_list)
+          self.$set(self.onePartForm, 'limitNum', JSON.parse(res.info.result[0].properties).limit_num)
+          self.$set(self.onePartForm, 'payLimit', JSON.parse(res.info.result[0].properties).pay_limit)
+          self.$set(self.twoPartForm, 'title', JSON.parse(res.info.result[0].properties).title)
+          self.$set(self.twoPartForm, 'inviteCard', [24, 27])
+          self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.info.result[0].properties).newuser_banner)
+          self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.info.result[0].properties).newuser_adv_banner)
         })
       }
     }

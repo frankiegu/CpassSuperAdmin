@@ -254,14 +254,14 @@
           page_no: page || this.onePages.pageNo,
           page_size: self.onePages.pageSize
         }).then(res => {
-          if (res.result.length === 0) {
+          if (res.info.result.length === 0) {
             this.tableEmptyOne = '暂时无数据'
             this.onePages.total = 0
           } else {
-            this.onePages.total = res.result.length
-            this.configData = res.result
-            for (let i = 0; i < res.result.length; i++) {
-              this.configData[i].properties = JSON.parse(res.result[0].properties)
+            this.onePages.total = res.info.result.length
+            this.configData = res.info.result
+            for (let i = 0; i < res.info.result.length; i++) {
+              this.configData[i].properties = JSON.parse(res.info.result[0].properties)
             }
           }
         })

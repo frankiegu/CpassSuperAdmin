@@ -21,7 +21,7 @@
 
           <el-form-item label="领取期限" prop="expireDate">
             <el-date-picker
-              format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               style="width: 340px"
               start-placeholder="开始日期"
@@ -33,23 +33,23 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="使用期限" prop="expireDate">
-            <el-checkbox-group v-model="couponForm.type" :max="1">
-              <el-checkbox style="display: block;">
+          <el-form-item label="使用期限" prop="useDate">
+            <el-checkbox-group v-model="type" :max="1">
+              <el-checkbox style="display: block;" label="1" :key="1">
                 <el-date-picker
-                  format="yyyy-MM-dd HH:mm"
+                  format="yyyy-MM-dd HH:mm:ss"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   style="width: 315px"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :picker-options="pickerOptions"
-                  v-model="couponForm.expireDate"
+                  :picker-options="pickerOptions1"
+                  v-model="couponForm.useDate"
                   :default-time="['00:00:00', '23:59:59']"
                   type="datetimerange">
                 </el-date-picker>
               </el-checkbox>
-              <el-checkbox style="margin-left: 0px;" label="city1" :key="2">
-                <span>领取后</span><el-input v-model="couponForm.quantity" style="margin-left: 10px;margin-right: 10px;width: 50px;"></el-input><span>天有效</span>
+              <el-checkbox style="margin-left: 0px;" label="2" :key="2">
+                <span>领取后</span><el-input v-model="couponForm.vaild" style="margin-left: 10px;margin-right: 10px;width: 50px;"></el-input><span>天有效</span>
               </el-checkbox>
             </el-checkbox-group>
           </el-form-item>
@@ -266,7 +266,7 @@
             v-model="receiveConditions[index]['type']">
             {{value}}
           </el-checkbox><br>
-          <span class="theme-gray input-label">有效期限</span>
+          <span class="theme-gray input-label">领取期限</span>
           <el-date-picker
             v-if="receiveConditions.length > 0"
             :disabled="receiveConditions[index]['type'] !== key"
@@ -354,6 +354,31 @@
           callback()
         }
       }
+      const checkUseMinDate = (rule, value, callback) => {
+        const reg = /^([1-8]\d?|90)$/
+        if (this.type.length === 0) {
+          return callback(new Error('请选择使用方式'))
+        } else {
+          console.log(this.type)
+          if (this.type[0] === '1') {
+            if (!this.couponForm.useDate) {
+              return callback(new Error('请选择使用时间'))
+            } else if (this.couponForm.expireDate.length === 0) {
+              return callback(new Error('请先选择领取时间'))
+            } else if (this.couponForm.expireDate[1] >= this.couponForm.useDate[1]) {
+              return callback(new Error('领取结束时间不能超过使用结束时间'))
+            }
+          } else if (this.type[0] === '2') {
+            if (!this.couponForm.vaild) {
+              return callback(new Error('请输入过期天数'))
+            } else if (!reg.test(this.couponForm.vaild)) {
+              return callback(new Error('请输入大于0小于等于90的整数'))
+            }
+          } else {
+            callback()
+          }
+        }
+      }
       return {
         filterText: '',
         // 指定项目列表 前端暂时写死。v-for对象通过Object.keys()遍历，它对于key为数字的会进行大小排序，顺序不符合预想，改用数组
@@ -416,8 +441,11 @@
             { validator: checkInt, trigger: ['blur', 'change'] }
           ],
           expireDate: [
-            { required: true, message: '请选择使用期限', trigger: ['blur', 'change'] },
+            { required: true, message: '请选择领取期限', trigger: ['blur', 'change'] },
             { validator: checkMinDate, trigger: ['blur', 'change'] }
+          ],
+          useDate: [
+            { required: true, validator: checkUseMinDate, trigger: ['blur', 'change'] }
           ],
           useLimit: [
             { required: true, message: '请输入使用限制', trigger: ['blur', 'change'] },
@@ -457,7 +485,19 @@
         },
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24
+            return time.getTime() < Date.now() - 3600 * 1000 * 24 || time.getTime() > Date.now() + 3600 * 1000 * 24 * 365
+          }
+        },
+        pickerOptions1: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 3600 * 1000 * 24 || time.getTime() > Date.now() + 3600 * 1000 * 24 * 365
+            // console.log(this.couponForm.expireDate)
+            // if (this.couponForm && this.couponForm.expireDate && this.couponForm.expireDate.length > 1) {
+            //   return time.getTime() > new Date(this.couponForm.expireDate[1]) ||
+            //     time.getTime() < new Date(this.couponForm.expireDate[0])
+            // } else {
+            //   return time.getTime() < Date.now() - 3600 * 1000 * 24 || time.getTime() > Date.now() + 3600 * 1000 * 24 * 365
+            // }
           }
         },
         subPickerOptions: {
@@ -474,7 +514,8 @@
         receiveConditions: [],
         isWayVisible: false, // 添加领取方式弹窗
         conditionTypeList: {}, // 条件触发领取方式列表
-        isWopVisible: false // 添加核销点弹窗
+        isWopVisible: false, // 添加核销点弹窗
+        type: [] // 判断使用期限的选择方式   1：选择使用期限  2：选择n天后失效
       }
     },
 
@@ -485,6 +526,18 @@
     watch: {
       filterText(val) {
         this.$refs.rangeTree.filter(val)
+      },
+      type(val) {
+        console.log(val)
+        if (val[0] !== '1') {
+          if (val[0] === '2') {
+            this.couponForm.vaild = '1'
+          } else {
+            this.couponForm.useDate = []
+          }
+        } else if (val[0] !== '2') {
+          this.couponForm.vaild = ''
+        }
       }
     },
 
@@ -836,6 +889,12 @@
               receiveManpower: receiveManpower,
               receiveNewcomerActivity: receiveNewcomerActivity
             }
+            if (this.type[0] === '1') {
+              params.startTime = form.useDate[0]
+              params.endTime = form.useDate[1]
+            } else if (this.type[0] === '2') {
+              params.valid = form.valid
+            }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id
 
@@ -890,6 +949,8 @@
               }
               params.receiveConditionArray = form.receiveConditionArray
             }
+            console.log(params)
+            debugger
             let promise = this.$route.query.id ? updateCoupon(params) : addCoupon(params)
             promise.then(res => {
               if (res.status === 'true') {

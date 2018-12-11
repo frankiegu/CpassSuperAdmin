@@ -65,27 +65,21 @@
 
           <!-- 3 -->
           <el-table-column
-            label="开始日期">
+            label="领取日期">
 
             <template slot-scope="scope">
-              {{ scope.row.startDate }}
+              {{ scope.row.startDate }} 至 {{scope.row.endDate}}
             </template>
           </el-table-column>
 
           <!-- 4 -->
           <el-table-column
-            label="结束日期">
-
-            <template slot-scope="scope">
-              {{ scope.row.endDate }}
-            </template>
-          </el-table-column>
-
-          <el-table-column
             label="使用期限">
 
             <template slot-scope="scope">
-              {{ scope.row.startDate }}
+              <span v-if="scope.row.startTime">{{ scope.row.startTime }} 至 {{scope.row.endTime}}</span>
+              <span v-if="!scope.row.startTime && scope.row.vaild">领取{{ scope.row.vaild }}天有效</span>
+              <span v-if="!scope.row.startTime && !scope.row.vaild">-</span>
             </template>
           </el-table-column>
 
