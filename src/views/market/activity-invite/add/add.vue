@@ -16,12 +16,12 @@
       <!-- first step -->
       <el-form :model="onePartForm" :rules="onePartFormRule" v-if="activityTab === 1" ref="onePartForm">
         <el-form-item prop="name" label="标题" label-width="120px" class="mt40">
-          <el-input v-model="onePartForm.name" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.name" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="topBanner" label="顶部banner" label-width="120px">
           <lh-upload :accept="'.jpg,png'"
-            :imgUrl="onePartForm.topBanner" class="fl"
+            :imgUrl="onePartForm.topBanner" class="fl" :disabled="status === 'ing' || status === 'ed'"
             @uploadImg="showTopBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
           <div v-if="isShowTopBanner">
@@ -31,8 +31,9 @@
         </el-form-item>
 
         <el-form-item prop="regulation" label="活动规则 " label-width="120px">
-          <div class="editor-container quill-editor-box">
+          <div class="editor-container quill-editor-box" :class="[(status === 'ing' || status === 'ed') ? 'disabledStyle' : '']" :style="{background: (status === 'ing' || status === 'ed') ? '#f5f7fa' : ''}">
             <quill-editor
+              :disabled="status === 'ing' || status === 'ed'"
               v-model.trim="onePartForm.regulation"
               ref="myQuillEditor1"
               :options="editorOption1"></quill-editor>
@@ -43,6 +44,7 @@
           <div>
             <el-date-picker
               class="width340px"
+              :disabled="status === 'ing'"
               format="yyyy-MM-dd HH:mm:ss"
               v-model="onePartForm.rangeActivityDate"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -63,12 +65,12 @@
         </el-form-item>
 
         <el-form-item prop="winningMaxTime" label="最高奖励金额" label-width="120px">
-          <el-input v-model="onePartForm.winningMaxTime" class="activity-name" style="width: 400px;" placeholder="最高奖励金额"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.winningMaxTime" class="activity-name" style="width: 400px;" placeholder="最高奖励金额"></el-input>
           <p style="display: inline-block">&nbsp;&nbsp;元</p>
         </el-form-item>
 
         <el-form-item prop="winningTime" label="单次奖励" label-width="120px">
-          <el-input v-model="onePartForm.winningTime" class="activity-name" style="width: 400px;" placeholder="单次奖励"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.winningTime" class="activity-name" style="width: 400px;" placeholder="单次奖励"></el-input>
           <p style="display: inline-block">&nbsp;&nbsp;元</p>
         </el-form-item>
 
@@ -78,114 +80,119 @@
         </el-form-item>
 
         <el-form-item prop="inviteCard" label="选择卡券" label-width="120px">
-          <el-button v-model="onePartForm.inviteCard" type="primary" @click="choiceCard('inviteCard')">选择卡券</el-button>
+          <el-button :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.inviteCard" type="primary" @click="choiceCard('inviteCard')">选择卡券</el-button>
           <p style="display: inline-block" v-if="onePartForm.inviteCard && onePartForm.inviteCard.length > 0">已选择{{onePartForm.inviteCard.length}}张优惠券</p>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
-          <el-button v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
-          <el-button v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
-          <el-switch active-value="true" inactive-value="false" v-model="onePartForm.showMsg"></el-switch>
+          <el-switch :disabled="status === 'ing' || status === 'ed'" active-value="true" inactive-value="false" v-model="onePartForm.showMsg"></el-switch>
         </el-form-item>
 
         <el-form-item prop="grant" label="加码好礼" label-width="120px">
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType1" style="width:125px;">
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType1" style="width:125px;">
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input v-model="onePartForm.grantNum1" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum1" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
+                       :disabled="status === 'ing' || status === 'ed'"
                        accept="image/png, image/jpeg"
                        :headers="headers"
                        v-model="onePartForm.grantImg1"
                        style="display: inline-block;"
                        :on-success="uploadGrantImg1"
                        :show-file-list="false">
-              <el-button slot="trigger" size="medium" type="primary">图片1</el-button>
+              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片1</el-button>
             </el-upload>
           </el-row>
           <el-row style="margin-bottom: 10px;">
-            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType2" style="width:125px;">
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType2" style="width:125px;">
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input v-model="onePartForm.grantNum2" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum2" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
+                       :disabled="status === 'ing' || status === 'ed'"
                        accept="image/png, image/jpeg"
                        :headers="headers"
                        v-model="onePartForm.grantImg2"
                        style="display: inline-block;"
                        :on-success="uploadGrantImg2"
                        :show-file-list="false">
-              <el-button slot="trigger" size="medium" type="primary">图片2</el-button>
+              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片2</el-button>
             </el-upload>
           </el-row>
           <el-row>
-            <el-select placeholder="选择发放方式" v-model="onePartForm.grantType3" style="width:125px;">
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType3" style="width:125px;">
               <el-option label="online" value="online"></el-option>
               <el-option label="offline" value="offline"></el-option>
             </el-select>
-            <el-input v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input v-model="onePartForm.grantNum3" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum3" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
             <el-upload name="file"
                        :action="action"
+                       :disabled="status === 'ing' || status === 'ed'"
                        accept="image/png, image/jpeg"
                        :headers="headers"
                        v-model="onePartForm.grantImg3"
                        style="display: inline-block;"
                        :on-success="uploadGrantImg3"
                        :show-file-list="false">
-              <el-button slot="trigger" size="medium" type="primary">图片3</el-button>
+              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片3</el-button>
             </el-upload>
           </el-row>
         </el-form-item>
 
         <el-form-item prop="morePrizesLimit" label="加码好礼获奖人数限制" label-width="120px">
-          <el-input v-model="onePartForm.morePrizesLimit" class="activity-name" placeholder="加码好礼获奖人数限制"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.morePrizesLimit" class="activity-name" placeholder="加码好礼获奖人数限制"></el-input>
         </el-form-item>
 
         <el-form-item prop="bestPrize" label="终极大奖" label-width="120px">
-          <el-input v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" :maxlength="10" placeholder="奖品名称"></el-input>
-          <el-input v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 125px;" placeholder="数量展示"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" :maxlength="10" placeholder="奖品名称"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 125px;" placeholder="数量展示"></el-input>
           <el-upload style="display: inline-block;"
                      v-model="onePartForm.bestPrizeImg"
                      :action="action"
+                     :disabled="status === 'ing' || status === 'ed'"
                      accept="image/png, image/jpeg"
                      :headers="headers"
                      :on-success="uploadBestImg"
                      :show-file-list="false">
-            <el-button slot="trigger" size="medium" type="primary">配图</el-button>
+            <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">配图</el-button>
           </el-upload>
           <el-upload style="display: inline-block;"
                      v-model="onePartForm.winImg"
                      :action="action"
+                     :disabled="status === 'ing' || status === 'ed'"
                      accept="image/png, image/jpeg"
                      :headers="headers"
                      :on-success="uploadWinImg"
                      :show-file-list="false">
-            <el-button slot="trigger" size="medium" type="primary">获奖图片</el-button>
+            <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">获奖图片</el-button>
           </el-upload>
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
-          <el-switch active-value="true" inactive-value="false" v-model="onePartForm.showRankList"></el-switch>
+          <el-switch :disabled="status === 'ing' || status === 'ed'" active-value="true" inactive-value="false" v-model="onePartForm.showRankList"></el-switch>
         </el-form-item>
 
         <el-form-item prop="limitNum" label="截止名次" label-width="120px">
-          <el-input :disabled="onePartForm.showRankList !== 'true'" v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
+          <el-input :disabled="onePartForm.showRankList !== 'true' || (status === 'ing' || status === 'ed')" v-model="onePartForm.limitNum" class="activity-name" placeholder="截止名次"></el-input>
         </el-form-item>
 
         <el-form-item prop="payLimit" label="实付金额限制" label-width="120px">
-          <el-input :disabled="onePartForm.showRankList !== 'true'" v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
+          <el-input :disabled="onePartForm.showRankList !== 'true' || (status === 'ing' || status === 'ed')" v-model="onePartForm.payLimit" class="activity-name" placeholder="实付金额限制"></el-input>
         </el-form-item>
 
         <el-button
@@ -197,12 +204,13 @@
       <!-- second step -->
       <el-form :model="twoPartForm" :rules="towPartFormRule" v-if="activityTab === 2" ref="twoPartForm">
         <el-form-item prop="title" label="标题" label-width="120px" class="mt40">
-          <el-input v-model="twoPartForm.title" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
+          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="twoPartForm.title" class="activity-name" placeholder="标题" :maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="actBanner" label="活动banner" label-width="120px">
           <lh-upload
             :imgUrl="twoPartForm.actBanner" class="fl"
+            :disabled="status === 'ing' || status === 'ed'"
             @uploadImg="showActBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowActBanner = true"></i>
           <div v-if="isShowActBanner">
@@ -212,19 +220,19 @@
         </el-form-item>
 
         <el-form-item label="添加卡券" prop="inviteCard" label-width="120px">
-          <el-button v-model="twoPartForm.inviteCard" type="primary" @click="choiceCard('inviteCard2')">添加卡券</el-button>
+          <el-button :disabled="status === 'ing' || status === 'ed'" v-model="twoPartForm.inviteCard" type="primary" @click="choiceCard('inviteCard2')">添加卡券</el-button>
           <p style="display: inline-block" v-if="twoPartForm.inviteCard && twoPartForm.inviteCard.length > 0">已选择{{twoPartForm.inviteCard.length}}张优惠券</p>
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
-          <el-button v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
-          <el-button v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
         </el-form-item>
 
         <el-form-item prop="advBanner" label="广告banner" label-width="120px">
           <lh-upload :accept="'.jpg,png'"
-            :imgUrl="twoPartForm.advBanner" class="fl"
+            :imgUrl="twoPartForm.advBanner" class="fl" :disabled="status === 'ing' || status === 'ed'"
             @uploadImg="showAdvBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowAdvBanner = true"></i>
           <div v-if="isShowAdvBanner">
@@ -530,13 +538,17 @@
         action: API_PATH + '/supervisor/file/upload', // 图片上传路径
         activityId: this.$route.query.id, // 编辑的数据id
         type: this.$route.query.type, // 页面类型  add || edit
+        status: this.$route.query.status, // 该活动所处的状态   will:未开始   ing:正在进行   ed:已结束
         titleName: '', // 页面展示的title
         tabList: ['① 邀请有礼页配置', '② 新人活动页配置'], // tab页显示文字
         activityTab: 1, // 当前展示tab页
         addEditType: 0, // 0为新增  1为编辑
         orderSortDate: { // 日期选择范围
           disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24
+            return time.getTime() < Date.now() - 3600 * 1000 * 24 || (time.getTime() < new Date('2018-12-22 23:59:59') &&
+              time.getTime() > new Date('2018-12-15 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-09 23:59:59') &&
+              time.getTime() > new Date('2018-12-04 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-14 23:59:59') &&
+              time.getTime() > new Date('2018-12-12 00:00:00') - 3600 * 1000 * 24)
           }
         },
         editorOption1: { // 富文本编辑器
@@ -605,7 +617,8 @@
         isShowActBanner: false, // 是否展示活动banner的提示文字
         isShowAdvBanner: false, // 是否展示广告banner的提示文字
         submitObject: {}, // "确定"按钮的参数对象
-        currentCode: '' // 当前字段
+        currentCode: '', // 当前字段
+        list: [] // 用于限制阶段时间可选范围
       }
     },
     watch: {
@@ -619,8 +632,42 @@
     },
     created() {
       this.getStroe()
+      this.init()
     },
     methods: {
+      init () {
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          page_size: 1000
+        }).then(res => {
+          console.log(res.data.info.result)
+          res.data.info.result.forEach((item, index) => {
+            console.log(item.startDate, item.endDate)
+            this.list.push([item.startDate, item.endDate])
+          })
+        })
+      },
+      returnDate(time) {
+        if (this.list.length === 0) {
+          return time.getTime() < Date.now() - 3600 * 1000 * 24
+        } else {
+          let data = time.getTime() < Date.now() - 3600 * 1000 * 24
+          this.list.forEach(item => {
+            data = data + '||(time.getTime() < new Date(' + item[1] + ')&&time.getTime() > new Date(' + item[0] + ') - 3600 * 1000 * 24)'
+          })
+          return data
+        }
+        // return time.getTime() < Date.now() - 3600 * 1000 * 24 || (time.getTime() < new Date('2018-12-22 23:59:59') &&
+        //   time.getTime() > new Date('2018-12-16 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-09 23:59:59') &&
+        //   time.getTime() > new Date('2018-12-04 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-14 23:59:59') &&
+        //   time.getTime() > new Date('2018-12-12 00:00:00') - 3600 * 1000 * 24)
+      },
       /**
        * 查询品牌列表
        */
@@ -720,7 +767,6 @@
       addRecommendField(code) {
         this.isFieldAdd = true
         this.fieldAdd = {
-          stroe: '',
           space: '',
           field: ''
         }
@@ -788,6 +834,9 @@
               }
               setTimeout(function () {
                 self.selectedCoupons = self.$refs.rangeTree.getCheckedNodes(true)
+                self.selectedCoupons.forEach((item, index) => {
+                  item.surplus = item.quantity - item.statistics.received
+                })
               }, 10)
             }
           }
@@ -828,12 +877,12 @@
        */
       handleCheckChange(data, checked, indeterminate) {
         this.selectedCoupons = this.getCheckedNodes()
+        this.selectedCoupons.forEach((item, index) => {
+          item.surplus = item.quantity - item.statistics.received
+        })
         this.submitData = []
         for (let i = 0; i < this.selectedCoupons.length; i++) {
           this.submitData.push(this.selectedCoupons[i].id)
-          // debugger
-          // this.$set(this.selectedCoupons, 'surplus', this.selectedCoupons[i].quantity - this.selectedCoupons[i].statistics.received)
-          // this.selectedCoupons.surplus = this.selectedCoupons[i].quantity - this.selectedCoupons[i].statistics.received
         }
       },
       /**
@@ -980,7 +1029,7 @@
                 })
                 platformActivityInviteCardNewList({
                   filters: {
-                    act_inv_coupon: {
+                    act_inv_newuser_coupon: {
                       platformActivityId: {
                         equalTo: res.info.id
                       }
@@ -1064,39 +1113,74 @@
             }
           }
         }).then(res => {
-          console.log(res.info.result[0])
-          self.$set(self.onePartForm, 'name', res.info.result[0].name)
-          self.$set(self.onePartForm, 'topBanner', JSON.parse(res.info.result[0].properties).banner)
-          self.$set(self.onePartForm, 'regulation', JSON.parse(res.info.result[0].properties).rule)
-          self.$set(self.onePartForm, 'rangeActivityDate', [res.info.result[0].startDate, res.info.result[0].endDate])
-          self.$set(self.onePartForm, 'winningMaxTime', JSON.parse(res.info.result[0].properties).max_prize)
-          self.$set(self.onePartForm, 'winningTime', JSON.parse(res.info.result[0].properties).once_prize)
-          self.$set(self.onePartForm, 'inviteCard', [24])
-          self.$set(self.onePartForm, 'showMsg', JSON.parse(res.info.result[0].properties).show_msg)
-          self.$set(self.onePartForm, 'grantType1', JSON.parse(res.info.result[0].properties).more_prizes[0].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName1', JSON.parse(res.info.result[0].properties).more_prizes[0].name)
-          self.$set(self.onePartForm, 'grantNum1', JSON.parse(res.info.result[0].properties).more_prizes[0].num)
-          self.$set(self.onePartForm, 'grantImg1', JSON.parse(res.info.result[0].properties).more_prizes[0].img)
-          self.$set(self.onePartForm, 'grantType2', JSON.parse(res.info.result[0].properties).more_prizes[1].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName2', JSON.parse(res.info.result[0].properties).more_prizes[1].name)
-          self.$set(self.onePartForm, 'grantNum2', JSON.parse(res.info.result[0].properties).more_prizes[1].num)
-          self.$set(self.onePartForm, 'grantImg2', JSON.parse(res.info.result[0].properties).more_prizes[1].img)
-          self.$set(self.onePartForm, 'grantType3', JSON.parse(res.info.result[0].properties).more_prizes[2].delivery_mothod)
-          self.$set(self.onePartForm, 'grantName3', JSON.parse(res.info.result[0].properties).more_prizes[2].name)
-          self.$set(self.onePartForm, 'grantNum3', JSON.parse(res.info.result[0].properties).more_prizes[2].num)
-          self.$set(self.onePartForm, 'grantImg3', JSON.parse(res.info.result[0].properties).more_prizes[2].img)
-          self.$set(self.onePartForm, 'morePrizesLimit', JSON.parse(res.info.result[0].properties).more_prizes_limit)
-          self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.info.result[0].properties).best_prize.name)
-          self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.info.result[0].properties).best_prize.num)
-          self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.info.result[0].properties).best_prize.img)
-          self.$set(self.onePartForm, 'winImg', JSON.parse(res.info.result[0].properties).best_prize.win_img)
-          self.$set(self.onePartForm, 'showRankList', JSON.parse(res.info.result[0].properties).show_rank_list)
-          self.$set(self.onePartForm, 'limitNum', JSON.parse(res.info.result[0].properties).limit_num)
-          self.$set(self.onePartForm, 'payLimit', JSON.parse(res.info.result[0].properties).pay_limit)
-          self.$set(self.twoPartForm, 'title', JSON.parse(res.info.result[0].properties).title)
-          self.$set(self.twoPartForm, 'inviteCard', [24, 27])
-          self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.info.result[0].properties).newuser_banner)
-          self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.info.result[0].properties).newuser_adv_banner)
+          console.log(res.data.info.result[0])
+          self.$set(self.onePartForm, 'name', res.data.info.result[0].name)
+          self.$set(self.onePartForm, 'topBanner', JSON.parse(res.data.info.result[0].properties).banner)
+          self.$set(self.onePartForm, 'regulation', JSON.parse(res.data.info.result[0].properties).rule)
+          self.$set(self.onePartForm, 'rangeActivityDate', [res.data.info.result[0].startDate, res.data.info.result[0].endDate])
+          self.$set(self.onePartForm, 'winningMaxTime', JSON.parse(res.data.info.result[0].properties).max_prize)
+          self.$set(self.onePartForm, 'winningTime', JSON.parse(res.data.info.result[0].properties).once_prize)
+          self.$set(self.onePartForm, 'showMsg', JSON.parse(res.data.info.result[0].properties).show_msg)
+          self.$set(self.onePartForm, 'grantType1', JSON.parse(res.data.info.result[0].properties).more_prizes[0].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName1', JSON.parse(res.data.info.result[0].properties).more_prizes[0].name)
+          self.$set(self.onePartForm, 'grantNum1', JSON.parse(res.data.info.result[0].properties).more_prizes[0].num)
+          self.$set(self.onePartForm, 'grantImg1', JSON.parse(res.data.info.result[0].properties).more_prizes[0].img)
+          self.$set(self.onePartForm, 'grantType2', JSON.parse(res.data.info.result[0].properties).more_prizes[1].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName2', JSON.parse(res.data.info.result[0].properties).more_prizes[1].name)
+          self.$set(self.onePartForm, 'grantNum2', JSON.parse(res.data.info.result[0].properties).more_prizes[1].num)
+          self.$set(self.onePartForm, 'grantImg2', JSON.parse(res.data.info.result[0].properties).more_prizes[1].img)
+          self.$set(self.onePartForm, 'grantType3', JSON.parse(res.data.info.result[0].properties).more_prizes[2].delivery_mothod)
+          self.$set(self.onePartForm, 'grantName3', JSON.parse(res.data.info.result[0].properties).more_prizes[2].name)
+          self.$set(self.onePartForm, 'grantNum3', JSON.parse(res.data.info.result[0].properties).more_prizes[2].num)
+          self.$set(self.onePartForm, 'grantImg3', JSON.parse(res.data.info.result[0].properties).more_prizes[2].img)
+          self.$set(self.onePartForm, 'morePrizesLimit', JSON.parse(res.data.info.result[0].properties).more_prizes_limit)
+          self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.data.info.result[0].properties).best_prize.name)
+          self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.data.info.result[0].properties).best_prize.num)
+          self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.data.info.result[0].properties).best_prize.img)
+          self.$set(self.onePartForm, 'winImg', JSON.parse(res.data.info.result[0].properties).best_prize.win_img)
+          self.$set(self.onePartForm, 'showRankList', JSON.parse(res.data.info.result[0].properties).show_rank_list)
+          self.$set(self.onePartForm, 'limitNum', JSON.parse(res.data.info.result[0].properties).limit_num)
+          self.$set(self.onePartForm, 'payLimit', JSON.parse(res.data.info.result[0].properties).pay_limit)
+          self.$set(self.twoPartForm, 'title', JSON.parse(res.data.info.result[0].properties).title)
+          self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.data.info.result[0].properties).newuser_banner)
+          self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.data.info.result[0].properties).newuser_adv_banner)
+          platformActivityInviteCardList({
+            filters: {
+              act_inv_coupon: {
+                platformActivityId: {
+                  equalTo: res.data.info.result[0].id
+                }
+              }
+            },
+            page_size: 1000
+          }).then(resList => {
+            const oneCard = []
+            console.log(resList.info.result[0].platCouponId)
+            if (resList.info.result.length > 0) {
+              resList.info.result.forEach((item, index) => {
+                oneCard.push(item.platCouponId)
+              })
+            }
+            self.$set(self.onePartForm, 'inviteCard', oneCard)
+          })
+          platformActivityInviteCardNewList({
+            filters: {
+              act_inv_newuser_coupon: {
+                platformActivityId: {
+                  equalTo: res.data.info.result[0].id
+                }
+              }
+            },
+            page_size: 1000
+          }).then(resList => {
+            const twoCard = []
+            if (resList.info.result.length > 0) {
+              resList.info.result.forEach((item, index) => {
+                twoCard.push(item.platCouponId)
+              })
+            }
+            self.$set(self.twoPartForm, 'inviteCard', twoCard)
+          })
         })
       }
     }
@@ -1186,6 +1270,9 @@
     .quill-editor-box {
       margin-bottom: 0;
       padding-bottom: 45px;
+    }
+    .disabledStyle:hover{
+      cursor: no-drop;
     }
     .ql-container.ql-snow {
       min-height: 180px;

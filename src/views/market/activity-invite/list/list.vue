@@ -11,31 +11,18 @@
       <!-- 查询筛选 -->
       <el-form v-model="onePartForm" style="width: 350px;">
         <el-form-item label="活动时间">
-          <div>
-            <el-date-picker
-              class="width340px"
-              v-model="onePartForm.rangeDate"
-              format="yyyy-MM-dd HH:mm"
-              value-format="yyyy-MM-dd HH:mm"
-              :clearable="false"
-              :picker-options="orderSortDate"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              placeholder="选择日期"
-              type="datetimerange"
-              :default-time="['00:00:00', '23:59:59']"
-              align="left"></el-date-picker>
-          </div>
+          <p v-if="empty" style="width: 400px;">暂无</p>
+          <p v-if="!empty" style="width: 400px;">{{minStartDate}}&nbsp;&nbsp;至&nbsp;&nbsp;{{maxEndDate}}</p>
         </el-form-item>
         <el-form-item label="首页弹窗">
           <div style="width:400px;">
-            <lh-upload
+            <lh-upload :accept="'.jpg,png'"
               :imgUrl="onePartForm.topBanner" class="fl"
               @uploadImg="showTopBanner"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
             <div v-if="isShowTopBanner">
               <p>建议尺寸： 750 * 1206PX</p>
-              <p class="banner-format">支持格式： JPG / PNG</p>
+              <p class="banner-format" style="margin-left: 190px;">支持格式： JPG / PNG</p>
             </div>
           </div>
         </el-form-item>
@@ -61,11 +48,11 @@
           <el-table-column label="创建时间" prop="created" align="left"></el-table-column>
           <el-table-column label="操作" align="left" width="120px">
             <template slot-scope="scope" style="display:block;">
-              <router-link :to="{path: '/activityInvite/add', query: {id: scope.row.id, type: 'edit'}}">
+              <router-link :to="{path: '/activityInvite/add', query: {id: scope.row.id, type: 'edit', status: scope.row.isDelete}}">
                 <el-button type="text" class="operate-btn">编辑</el-button>
               </router-link>
-
-              <el-button type="text" class="operate-btn" @click="deleteOne(scope.row.id)">删除</el-button>
+              <el-button v-if="scope.row.isDelete === 'ing' || scope.row.isDelete === 'ed'" type="text" class="operate-btn">删除</el-button>
+              <el-button v-if="scope.row.isDelete === 'will'" type="text" class="operate-btn" @click="deleteOne(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
 
@@ -113,7 +100,7 @@
           <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
           <el-table-column label="成功邀请人数" prop="inviteNum" align="left"></el-table-column>
           <el-table-column label="订单总数" prop="orderNum" align="left"></el-table-column>
-          <el-table-column label="已完成订单数" prop="orderNum" align="left"></el-table-column>
+          <el-table-column label="已完成订单数" prop="orderedNum" align="left"></el-table-column>
           <el-table-column label="订单金额" prop="orderMoney" align="left"></el-table-column>
           <el-table-column label="已完成订单总金额" prop="orderMoneyNum" align="left"></el-table-column>
           <el-table-column label="实物奖励" prop="reward" align="left"></el-table-column>
@@ -148,7 +135,8 @@
 <script>
   import pageTab from '../components/page-tab.vue'
   import upload from '@/components/upload'
-  import { platformActivityInviteList, platformActivityInviteDelete } from '@/service/market'
+  import { platformActivityInviteList, platformActivityInviteDelete, platformActivityInviteImgNew,
+    platformActivityInviteImgList, platformActivityInviteCardNewList } from '@/service/market'
 
   export default {
     mixins: [],
@@ -161,13 +149,7 @@
         tabList: ['活动配置', '活动数据统计'], // tab页显示文字
         activityTab: 1, // 当前展示tab页
         onePartForm: {
-          rangeDate: '',
-          bannerPic: ''
-        },
-        orderSortDate: { // 日期选择范围
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24
-          }
+          topBanner: ''
         },
         configData: [], // 活动配置表格展示数据
         onePages: {
@@ -190,7 +172,7 @@
           type: '',
           status: ''
         },
-        countData: [{ 'code': '001', 'name': '统计1', 'memberId': '001', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
+        countData: [{ 'code': '活动阶段ID', 'name': '活动阶段名称', 'memberId': '会员ID', 'inviteNum': '成功邀请人数', 'orderNum': '订单总数', 'orderedNum': '已完成订单数', 'orderMoney': '订单金额', 'orderMoneyNum': '已完成订单总金额', 'reward': '实物奖励', 'consignee': '收货人', 'phone': '手机号码', 'receiving': '收货地址' },
           { 'code': '002', 'name': '统计2', 'memberId': '002', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
           { 'code': '003', 'name': '统计3', 'memberId': '003', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
           { 'code': '004', 'name': '统计4', 'memberId': '004', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
@@ -198,18 +180,72 @@
           { 'code': '006', 'name': '统计6', 'memberId': '006', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' }], // 活动数据统计展示数据
         tableEmptyOne: '', // 活动配置数据为空的提示信息
         tableEmptyTwo: '', // 活动数据统计数据为空的提示信息
-        isShowTopBanner: false // 是否展示顶部banner的提示文字
+        isShowTopBanner: false, // 是否展示顶部banner的提示文字
+        minStartDate: '', // 最小开始时间
+        maxEndDate: '', // 最大结束时间
+        empty: false // 列表数据是否为空
       }
     },
     mounted() {
       // 设置标题之后，里面去填充页面内容
       this.getDataOne(1)
       this.getDataTwo(1)
+      this.init()
     },
     methods: {
       showTopBanner(val) {
         console.log(this.onePartForm)
         this.$set(this.onePartForm, 'topBanner', val)
+        platformActivityInviteImgNew({
+          window_img: val
+        })
+      },
+      /**
+       * 处理最小开始时间和最大结束时间
+       */
+      init() {
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          sort_item: 'start_date',
+          sort_order: 'asc'
+        }).then(res => {
+          console.log(res.data.info.result[0])
+          if (res.data.info.result.length > 0) {
+            this.minStartDate = res.data.info.result[0].startDate
+          } else {
+            this.empty = true
+          }
+        })
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          sort_item: 'end_date',
+          sort_order: 'desc'
+        }).then(res => {
+          console.log(res.data.info.result[0])
+          if (res.data.info.result.length > 0) {
+            this.maxEndDate = res.data.info.result[0].endDate
+          }
+        })
+        platformActivityInviteImgList({
+          filters: {}
+        }).then(res => {
+          console.log(res)
+          if (res.info.result.length > 0) {
+            this.onePartForm.topBanner = res.info.result[0].windowImg
+          }
+        })
       },
       /**
        * 点击tab页，切换
@@ -254,17 +290,66 @@
           page_no: page || this.onePages.pageNo,
           page_size: self.onePages.pageSize
         }).then(res => {
-          if (res.info.result.length === 0) {
+          console.log('res',res)
+          if (res.data.info.result.length === 0) {
             this.tableEmptyOne = '暂时无数据'
             this.onePages.total = 0
           } else {
-            this.onePages.total = res.info.result.length
-            this.configData = res.info.result
-            for (let i = 0; i < res.info.result.length; i++) {
-              this.configData[i].properties = JSON.parse(res.info.result[0].properties)
+            this.onePages.total = res.data.info.result.length
+            this.configData = res.data.info.result
+            for (let i = 0; i < res.data.info.result.length; i++) {
+              if (res.data.info.result[i].startDate <= this.convertDateTime(res.headers.date) && this.convertDateTime(res.headers.date) <= res.data.info.result[i].endDate) {
+                console.log(res.data.info.result[i].name, '在活动期内')
+                res.data.info.result[i].isDelete = 'ing'
+              } else if (this.convertDateTime(res.headers.date) > res.data.info.result[i].endDate) {
+                console.log(res.data.info.result[i].name, '已结束')
+                res.data.info.result[i].isDelete = 'ed'
+              } else {
+                console.log(res.data.info.result[i].name, '未开始')
+                res.data.info.result[i].isDelete = 'will'
+              }
+              this.configData[i].properties = JSON.parse(res.data.info.result[i].properties)
+              platformActivityInviteCardNewList({
+                filters: {
+                  act_inv_newuser_coupon: {
+                    platformActivityId: {
+                      equalTo: res.data.info.result[i].id
+                    }
+                  }
+                },
+                includes: {
+                  platform_coupon: {
+                    includes: ['platCouponId']
+                  }
+                },
+                page_size: 1000
+              }).then(resList => {
+                console.log(resList)
+                if (resList.info.length > 0) {
+                  resList.info.forEach((item, index) => {
+                    if (index === 0) {
+                      res.data.info.result[i].newCard = item.includes.platform_coupon.name
+                    } else {
+                      res.data.info.result[i].newCard = res.data.info.result[i].newCard + ',' + item.includes.platform_coupon.name
+                    }
+                  })
+                } else {
+                  res.data.info.result[i].newCard = '-'
+                }
+                self.configData.forEach((item, index) => {
+                  self.$set(item, 'newCard', res.data.info.result[index].newCard)
+                })
+              })
             }
           }
         })
+      },
+      /**
+       * 将服务器时间进行转换
+       */
+      convertDateTime (date) {
+        const d = new Date(date)
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
       },
       /**
        * 活动配置的单条删除
@@ -272,9 +357,20 @@
       deleteOne(id) {
         const self = this
         console.log(id)
-        platformActivityInviteDelete(id).then(res => {
-          this.setMsg('success', '删除成功')
-          self.getDataOne(1)
+        self.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          platformActivityInviteDelete(id).then(res => {
+            this.setMsg('success', '删除成功')
+            self.getDataOne(1)
+          })
+        }).catch(() => {
+          self.$message({
+            message: '已取消删除',
+            type: 'success'
+          })
         })
       },
       /**

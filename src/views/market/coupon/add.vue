@@ -490,7 +490,7 @@
         },
         pickerOptions1: {
           disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24 || time.getTime() > Date.now() + 3600 * 1000 * 24 * 365
+            return time.getTime() < Date.now() - 3600 * 1000 * 24 || time.getTime() > Date.now() + 3600 * 1000 * 24 * 90
             // console.log(this.couponForm.expireDate)
             // if (this.couponForm && this.couponForm.expireDate && this.couponForm.expireDate.length > 1) {
             //   return time.getTime() > new Date(this.couponForm.expireDate[1]) ||
@@ -950,7 +950,6 @@
               params.receiveConditionArray = form.receiveConditionArray
             }
             console.log(params)
-            debugger
             let promise = this.$route.query.id ? updateCoupon(params) : addCoupon(params)
             promise.then(res => {
               if (res.status === 'true') {

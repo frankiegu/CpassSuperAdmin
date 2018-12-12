@@ -138,7 +138,9 @@ export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platf
  */
 
 // 展示邀请有礼列表
-export const platformActivityInviteList = (obj) => fetch(API_PATH_HM + '/platform_activities', obj, 'GET')
+export const platformActivityInviteList = (obj) => fetch(API_PATH_HM + '/platform_activities', obj, 'GET', 'all')
+export const platformActivityInviteImgNew = (obj) => fetch(API_PATH_HM + '/home_windows/new', obj, 'POST')
+export const platformActivityInviteImgList = (obj) => fetch(API_PATH_HM + '/home_windows', obj, 'GET')
 
 // 添加邀请活动
 export const platformActivityInviteAdd = (obj) => fetch(API_PATH_HM + '/platform_activities/new', obj, 'POST')
