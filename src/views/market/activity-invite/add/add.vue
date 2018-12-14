@@ -263,7 +263,7 @@
         </el-form-item>
 
         <el-form-item label="场地" label-width="80px" style="margin-left: 35px;" class="mt40">
-          <el-select placeholder="请选择场地" style="width:300px;" v-model="fieldAdd.field">
+          <el-select filterable placeholder="请选择场地" style="width:300px;" v-model="fieldAdd.field">
             <el-option v-for="(item, index) in fieldData" :key="index" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -331,6 +331,7 @@
     platformActivityInviteCardAdd, platformActivityInviteCardDelete, platformActivityInviteCardList,
     platformActivityInviteCardNewAdd, platformActivityInviteCardNewDelete, platformActivityInviteCardNewList,
     stroeList } from '@/service/market'
+  import { clientList } from '@/service/client'
   import { listSpace } from '@/service/space'
   import { fieldList } from '@/service/field'
 
@@ -444,12 +445,14 @@
         }
       };
       const onePartFormRuLemorePrizesLimit = (rule, value, callback) => {
-        if (!value) {
-          callback(new Error('请输入加码有礼获奖人数限制'));
-        } else if (!reg.test(value)) {
-          callback(new Error('请输入数字'));
-        } else if (!reg1.test(value)) {
-          callback(new Error('请输入大于0小于等于999的整数'));
+        if (value) {
+          if (!reg.test(value)) {
+            callback(new Error('请输入数字'));
+          } else if (!reg1.test(value)) {
+            callback(new Error('请输入大于0小于等于999的整数'));
+          } else {
+            callback();
+          }
         } else {
           callback();
         }
@@ -491,7 +494,7 @@
       };
       const twoPartFormRuleInviteCard = (rule, value, callback) => {
         console.log('inviteCard', this.twoPartForm.inviteCard)
-        if (this.twoPartForm.inviteCard.length === 0) {
+        if (value.length === 0) {
           callback(new Error('请添加卡券'));
         } else {
           callback();
@@ -520,7 +523,7 @@
           winningMaxTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningMaxTime }],
           winningTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningTime }],
           grant: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleGrant }],
-          morePrizesLimit: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuLemorePrizesLimit }],
+          morePrizesLimit: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuLemorePrizesLimit }],
           bestPrize: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleBestPrize }],
           limitNum: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleLimitNum }],
           payLimit: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRulePayLimit }],
@@ -544,12 +547,6 @@
         activityTab: 1, // 当前展示tab页
         addEditType: 0, // 0为新增  1为编辑
         orderSortDate: { // 日期选择范围
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 3600 * 1000 * 24 || (time.getTime() < new Date('2018-12-22 23:59:59') &&
-              time.getTime() > new Date('2018-12-15 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-09 23:59:59') &&
-              time.getTime() > new Date('2018-12-04 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-14 23:59:59') &&
-              time.getTime() > new Date('2018-12-12 00:00:00') - 3600 * 1000 * 24)
-          }
         },
         editorOption1: { // 富文本编辑器
           modules: {
@@ -636,6 +633,7 @@
     },
     methods: {
       init () {
+        const self = this
         platformActivityInviteList({
           filters: {
             'platform_activity': {
@@ -650,36 +648,39 @@
           res.data.info.result.forEach((item, index) => {
             console.log(item.startDate, item.endDate)
             this.list.push([item.startDate, item.endDate])
+            self.orderSortDate = {
+              disabledDate(time) {
+                return self.returnDate(time)
+              }
+            }
           })
         })
       },
+      /**
+       * 置灰已存在的阶段时间
+       */
       returnDate(time) {
         if (this.list.length === 0) {
           return time.getTime() < Date.now() - 3600 * 1000 * 24
         } else {
           let data = time.getTime() < Date.now() - 3600 * 1000 * 24
           this.list.forEach(item => {
-            data = data + '||(time.getTime() < new Date(' + item[1] + ')&&time.getTime() > new Date(' + item[0] + ') - 3600 * 1000 * 24)'
+            data = data || (time.getTime() < new Date(item[1]) && time.getTime() > new Date(item[0]) - 3600 * 1000 * 24)
           })
+          console.log('data_____🙃', data)
           return data
         }
-        // return time.getTime() < Date.now() - 3600 * 1000 * 24 || (time.getTime() < new Date('2018-12-22 23:59:59') &&
-        //   time.getTime() > new Date('2018-12-16 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-09 23:59:59') &&
-        //   time.getTime() > new Date('2018-12-04 00:00:00') - 3600 * 1000 * 24) || (time.getTime() < new Date('2018-12-14 23:59:59') &&
-        //   time.getTime() > new Date('2018-12-12 00:00:00') - 3600 * 1000 * 24)
       },
       /**
        * 查询品牌列表
        */
       getStroe() {
-        listSpace({
+        clientList({
           pageSize: 1000
         }).then(res => {
-          this.stroeeData.push({ 'id': 92, 'name': '备用1' })
-          this.stroeeData.push({ 'id': 93, 'name': '备用2' })
-          // res.info.result.forEach((item, index) => {
-          // this.spaceData.push({ 'id': item.storeId, 'name': item.storeName })
-          // })
+          res.info.result.forEach((item, index) => {
+            this.stroeeData.push({ 'id': item.id, 'name': item.brandName })
+          })
         })
       },
       /**
@@ -694,8 +695,9 @@
           pageSize: 1000
         }).then(res => {
           console.log('res.info', res.info)
-          res.info.forEach((item, index) => {
-            this.spaceData.push({ 'id': item.id, 'name': item.storeName })
+          self.spaceData = []
+          res.info.result.forEach((item, index) => {
+            self.spaceData.push({ 'id': item.storeId, 'name': item.storeName })
           })
         })
       },
@@ -766,10 +768,8 @@
        */
       addRecommendField(code) {
         this.isFieldAdd = true
-        this.fieldAdd = {
-          space: '',
-          field: ''
-        }
+        this.fieldAdd.space = ''
+        this.fieldAdd.field = ''
         this.currentCode = code
       },
       /**
@@ -778,9 +778,17 @@
       addFieldSure() {
         console.log(this.currentCode)
         if (this.activityTab === 1) {
-          this.onePartForm[this.currentCode] = this.fieldAdd
+          if (this.fieldAdd.field) {
+            this.onePartForm[this.currentCode] = this.fieldAdd
+          } else {
+            this.onePartForm[this.currentCode] = {}
+          }
         } else if (this.activityTab === 2) {
-          this.twoPartForm[this.currentCode] = this.fieldAdd
+          if (this.fieldAdd.field) {
+            this.twoPartForm[this.currentCode] = this.fieldAdd
+          } else {
+            this.twoPartForm[this.currentCode] = {}
+          }
         }
         this.isFieldAdd = false
       },

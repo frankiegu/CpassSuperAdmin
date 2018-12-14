@@ -36,13 +36,13 @@ export default {
        * 添加的时候，门是否已经打开？
        * edit，随便切换tab
        */
-      this.selectedTab = index
-      // if (!this.addEditType && index === 2 && !this.tabSwitch) {
-      //   this.setMsg('请先完成第一步的信息录入')
-      //   return
-      // } else {
-      //   this.selectedTab = index
-      // }
+      // this.selectedTab = index
+      if (!this.addEditType && index === 2 && !this.tabSwitch) {
+        this.setMsg('请先完成第一步的信息录入')
+        return
+      } else {
+        this.selectedTab = index
+      }
       this.$emit('tabToggle', index)
     }
   }

@@ -71,22 +71,28 @@
       <div>
         <el-form :model="formData" :inline="true" class="text-right mr-10">
 
-          <el-select v-model="formData.type" @change="getDataTwo(1)" filterable placeholder="筛选填写实物奖" class="width150px" clearable>
+          <el-select v-model="formData.reward" @change="getDataTwo(1)" filterable placeholder="筛选填写实物奖" class="width150px" clearable>
+            <el-option v-for="item in rewardList" :label="item.text" :value="item.val" :key="item.val"></el-option>
+          </el-select>
+
+          <el-select v-model="formData.name" @change="getDataTwo(1)" filterable placeholder="筛选阶段" class="width150px" clearable>
             <el-option v-for="item in typeList" :label="item.text" :value="item.val" :key="item.val"></el-option>
           </el-select>
 
-          <el-select v-model="formData.type" @change="getDataTwo(1)" filterable placeholder="筛选阶段" class="width150px" clearable>
-            <el-option v-for="item in typeList" :label="item.text" :value="item.val" :key="item.val"></el-option>
-          </el-select>
+          <!--<el-form-item style="margin-right: 0px;">-->
+            <!--<el-input v-model.trim="formData.reward" @keyup.native.enter="getDataTwo(1)" placeholder="筛选填写实物奖" class="width200px">-->
+              <!--<i slot="suffix" @click="getDataTwo(1)" class="el-input__icon el-icon-search"></i>-->
+            <!--</el-input>-->
+          <!--</el-form-item>-->
 
           <el-form-item style="margin-right: 0px;">
-            <el-input v-model.trim="formData.name" @keyup.native.enter="getDataTwo(1)" placeholder="检索收货人手机号" class="width200px">
+            <el-input v-model.trim="formData.phone" @keyup.native.enter="getDataTwo(1)" placeholder="检索收货人手机号" class="width200px">
               <i slot="suffix" @click="getDataTwo(1)" class="el-input__icon el-icon-search"></i>
             </el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input v-model.trim="formData.name" @keyup.native.enter="getDataTwo(1)" placeholder="检索收货人" class="width200px">
+            <el-input v-model.trim="formData.consignee" @keyup.native.enter="getDataTwo(1)" placeholder="检索收货人" class="width200px">
               <i slot="suffix" @click="getDataTwo(1)" class="el-input__icon el-icon-search"></i>
             </el-input>
           </el-form-item>
@@ -95,25 +101,25 @@
 
         <el-table :data="countData" :empty-text="tableEmptyTwo" :slot="tableEmptyTwo" border style="width: 100%">
 
-          <el-table-column label="会员ID" prop="memberId" align="left"></el-table-column>
+          <el-table-column label="会员ID" prop="memberid" align="left"></el-table-column>
           <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
           <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
-          <el-table-column label="成功邀请人数" prop="inviteNum" align="left"></el-table-column>
-          <el-table-column label="订单总数" prop="orderNum" align="left"></el-table-column>
-          <el-table-column label="已完成订单数" prop="orderedNum" align="left"></el-table-column>
-          <el-table-column label="订单金额" prop="orderMoney" align="left"></el-table-column>
-          <el-table-column label="已完成订单总金额" prop="orderMoneyNum" align="left"></el-table-column>
+          <el-table-column label="成功邀请人数" prop="invitenum" align="left"></el-table-column>
+          <el-table-column label="订单总数" prop="ordernum" align="left"></el-table-column>
+          <el-table-column label="已完成订单数" prop="orderednum" align="left"></el-table-column>
+          <el-table-column label="订单金额" prop="ordermoney" align="left"></el-table-column>
+          <el-table-column label="已完成订单总金额" prop="ordermoneynum" align="left"></el-table-column>
           <el-table-column label="实物奖励" prop="reward" align="left"></el-table-column>
           <el-table-column label="收货人" prop="consignee" align="left"></el-table-column>
           <el-table-column label="手机号码" prop="phone" align="left"></el-table-column>
           <el-table-column label="收货地址" prop="receiving" align="left"></el-table-column>
           <el-table-column label="操作" align="left" width="120px">
             <template slot-scope="scope" style="display:block;">
-              <router-link :to="{path: '/activityInvite/users'}">
+              <router-link :to="{path: '/activityInvite/users', query: {id: scope.row.id}}">
                 <el-button type="text" class="operate-btn underline">被邀请人名单</el-button>
               </router-link>
 
-              <router-link :to="{path: '/activity/add', query: {id: scope.row.id, type: 'copy'}}">
+              <router-link :to="{path: '/service/order'}">
                 <el-button type="text" class="operate-btn underline">订单列表</el-button>
               </router-link>
             </template>
@@ -136,7 +142,8 @@
   import pageTab from '../components/page-tab.vue'
   import upload from '@/components/upload'
   import { platformActivityInviteList, platformActivityInviteDelete, platformActivityInviteImgNew,
-    platformActivityInviteImgList, platformActivityInviteCardNewList } from '@/service/market'
+    platformActivityInviteImgList, platformActivityInviteImgEdit, platformActivityInviteCardNewList,
+    platformActivityStatistics } from '@/service/market'
 
   export default {
     mixins: [],
@@ -162,22 +169,14 @@
           pageNo: 1,
           total: 4
         }, // 活动数据统计的分页
-        typeList: [ // 筛选阶段下拉展示数据
-          { val: 5, text: '全部' },
-          { val: 1, text: '普通活动' },
-          { val: 2, text: '互动游戏' }
-        ],
+        rewardList: [{ val: 1, text: '全部' },{ val: 2, text: '是' },{ val: 3, text: '否' }], // 筛选实物礼品下拉数据
+        typeList: [], // 筛选阶段下拉展示数据
         formData: { // 活动数据统计搜索
           name: '',
           type: '',
           status: ''
         },
-        countData: [{ 'code': '活动阶段ID', 'name': '活动阶段名称', 'memberId': '会员ID', 'inviteNum': '成功邀请人数', 'orderNum': '订单总数', 'orderedNum': '已完成订单数', 'orderMoney': '订单金额', 'orderMoneyNum': '已完成订单总金额', 'reward': '实物奖励', 'consignee': '收货人', 'phone': '手机号码', 'receiving': '收货地址' },
-          { 'code': '002', 'name': '统计2', 'memberId': '002', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
-          { 'code': '003', 'name': '统计3', 'memberId': '003', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
-          { 'code': '004', 'name': '统计4', 'memberId': '004', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
-          { 'code': '005', 'name': '统计5', 'memberId': '005', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' },
-          { 'code': '006', 'name': '统计6', 'memberId': '006', 'inviteNum': '', 'orderNum': '', 'orderMoney': '', 'orderMoneyNum': '', 'reward': '', 'consignee': '', 'phone': '', 'receiving': '' }], // 活动数据统计展示数据
+        countData: [], // 活动数据统计展示数据
         tableEmptyOne: '', // 活动配置数据为空的提示信息
         tableEmptyTwo: '', // 活动数据统计数据为空的提示信息
         isShowTopBanner: false, // 是否展示顶部banner的提示文字
@@ -191,17 +190,11 @@
       this.getDataOne(1)
       this.getDataTwo(1)
       this.init()
+      this.search()
     },
     methods: {
-      showTopBanner(val) {
-        console.log(this.onePartForm)
-        this.$set(this.onePartForm, 'topBanner', val)
-        platformActivityInviteImgNew({
-          window_img: val
-        })
-      },
       /**
-       * 处理最小开始时间和最大结束时间
+       * 处理最小开始时间、最大结束时间、首页弹窗
        */
       init() {
         platformActivityInviteList({
@@ -245,6 +238,48 @@
           if (res.info.result.length > 0) {
             this.onePartForm.topBanner = res.info.result[0].windowImg
           }
+        })
+      },
+      showTopBanner(val) {
+        console.log(this.onePartForm)
+        this.$set(this.onePartForm, 'topBanner', val)
+        platformActivityInviteImgList({
+          filters: {}
+        }).then(res => {
+          console.log(res)
+          if (res.info.result.length > 0) {
+            res.info.result[0].windowImg = val
+            platformActivityInviteImgEdit({
+              window_img: val
+            }, res.info.result[0].id).then(res => {
+              this.init()
+            })
+          } else{
+            platformActivityInviteImgNew({
+              window_img: val
+            })
+          }
+        })
+      },
+      /**
+       * 统计页搜索下拉框数据
+       */
+      search() {
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          page_size:10000
+        }).then(res => {
+          console.log(res.data.info.result)
+          this.typeList = []
+          res.data.info.result.forEach((item, index) => {
+            this.typeList.push({ val: item.name, text: item.name })
+          })
         })
       },
       /**
@@ -394,10 +429,50 @@
        * @param page
        */
       getDataTwo(page) {
-        console.log('活动数据统计的数据')
-        if (this.countData.length === 0) {
-          this.tableEmptyTwo = '暂时无数据'
+        const self = this
+        this.countData = []
+        console.log('获取活动配置的数据')
+        const params = {
+          filters: {
+            statistic: {
+              reward: {},
+              name: {},
+              phone: {},
+              consignee: {}
+            }
+          },
+          page_no: page || this.twoPages.pageNo,
+          page_size: self.twoPages.pageSize
         }
+        if (self.formData.reward) {
+          if(self.formData.reward === 1) {
+            params.filters.statistic.reward = {}
+          } else if (self.formData.reward === 2) {
+            params.filters.statistic.reward = { 'isNotNull': true }
+          } else if (self.formData.reward === 3) {
+            params.filters.statistic.reward = { 'isNull': true }
+          }
+        }
+        if (self.formData.name) {
+          params.filters.statistic.name = { 'equalTo': self.formData.name }
+        }
+        if (self.formData.phone) {
+          params.filters.statistic.phone = { 'like': '%' + self.formData.phone + '%' }
+        }
+        if (self.formData.consignee) {
+          params.filters.statistic.consignee = { 'like': '%' + self.formData.consignee + '%' }
+        }
+        platformActivityStatistics(params).then(res => {
+          console.log('res',res)
+          if (res.info.result.length === 0) {
+            this.tableEmptyTwo = '暂时无数据'
+            this.twoPages.total = 0
+          } else {
+            this.twoPages.total = res.info.result.length
+            this.countData = res.info.result
+            console.log('this.countData', this.countData)
+          }
+        })
       }
     }
   }

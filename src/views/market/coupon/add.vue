@@ -367,12 +367,16 @@
               return callback(new Error('请先选择领取时间'))
             } else if (this.couponForm.expireDate[1] >= this.couponForm.useDate[1]) {
               return callback(new Error('领取结束时间不能超过使用结束时间'))
+            } else {
+              callback()
             }
           } else if (this.type[0] === '2') {
             if (!this.couponForm.vaild) {
               return callback(new Error('请输入过期天数'))
             } else if (!reg.test(this.couponForm.vaild)) {
               return callback(new Error('请输入大于0小于等于90的整数'))
+            } else {
+              callback()
             }
           } else {
             callback()
@@ -531,7 +535,8 @@
         console.log(val)
         if (val[0] !== '1') {
           if (val[0] === '2') {
-            this.couponForm.vaild = '1'
+            // this.couponForm.vaild = '1'
+            this.$set(this.couponForm, 'vaild', '1')
           } else {
             this.couponForm.useDate = []
           }
@@ -893,7 +898,7 @@
               params.startTime = form.useDate[0]
               params.endTime = form.useDate[1]
             } else if (this.type[0] === '2') {
-              params.valid = form.valid
+              params.vaild = form.vaild
             }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id

@@ -141,6 +141,13 @@ export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platf
 export const platformActivityInviteList = (obj) => fetch(API_PATH_HM + '/platform_activities', obj, 'GET', 'all')
 export const platformActivityInviteImgNew = (obj) => fetch(API_PATH_HM + '/home_windows/new', obj, 'POST')
 export const platformActivityInviteImgList = (obj) => fetch(API_PATH_HM + '/home_windows', obj, 'GET')
+export const platformActivityInviteImgEdit = (obj, id) => fetch(API_PATH_HM + '/home_windows/' + id + '/edit', obj, 'POST')
+
+// 展示数据统计列表
+export const platformActivityStatistics = (obj) => fetch(API_PATH_HM + '/statistics', obj, 'GET')
+
+// 展示被邀请人名单
+export const platformActivityActInvRecordList = (obj) => fetch(API_PATH_HM + '/act_inv_records', obj, 'GET')
 
 // 添加邀请活动
 export const platformActivityInviteAdd = (obj) => fetch(API_PATH_HM + '/platform_activities/new', obj, 'POST')
@@ -159,7 +166,7 @@ export const platformActivityInviteFieldDelete = (obj) => fetch(API_PATH_HM + '/
 export const platformActivityInviteFieldNewAdd = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/new', obj, 'POST')
 export const platformActivityInviteFieldNewDelete = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/' + obj + '/delete', '', 'POST')
 
-export const stroeList = (obj) => fetch(API_PATH + '/supervisor/store/list', obj, 'POST')
+export const stroeList = (obj) => fetch(API_PATH + '/supervisor/storeStar/storeList', obj, 'POST')
 // 单条删除邀请活动
 export const platformActivityInviteDelete = (obj) => fetch(API_PATH_HM + '/platform_activities/' + obj + '/delete', '', 'POST')
 
