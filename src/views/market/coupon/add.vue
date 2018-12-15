@@ -898,7 +898,7 @@
               params.startTime = form.useDate[0]
               params.endTime = form.useDate[1]
             } else if (this.type[0] === '2') {
-              params.vaild = form.vaild
+              params.valid = form.vaild
             }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id

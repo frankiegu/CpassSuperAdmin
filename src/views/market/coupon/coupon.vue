@@ -78,8 +78,8 @@
 
             <template slot-scope="scope">
               <span v-if="scope.row.startTime">{{ scope.row.startTime }} 至 {{scope.row.endTime}}</span>
-              <span v-if="!scope.row.startTime && scope.row.vaild">领取{{ scope.row.vaild }}天有效</span>
-              <span v-if="!scope.row.startTime && !scope.row.vaild">-</span>
+              <span v-if="!scope.row.startTime && scope.row.valid">领取{{ scope.row.valid }}天有效</span>
+              <span v-if="!scope.row.startTime && !scope.row.valid">-</span>
             </template>
           </el-table-column>
 

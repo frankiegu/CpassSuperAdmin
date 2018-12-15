@@ -90,8 +90,11 @@
             this.pages.total = res.info.length
             self.configData = []
             res.info.forEach((item, index) => {
-              self.configData.push({ 'invitee': item.superior.invitee, 'phone': item.includes.customer.telephone,
-                'name': item.includes.customer.nickname, 'updated': item.superior.updated, 'invitor': item.superior.invitor })
+              self.configData.push({ 'invitee': item.superior.invitee,
+                'phone': item.includes.customer.telephone,
+                'name': item.includes.customer.nickname,
+                'updated': item.superior.updated,
+                'invitor': item.superior.invitor })
             })
             console.log('this.countData', this.countData)
           }
