@@ -32,7 +32,8 @@ export default {
         couponStatus: ''
       },
       sortField: '', // 1-生成时间 2-预订时间 3-订单金额
-      descOrAsc: '' // 排序方式 0-升序 1-降序
+      descOrAsc: '', // 排序方式 0-升序 1-降序
+      id: this.$route.query.id, // 邀请有礼活动数据统计跳转携带的参数id
     }
   },
   props: {},
@@ -95,6 +96,9 @@ export default {
         couponType: this.formData.couponStatus === 5 ? '' : this.formData.couponStatus,
         sortField: this.sortField,
         descOrAsc: this.descOrAsc
+      }
+      if (this.id) {
+        paramsObj.customerId = this.id
       }
       fieldOrderList(paramsObj).then(res => {
         if (res.status === 'true') {

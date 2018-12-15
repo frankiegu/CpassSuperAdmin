@@ -119,7 +119,7 @@
                 <el-button type="text" class="operate-btn underline">被邀请人名单</el-button>
               </router-link>
 
-              <router-link :to="{path: '/service/order'}">
+              <router-link :to="{path: '/field/order', query: {id: scope.row.memberid}}">
                 <el-button type="text" class="operate-btn underline">订单列表</el-button>
               </router-link>
             </template>
@@ -143,7 +143,8 @@
   import upload from '@/components/upload'
   import { platformActivityInviteList, platformActivityInviteDelete, platformActivityInviteImgNew,
     platformActivityInviteImgList, platformActivityInviteImgEdit, platformActivityInviteCardNewList,
-    platformActivityStatistics } from '@/service/market'
+    platformActivityStatistics, platformActivityInviteCardList, platformActivityInviteCardDeleteArr,
+    platformActivityInviteCardNewDeleteArr } from '@/service/market'
 
   export default {
     mixins: [],
@@ -397,9 +398,49 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          platformActivityInviteDelete(id).then(res => {
-            this.setMsg('success', '删除成功')
-            self.getDataOne(1)
+          platformActivityInviteCardList({
+            filters: {
+              act_inv_coupon: {
+                platformActivityId: {
+                  equalTo: id
+                }
+              }
+            },
+            page_size: 1000
+          }).then(resList => {
+            const deleArr = []
+            resList.info.result.forEach((item, index) => {
+              deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+            })
+            const deleteParams = {
+              ids: JSON.stringify(deleArr)
+            }
+            platformActivityInviteCardDeleteArr(deleteParams).then(res => {
+              platformActivityInviteCardNewList({
+                filters: {
+                  act_inv_coupon: {
+                    platformActivityId: {
+                      equalTo: id
+                    }
+                  }
+                },
+                page_size: 1000
+              }).then(resList => {
+                const deleNewArr = []
+                resList.info.result.forEach((item, index) => {
+                  deleNewArr.push(item.id)
+                })
+                const deleteNewParams = {
+                  ids: JSON.stringify(deleNewArr)
+                }
+                platformActivityInviteCardNewDeleteArr(deleteNewParams).then(res => {
+                  platformActivityInviteDelete(id).then(res => {
+                    this.setMsg('success', '删除成功')
+                    self.getDataOne(1)
+                  })
+                })
+              })
+            })
           })
         }).catch(() => {
           self.$message({

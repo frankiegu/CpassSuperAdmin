@@ -327,13 +327,12 @@
   import pageTab from '../components/page-tab.vue'
   import { quillEditor } from 'vue-quill-editor'
   import { API_PATH } from '@/config/env'
-  import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit, findUsableCoupon,
+  import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit, findUsableCoupons,
     platformActivityInviteCardAdd, platformActivityInviteCardDelete, platformActivityInviteCardList,
     platformActivityInviteCardNewAdd, platformActivityInviteCardNewDelete, platformActivityInviteCardNewList,
-    stroeList } from '@/service/market'
-  import { clientList } from '@/service/client'
-  import { listSpace } from '@/service/space'
-  import { fieldList } from '@/service/field'
+    platformActivityInviteCardAddArr, platformActivityInviteCardDeleteArr,
+    platformActivityInviteCardNewAddArr, platformActivityInviteCardNewDeleteArr,
+    stroeList, spaceList, fieldList } from '@/service/market'
 
   export default {
     mixins: [],
@@ -397,7 +396,7 @@
         }
       };
       const onePartFormRuleGrant = (rule, value, callback) => {
-        let isShow = false
+        let isShow = true
         if (this.onePartForm.grantType1) {
           if (!this.onePartForm.grantName1) {
             callback(new Error('请输入奖品1的名称'));
@@ -493,7 +492,6 @@
         }
       };
       const twoPartFormRuleInviteCard = (rule, value, callback) => {
-        console.log('inviteCard', this.twoPartForm.inviteCard)
         if (value.length === 0) {
           callback(new Error('请添加卡券'));
         } else {
@@ -546,8 +544,7 @@
         tabList: ['① 邀请有礼页配置', '② 新人活动页配置'], // tab页显示文字
         activityTab: 1, // 当前展示tab页
         addEditType: 0, // 0为新增  1为编辑
-        orderSortDate: { // 日期选择范围
-        },
+        orderSortDate: {}, // 日期选择范围
         editorOption1: { // 富文本编辑器
           modules: {
             toolbar: [
@@ -629,6 +626,8 @@
     },
     created() {
       this.getStroe()
+      this.getSpace()
+      this.getField()
       this.init()
     },
     methods: {
@@ -644,9 +643,7 @@
           },
           page_size: 1000
         }).then(res => {
-          console.log(res.data.info.result)
           res.data.info.result.forEach((item, index) => {
-            console.log(item.startDate, item.endDate)
             this.list.push([item.startDate, item.endDate])
             self.orderSortDate = {
               disabledDate(time) {
@@ -667,7 +664,6 @@
           this.list.forEach(item => {
             data = data || (time.getTime() < new Date(item[1]) && time.getTime() > new Date(item[0]) - 3600 * 1000 * 24)
           })
-          console.log('data_____🙃', data)
           return data
         }
       },
@@ -675,11 +671,13 @@
        * 查询品牌列表
        */
       getStroe() {
-        clientList({
+        stroeList({
           pageSize: 1000
         }).then(res => {
-          res.info.result.forEach((item, index) => {
-            this.stroeeData.push({ 'id': item.id, 'name': item.brandName })
+          console.log('res', res)
+          this.stroeeData = []
+          res.info.forEach((item, index) => {
+            this.stroeeData.push({ 'id': item.id, 'name': item.spaceName })
           })
         })
       },
@@ -691,13 +689,22 @@
         self.fieldAdd.space = ''
         self.fieldAdd.field = ''
         console.log(self.fieldAdd.stroe)
-        stroeList({
-          pageSize: 1000
-        }).then(res => {
+        let params = {}
+        if (self.fieldAdd.stroe) {
+          params = {
+            space_id: self.fieldAdd.stroe,
+            pageSize: 1000
+          }
+        } else {
+          params = {
+            pageSize: 1000
+          }
+        }
+        spaceList(params).then(res => {
           console.log('res.info', res.info)
           self.spaceData = []
-          res.info.result.forEach((item, index) => {
-            self.spaceData.push({ 'id': item.storeId, 'name': item.storeName })
+          res.info.forEach((item, index) => {
+            self.spaceData.push({ 'id': item.id, 'name': item.storeName })
           })
         })
       },
@@ -707,12 +714,24 @@
       getField() {
         const self = this
         self.fieldAdd.field = ''
-        fieldList({
-          pageSize: 1000
-        }).then(res => {
-          res.info.result.forEach((item, index) => {
-            this.fieldData.push({ 'id': item.fieldId, 'name': item.fieldName })
-          })
+        let params = {}
+        if (self.fieldAdd.space) {
+          params = {
+            store_id: self.fieldAdd.space,
+            pageSize: 1000
+          }
+        } else {
+          params = {
+            pageSize: 1000
+          }
+        }
+        fieldList(params).then(res => {
+          this.fieldData = []
+          if (res.info.result.length > 0) {
+            res.info.result.forEach((item, index) => {
+              this.fieldData.push({ 'id': item.fieldId, 'name': item.fieldName })
+            })
+          }
         })
       },
       /**
@@ -768,9 +787,21 @@
        */
       addRecommendField(code) {
         this.isFieldAdd = true
-        this.fieldAdd.space = ''
-        this.fieldAdd.field = ''
+        // this.fieldAdd.space = ''
+        // this.fieldAdd.field = ''
         this.currentCode = code
+        if (this.activityTab === 1) {
+          if (this.onePartForm[this.currentCode].field) {
+            console.log('当前元素有值')
+            this.fieldAdd = this.onePartForm[this.currentCode]
+          } else {
+            console.log('当前元素无值')
+            // this.fieldAdd.space = ''
+            // this.fieldAdd.field = ''
+          }
+        } else if (this.activityTab === 2) {
+
+        }
       },
       /**
        * 推荐场地的"确认"按钮
@@ -798,7 +829,7 @@
       choiceCard(data) {
         const self = this
         this.currentCode = data
-        findUsableCoupon().then(res => {
+        findUsableCoupons().then(res => {
           if (res.status === 'true' && res.info) {
             if (!res.info.couponList.length) {
               self.treeData = []
@@ -819,33 +850,47 @@
                 self.choiceCoupon = true
               })
               console.log(self.treeData[0])
-              if (self.addEditType) {
-                self.submitData = []
-                console.log('编辑的选择卡券')
-                self.submitData = []
-                if (self.activityTab === 1) {
-                  if (self.onePartForm.inviteCard.length === 0) {
-                    self.removeSelected()
-                  } else {
-                    self.submitData = self.onePartForm.inviteCard
-                  }
-                } else if (self.activityTab === 2) {
-                  if (self.twoPartForm.inviteCard.length === 0) {
-                    self.removeSelected()
-                  } else {
-                    self.submitData = self.twoPartForm.inviteCard
-                  }
+              console.log('编辑的选择卡券')
+              self.submitData = []
+              if (self.activityTab === 1) {
+                if (self.onePartForm.inviteCard.length === 0) {
+                  self.selectedCoupons = []
+                  const setInterval = setInterval(function() {
+                    if (self.choiceCoupon = true) {
+                      clearInterval(setInterval)
+                      self.removeSelected()
+                    }
+                  },100)
+                } else {
+                  self.submitData = self.onePartForm.inviteCard
+                  setTimeout(function () {
+                    self.selectedCoupons = []
+                    self.selectedCoupons = self.$refs.rangeTree.getCheckedNodes(true)
+                    self.selectedCoupons.forEach((item, index) => {
+                      item.surplus = item.quantity - item.statistics.received
+                    })
+                  }, 10)
                 }
-              } else {
-                console.log('新增的选择卡券')
-                self.removeSelected()
+              } else if (self.activityTab === 2) {
+                if (self.twoPartForm.inviteCard.length === 0) {
+                  self.selectedCoupons = []
+                  const setInterval = setInterval(function() {
+                    if (self.choiceCoupon = true) {
+                      clearInterval(setInterval)
+                      self.removeSelected()
+                    }
+                  },100)
+                } else {
+                  self.submitData = self.twoPartForm.inviteCard
+                  setTimeout(function () {
+                    self.selectedCoupons = []
+                    self.selectedCoupons = self.$refs.rangeTree.getCheckedNodes(true)
+                    self.selectedCoupons.forEach((item, index) => {
+                      item.surplus = item.quantity - item.statistics.received
+                    })
+                  }, 10)
+                }
               }
-              setTimeout(function () {
-                self.selectedCoupons = self.$refs.rangeTree.getCheckedNodes(true)
-                self.selectedCoupons.forEach((item, index) => {
-                  item.surplus = item.quantity - item.statistics.received
-                })
-              }, 10)
             }
           }
         })
@@ -898,11 +943,11 @@
        */
       removeSelected(nodeKey) {
         // 如果没有传nodeKey，则移除所有选中的节点；否则移除当前nodeKey的节点
-        let treeName = 'rangeTree'
+        // let treeName = 'rangeTree'
         if (!nodeKey) {
-          this.$refs[treeName].setCheckedKeys([])
+          this.$refs.rangeTree.setCheckedKeys([])
         } else {
-          this.$refs[treeName].setChecked(nodeKey, false, true)
+          this.$refs.rangeTree.setChecked(nodeKey, false, true)
         }
       },
       /**
@@ -946,7 +991,6 @@
         console.log(self.twoPartForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(self.twoPartForm)
             const properties = {
               banner: self.onePartForm.topBanner, // 顶部banner
               rule: self.onePartForm.regulation, // 活动规则
@@ -987,7 +1031,6 @@
               newuser_banner: self.twoPartForm.actBanner, // 新人活动banner,
               newuser_adv_banner: self.twoPartForm.advBanner // 新人广告banner,
             }
-            console.log(properties)
             self.submitObject = {
               name: self.onePartForm.name,
               type: 3,
@@ -998,14 +1041,13 @@
               properties: JSON.stringify(properties)
             }
             if (self.addEditType) {
-              console.log('编辑的确定按钮')
+              // console.log('编辑的确定按钮')
               platformActivityInviteEdit(this.submitObject, self.activityId).then(res => {
-                // this.$router.push('/activityInvite')
                 this.$message({
                   type: 'success',
                   message: '修改成功!'
                 });
-                console.log('res', res)
+                // 查看邀请有礼卡券信息、批量删除后批量新建
                 platformActivityInviteCardList({
                   filters: {
                     act_inv_coupon: {
@@ -1016,25 +1058,24 @@
                   },
                   page_size: 1000
                 }).then(resList => {
-                  console.log('resList', resList)
                   const deleArr = []
                   resList.info.result.forEach((item, index) => {
                     deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
                   })
-                  deleArr.forEach((item, index) => { // 模拟批量删除接口，之后用进行替换
-                    platformActivityInviteCardDelete(item).then(resp => {
-                      if (index === deleArr.length - 1) {
-                        self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
-                          platformActivityInviteCardAdd({
-                            plat_coupon_id: item,
-                            platform_activity_id: res.info.id,
-                            is_delete: 1
-                          })
-                        })
-                      }
+                  const deleteParams = {
+                    ids: JSON.stringify(deleArr)
+                  }
+                  platformActivityInviteCardDeleteArr(deleteParams).then(resp => {
+                    const createArr = []
+                    self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                      createArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    })
+                    platformActivityInviteCardAddArr({
+                      params: JSON.stringify(createArr)
                     })
                   })
                 })
+                // 查看邀请新人卡券信息、批量删除后批量新建
                 platformActivityInviteCardNewList({
                   filters: {
                     act_inv_newuser_coupon: {
@@ -1045,51 +1086,51 @@
                   },
                   page_size: 1000
                 }).then(resList => {
-                  console.log('resList', resList)
-                  const deleArr = []
+                  const deleNewArr = []
                   resList.info.result.forEach((item, index) => {
-                    deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+                    deleNewArr.push(item.id)
                   })
-                  deleArr.forEach((item, index) => { // 模拟批量删除接口，之后用进行替换
-                    platformActivityInviteCardNewDelete(item).then(resp => {
-                      if (index === deleArr.length - 1) {
-                        self.twoPartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
-                          platformActivityInviteCardNewAdd({
-                            plat_coupon_id: item,
-                            platform_activity_id: res.info.id,
-                            is_delete: 1
-                          })
-                        })
-                      }
+                  const deleteNewParams = {
+                    ids: JSON.stringify(deleNewArr)
+                  }
+                  platformActivityInviteCardNewDeleteArr(deleteNewParams).then(resp => {
+                    const createNewArr = []
+                    self.twoPartForm.inviteCard.forEach((item, index) => {
+                      createNewArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    })
+                    platformActivityInviteCardAddArr({
+                      params: JSON.stringify(createNewArr)
                     })
                   })
                 })
+                // 查看邀请有礼场地、批量删除后批量新建
+                // 查看邀请新人场地、批量删除后批量新建
               })
             } else {
-              console.log('新增的确定按钮')
+              // console.log('新增的确定按钮')
               platformActivityInviteAdd(this.submitObject).then(res => {
                 this.$message({
                   type: 'success',
                   message: '保存成功!'
                 });
-                // console.log(res)
-                self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
-                  platformActivityInviteCardAdd({
-                    plat_coupon_id: item,
-                    platform_activity_id: res.info.id,
-                    is_delete: 1
-                  })
+                // 新建邀请有礼卡券
+                const createArr = []
+                self.onePartForm.inviteCard.forEach((item, index) => {
+                  createArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
                 })
-                self.twoPartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
-                  platformActivityInviteCardNewAdd({
-                    plat_coupon_id: item,
-                    platform_activity_id: res.info.id,
-                    is_delete: 1
-                  })
+                platformActivityInviteCardAddArr({
+                  params: JSON.stringify(createArr)
                 })
-                // platformActivityInviteFieldAdd()
-                // platformActivityInviteFieldNewAdd()
-                // this.$router.push('/activityInvite')
+                // 新建邀请新人卡券
+                const createNewArr = []
+                self.twoPartForm.inviteCard.forEach((item, index) => {
+                  createNewArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                })
+                platformActivityInviteCardNewAddArr({
+                  params: JSON.stringify(createNewArr)
+                })
+                // 新建邀请有礼场地
+                // 新建邀请新人场地
               })
             }
           } else {
@@ -1121,7 +1162,6 @@
             }
           }
         }).then(res => {
-          console.log(res.data.info.result[0])
           self.$set(self.onePartForm, 'name', res.data.info.result[0].name)
           self.$set(self.onePartForm, 'topBanner', JSON.parse(res.data.info.result[0].properties).banner)
           self.$set(self.onePartForm, 'regulation', JSON.parse(res.data.info.result[0].properties).rule)
@@ -1163,7 +1203,6 @@
             page_size: 1000
           }).then(resList => {
             const oneCard = []
-            console.log(resList.info.result[0].platCouponId)
             if (resList.info.result.length > 0) {
               resList.info.result.forEach((item, index) => {
                 oneCard.push(item.platCouponId)
