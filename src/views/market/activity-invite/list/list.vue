@@ -398,6 +398,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          // 删除邀请有礼卡券中间表信息
           platformActivityInviteCardList({
             filters: {
               act_inv_coupon: {
@@ -410,12 +411,13 @@
           }).then(resList => {
             const deleArr = []
             resList.info.result.forEach((item, index) => {
-              deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+              deleArr.push(item.id)
             })
             const deleteParams = {
               ids: JSON.stringify(deleArr)
             }
             platformActivityInviteCardDeleteArr(deleteParams).then(res => {
+              // 删除邀请新人卡券中间表信息
               platformActivityInviteCardNewList({
                 filters: {
                   act_inv_coupon: {

@@ -332,6 +332,9 @@
     platformActivityInviteCardNewAdd, platformActivityInviteCardNewDelete, platformActivityInviteCardNewList,
     platformActivityInviteCardAddArr, platformActivityInviteCardDeleteArr,
     platformActivityInviteCardNewAddArr, platformActivityInviteCardNewDeleteArr,
+    platformActivityInviteFieldAddArr, platformActivityInviteFieldNewAddArr,
+    platformActivityInviteFieldDeleteArr, platformActivityInviteFieldNewDeleteArr,
+    platformActivityInviteFieldList, platformActivityInviteFieldNewList,
     stroeList, spaceList, fieldList } from '@/service/market'
 
   export default {
@@ -674,7 +677,6 @@
         stroeList({
           pageSize: 1000
         }).then(res => {
-          console.log('res', res)
           this.stroeeData = []
           res.info.forEach((item, index) => {
             this.stroeeData.push({ 'id': item.id, 'name': item.spaceName })
@@ -729,7 +731,7 @@
           this.fieldData = []
           if (res.info.result.length > 0) {
             res.info.result.forEach((item, index) => {
-              this.fieldData.push({ 'id': item.fieldId, 'name': item.fieldName })
+              this.fieldData.push({ 'id': item.id, 'name': item.fieldName })
             })
           }
         })
@@ -741,11 +743,9 @@
         this.$set(this.onePartForm, 'topBanner', val)
       },
       showActBanner(val) { // 活动图片
-        console.log(this.onePartForm)
         this.$set(this.twoPartForm, 'actBanner', val)
       },
       showAdvBanner(val) { // 广告图片
-        console.log(this.onePartForm)
         this.$set(this.twoPartForm, 'advBanner', val)
       },
       /**
@@ -786,40 +786,40 @@
        * 添加推荐场地
        */
       addRecommendField(code) {
-        this.isFieldAdd = true
-        // this.fieldAdd.space = ''
-        // this.fieldAdd.field = ''
         this.currentCode = code
+        this.isFieldAdd = true
         if (this.activityTab === 1) {
-          if (this.onePartForm[this.currentCode].field) {
-            console.log('当前元素有值')
-            this.fieldAdd = this.onePartForm[this.currentCode]
+          if (this.onePartForm[this.currentCode].stroe) {
+            this.fieldAdd.stroe = this.onePartForm[this.currentCode].stroe
+            this.fieldAdd.space = this.onePartForm[this.currentCode].space
+            this.fieldAdd.field = this.onePartForm[this.currentCode].field
           } else {
-            console.log('当前元素无值')
-            // this.fieldAdd.space = ''
-            // this.fieldAdd.field = ''
+            this.fieldAdd.space = ''
+            this.fieldAdd.field = ''
           }
         } else if (this.activityTab === 2) {
-
+          if (this.twoPartForm[this.currentCode].stroe) {
+            this.fieldAdd.stroe = this.twoPartForm[this.currentCode].stroe
+            this.fieldAdd.space = this.twoPartForm[this.currentCode].space
+            this.fieldAdd.field = this.twoPartForm[this.currentCode].field
+          } else {
+            this.fieldAdd.space = ''
+            this.fieldAdd.field = ''
+          }
         }
       },
       /**
        * 推荐场地的"确认"按钮
        */
       addFieldSure() {
-        console.log(this.currentCode)
         if (this.activityTab === 1) {
-          if (this.fieldAdd.field) {
-            this.onePartForm[this.currentCode] = this.fieldAdd
-          } else {
-            this.onePartForm[this.currentCode] = {}
-          }
+          this.onePartForm[this.currentCode].stroe = this.fieldAdd.stroe
+          this.onePartForm[this.currentCode].space = this.fieldAdd.space
+          this.onePartForm[this.currentCode].field = this.fieldAdd.field
         } else if (this.activityTab === 2) {
-          if (this.fieldAdd.field) {
-            this.twoPartForm[this.currentCode] = this.fieldAdd
-          } else {
-            this.twoPartForm[this.currentCode] = {}
-          }
+          this.twoPartForm[this.currentCode].stroe = this.fieldAdd.stroe
+          this.twoPartForm[this.currentCode].space = this.fieldAdd.space
+          this.twoPartForm[this.currentCode].field = this.fieldAdd.field
         }
         this.isFieldAdd = false
       },
@@ -849,7 +849,6 @@
                 }
                 self.choiceCoupon = true
               })
-              console.log(self.treeData[0])
               console.log('编辑的选择卡券')
               self.submitData = []
               if (self.activityTab === 1) {
@@ -969,7 +968,6 @@
         console.log(self.onePartForm)
         this.$refs.onePartForm.validate((valid) => {
           if (valid) {
-            console.log(self.onePartForm)
             self.activityTab = 2
             self.tabSwitch = true
           } else {
@@ -1060,14 +1058,14 @@
                 }).then(resList => {
                   const deleArr = []
                   resList.info.result.forEach((item, index) => {
-                    deleArr.push(item.id) // 出了批量删除接口后，用这个变量传参
+                    deleArr.push(item.id)
                   })
                   const deleteParams = {
                     ids: JSON.stringify(deleArr)
                   }
                   platformActivityInviteCardDeleteArr(deleteParams).then(resp => {
                     const createArr = []
-                    self.onePartForm.inviteCard.forEach((item, index) => { // 模拟批量创建接口，之后进行替换
+                    self.onePartForm.inviteCard.forEach((item, index) => {
                       createArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
                     })
                     platformActivityInviteCardAddArr({
@@ -1098,13 +1096,109 @@
                     self.twoPartForm.inviteCard.forEach((item, index) => {
                       createNewArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
                     })
-                    platformActivityInviteCardAddArr({
+                    platformActivityInviteCardNewAddArr({
                       params: JSON.stringify(createNewArr)
                     })
                   })
                 })
                 // 查看邀请有礼场地、批量删除后批量新建
+                platformActivityInviteFieldList({
+                  filters: {
+                    act_inv_rec_field: {
+                      platformActivityId: {
+                        equalTo: res.info.id
+                      }
+                    }
+                  },
+                }).then(resList => {
+                  const deleFieldArr = []
+                  if (resList.info.result.length > 0) {
+                    resList.info.result.forEach((item, index) => {
+                      deleFieldArr.push(item.id)
+                    })
+                    const deleteFieldParams = {
+                      ids: JSON.stringify(deleFieldArr)
+                    }
+                    platformActivityInviteFieldDeleteArr(deleteFieldParams).then(resp => {
+                      const fieldArr = []
+                      if (self.onePartForm.recommendField1.field) {
+                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      if (self.onePartForm.recommendField2.field) {
+                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      if (self.onePartForm.recommendField3.field) {
+                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      platformActivityInviteFieldAddArr({
+                        params: JSON.stringify(fieldArr)
+                      })
+                    })
+                  } else {
+                    const fieldArr = []
+                    if (self.onePartForm.recommendField1.field) {
+                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    if (self.onePartForm.recommendField2.field) {
+                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    if (self.onePartForm.recommendField3.field) {
+                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    platformActivityInviteFieldAddArr({
+                      params: JSON.stringify(fieldArr)
+                    })
+                  }
+                })
                 // 查看邀请新人场地、批量删除后批量新建
+                platformActivityInviteFieldNewList({
+                  filters: {
+                    act_inv_newuser_rec_field: {
+                      platformActivityId: {
+                        equalTo: res.info.id
+                      }
+                    }
+                  },
+                }).then(resList => {
+                  const deleFieldNewArr = []
+                  if (resList.info.result.length > 0) {
+                    resList.info.result.forEach((item, index) => {
+                      deleFieldNewArr.push(item.id)
+                    })
+                    const deleteFieldNewParams = {
+                      ids: JSON.stringify(deleFieldNewArr)
+                    }
+                    platformActivityInviteFieldNewDeleteArr(deleteFieldNewParams).then(resp => {
+                      const fieldArr = []
+                      if (self.twoPartForm.recommendField1.field) {
+                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      if (self.twoPartForm.recommendField2.field) {
+                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      if (self.twoPartForm.recommendField3.field) {
+                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                      }
+                      platformActivityInviteFieldNewAddArr({
+                        params: JSON.stringify(fieldArr)
+                      })
+                    })
+                  } else {
+                    const fieldArr = []
+                    if (self.twoPartForm.recommendField1.field) {
+                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    if (self.twoPartForm.recommendField2.field) {
+                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    if (self.twoPartForm.recommendField3.field) {
+                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                    }
+                    platformActivityInviteFieldNewAddArr({
+                      params: JSON.stringify(fieldArr)
+                    })
+                  }
+                })
               })
             } else {
               // console.log('新增的确定按钮')
@@ -1130,7 +1224,33 @@
                   params: JSON.stringify(createNewArr)
                 })
                 // 新建邀请有礼场地
+                const fieldArr = []
+                if (self.onePartForm.recommendField1.field) {
+                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                if (self.onePartForm.recommendField2.field) {
+                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                if (self.onePartForm.recommendField3.field) {
+                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                platformActivityInviteFieldAddArr({
+                  params: JSON.stringify(fieldArr)
+                })
                 // 新建邀请新人场地
+                const fieldNewArr = []
+                if (self.twoPartForm.recommendField1.field) {
+                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                if (self.twoPartForm.recommendField2.field) {
+                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                if (self.twoPartForm.recommendField3.field) {
+                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
+                }
+                platformActivityInviteFieldNewAddArr({
+                  params: JSON.stringify(fieldNewArr)
+                })
               })
             }
           } else {
@@ -1192,6 +1312,7 @@
           self.$set(self.twoPartForm, 'title', JSON.parse(res.data.info.result[0].properties).title)
           self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.data.info.result[0].properties).newuser_banner)
           self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.data.info.result[0].properties).newuser_adv_banner)
+          // 查询邀请有礼卡券信息
           platformActivityInviteCardList({
             filters: {
               act_inv_coupon: {
@@ -1210,6 +1331,7 @@
             }
             self.$set(self.onePartForm, 'inviteCard', oneCard)
           })
+          // 查询邀请新人卡券信息
           platformActivityInviteCardNewList({
             filters: {
               act_inv_newuser_coupon: {
@@ -1227,6 +1349,82 @@
               })
             }
             self.$set(self.twoPartForm, 'inviteCard', twoCard)
+          })
+          // 查询邀请有礼场地信息
+          platformActivityInviteFieldList({
+            filters: {
+              act_inv_rec_field: {
+                platformActivityId: {
+                  equalTo: res.data.info.result[0].id
+                }
+              }
+            },
+            includes: {
+              platform_field: {
+                includes: ['platformFieldId']
+              }
+            }
+          }).then(resList => {
+            if (resList.info.length === 1) {
+              self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+            } else if (resList.info.length === 2) {
+              self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              self.$set(self.onePartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+            } else if (resList.info.length === 3) {
+              self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              self.$set(self.onePartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+              self.$set(self.onePartForm.recommendField3, 'stroe', resList.info[2].includes.platform_field.spaceId)
+              self.$set(self.onePartForm.recommendField3, 'space', resList.info[2].includes.platform_field.storeId)
+              self.$set(self.onePartForm.recommendField3, 'field', resList.info[2].includes.platform_field.id)
+            }
+          })
+          // 查询邀请新人场地信息
+          platformActivityInviteFieldNewList({
+            filters: {
+              act_inv_newuser_rec_field: {
+                platformActivityId: {
+                  equalTo: res.data.info.result[0].id
+                }
+              }
+            },
+            includes: {
+              platform_field: {
+                includes: ['platFieldId']
+              }
+            }
+          }).then(resList => {
+            if (resList.info.length === 1) {
+              self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+            } else if (resList.info.length === 2) {
+              self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              self.$set(self.twoPartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+            } else if (resList.info.length === 3) {
+              self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              self.$set(self.twoPartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+              self.$set(self.twoPartForm.recommendField3, 'stroe', resList.info[2].includes.platform_field.spaceId)
+              self.$set(self.twoPartForm.recommendField3, 'space', resList.info[2].includes.platform_field.storeId)
+              self.$set(self.twoPartForm.recommendField3, 'field', resList.info[2].includes.platform_field.id)
+            }
           })
         })
       }

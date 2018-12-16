@@ -154,27 +154,33 @@ export const platformActivityStatistics = (obj) => fetch(API_PATH_HM + '/statist
 // 展示被邀请人名单
 export const platformActivityActInvRecordList = (obj) => fetch(API_PATH_HM + '/act_inv_records', obj, 'GET')
 
-// 卡券添加、删除、查询、批量删除、批量创建
+// 邀请有礼卡券添加、删除、查询、批量删除、批量创建
 export const platformActivityInviteCardAdd = (obj) => fetch(API_PATH_HM + '/act_inv_coupons/new', obj, 'POST')
 export const platformActivityInviteCardDelete = (obj) => fetch(API_PATH_HM + '/act_inv_coupons/' + obj + '/delete', '', 'POST')
 export const platformActivityInviteCardList = (obj) => fetch(API_PATH_HM + '/act_inv_coupons', obj, 'GET')
 export const platformActivityInviteCardDeleteArr = (obj) => fetch(API_PATH_HM + '/act_inv_coupons/delete/batch', obj, 'POST')
 export const platformActivityInviteCardAddArr = (obj) => fetch(API_PATH_HM + '/act_inv_coupons/create/batch', obj, 'POST')
 
-// 新人卡券添加、删除、查询、批量删除、批量创建
+// 邀请新人卡券添加、删除、查询、批量删除、批量创建
 export const platformActivityInviteCardNewAdd = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_coupons/new', obj, 'POST')
 export const platformActivityInviteCardNewDelete = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_coupons/' + obj + '/delete', '', 'POST')
 export const platformActivityInviteCardNewList = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_coupons', obj, 'GET')
 export const platformActivityInviteCardNewDeleteArr = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_coupons/delete/batch', obj, 'POST')
 export const platformActivityInviteCardNewAddArr = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_coupons/create/batch', obj, 'POST')
 
-// 场地添加、删除
+// 邀请有礼场地添加、删除、查询、批量创建、批量删除
 export const platformActivityInviteFieldAdd = (obj) => fetch(API_PATH_HM + '/act_inv_rec_fields/new', obj, 'POST')
 export const platformActivityInviteFieldDelete = (obj) => fetch(API_PATH_HM + '/act_inv_rec_fields/' + obj + '/delete', '', 'POST')
+export const platformActivityInviteFieldList = (obj) => fetch(API_PATH_HM + '/act_inv_rec_fields', obj, 'GET')
+export const platformActivityInviteFieldAddArr = (obj) => fetch(API_PATH_HM + '/act_inv_rec_fields/create/batch', obj, 'POST')
+export const platformActivityInviteFieldDeleteArr = (obj) => fetch(API_PATH_HM + '/act_inv_rec_fields/delete/batch', obj, 'POST')
 
-// 新人场地添加、删除
+// 邀请新人场地添加、删除、查询、批量创建、批量删除
 export const platformActivityInviteFieldNewAdd = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/new', obj, 'POST')
 export const platformActivityInviteFieldNewDelete = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/' + obj + '/delete', '', 'POST')
+export const platformActivityInviteFieldNewList = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields', obj, 'GET')
+export const platformActivityInviteFieldNewAddArr = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/create/batch', obj, 'POST')
+export const platformActivityInviteFieldNewDeleteArr = (obj) => fetch(API_PATH_HM + '/act_inv_newuser_rec_fields/delete/batch', obj, 'POST')
 
 // 查看品牌、空间、场地
 export const stroeList = (obj) => fetch(API_PATH + '/app/wx/platformField/selectionSpaceList', obj, 'GET')
