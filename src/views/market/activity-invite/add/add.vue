@@ -865,12 +865,12 @@
               if (self.activityTab === 1) {
                 if (self.onePartForm.inviteCard.length === 0) {
                   self.selectedCoupons = []
-                  const setInterval = setInterval(function() {
-                    if (self.choiceCoupon = true) {
-                      clearInterval(setInterval)
+                  const setInterval1 = setInterval(function() {
+                    if (self.choiceCoupon === true) {
+                      clearInterval(setInterval1)
                       self.removeSelected()
                     }
-                  },100)
+                  }, 100)
                 } else {
                   self.submitData = self.onePartForm.inviteCard
                   setTimeout(function () {
@@ -884,12 +884,12 @@
               } else if (self.activityTab === 2) {
                 if (self.twoPartForm.inviteCard.length === 0) {
                   self.selectedCoupons = []
-                  const setInterval = setInterval(function() {
-                    if (self.choiceCoupon = true) {
-                      clearInterval(setInterval)
+                  const setInterval2 = setInterval(function() {
+                    if (self.choiceCoupon === true) {
+                      clearInterval(setInterval2)
                       self.removeSelected()
                     }
-                  },100)
+                  }, 100)
                 } else {
                   self.submitData = self.twoPartForm.inviteCard
                   setTimeout(function () {
@@ -1143,7 +1143,7 @@
         let newCard = new Promise(function(resolve) {
           const createArr = []
           self.onePartForm.inviteCard.forEach((item, index) => {
-            createArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+            createArr.push({ 'platCouponId': item, 'platformActivityId': id, 'isDelete': 1 })
           })
           platformActivityInviteCardAddArr({
             params: JSON.stringify(createArr)
@@ -1161,7 +1161,7 @@
         let newCardNew = new Promise(function(resolve) {
           const createNewArr = []
           self.twoPartForm.inviteCard.forEach((item, index) => {
-            createNewArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+            createNewArr.push({ 'platCouponId': item, 'platformActivityId': id, 'isDelete': 1 })
           })
           platformActivityInviteCardNewAddArr({
             params: JSON.stringify(createNewArr)
@@ -1307,7 +1307,7 @@
             platformActivityInviteCardNewDeleteArr(deleteNewParams).then(resp => {
               const createNewArr = []
               self.twoPartForm.inviteCard.forEach((item, index) => {
-                createNewArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+                createNewArr.push({ 'platCouponId': item, 'platformActivityId': id, 'isDelete': 1 })
               })
               platformActivityInviteCardNewAddArr({
                 params: JSON.stringify(createNewArr)
@@ -1332,7 +1332,7 @@
                   equalTo: id
                 }
               }
-            },
+            }
           }).then(resList => {
             const deleFieldArr = []
             if (resList.info.result.length > 0) {
@@ -1417,7 +1417,7 @@
                   equalTo: id
                 }
               }
-            },
+            }
           }).then(resList => {
             const deleFieldNewArr = []
             if (resList.info.result.length > 0) {

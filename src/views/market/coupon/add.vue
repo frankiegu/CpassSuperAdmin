@@ -28,6 +28,7 @@
               end-placeholder="结束日期"
               :picker-options="pickerOptions"
               v-model="couponForm.expireDate"
+              @change="expireDateChange"
               :default-time="['00:00:00', '23:59:59']"
               type="datetimerange">
             </el-date-picker>
@@ -572,6 +573,11 @@
     },
 
     methods: {
+      expireDateChange() {
+        if (this.couponForm.useDate) {
+          this.$refs.couponForm.validateField('useDate')
+        }
+      },
       // 切换卡券类型重置数据
       changeType() {
         this.selectedRange = []
