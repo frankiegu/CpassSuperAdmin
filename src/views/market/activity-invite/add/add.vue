@@ -328,8 +328,7 @@
   import { quillEditor } from 'vue-quill-editor'
   import { API_PATH } from '@/config/env'
   import { platformActivityInviteAdd, platformActivityInviteList, platformActivityInviteEdit, findUsableCoupons,
-    platformActivityInviteCardAdd, platformActivityInviteCardDelete, platformActivityInviteCardList,
-    platformActivityInviteCardNewAdd, platformActivityInviteCardNewDelete, platformActivityInviteCardNewList,
+    platformActivityInviteCardList, platformActivityInviteCardNewList,
     platformActivityInviteCardAddArr, platformActivityInviteCardDeleteArr,
     platformActivityInviteCardNewAddArr, platformActivityInviteCardNewDeleteArr,
     platformActivityInviteFieldAddArr, platformActivityInviteFieldNewAddArr,

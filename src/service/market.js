@@ -139,7 +139,7 @@ export const platformActivityEdit = (obj) => fetch(API_PATH + '/supervisor/platf
 
 // 展示邀请有礼列表展示、删除、编辑、添加
 export const platformActivityInviteList = (obj) => fetch(API_PATH_HM + '/platform_activities', obj, 'GET', 'all')
-export const platformActivityInviteDelete = (obj) => fetch(API_PATH_HM + '/platform_activities/' + obj + '/delete', '', 'POST')
+export const platformActivityInviteDelete = (obj) => fetch(API_PATH_HM + '/deleteActivitys', obj, 'POST')
 export const platformActivityInviteEdit = (obj, id) => fetch(API_PATH_HM + '/platform_activities/' + id + '/edit', obj, 'POST')
 export const platformActivityInviteAdd = (obj) => fetch(API_PATH_HM + '/platform_activities/new', obj, 'POST')
 
