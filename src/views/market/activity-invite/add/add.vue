@@ -752,12 +752,15 @@
        */
       uploadGrantImg1(response) {
         this.onePartForm.grantImg1 = response.info.path
+        this.$refs.onePartForm.validateField('grant')
       },
       uploadGrantImg2(response) {
         this.onePartForm.grantImg2 = response.info.path
+        this.$refs.onePartForm.validateField('grant')
       },
       uploadGrantImg3(response) {
         this.onePartForm.grantImg3 = response.info.path
+        this.$refs.onePartForm.validateField('grant')
       },
       uploadBestImg(response) {
         this.onePartForm.bestPrizeImg = response.info.path
