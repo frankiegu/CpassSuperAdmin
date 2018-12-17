@@ -406,6 +406,9 @@
           } else if (!this.onePartForm.grantNum1) {
             callback(new Error('请输入奖品1的数量'));
             isShow = false
+          } else if (this.onePartForm.grantNum1 && !reg.test(this.onePartForm.grantNum1)) {
+            callback(new Error('仅支持输入数字'));
+            isShow = false
           } else if (!this.onePartForm.grantImg1) {
             callback(new Error('请上传奖品1的图片'));
             isShow = false
@@ -420,6 +423,9 @@
           } else if (!this.onePartForm.grantNum2) {
             callback(new Error('请输入奖品2的数量'));
             isShow = false
+          } else if (this.onePartForm.grantNum2 && !reg.test(this.onePartForm.grantNum2)) {
+            callback(new Error('仅支持输入数字'));
+            isShow = false
           } else if (!this.onePartForm.grantImg2) {
             callback(new Error('请上传奖品2的图片'));
             isShow = false
@@ -433,6 +439,9 @@
             isShow = false
           } else if (!this.onePartForm.grantNum3) {
             callback(new Error('请输入奖品3的数量'));
+            isShow = false
+          } else if (this.onePartForm.grantNum3 && !reg.test(this.onePartForm.grantNum3)) {
+            callback(new Error('仅支持输入数字'));
             isShow = false
           } else if (!this.onePartForm.grantImg3) {
             callback(new Error('请上传奖品3的图片'));
@@ -1043,163 +1052,37 @@
             if (self.addEditType) {
               // console.log('编辑的确定按钮')
               platformActivityInviteEdit(this.submitObject, self.activityId).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '修改成功!'
-                });
+                let q = []
                 // 查看邀请有礼卡券信息、批量删除后批量新建
-                platformActivityInviteCardList({
-                  filters: {
-                    act_inv_coupon: {
-                      platformActivityId: {
-                        equalTo: res.info.id
-                      }
-                    }
-                  },
-                  page_size: 1000
-                }).then(resList => {
-                  const deleArr = []
-                  resList.info.result.forEach((item, index) => {
-                    deleArr.push(item.id)
+                q.push(new Promise(function(resolve) {
+                  self.editCard(res.info.id).then(function (resp) {
+                    resolve(resp)
                   })
-                  const deleteParams = {
-                    ids: JSON.stringify(deleArr)
-                  }
-                  platformActivityInviteCardDeleteArr(deleteParams).then(resp => {
-                    const createArr = []
-                    self.onePartForm.inviteCard.forEach((item, index) => {
-                      createArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    })
-                    platformActivityInviteCardAddArr({
-                      params: JSON.stringify(createArr)
-                    })
-                  })
-                })
+                }))
                 // 查看邀请新人卡券信息、批量删除后批量新建
-                platformActivityInviteCardNewList({
-                  filters: {
-                    act_inv_newuser_coupon: {
-                      platformActivityId: {
-                        equalTo: res.info.id
-                      }
-                    }
-                  },
-                  page_size: 1000
-                }).then(resList => {
-                  const deleNewArr = []
-                  resList.info.result.forEach((item, index) => {
-                    deleNewArr.push(item.id)
+                q.push(new Promise(function(resolve) {
+                  self.editCardNew(res.info.id).then(function (resp) {
+                    resolve(resp)
                   })
-                  const deleteNewParams = {
-                    ids: JSON.stringify(deleNewArr)
-                  }
-                  platformActivityInviteCardNewDeleteArr(deleteNewParams).then(resp => {
-                    const createNewArr = []
-                    self.twoPartForm.inviteCard.forEach((item, index) => {
-                      createNewArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    })
-                    platformActivityInviteCardNewAddArr({
-                      params: JSON.stringify(createNewArr)
-                    })
-                  })
-                })
+                }))
                 // 查看邀请有礼场地、批量删除后批量新建
-                platformActivityInviteFieldList({
-                  filters: {
-                    act_inv_rec_field: {
-                      platformActivityId: {
-                        equalTo: res.info.id
-                      }
-                    }
-                  },
-                }).then(resList => {
-                  const deleFieldArr = []
-                  if (resList.info.result.length > 0) {
-                    resList.info.result.forEach((item, index) => {
-                      deleFieldArr.push(item.id)
-                    })
-                    const deleteFieldParams = {
-                      ids: JSON.stringify(deleFieldArr)
-                    }
-                    platformActivityInviteFieldDeleteArr(deleteFieldParams).then(resp => {
-                      const fieldArr = []
-                      if (self.onePartForm.recommendField1.field) {
-                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      if (self.onePartForm.recommendField2.field) {
-                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      if (self.onePartForm.recommendField3.field) {
-                        fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      platformActivityInviteFieldAddArr({
-                        params: JSON.stringify(fieldArr)
-                      })
-                    })
-                  } else {
-                    const fieldArr = []
-                    if (self.onePartForm.recommendField1.field) {
-                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    if (self.onePartForm.recommendField2.field) {
-                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    if (self.onePartForm.recommendField3.field) {
-                      fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    platformActivityInviteFieldAddArr({
-                      params: JSON.stringify(fieldArr)
-                    })
-                  }
-                })
+                q.push(new Promise(function(resolve) {
+                  self.editField(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
                 // 查看邀请新人场地、批量删除后批量新建
-                platformActivityInviteFieldNewList({
-                  filters: {
-                    act_inv_newuser_rec_field: {
-                      platformActivityId: {
-                        equalTo: res.info.id
-                      }
-                    }
-                  },
-                }).then(resList => {
-                  const deleFieldNewArr = []
-                  if (resList.info.result.length > 0) {
-                    resList.info.result.forEach((item, index) => {
-                      deleFieldNewArr.push(item.id)
-                    })
-                    const deleteFieldNewParams = {
-                      ids: JSON.stringify(deleFieldNewArr)
-                    }
-                    platformActivityInviteFieldNewDeleteArr(deleteFieldNewParams).then(resp => {
-                      const fieldArr = []
-                      if (self.twoPartForm.recommendField1.field) {
-                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      if (self.twoPartForm.recommendField2.field) {
-                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      if (self.twoPartForm.recommendField3.field) {
-                        fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                      }
-                      platformActivityInviteFieldNewAddArr({
-                        params: JSON.stringify(fieldArr)
-                      })
-                    })
-                  } else {
-                    const fieldArr = []
-                    if (self.twoPartForm.recommendField1.field) {
-                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    if (self.twoPartForm.recommendField2.field) {
-                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    if (self.twoPartForm.recommendField3.field) {
-                      fieldArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                    }
-                    platformActivityInviteFieldNewAddArr({
-                      params: JSON.stringify(fieldArr)
-                    })
-                  }
+                q.push(new Promise(function(resolve) {
+                  self.editFieldNew(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
+                Promise.all(q).then(function () {
+                  self.$message({
+                    type: 'success',
+                    message: '修改成功!'
+                  });
+                  self.$router.push('/activityInvite')
                 })
               })
             } else {
@@ -1209,49 +1092,37 @@
                   type: 'success',
                   message: '保存成功!'
                 });
+                let q = []
                 // 新建邀请有礼卡券
-                const createArr = []
-                self.onePartForm.inviteCard.forEach((item, index) => {
-                  createArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                })
-                platformActivityInviteCardAddArr({
-                  params: JSON.stringify(createArr)
-                })
+                q.push(new Promise(function(resolve) {
+                  self.newCard(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
                 // 新建邀请新人卡券
-                const createNewArr = []
-                self.twoPartForm.inviteCard.forEach((item, index) => {
-                  createNewArr.push({ 'platCouponId': item, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                })
-                platformActivityInviteCardNewAddArr({
-                  params: JSON.stringify(createNewArr)
-                })
+                q.push(new Promise(function(resolve) {
+                  self.newCardNew(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
                 // 新建邀请有礼场地
-                const fieldArr = []
-                if (self.onePartForm.recommendField1.field) {
-                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                if (self.onePartForm.recommendField2.field) {
-                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                if (self.onePartForm.recommendField3.field) {
-                  fieldArr.push({ 'platformFieldId': self.onePartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                platformActivityInviteFieldAddArr({
-                  params: JSON.stringify(fieldArr)
-                })
+                q.push(new Promise(function(resolve) {
+                  self.newField(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
                 // 新建邀请新人场地
-                const fieldNewArr = []
-                if (self.twoPartForm.recommendField1.field) {
-                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField1.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                if (self.twoPartForm.recommendField2.field) {
-                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField2.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                if (self.twoPartForm.recommendField3.field) {
-                  fieldNewArr.push({ 'platFieldId': self.twoPartForm.recommendField3.field, 'platformActivityId': res.info.id, 'isDelete': 1 })
-                }
-                platformActivityInviteFieldNewAddArr({
-                  params: JSON.stringify(fieldNewArr)
+                q.push(new Promise(function(resolve) {
+                  self.newFieldNew(res.info.id).then(function (resp) {
+                    resolve(resp)
+                  })
+                }))
+                Promise.all(q).then(function () {
+                  self.$message({
+                    type: 'success',
+                    message: '新建成功!'
+                  });
+                  self.$router.push('/activityInvite')
                 })
               })
             }
@@ -1263,6 +1134,360 @@
             return false
           }
         });
+      },
+      /**
+       * 新建：邀请有礼卡券
+       */
+      newCard(id) {
+        const self = this
+        let newCard = new Promise(function(resolve) {
+          const createArr = []
+          self.onePartForm.inviteCard.forEach((item, index) => {
+            createArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+          })
+          platformActivityInviteCardAddArr({
+            params: JSON.stringify(createArr)
+          }).then(function (res) {
+            resolve(res)
+          })
+        })
+        return newCard
+      },
+      /**
+       * 新建：邀请新人卡券
+       */
+      newCardNew(id) {
+        const self = this
+        let newCardNew = new Promise(function(resolve) {
+          const createNewArr = []
+          self.twoPartForm.inviteCard.forEach((item, index) => {
+            createNewArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+          })
+          platformActivityInviteCardNewAddArr({
+            params: JSON.stringify(createNewArr)
+          }).then(function (res) {
+            resolve(res)
+          })
+        })
+        return newCardNew
+      },
+      /**
+       * 新建：邀请有礼场地
+       */
+      newField(id) {
+        const self = this
+        let newField = new Promise(function(resolve) {
+          const fieldArr = []
+          if (self.onePartForm.recommendField1.field) {
+            fieldArr.push({
+              'platformFieldId': self.onePartForm.recommendField1.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          if (self.onePartForm.recommendField2.field) {
+            fieldArr.push({
+              'platformFieldId': self.onePartForm.recommendField2.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          if (self.onePartForm.recommendField3.field) {
+            fieldArr.push({
+              'platformFieldId': self.onePartForm.recommendField3.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          platformActivityInviteFieldAddArr({
+            params: JSON.stringify(fieldArr)
+          }).then(function (res) {
+            resolve(res)
+          })
+        })
+        return newField
+      },
+      /**
+       * 新建：邀请新人场地
+       */
+      newFieldNew(id) {
+        const self = this
+        let newFieldNew = new Promise(function(resolve) {
+          const fieldNewArr = []
+          if (self.twoPartForm.recommendField1.field) {
+            fieldNewArr.push({
+              'platFieldId': self.twoPartForm.recommendField1.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          if (self.twoPartForm.recommendField2.field) {
+            fieldNewArr.push({
+              'platFieldId': self.twoPartForm.recommendField2.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          if (self.twoPartForm.recommendField3.field) {
+            fieldNewArr.push({
+              'platFieldId': self.twoPartForm.recommendField3.field,
+              'platformActivityId': id,
+              'isDelete': 1
+            })
+          }
+          platformActivityInviteFieldNewAddArr({
+            params: JSON.stringify(fieldNewArr)
+          }).then(function (res) {
+            resolve(res)
+          })
+        })
+        return newFieldNew
+      },
+      /**
+       * 编辑：查看邀请有礼卡券信息、批量删除后批量新建
+       */
+      editCard(id) {
+        const self = this
+        let editCard = new Promise(function(resolve) {
+          platformActivityInviteCardList({
+            filters: {
+              act_inv_coupon: {
+                platformActivityId: {
+                  equalTo: id
+                }
+              }
+            },
+            page_size: 1000
+          }).then(resList => {
+            const deleArr = []
+            resList.info.result.forEach((item, index) => {
+              deleArr.push(item.id)
+            })
+            const deleteParams = {
+              ids: JSON.stringify(deleArr)
+            }
+            platformActivityInviteCardDeleteArr(deleteParams).then(resp => {
+              const createArr = []
+              self.onePartForm.inviteCard.forEach((item, index) => {
+                createArr.push({ 'platCouponId': item, 'platformActivityId': id, 'isDelete': 1 })
+              })
+              platformActivityInviteCardAddArr({
+                params: JSON.stringify(createArr)
+              }).then(function (res) {
+                resolve(res)
+              })
+            })
+          })
+        })
+        return editCard
+      },
+      /**
+       * 编辑：查看邀请新人卡券信息、批量删除后批量新建
+       */
+      editCardNew(id) {
+        const self = this
+        let editCardNew = new Promise(function(resolve) {
+          platformActivityInviteCardNewList({
+            filters: {
+              act_inv_newuser_coupon: {
+                platformActivityId: {
+                  equalTo: id
+                }
+              }
+            },
+            page_size: 1000
+          }).then(resList => {
+            const deleNewArr = []
+            resList.info.result.forEach((item, index) => {
+              deleNewArr.push(item.id)
+            })
+            const deleteNewParams = {
+              ids: JSON.stringify(deleNewArr)
+            }
+            platformActivityInviteCardNewDeleteArr(deleteNewParams).then(resp => {
+              const createNewArr = []
+              self.twoPartForm.inviteCard.forEach((item, index) => {
+                createNewArr.push({'platCouponId': item, 'platformActivityId': id, 'isDelete': 1})
+              })
+              platformActivityInviteCardNewAddArr({
+                params: JSON.stringify(createNewArr)
+              }).then(function (res) {
+                resolve(res)
+              })
+            })
+          })
+        })
+        return editCardNew
+      },
+      /**
+       * 编辑：查看邀请新人卡券信息、批量删除后批量新建
+       */
+      editField(id) {
+        const self = this
+        let editField = new Promise(function(resolve) {
+          platformActivityInviteFieldList({
+            filters: {
+              act_inv_rec_field: {
+                platformActivityId: {
+                  equalTo: id
+                }
+              }
+            },
+          }).then(resList => {
+            const deleFieldArr = []
+            if (resList.info.result.length > 0) {
+              resList.info.result.forEach((item, index) => {
+                deleFieldArr.push(item.id)
+              })
+              const deleteFieldParams = {
+                ids: JSON.stringify(deleFieldArr)
+              }
+              platformActivityInviteFieldDeleteArr(deleteFieldParams).then(resp => {
+                const fieldArr = []
+                if (self.onePartForm.recommendField1.field) {
+                  fieldArr.push({
+                    'platformFieldId': self.onePartForm.recommendField1.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                if (self.onePartForm.recommendField2.field) {
+                  fieldArr.push({
+                    'platformFieldId': self.onePartForm.recommendField2.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                if (self.onePartForm.recommendField3.field) {
+                  fieldArr.push({
+                    'platformFieldId': self.onePartForm.recommendField3.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                platformActivityInviteFieldAddArr({
+                  params: JSON.stringify(fieldArr)
+                }).then(function (res) {
+                  resolve(res)
+                })
+              })
+            } else {
+              const fieldArr = []
+              if (self.onePartForm.recommendField1.field) {
+                fieldArr.push({
+                  'platformFieldId': self.onePartForm.recommendField1.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              if (self.onePartForm.recommendField2.field) {
+                fieldArr.push({
+                  'platformFieldId': self.onePartForm.recommendField2.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              if (self.onePartForm.recommendField3.field) {
+                fieldArr.push({
+                  'platformFieldId': self.onePartForm.recommendField3.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              platformActivityInviteFieldAddArr({
+                params: JSON.stringify(fieldArr)
+              }).then(function (res) {
+                resolve(res)
+              })
+            }
+          })
+        })
+        return editField
+      },
+      /**
+       * 编辑：查看邀请新人卡券信息、批量删除后批量新建
+       */
+      editFieldNew(id) {
+        const self = this
+        let editFieldNew = new Promise(function(resolve) {
+          platformActivityInviteFieldNewList({
+            filters: {
+              act_inv_newuser_rec_field: {
+                platformActivityId: {
+                  equalTo: id
+                }
+              }
+            },
+          }).then(resList => {
+            const deleFieldNewArr = []
+            if (resList.info.result.length > 0) {
+              resList.info.result.forEach((item, index) => {
+                deleFieldNewArr.push(item.id)
+              })
+              const deleteFieldNewParams = {
+                ids: JSON.stringify(deleFieldNewArr)
+              }
+              platformActivityInviteFieldNewDeleteArr(deleteFieldNewParams).then(resp => {
+                const fieldArr = []
+                if (self.twoPartForm.recommendField1.field) {
+                  fieldArr.push({
+                    'platFieldId': self.twoPartForm.recommendField1.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                if (self.twoPartForm.recommendField2.field) {
+                  fieldArr.push({
+                    'platFieldId': self.twoPartForm.recommendField2.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                if (self.twoPartForm.recommendField3.field) {
+                  fieldArr.push({
+                    'platFieldId': self.twoPartForm.recommendField3.field,
+                    'platformActivityId': id,
+                    'isDelete': 1
+                  })
+                }
+                platformActivityInviteFieldNewAddArr({
+                  params: JSON.stringify(fieldArr)
+                }).then(function (res) {
+                  resolve(res)
+                })
+              })
+            } else {
+              const fieldArr = []
+              if (self.twoPartForm.recommendField1.field) {
+                fieldArr.push({
+                  'platFieldId': self.twoPartForm.recommendField1.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              if (self.twoPartForm.recommendField2.field) {
+                fieldArr.push({
+                  'platFieldId': self.twoPartForm.recommendField2.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              if (self.twoPartForm.recommendField3.field) {
+                fieldArr.push({
+                  'platFieldId': self.twoPartForm.recommendField3.field,
+                  'platformActivityId': id,
+                  'isDelete': 1
+                })
+              }
+              platformActivityInviteFieldNewAddArr({
+                params: JSON.stringify(fieldArr)
+              }).then(function (res) {
+                resolve(res)
+              })
+            }
+          })
+        })
+        return editFieldNew
       },
       /**
        * 点击tab页，切换步骤
