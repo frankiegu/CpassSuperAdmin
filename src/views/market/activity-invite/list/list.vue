@@ -343,8 +343,8 @@
                 console.log(res.data.info.result[i].name, '未开始')
                 res.data.info.result[i].isDelete = 'will'
               }
-              this.configData[i].stageName = '阶段' + res.data.info.result[i].id
               this.configData[i].properties = JSON.parse(res.data.info.result[i].properties)
+              this.configData[i].stageName = '阶段' + this.configData[i].properties.stage_id
               platformActivityInviteCardNewList({
                 filters: {
                   act_inv_newuser_coupon: {

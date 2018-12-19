@@ -286,6 +286,7 @@
 
         <el-button
           @click="sure('twoPartForm')"
+          :disabled="status === 'ing'"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
@@ -294,7 +295,7 @@
         <el-form-item label="获奖图片" label-width="120px">
           <lh-upload
             :imgUrl="threePartForm.winImg" class="fl"
-            :disabled="status === 'ing' || status === 'will'"
+            :disabled="status !== 'ed'"
             @uploadImg="showWinImg"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowWinImg = true"></i>
           <div v-if="isShowWinImg">
@@ -305,7 +306,7 @@
 
         <el-button
           @click="sure('threePartForm')"
-          :disabled="status === 'ing' || status === 'will'"
+          :disabled="status !== 'ed'"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
@@ -602,10 +603,10 @@
           inviteCard: [{ required: true, trigger: [], validator: twoPartFormRuleInviteCard }]
         },
         towPartFormRule: {
-          title: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
-          inviteCard: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleInviteCard }],
-          actBanner: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleActBanner }],
-          advBanner: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleAdvBanner }]
+          title: [{ required: true, trigger: [], validator: onePartFormRuleName }],
+          inviteCard: [{ required: true, trigger: [], validator: twoPartFormRuleInviteCard }],
+          actBanner: [{ required: true, trigger: [], validator: twoPartFormRuleActBanner }],
+          advBanner: [{ required: true, trigger: [], validator: twoPartFormRuleAdvBanner }]
         },
         headers: {
           token: sessionStorage.getItem('token')
@@ -704,7 +705,8 @@
         isShowWinImg: false, // 是否展示获奖图片的提示文字
         submitObject: {}, // "确定"按钮的参数对象
         currentCode: '', // 当前字段
-        list: [] // 用于限制阶段时间可选范围
+        list: [], // 用于限制阶段时间可选范围
+        thisStageId: '' // 记录上一个阶段id的值
       }
     },
     watch: {
@@ -743,6 +745,24 @@
               }
             }
           })
+        })
+        platformActivityInviteList({
+          filters: {
+            'platform_activity': {
+              'type': {
+                equalTo: 3
+              }
+            }
+          },
+          sort_item: 'created',
+          sort_order: 'desc'
+        }).then(res => {
+          console.log(JSON.parse(res.data.info.result[0].properties).stage_id)
+          if (JSON.parse(res.data.info.result[0].properties).stage_id) {
+            self.thisStageId = JSON.parse(res.data.info.result[0].properties).stage_id
+          } else {
+            self.thisStageId = 0
+          }
         })
       },
       /**
@@ -1108,6 +1128,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             const properties = {
+              stage_id: JSON.stringify(self.thisStageId * 1 + 1), // 本阶段id
               banner: self.onePartForm.topBanner, // 顶部banner
               rule: self.onePartForm.regulation, // 活动规则
               max_prize: self.onePartForm.winningMaxTime, // 最高奖励金额
