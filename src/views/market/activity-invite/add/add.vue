@@ -305,6 +305,7 @@
 
         <el-button
           @click="sure('threePartForm')"
+          :disabled="status === 'ing' || status === 'will'"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
