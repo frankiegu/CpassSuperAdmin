@@ -35,8 +35,8 @@
           </el-form-item>
 
           <el-form-item label="使用期限" prop="useDate">
-            <el-checkbox-group v-model="type" :max="1">
-              <el-checkbox style="display: block;" label="1" :key="1">
+            <el-radio-group v-model="type" @change="useDateChange">
+              <el-radio style="display: block;" label="1">
                 <el-date-picker
                   format="yyyy-MM-dd HH:mm:ss"
                   value-format="yyyy-MM-dd HH:mm:ss"
@@ -48,11 +48,11 @@
                   :default-time="['00:00:00', '23:59:59']"
                   type="datetimerange">
                 </el-date-picker>
-              </el-checkbox>
-              <el-checkbox style="margin-left: 0px;" label="2" :key="2">
+              </el-radio>
+              <el-radio style="margin-left: 0px;" label="2">
                 <span>领取后</span><el-input v-model="couponForm.vaild" style="margin-left: 10px;margin-right: 10px;width: 50px;"></el-input><span>天有效</span>
-              </el-checkbox>
-            </el-checkbox-group>
+              </el-radio>
+            </el-radio-group>
           </el-form-item>
 
           <el-form-item label="使用限制" prop="useLimit">
@@ -360,7 +360,6 @@
         if (this.type.length === 0) {
           return callback(new Error('请选择使用方式'))
         } else {
-          console.log(this.type)
           if (this.type[0] === '1') {
             if (!this.couponForm.useDate) {
               return callback(new Error('请选择使用时间'))
@@ -531,19 +530,6 @@
     watch: {
       filterText(val) {
         this.$refs.rangeTree.filter(val)
-      },
-      type(val) {
-        console.log(val)
-        if (val[0] !== '1') {
-          if (val[0] === '2') {
-            // this.couponForm.vaild = '1'
-            this.$set(this.couponForm, 'vaild', '1')
-          } else {
-            this.couponForm.useDate = []
-          }
-        } else if (val[0] !== '2') {
-          this.couponForm.vaild = ''
-        }
       }
     },
 
@@ -573,6 +559,14 @@
     },
 
     methods: {
+      useDateChange(data) {
+        if (data === '1') {
+          this.$set(this.couponForm, 'vaild', '')
+        } else if (data === '2') {
+          this.$set(this.couponForm, 'vaild', '1')
+          this.couponForm.useDate = []
+        }
+      },
       expireDateChange() {
         if (this.couponForm.useDate) {
           this.$refs.couponForm.validateField('useDate')

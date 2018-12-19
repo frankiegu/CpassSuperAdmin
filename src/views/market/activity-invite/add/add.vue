@@ -13,6 +13,7 @@
     <div class="lh-card-main lh-card-body">
       <h3 class="step-one-title" v-if="activityTab === 1">邀请有礼页配置</h3>
       <h3 class="step-one-title" v-if="activityTab === 2">新人活动页配置</h3>
+      <h3 class="step-one-title" v-if="activityTab === 3">获奖图片配置</h3>
       <!-- first step -->
       <el-form :model="onePartForm" :rules="onePartFormRule" v-if="activityTab === 1" ref="onePartForm">
         <el-form-item prop="name" label="标题" label-width="120px" class="mt40">
@@ -85,9 +86,9 @@
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{onePartForm.recommendField1.text}}</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{onePartForm.recommendField2.text}}</el-button>
+          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{onePartForm.recommendField3.text}}</el-button>
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
@@ -96,61 +97,91 @@
 
         <el-form-item prop="grant" label="加码好礼" label-width="120px">
           <el-row style="margin-bottom: 10px;">
-            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType1" style="width:125px;">
-              <el-option label="online" value="online"></el-option>
-              <el-option label="offline" value="offline"></el-option>
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType1" style="width:138px;">
+              <el-option label="线上发放" value="online"></el-option>
+              <el-option label="线下发放" value="offline"></el-option>
             </el-select>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName1" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum1" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
-            <el-upload name="file"
-                       :action="action"
-                       :disabled="status === 'ing' || status === 'ed'"
-                       accept="image/png, image/jpeg"
-                       :headers="headers"
-                       v-model="onePartForm.grantImg1"
-                       style="display: inline-block;"
-                       :on-success="uploadGrantImg1"
-                       :show-file-list="false">
-              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片1</el-button>
-            </el-upload>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName1" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum1" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
+            <!--<el-upload name="file"-->
+                       <!--:action="action"-->
+                       <!--:disabled="status === 'ing' || status === 'ed'"-->
+                       <!--accept="image/png, image/jpeg"-->
+                       <!--:headers="headers"-->
+                       <!--v-model="onePartForm.grantImg1"-->
+                       <!--style="display: inline-block;"-->
+                       <!--:on-success="uploadGrantImg1"-->
+                       <!--:show-file-list="false">-->
+              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片1</el-button>-->
+            <!--</el-upload>-->
           </el-row>
           <el-row style="margin-bottom: 10px;">
-            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType2" style="width:125px;">
-              <el-option label="online" value="online"></el-option>
-              <el-option label="offline" value="offline"></el-option>
+            <lh-upload :accept="'.jpg,png'"
+                       :imgUrl="onePartForm.grantImg1" class="fl" :disabled="status === 'ing' || status === 'ed'"
+                       @uploadImg="showGrantImg1"></lh-upload>
+            <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg1 = true"></i>
+            <div v-if="isShowGrantImg1">
+              <p>建议尺寸： 750 * 1206PX</p>
+              <p class="banner-format">支持格式： JPG / PNG</p>
+            </div>
+          </el-row>
+          <el-row style="margin-bottom: 10px;">
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType2" style="width:138px;">
+              <el-option label="线上发放" value="online"></el-option>
+              <el-option label="线下发放" value="offline"></el-option>
             </el-select>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName2" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum2" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
-            <el-upload name="file"
-                       :action="action"
-                       :disabled="status === 'ing' || status === 'ed'"
-                       accept="image/png, image/jpeg"
-                       :headers="headers"
-                       v-model="onePartForm.grantImg2"
-                       style="display: inline-block;"
-                       :on-success="uploadGrantImg2"
-                       :show-file-list="false">
-              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片2</el-button>
-            </el-upload>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName2" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum2" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
+            <!--<el-upload name="file"-->
+                       <!--:action="action"-->
+                       <!--:disabled="status === 'ing' || status === 'ed'"-->
+                       <!--accept="image/png, image/jpeg"-->
+                       <!--:headers="headers"-->
+                       <!--v-model="onePartForm.grantImg2"-->
+                       <!--style="display: inline-block;"-->
+                       <!--:on-success="uploadGrantImg2"-->
+                       <!--:show-file-list="false">-->
+              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片2</el-button>-->
+            <!--</el-upload>-->
+          </el-row>
+          <el-row style="margin-bottom: 10px;">
+            <lh-upload :accept="'.jpg,png'"
+                       :imgUrl="onePartForm.grantImg2" class="fl" :disabled="status === 'ing' || status === 'ed'"
+                       @uploadImg="showGrantImg2"></lh-upload>
+            <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg2 = true"></i>
+            <div v-if="isShowGrantImg2">
+              <p>建议尺寸： 750 * 1206PX</p>
+              <p class="banner-format">支持格式： JPG / PNG</p>
+            </div>
+          </el-row>
+          <el-row style="margin-bottom: 10px;">
+            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType3" style="width:138px;">
+              <el-option label="线上发放" value="online"></el-option>
+              <el-option label="线下发放" value="offline"></el-option>
+            </el-select>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName3" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum3" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
+            <!--<el-upload name="file"-->
+                       <!--:action="action"-->
+                       <!--:disabled="status === 'ing' || status === 'ed'"-->
+                       <!--accept="image/png, image/jpeg"-->
+                       <!--:headers="headers"-->
+                       <!--v-model="onePartForm.grantImg3"-->
+                       <!--style="display: inline-block;"-->
+                       <!--:on-success="uploadGrantImg3"-->
+                       <!--:show-file-list="false">-->
+              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片3</el-button>-->
+            <!--</el-upload>-->
           </el-row>
           <el-row>
-            <el-select :disabled="status === 'ing' || status === 'ed'" placeholder="选择发放方式" v-model="onePartForm.grantType3" style="width:125px;">
-              <el-option label="online" value="online"></el-option>
-              <el-option label="offline" value="offline"></el-option>
-            </el-select>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName3" class="activity-name" style="width: 105px;" :maxlength="10" placeholder="奖品名称"></el-input>
-            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum3" class="activity-name" style="width: 105px;" placeholder="数量展示"></el-input>
-            <el-upload name="file"
-                       :action="action"
-                       :disabled="status === 'ing' || status === 'ed'"
-                       accept="image/png, image/jpeg"
-                       :headers="headers"
-                       v-model="onePartForm.grantImg3"
-                       style="display: inline-block;"
-                       :on-success="uploadGrantImg3"
-                       :show-file-list="false">
-              <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片3</el-button>
-            </el-upload>
+            <lh-upload :accept="'.jpg,png'"
+                       :imgUrl="onePartForm.grantImg3" class="fl" :disabled="status === 'ing' || status === 'ed'"
+                       @uploadImg="showGrantImg3"></lh-upload>
+            <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg3 = true"></i>
+            <div v-if="isShowGrantImg3">
+              <p>建议尺寸： 750 * 1206PX</p>
+              <p class="banner-format">支持格式： JPG / PNG</p>
+            </div>
           </el-row>
         </el-form-item>
 
@@ -159,28 +190,40 @@
         </el-form-item>
 
         <el-form-item prop="bestPrize" label="终极大奖" label-width="120px">
-          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 125px;" :maxlength="10" placeholder="奖品名称"></el-input>
-          <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 125px;" placeholder="数量展示"></el-input>
-          <el-upload style="display: inline-block;"
-                     v-model="onePartForm.bestPrizeImg"
-                     :action="action"
-                     :disabled="status === 'ing' || status === 'ed'"
-                     accept="image/png, image/jpeg"
-                     :headers="headers"
-                     :on-success="uploadBestImg"
-                     :show-file-list="false">
-            <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">配图</el-button>
-          </el-upload>
-          <el-upload style="display: inline-block;"
-                     v-model="onePartForm.winImg"
-                     :action="action"
-                     :disabled="status === 'ing' || status === 'ed'"
-                     accept="image/png, image/jpeg"
-                     :headers="headers"
-                     :on-success="uploadWinImg"
-                     :show-file-list="false">
-            <el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">获奖图片</el-button>
-          </el-upload>
+          <el-row style="margin-bottom: 10px;">
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 210px;" :maxlength="10" placeholder="奖品名称"></el-input>
+            <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 210px;" placeholder="数量展示"></el-input>
+          </el-row>
+          <!--<el-upload style="display: inline-block;"-->
+                     <!--v-model="onePartForm.bestPrizeImg"-->
+                     <!--:action="action"-->
+                     <!--:disabled="status === 'ing' || status === 'ed'"-->
+                     <!--accept="image/png, image/jpeg"-->
+                     <!--:headers="headers"-->
+                     <!--:on-success="uploadBestImg"-->
+                     <!--:show-file-list="false">-->
+            <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">配图</el-button>-->
+          <!--</el-upload>-->
+          <el-row>
+            <lh-upload :accept="'.jpg,png'"
+                       :imgUrl="onePartForm.bestPrizeImg" class="fl" :disabled="status === 'ing' || status === 'ed'"
+                       @uploadImg="showBestPrizeImg"></lh-upload>
+            <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowBestPrizeImg = true"></i>
+            <div v-if="isShowBestPrizeImg">
+              <p>建议尺寸： 750 * 1206PX</p>
+              <p class="banner-format">支持格式： JPG / PNG</p>
+            </div>
+          </el-row>
+          <!--<el-upload style="display: inline-block;"-->
+                     <!--v-model="onePartForm.winImg"-->
+                     <!--:action="action"-->
+                     <!--:disabled="status === 'ing' || status === 'ed'"-->
+                     <!--accept="image/png, image/jpeg"-->
+                     <!--:headers="headers"-->
+                     <!--:on-success="uploadWinImg"-->
+                     <!--:show-file-list="false">-->
+            <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">获奖图片</el-button>-->
+          <!--</el-upload>-->
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
@@ -225,9 +268,9 @@
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">添加场地1</el-button>
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">添加场地2</el-button>
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">添加场地3</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{twoPartForm.recommendField1.text}}</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{twoPartForm.recommendField2.text}}</el-button>
+          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{twoPartForm.recommendField3.text}}</el-button>
         </el-form-item>
 
         <el-form-item prop="advBanner" label="广告banner" label-width="120px">
@@ -243,6 +286,25 @@
 
         <el-button
           @click="sure('twoPartForm')"
+          class="to-bottom-right width80px mt30"
+          type="primary">确认</el-button>
+      </el-form>
+      <el-form :model="threePartForm" v-if="activityTab === 3" ref="threePartForm">
+
+        <el-form-item label="获奖图片" label-width="120px">
+          <lh-upload
+            :imgUrl="threePartForm.winImg" class="fl"
+            :disabled="status === 'ing' || status === 'will'"
+            @uploadImg="showWinImg"></lh-upload>
+          <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowWinImg = true"></i>
+          <div v-if="isShowWinImg">
+            <p>建议尺寸： 750 * 1206PX</p>
+            <p class="banner-format">支持格式： JPG / PNG</p>
+          </div>
+        </el-form-item>
+
+        <el-button
+          @click="sure('threePartForm')"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
@@ -525,18 +587,18 @@
       };
       return {
         onePartFormRule: {
-          name: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
-          topBanner: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleTopBanner }],
-          regulation: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleRegulation }],
-          rangeActivityDate: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleRangeActivityDate }],
-          winningMaxTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningMaxTime }],
-          winningTime: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleWinningTime }],
-          grant: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleGrant }],
-          morePrizesLimit: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuLemorePrizesLimit }],
-          bestPrize: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleBestPrize }],
-          limitNum: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRuleLimitNum }],
-          payLimit: [{ required: false, trigger: ['blur', 'change'], validator: onePartFormRulePayLimit }],
-          inviteCard: [{ required: true, trigger: ['blur', 'change'], validator: twoPartFormRuleInviteCard }]
+          name: [{ required: true, trigger: [], validator: onePartFormRuleName }],
+          topBanner: [{ required: true, trigger: [], validator: onePartFormRuleTopBanner }],
+          regulation: [{ required: true, trigger: [], validator: onePartFormRuleRegulation }],
+          rangeActivityDate: [{ required: true, trigger: [], validator: onePartFormRuleRangeActivityDate }],
+          winningMaxTime: [{ required: true, trigger: [], validator: onePartFormRuleWinningMaxTime }],
+          winningTime: [{ required: true, trigger: [], validator: onePartFormRuleWinningTime }],
+          grant: [{ required: false, trigger: [], validator: onePartFormRuleGrant }],
+          morePrizesLimit: [{ required: false, trigger: [], validator: onePartFormRuLemorePrizesLimit }],
+          bestPrize: [{ required: false, trigger: [], validator: onePartFormRuleBestPrize }],
+          limitNum: [{ required: false, trigger: [], validator: onePartFormRuleLimitNum }],
+          payLimit: [{ required: false, trigger: [], validator: onePartFormRulePayLimit }],
+          inviteCard: [{ required: true, trigger: [], validator: twoPartFormRuleInviteCard }]
         },
         towPartFormRule: {
           title: [{ required: true, trigger: ['blur', 'change'], validator: onePartFormRuleName }],
@@ -552,7 +614,7 @@
         type: this.$route.query.type, // 页面类型  add || edit
         status: this.$route.query.status, // 该活动所处的状态   will:未开始   ing:正在进行   ed:已结束
         titleName: '', // 页面展示的title
-        tabList: ['① 邀请有礼页配置', '② 新人活动页配置'], // tab页显示文字
+        tabList: ['① 邀请有礼页配置', '② 新人活动页配置', '③ 获奖图片'], // tab页显示文字
         activityTab: 1, // 当前展示tab页
         addEditType: 0, // 0为新增  1为编辑
         orderSortDate: {}, // 日期选择范围
@@ -568,19 +630,32 @@
         onePartForm: {
           rangeActivityDate: [], // 阶段活动时间
           inviteCard: [], // 邀请新人的选择卡券
-          recommendField1: {}, // 推荐场地1
-          recommendField2: {}, // 推荐场地2
-          recommendField3: {}, // 推荐场地3
+          recommendField1: {
+            text: '添加场地'
+          }, // 推荐场地1
+          recommendField2: {
+            text: '添加场地'
+          }, // 推荐场地2
+          recommendField3: {
+            text: '添加场地'
+          }, // 推荐场地3
           showRankList: 'true',
           showMsg: 'true' //
         }, // 第一步的表单绑定的变量
         tabSwitch: false, // 是否可以展示第二步
         twoPartForm: {
           inviteCard: [], // 邀请新人的选择卡券
-          recommendField1: {}, // 推荐场地1
-          recommendField2: {}, // 推荐场地2
-          recommendField3: {} // 推荐场地3
+          recommendField1: {
+            text: '添加场地'
+          }, // 推荐场地1
+          recommendField2: {
+            text: '添加场地'
+          }, // 推荐场地2
+          recommendField3: {
+            text: '添加场地'
+          } // 推荐场地3
         }, // 第二步的表单绑定的变量
+        threePartForm: {}, // 第三步的表单绑定的变量
         isFieldAdd: false, // 是否展示添加场地弹窗
         stroeeData: [], // 所属品牌的下拉数据
         spaceData: [], // 所属空间的下拉数据
@@ -621,6 +696,11 @@
         isShowTopBanner: false, // 是否展示顶部banner的提示文字
         isShowActBanner: false, // 是否展示活动banner的提示文字
         isShowAdvBanner: false, // 是否展示广告banner的提示文字
+        isShowGrantImg1: false, // 是否展示加码好礼图片一的提示文字
+        isShowGrantImg2: false, // 是否展示加码好礼图片二的提示文字
+        isShowGrantImg3: false, // 是否展示加码好礼图片三的提示文字
+        isShowBestPrizeImg: false, // 是否展示终极大奖配图的提示文字
+        isShowWinImg: false, // 是否展示获奖图片的提示文字
         submitObject: {}, // "确定"按钮的参数对象
         currentCode: '', // 当前字段
         list: [] // 用于限制阶段时间可选范围
@@ -756,27 +836,42 @@
       showAdvBanner(val) { // 广告图片
         this.$set(this.twoPartForm, 'advBanner', val)
       },
+      showGrantImg1(val) {
+        this.$set(this.onePartForm, 'grantImg1', val)
+      },
+      showGrantImg2(val) {
+        this.$set(this.onePartForm, 'grantImg2', val)
+      },
+      showGrantImg3(val) {
+        this.$set(this.onePartForm, 'grantImg3', val)
+      },
+      showBestPrizeImg(val) {
+        this.$set(this.onePartForm, 'bestPrizeImg', val)
+      },
+      showWinImg(val) {
+        this.$set(this.threePartForm, 'winImg', val)
+      },
       /**
        * 上传图片之后的赋值
        */
-      uploadGrantImg1(response) {
-        this.onePartForm.grantImg1 = response.info.path
-        this.$refs.onePartForm.validateField('grant')
-      },
-      uploadGrantImg2(response) {
-        this.onePartForm.grantImg2 = response.info.path
-        this.$refs.onePartForm.validateField('grant')
-      },
-      uploadGrantImg3(response) {
-        this.onePartForm.grantImg3 = response.info.path
-        this.$refs.onePartForm.validateField('grant')
-      },
-      uploadBestImg(response) {
-        this.onePartForm.bestPrizeImg = response.info.path
-      },
-      uploadWinImg(response) {
-        this.onePartForm.winImg = response.info.path
-      },
+      // uploadGrantImg1(response) {
+      //   this.onePartForm.grantImg1 = response.info.path
+      //   this.$refs.onePartForm.validateField('grant')
+      // },
+      // uploadGrantImg2(response) {
+      //   this.onePartForm.grantImg2 = response.info.path
+      //   this.$refs.onePartForm.validateField('grant')
+      // },
+      // uploadGrantImg3(response) {
+      //   this.onePartForm.grantImg3 = response.info.path
+      //   this.$refs.onePartForm.validateField('grant')
+      // },
+      // uploadBestImg(response) {
+      //   this.onePartForm.bestPrizeImg = response.info.path
+      // },
+      // uploadWinImg(response) {
+      //   this.onePartForm.winImg = response.info.path
+      // },
       /**
        * 根据type确定title展示文字
        */
@@ -827,10 +922,20 @@
           this.onePartForm[this.currentCode].stroe = this.fieldAdd.stroe
           this.onePartForm[this.currentCode].space = this.fieldAdd.space
           this.onePartForm[this.currentCode].field = this.fieldAdd.field
+          if (this.fieldAdd.field !== '') {
+            this.onePartForm[this.currentCode].text = '已选场地'
+          } else {
+            this.onePartForm[this.currentCode].text = '添加场地'
+          }
         } else if (this.activityTab === 2) {
           this.twoPartForm[this.currentCode].stroe = this.fieldAdd.stroe
           this.twoPartForm[this.currentCode].space = this.fieldAdd.space
           this.twoPartForm[this.currentCode].field = this.fieldAdd.field
+          if (this.fieldAdd.field !== '') {
+            this.twoPartForm[this.currentCode].text = '已选场地'
+          } else {
+            this.onePartForm[this.currentCode].text = '添加场地'
+          }
         }
         this.isFieldAdd = false
       },
@@ -998,6 +1103,7 @@
         const self = this
         console.log(self.onePartForm)
         console.log(self.twoPartForm)
+        console.log(self.threePartForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             const properties = {
@@ -1031,7 +1137,7 @@
                 name: self.onePartForm.bestPrizeName,
                 num: self.onePartForm.bestPrizeMum, // 数量
                 img: self.onePartForm.bestPrizeImg, // 图片
-                win_img: self.onePartForm.winImg // 大奖获奖图片
+                win_img: self.threePartForm.winImg // 大奖获奖图片
               },
               show_rank_list: self.onePartForm.showRankList, // 显示排行榜,
               limit_num: self.onePartForm.limitNum, // 截止名次,
@@ -1532,7 +1638,7 @@
           self.$set(self.onePartForm, 'bestPrizeName', JSON.parse(res.data.info.result[0].properties).best_prize.name)
           self.$set(self.onePartForm, 'bestPrizeMum', JSON.parse(res.data.info.result[0].properties).best_prize.num)
           self.$set(self.onePartForm, 'bestPrizeImg', JSON.parse(res.data.info.result[0].properties).best_prize.img)
-          self.$set(self.onePartForm, 'winImg', JSON.parse(res.data.info.result[0].properties).best_prize.win_img)
+          self.$set(self.threePartForm, 'winImg', JSON.parse(res.data.info.result[0].properties).best_prize.win_img)
           self.$set(self.onePartForm, 'showRankList', JSON.parse(res.data.info.result[0].properties).show_rank_list)
           self.$set(self.onePartForm, 'limitNum', JSON.parse(res.data.info.result[0].properties).limit_num)
           self.$set(self.onePartForm, 'payLimit', JSON.parse(res.data.info.result[0].properties).pay_limit)

@@ -39,7 +39,7 @@
         <el-table :data="configData" :empty-text="tableEmptyOne" :slot="tableEmptyOne" border style="width: 100%">
 
           <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
-          <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
+          <el-table-column label="活动阶段名称" prop="stageName" align="left"></el-table-column>
           <el-table-column label="活动开始时间" prop="startDate" align="left"></el-table-column>
           <el-table-column label="活动结束时间" prop="endDate" align="left"></el-table-column>
           <el-table-column label="最高奖励金额" prop="properties.max_prize" align="left"></el-table-column>
@@ -249,7 +249,6 @@
         }).then(res => {
           console.log(res)
           if (res.info.result.length > 0) {
-            res.info.result[0].windowImg = val
             platformActivityInviteImgEdit({
               window_img: val
             }, res.info.result[0].id).then(res => {
@@ -344,6 +343,7 @@
                 console.log(res.data.info.result[i].name, '未开始')
                 res.data.info.result[i].isDelete = 'will'
               }
+              this.configData[i].stageName = '阶段' + res.data.info.result[i].id
               this.configData[i].properties = JSON.parse(res.data.info.result[i].properties)
               platformActivityInviteCardNewList({
                 filters: {

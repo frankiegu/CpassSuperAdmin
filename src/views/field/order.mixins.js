@@ -33,7 +33,7 @@ export default {
       },
       sortField: '', // 1-生成时间 2-预订时间 3-订单金额
       descOrAsc: '', // 排序方式 0-升序 1-降序
-      id: this.$route.query.id, // 邀请有礼活动数据统计跳转携带的参数id
+      id: this.$route.query.id // 邀请有礼活动数据统计跳转携带的参数id
     }
   },
   props: {},
