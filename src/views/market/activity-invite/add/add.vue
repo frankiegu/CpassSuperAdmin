@@ -758,10 +758,12 @@
           sort_order: 'desc'
         }).then(res => {
           console.log(JSON.parse(res.data.info.result[0].properties).stage_id)
-          if (JSON.parse(res.data.info.result[0].properties).stage_id) {
-            self.thisStageId = JSON.parse(res.data.info.result[0].properties).stage_id
-          } else {
-            self.thisStageId = 0
+          if (!self.addEditType) {
+            if (JSON.parse(res.data.info.result[0].properties).stage_id) {
+              self.thisStageId = JSON.parse(res.data.info.result[0].properties).stage_id
+            } else {
+              self.thisStageId = 0
+            }
           }
         })
       },
@@ -1127,57 +1129,57 @@
         console.log(self.threePartForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            const properties = {
-              stage_id: JSON.stringify(self.thisStageId * 1 + 1), // 本阶段id
-              banner: self.onePartForm.topBanner, // 顶部banner
-              rule: self.onePartForm.regulation, // 活动规则
-              max_prize: self.onePartForm.winningMaxTime, // 最高奖励金额
-              once_prize: self.onePartForm.winningTime, // 单次奖励
-              show_msg: self.onePartForm.showMsg, // 显示消息烂
-              more_prizes: [  // 加码好礼
-                {
-                  delivery_mothod: self.onePartForm.grantType1, // 发放方式,
-                  name: self.onePartForm.grantName1,
-                  num: self.onePartForm.grantNum1, // 数量,
-                  img: self.onePartForm.grantImg1 // 图片
-                },
-                {
-                  delivery_mothod: self.onePartForm.grantType2, // 发放方式,
-                  name: self.onePartForm.grantName2,
-                  num: self.onePartForm.grantNum2, // 数量,
-                  img: self.onePartForm.grantImg2 // 图片
-                },
-                {
-                  delivery_mothod: self.onePartForm.grantType3, // 发放方式,
-                  name: self.onePartForm.grantName3,
-                  num: self.onePartForm.grantNum3, // 数量,
-                  img: self.onePartForm.grantImg3 // 图片
-                }
-              ],
-              more_prizes_limit: self.onePartForm.morePrizesLimit,  // 加码好礼人数限制,
-              best_prize: {
-                name: self.onePartForm.bestPrizeName,
-                num: self.onePartForm.bestPrizeMum, // 数量
-                img: self.onePartForm.bestPrizeImg, // 图片
-                win_img: self.threePartForm.winImg // 大奖获奖图片
-              },
-              show_rank_list: self.onePartForm.showRankList, // 显示排行榜,
-              limit_num: self.onePartForm.limitNum, // 截止名次,
-              pay_limit: self.onePartForm.payLimit, // 实付金额限制,
-              title: self.twoPartForm.title, // 新人活动的标题
-              newuser_banner: self.twoPartForm.actBanner, // 新人活动banner,
-              newuser_adv_banner: self.twoPartForm.advBanner // 新人广告banner,
-            }
-            self.submitObject = {
-              name: self.onePartForm.name,
-              type: 3,
-              template: 1,
-              code: 31,
-              start_date: self.onePartForm.rangeActivityDate[0],
-              end_date: self.onePartForm.rangeActivityDate[1],
-              properties: JSON.stringify(properties)
-            }
             if (self.addEditType) {
+              const properties = {
+                stage_id: JSON.stringify(self.thisStageId * 1), // 本阶段id
+                banner: self.onePartForm.topBanner, // 顶部banner
+                rule: self.onePartForm.regulation, // 活动规则
+                max_prize: self.onePartForm.winningMaxTime, // 最高奖励金额
+                once_prize: self.onePartForm.winningTime, // 单次奖励
+                show_msg: self.onePartForm.showMsg, // 显示消息烂
+                more_prizes: [  // 加码好礼
+                  {
+                    delivery_mothod: self.onePartForm.grantType1, // 发放方式,
+                    name: self.onePartForm.grantName1,
+                    num: self.onePartForm.grantNum1, // 数量,
+                    img: self.onePartForm.grantImg1 // 图片
+                  },
+                  {
+                    delivery_mothod: self.onePartForm.grantType2, // 发放方式,
+                    name: self.onePartForm.grantName2,
+                    num: self.onePartForm.grantNum2, // 数量,
+                    img: self.onePartForm.grantImg2 // 图片
+                  },
+                  {
+                    delivery_mothod: self.onePartForm.grantType3, // 发放方式,
+                    name: self.onePartForm.grantName3,
+                    num: self.onePartForm.grantNum3, // 数量,
+                    img: self.onePartForm.grantImg3 // 图片
+                  }
+                ],
+                more_prizes_limit: self.onePartForm.morePrizesLimit,  // 加码好礼人数限制,
+                best_prize: {
+                  name: self.onePartForm.bestPrizeName,
+                  num: self.onePartForm.bestPrizeMum, // 数量
+                  img: self.onePartForm.bestPrizeImg, // 图片
+                  win_img: self.threePartForm.winImg // 大奖获奖图片
+                },
+                show_rank_list: self.onePartForm.showRankList, // 显示排行榜,
+                limit_num: self.onePartForm.limitNum, // 截止名次,
+                pay_limit: self.onePartForm.payLimit, // 实付金额限制,
+                title: self.twoPartForm.title, // 新人活动的标题
+                newuser_banner: self.twoPartForm.actBanner, // 新人活动banner,
+                newuser_adv_banner: self.twoPartForm.advBanner // 新人广告banner,
+              }
+              self.submitObject = {
+                name: self.onePartForm.name,
+                type: 3,
+                template: 1,
+                code: 31,
+                start_date: self.onePartForm.rangeActivityDate[0],
+                end_date: self.onePartForm.rangeActivityDate[1],
+                properties: JSON.stringify(properties)
+              }
               // console.log('编辑的确定按钮')
               platformActivityInviteEdit(this.submitObject, self.activityId).then(res => {
                 let q = []
@@ -1214,6 +1216,56 @@
                 })
               })
             } else {
+              const properties = {
+                stage_id: JSON.stringify(self.thisStageId * 1 + 1), // 本阶段id
+                banner: self.onePartForm.topBanner, // 顶部banner
+                rule: self.onePartForm.regulation, // 活动规则
+                max_prize: self.onePartForm.winningMaxTime, // 最高奖励金额
+                once_prize: self.onePartForm.winningTime, // 单次奖励
+                show_msg: self.onePartForm.showMsg, // 显示消息烂
+                more_prizes: [  // 加码好礼
+                  {
+                    delivery_mothod: self.onePartForm.grantType1, // 发放方式,
+                    name: self.onePartForm.grantName1,
+                    num: self.onePartForm.grantNum1, // 数量,
+                    img: self.onePartForm.grantImg1 // 图片
+                  },
+                  {
+                    delivery_mothod: self.onePartForm.grantType2, // 发放方式,
+                    name: self.onePartForm.grantName2,
+                    num: self.onePartForm.grantNum2, // 数量,
+                    img: self.onePartForm.grantImg2 // 图片
+                  },
+                  {
+                    delivery_mothod: self.onePartForm.grantType3, // 发放方式,
+                    name: self.onePartForm.grantName3,
+                    num: self.onePartForm.grantNum3, // 数量,
+                    img: self.onePartForm.grantImg3 // 图片
+                  }
+                ],
+                more_prizes_limit: self.onePartForm.morePrizesLimit,  // 加码好礼人数限制,
+                best_prize: {
+                  name: self.onePartForm.bestPrizeName,
+                  num: self.onePartForm.bestPrizeMum, // 数量
+                  img: self.onePartForm.bestPrizeImg, // 图片
+                  win_img: self.threePartForm.winImg // 大奖获奖图片
+                },
+                show_rank_list: self.onePartForm.showRankList, // 显示排行榜,
+                limit_num: self.onePartForm.limitNum, // 截止名次,
+                pay_limit: self.onePartForm.payLimit, // 实付金额限制,
+                title: self.twoPartForm.title, // 新人活动的标题
+                newuser_banner: self.twoPartForm.actBanner, // 新人活动banner,
+                newuser_adv_banner: self.twoPartForm.advBanner // 新人广告banner,
+              }
+              self.submitObject = {
+                name: self.onePartForm.name,
+                type: 3,
+                template: 1,
+                code: 31,
+                start_date: self.onePartForm.rangeActivityDate[0],
+                end_date: self.onePartForm.rangeActivityDate[1],
+                properties: JSON.stringify(properties)
+              }
               // console.log('新增的确定按钮')
               platformActivityInviteAdd(this.submitObject).then(res => {
                 this.$message({
@@ -1667,6 +1719,7 @@
           self.$set(self.twoPartForm, 'title', JSON.parse(res.data.info.result[0].properties).title)
           self.$set(self.twoPartForm, 'actBanner', JSON.parse(res.data.info.result[0].properties).newuser_banner)
           self.$set(self.twoPartForm, 'advBanner', JSON.parse(res.data.info.result[0].properties).newuser_adv_banner)
+          self.thisStageId = JSON.parse(res.data.info.result[0].properties).stage_id
           // 查询邀请有礼卡券信息
           platformActivityInviteCardList({
             filters: {

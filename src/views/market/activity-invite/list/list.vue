@@ -143,8 +143,7 @@
   import upload from '@/components/upload'
   import { platformActivityInviteList, platformActivityInviteDelete, platformActivityInviteImgNew,
     platformActivityInviteImgList, platformActivityInviteImgEdit, platformActivityInviteCardNewList,
-    platformActivityStatistics, platformActivityInviteCardList, platformActivityInviteCardDeleteArr,
-    platformActivityInviteCardNewDeleteArr } from '@/service/market'
+    platformActivityStatistics } from '@/service/market'
 
   export default {
     mixins: [],
@@ -161,16 +160,16 @@
         },
         configData: [], // 活动配置表格展示数据
         onePages: {
-          pageSize: 10,
+          pageSize: 20,
           pageNo: 1,
           total: 4
         }, // 活动配置的分页
         twoPages: {
-          pageSize: 10,
+          pageSize: 20,
           pageNo: 1,
           total: 4
         }, // 活动数据统计的分页
-        rewardList: [{ val: 1, text: '全部' },{ val: 2, text: '是' },{ val: 3, text: '否' }], // 筛选实物礼品下拉数据
+        rewardList: [{ val: 1, text: '全部' }, { val: 2, text: '是' }, { val: 3, text: '否' }], // 筛选实物礼品下拉数据
         typeList: [], // 筛选阶段下拉展示数据
         formData: { // 活动数据统计搜索
           name: '',
@@ -254,7 +253,7 @@
             }, res.info.result[0].id).then(res => {
               this.init()
             })
-          } else{
+          } else {
             platformActivityInviteImgNew({
               window_img: val
             })
@@ -273,7 +272,7 @@
               }
             }
           },
-          page_size:10000
+          page_size: 10000
         }).then(res => {
           console.log(res.data.info.result)
           this.typeList = []
@@ -325,7 +324,7 @@
           page_no: page || this.onePages.pageNo,
           page_size: self.onePages.pageSize
         }).then(res => {
-          console.log('res',res)
+          console.log('res', res)
           if (res.data.info.result.length === 0) {
             this.tableEmptyOne = '暂时无数据'
             this.onePages.total = 0
@@ -448,7 +447,7 @@
           page_size: self.twoPages.pageSize
         }
         if (self.formData.reward) {
-          if(self.formData.reward === 1) {
+          if (self.formData.reward === 1) {
             params.filters.statistic.reward = {}
           } else if (self.formData.reward === 2) {
             params.filters.statistic.reward = { 'isNotNull': true }
@@ -466,7 +465,7 @@
           params.filters.statistic.consignee = { 'like': '%' + self.formData.consignee + '%' }
         }
         platformActivityStatistics(params).then(res => {
-          console.log('res',res)
+          console.log('res', res)
           if (res.info.result.length === 0) {
             this.tableEmptyTwo = '暂时无数据'
             this.twoPages.total = 0
