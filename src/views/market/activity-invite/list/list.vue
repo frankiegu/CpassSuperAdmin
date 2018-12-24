@@ -162,12 +162,12 @@
         onePages: {
           pageSize: 20,
           pageNo: 1,
-          total: 4
+          total: 0
         }, // 活动配置的分页
         twoPages: {
           pageSize: 20,
           pageNo: 1,
-          total: 4
+          total: 0
         }, // 活动数据统计的分页
         rewardList: [{ val: 1, text: '全部' }, { val: 2, text: '是' }, { val: 3, text: '否' }], // 筛选实物礼品下拉数据
         typeList: [], // 筛选阶段下拉展示数据
