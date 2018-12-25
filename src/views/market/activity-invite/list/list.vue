@@ -277,7 +277,7 @@
           console.log(res.data.info.result)
           this.typeList = []
           res.data.info.result.forEach((item, index) => {
-            this.typeList.push({ val: item.name, text: item.name })
+            this.typeList.push({ val: JSON.parse(item.properties).stage_id * 1, text: '阶段' + JSON.parse(item.properties).stage_id })
           })
         })
       },
@@ -435,34 +435,25 @@
         this.countData = []
         console.log('获取活动配置的数据')
         const params = {
-          filters: {
-            statistic: {
-              reward: {},
-              name: {},
-              phone: {},
-              consignee: {}
-            }
-          },
+          query_params: {},
           page_no: page || this.twoPages.pageNo,
           page_size: self.twoPages.pageSize
         }
         if (self.formData.reward) {
-          if (self.formData.reward === 1) {
-            params.filters.statistic.reward = {}
-          } else if (self.formData.reward === 2) {
-            params.filters.statistic.reward = { 'isNotNull': true }
+          if (self.formData.reward === 2) {
+            params.query_params.delivery_method = 'offline'
           } else if (self.formData.reward === 3) {
-            params.filters.statistic.reward = { 'isNull': true }
+            params.query_params.delivery_method = 'online'
           }
         }
         if (self.formData.name) {
-          params.filters.statistic.name = { 'equalTo': self.formData.name }
+          params.query_params.stage = self.formData.name
         }
         if (self.formData.phone) {
-          params.filters.statistic.phone = { 'like': '%' + self.formData.phone + '%' }
+          params.query_params.mobile = self.formData.phone
         }
         if (self.formData.consignee) {
-          params.filters.statistic.consignee = { 'like': '%' + self.formData.consignee + '%' }
+          params.query_params.name = self.formData.consignee
         }
         platformActivityStatistics(params).then(res => {
           console.log('res', res)
