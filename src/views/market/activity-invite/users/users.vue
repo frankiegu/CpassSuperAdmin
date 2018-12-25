@@ -65,13 +65,16 @@
        * @param page
        */
       getData() {
-        console.log('被邀请人的数据')
         const self = this
+        console.log('被邀请人的数据', self.id)
         platformActivityActInvRecordList({
           filters: {
             'act_inv_record': {
               'platformActivityId': {
                 equalTo: self.id
+              },
+              'invitee': {
+                isNotNull: true
               }
             }
           },

@@ -149,7 +149,7 @@ export const platformActivityInviteImgList = (obj) => fetch(API_PATH + '/home_wi
 export const platformActivityInviteImgEdit = (obj, id) => fetch(API_PATH + '/home_windows/' + id + '/edit', obj, 'POST')
 
 // 展示数据统计列表
-export const platformActivityStatistics = (obj) => fetch(API_PATH + '/statistics', obj, 'GET')
+export const platformActivityStatistics = (obj) => fetch(API_PATH + '/activity-invite/statistics', obj, 'GET')
 
 // 展示被邀请人名单
 export const platformActivityActInvRecordList = (obj) => fetch(API_PATH + '/act_inv_records', obj, 'GET')
