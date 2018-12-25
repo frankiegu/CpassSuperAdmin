@@ -737,14 +737,16 @@
           },
           page_size: 1000
         }).then(res => {
-          res.data.info.result.forEach((item, index) => {
-            this.list.push([item.startDate, item.endDate])
-            self.orderSortDate = {
-              disabledDate(time) {
-                return self.returnDate(time)
+          if (res.data.info.result.length > 0) {
+            res.data.info.result.forEach((item, index) => {
+              this.list.push([item.startDate, item.endDate])
+              self.orderSortDate = {
+                disabledDate(time) {
+                  return self.returnDate(time)
+                }
               }
-            }
-          })
+            })
+          }
         })
         platformActivityInviteList({
           filters: {
