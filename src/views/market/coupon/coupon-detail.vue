@@ -338,7 +338,7 @@
 <script>
   import { API_PATH } from '@/config/env'
   import { downloadFile } from '@/config/utils'
-  import { couponBatchFreeze, couponBatchRecover, couponDetail, couponReceiveList, couponDelete } from '@/service/market'
+  import { couponBatchFreeze, couponBatchRecover, couponDetail, couponReceiveList, couponDelete, couponChangeStatus } from '@/service/market'
   export default {
     data () {
       return {
@@ -574,10 +574,10 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-          // let params = {
-          //   id: _this.couponId,
-          //   status: _this.couponStatus === 1 ? 0 : 1
-          // }
+          let params = {
+            id: _this.couponId,
+            status: _this.couponStatus === 1 ? 0 : 1
+          }
           if (_this.couponStatus === 1) {
             this.$message({
               type: 'success',
@@ -590,27 +590,27 @@
             });
           }
           _this.getPageData()
-          // couponChangeStatus(params).then(res => {
-          //   if (res.status === 'true') {
-          //     if (_this.couponStatus === 1) {
-          //       this.$message({
-          //         type: 'success',
-          //         message: '冻结成功!'
-          //       });
-          //     } else {
-          //       this.$message({
-          //         type: 'success',
-          //         message: '开启成功!'
-          //       });
-          //     }
-          //     _this.getPageData()
-          //   } else {
-          //     this.$message({
-          //       type: 'error',
-          //       message: res.msg
-          //     });
-          //   }
-          // })
+          couponChangeStatus(params).then(res => {
+            if (res.status === 'true') {
+              if (_this.couponStatus === 1) {
+                this.$message({
+                  type: 'success',
+                  message: '冻结成功!'
+                });
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: '开启成功!'
+                });
+              }
+              _this.getPageData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              });
+            }
+          })
         }).catch(() => {
           this.$message({
             type: 'info',

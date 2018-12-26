@@ -45,7 +45,6 @@
           <div>
             <el-date-picker
               class="width340px"
-              :disabled="status === 'ing'"
               format="yyyy-MM-dd HH:mm:ss"
               v-model="onePartForm.rangeActivityDate"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -86,9 +85,9 @@
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{onePartForm.recommendField1.text}}</el-button>
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{onePartForm.recommendField2.text}}</el-button>
-          <el-button :disabled="status === 'ing'" v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{onePartForm.recommendField3.text}}</el-button>
+          <el-button v-model="onePartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{onePartForm.recommendField1.text}}</el-button>
+          <el-button v-model="onePartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{onePartForm.recommendField2.text}}</el-button>
+          <el-button v-model="onePartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{onePartForm.recommendField3.text}}</el-button>
         </el-form-item>
 
         <el-form-item label="显示消息栏" label-width="120px">
@@ -268,9 +267,9 @@
         </el-form-item>
 
         <el-form-item label="推荐场地" label-width="120px">
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{twoPartForm.recommendField1.text}}</el-button>
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{twoPartForm.recommendField2.text}}</el-button>
-          <el-button :disabled="status === 'ing'" v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{twoPartForm.recommendField3.text}}</el-button>
+          <el-button v-model="twoPartForm.recommendField1" type="primary" @click="addRecommendField('recommendField1')">{{twoPartForm.recommendField1.text}}</el-button>
+          <el-button v-model="twoPartForm.recommendField2" type="primary" @click="addRecommendField('recommendField2')">{{twoPartForm.recommendField2.text}}</el-button>
+          <el-button v-model="twoPartForm.recommendField3" type="primary" @click="addRecommendField('recommendField3')">{{twoPartForm.recommendField3.text}}</el-button>
         </el-form-item>
 
         <el-form-item prop="advBanner" label="广告banner" label-width="120px">
@@ -286,7 +285,6 @@
 
         <el-button
           @click="sure('twoPartForm')"
-          :disabled="status === 'ing'"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
@@ -295,7 +293,6 @@
         <el-form-item label="获奖图片" label-width="120px">
           <lh-upload
             :imgUrl="threePartForm.winImg" class="fl"
-            :disabled="status !== 'ed'"
             @uploadImg="showWinImg"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowWinImg = true"></i>
           <div v-if="isShowWinImg">
@@ -306,7 +303,6 @@
 
         <el-button
           @click="sure('threePartForm')"
-          :disabled="status !== 'ed'"
           class="to-bottom-right width80px mt30"
           type="primary">确认</el-button>
       </el-form>
