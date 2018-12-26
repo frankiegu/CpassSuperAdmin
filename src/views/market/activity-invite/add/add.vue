@@ -976,16 +976,16 @@
               self.treeData = []
               this.choiceCoupon = true
             } else {
+              self.treeData[0].children[0]['children'] = []
+              self.treeData[0].children[1]['children'] = []
+              self.treeData[0].children[2]['children'] = []
               res.info.couponList.forEach((item, index) => {
                 item.id = item.id
                 if (item.type === 1) { // 小时券
-                  self.treeData[0].children[0]['children'] = []
                   self.treeData[0].children[0]['children'].push(item)
                 } else if (item.type === 2) { // 代金券
-                  self.treeData[0].children[1]['children'] = []
                   self.treeData[0].children[1]['children'].push(item)
                 } else if (item.type === 3) { // 礼品券
-                  self.treeData[0].children[2]['children'] = []
                   self.treeData[0].children[2]['children'].push(item)
                 }
                 self.choiceCoupon = true
