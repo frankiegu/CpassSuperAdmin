@@ -363,7 +363,17 @@
 
             <!-- 选中的部分空间 -->
             <el-table :data="selectedCoupons" height="360px" key="storeTable">
-              <el-table-column label="优惠券类型" prop="type"></el-table-column>
+              <!--<el-table-column label="优惠券类型" prop="type">-->
+
+              <!--</el-table-column>-->
+              <el-table-column label="优惠券类型">
+                <template slot-scope="scope">
+                  <!--小时券, 礼品券, 折扣券, 满减券-->
+                  <span v-if="scope.row.type === 1">小时券</span>
+                  <span v-if="scope.row.type === 2">代金券</span>
+                  <span v-if="scope.row.type === 3">礼品券</span>
+                </template>
+              </el-table-column>
               <el-table-column label="名称" prop="name"></el-table-column>
               <el-table-column label="剩余数量" prop="surplus"></el-table-column>
               <el-table-column label="操作">
