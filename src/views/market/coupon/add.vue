@@ -594,7 +594,6 @@
       },
       // 切换使用范围时重置数据
       changeRange() {
-        debugger
         this.selectedRange = []
         this.couponForm.range = []
       },
@@ -792,7 +791,6 @@
             couponForm.couponType = platformCoupon.type
             couponForm.useLimit = platformCoupon.useLimit
             couponForm.couponUsage = platformCoupon.couponUsage
-            debugger
             if (platformCoupon.valid) {
               self.radioType = '2'
               couponForm.vaild = platformCoupon.valid
