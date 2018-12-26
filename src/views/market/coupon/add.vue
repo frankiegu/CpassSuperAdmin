@@ -35,7 +35,7 @@
           </el-form-item>
 
           <el-form-item label="使用期限" prop="useDate">
-            <el-radio-group v-model="type" @change="useDateChange">
+            <el-radio-group v-model="radioType" @change="useDateChange">
               <el-radio style="display: block;" label="1">
                 <el-date-picker
                   format="yyyy-MM-dd HH:mm:ss"
@@ -357,10 +357,10 @@
       }
       const checkUseMinDate = (rule, value, callback) => {
         const reg = /^([1-8]\d?|90)$/
-        if (this.type.length === 0) {
+        if (!this.radioType) {
           return callback(new Error('请选择使用方式'))
         } else {
-          if (this.type[0] === '1') {
+          if (this.radioType === '1') {
             if (!this.couponForm.useDate) {
               return callback(new Error('请选择使用时间'))
             } else if (this.couponForm.expireDate.length === 0) {
@@ -370,7 +370,7 @@
             } else {
               callback()
             }
-          } else if (this.type[0] === '2') {
+          } else if (this.radioType === '2') {
             if (!this.couponForm.vaild) {
               return callback(new Error('请输入过期天数'))
             } else if (!reg.test(this.couponForm.vaild)) {
@@ -519,7 +519,7 @@
         isWayVisible: false, // 添加领取方式弹窗
         conditionTypeList: {}, // 条件触发领取方式列表
         isWopVisible: false, // 添加核销点弹窗
-        type: [] // 判断使用期限的选择方式   1：选择使用期限  2：选择n天后失效
+        radioType: '' // 判断使用期限的选择方式   1：选择使用期限  2：选择n天后失效
       }
     },
 
@@ -594,6 +594,7 @@
       },
       // 切换使用范围时重置数据
       changeRange() {
+        debugger
         this.selectedRange = []
         this.couponForm.range = []
       },
@@ -778,6 +779,7 @@
 
       // 优惠券详情
       handleGetCouponDetail() {
+        const self = this
         couponDetail({ id: this.$route.query.id }).then(res => {
           if (res.status === 'true' && res.info) {
             let couponForm = this.couponForm
@@ -790,6 +792,16 @@
             couponForm.couponType = platformCoupon.type
             couponForm.useLimit = platformCoupon.useLimit
             couponForm.couponUsage = platformCoupon.couponUsage
+            debugger
+            if (platformCoupon.valid) {
+              self.radioType = '2'
+              couponForm.vaild = platformCoupon.valid
+              couponForm.useDate = []
+            } else {
+              self.radioType = '1'
+              couponForm.vaild = ''
+              couponForm.useDate = [platformCoupon.startTime, platformCoupon.endTime]
+            }
             this.canChangeType = false // 禁止切换卡券类型
             couponReceiveDetailList.forEach(item => {
               couponForm.receiveWay.push(item.receiveType)
@@ -894,11 +906,14 @@
               receiveManpower: receiveManpower,
               receiveNewcomerActivity: receiveNewcomerActivity
             }
-            if (this.type[0] === '1') {
+            if (this.radioType === '1') {
               params.startTime = form.useDate[0]
               params.endTime = form.useDate[1]
-            } else if (this.type[0] === '2') {
+              params.valid = ''
+            } else if (this.radioType === '2') {
               params.valid = form.vaild
+              params.startTime = ''
+              params.endTime = ''
             }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id
