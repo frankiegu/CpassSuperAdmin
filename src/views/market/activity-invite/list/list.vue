@@ -119,7 +119,7 @@
                 <el-button type="text" class="operate-btn underline">被邀请人名单</el-button>
               </router-link>
 
-              <router-link :to="{path: '/field/order', query: { activityId: scope.row.platform_activity_id, memberid: scope.row.memberid }}">
+              <router-link :to="{path: '/field/order', query: { activityId: scope.row.platform_activity_id, memberid: '1391' }}">
                 <el-button type="text" class="operate-btn underline">订单列表</el-button>
               </router-link>
             </template>

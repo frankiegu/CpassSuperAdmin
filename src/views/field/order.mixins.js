@@ -156,6 +156,12 @@ export default {
         orderEndDate: formData.orderDate ? formatTimeString(formData.orderDate[1]) : null,
         orderStatus: formData.status
       }
+      if (this.memberid) {
+        downParams.customerId = this.memberid
+      }
+      if (this.activityId) {
+        downParams.activityId = this.activityId
+      }
       let url = API_PATH + '/supervisor/platformOrder/export'
       downloadFile(url, downParams)
     }
