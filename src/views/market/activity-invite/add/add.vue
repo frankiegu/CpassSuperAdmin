@@ -226,7 +226,7 @@
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
-          <el-switch :disabled="status === 'ing' || status === 'ed'" active-value="true" inactive-value="false" v-model="onePartForm.showRankList"></el-switch>
+          <el-switch @change="showRankListChange" :disabled="status === 'ing' || status === 'ed'" active-value="true" inactive-value="false" v-model="onePartForm.showRankList"></el-switch>
         </el-form-item>
 
         <el-form-item prop="limitNum" label="截止名次" label-width="120px">
@@ -774,6 +774,16 @@
             }
           }
         })
+      },
+      showRankListChange(data) {
+        console.log(data)
+        if (data === 'true') {
+          this.onePartFormRule.limitNum[0].required = true
+          this.onePartFormRule.payLimit[0].required = true
+        } else {
+          this.onePartFormRule.limitNum[0].required = false
+          this.onePartFormRule.payLimit[0].required = false
+        }
       },
       /**
        * 置灰已存在的阶段时间
