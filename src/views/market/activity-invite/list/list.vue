@@ -38,7 +38,7 @@
 
         <el-table :data="configData" :empty-text="tableEmptyOne" :slot="tableEmptyOne" border style="width: 100%">
 
-          <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
+          <el-table-column label="活动阶段ID" prop="stageId" align="left"></el-table-column>
           <el-table-column label="活动阶段名称" prop="stageName" align="left"></el-table-column>
           <el-table-column label="活动开始时间" prop="startDate" align="left"></el-table-column>
           <el-table-column label="活动结束时间" prop="endDate" align="left"></el-table-column>
@@ -344,6 +344,7 @@
               }
               this.configData[i].properties = JSON.parse(res.data.info.result[i].properties)
               this.configData[i].stageName = '阶段' + this.configData[i].properties.stage_id
+              this.configData[i].stageId = this.configData[i].properties.stage_id
               platformActivityInviteCardNewList({
                 filters: {
                   act_inv_newuser_coupon: {
