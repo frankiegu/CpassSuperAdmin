@@ -31,6 +31,7 @@
     data() {
       return {
         id: this.$route.query.id, // 活动id
+        memberid: this.$route.query.member, // 邀请人id
         pages: {
           pageSize: 20,
           pageNo: 1,
@@ -72,6 +73,9 @@
             'act_inv_record': {
               'platformActivityId': {
                 equalTo: self.id
+              },
+              'invitor': {
+                equalTo: self.memberid
               },
               'invitee': {
                 isNotNull: true

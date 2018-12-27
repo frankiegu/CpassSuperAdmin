@@ -115,7 +115,7 @@
           <el-table-column label="收货地址" prop="receiving" align="left"></el-table-column>
           <el-table-column label="操作" align="left" width="120px">
             <template slot-scope="scope" style="display:block;">
-              <router-link :to="{path: '/activityInvite/users', query: {id: scope.row.platform_activity_id}}">
+              <router-link :to="{path: '/activityInvite/users', query: {id: scope.row.platform_activity_id, member: scope.row.memberid}}">
                 <el-button type="text" class="operate-btn underline">被邀请人名单</el-button>
               </router-link>
 
