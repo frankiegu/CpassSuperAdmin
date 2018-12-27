@@ -604,8 +604,8 @@
           grant: [{ required: false, trigger: [], validator: onePartFormRuleGrant }],
           morePrizesLimit: [{ required: false, trigger: [], validator: onePartFormRuLemorePrizesLimit }],
           bestPrize: [{ required: false, trigger: [], validator: onePartFormRuleBestPrize }],
-          limitNum: [{ required: false, trigger: [], validator: onePartFormRuleLimitNum }],
-          payLimit: [{ required: false, trigger: [], validator: onePartFormRulePayLimit }],
+          limitNum: [{ required: true, trigger: [], validator: onePartFormRuleLimitNum }],
+          payLimit: [{ required: true, trigger: [], validator: onePartFormRulePayLimit }],
           inviteCard: [{ required: true, trigger: [], validator: twoPartFormRuleInviteCard }]
         },
         towPartFormRule: {
@@ -1195,7 +1195,7 @@
                 name: self.onePartForm.name,
                 type: 3,
                 template: 1,
-                code: 31,
+                code: 3 + JSON.stringify(self.thisStageId * 1),
                 start_date: self.onePartForm.rangeActivityDate[0],
                 end_date: self.onePartForm.rangeActivityDate[1],
                 properties: JSON.stringify(properties)
@@ -1281,7 +1281,7 @@
                 name: self.onePartForm.name,
                 type: 3,
                 template: 1,
-                code: 31,
+                code: 3 + JSON.stringify(self.thisStageId * 1),
                 start_date: self.onePartForm.rangeActivityDate[0],
                 end_date: self.onePartForm.rangeActivityDate[1],
                 properties: JSON.stringify(properties)
