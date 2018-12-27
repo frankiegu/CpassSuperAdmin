@@ -726,8 +726,8 @@
     },
     created() {
       this.getStroe()
-      this.getSpace()
-      this.getField()
+      // this.getSpace()
+      // this.getField()
       this.init()
     },
     methods: {
@@ -936,20 +936,22 @@
         this.currentCode = code
         this.isFieldAdd = true
         if (this.activityTab === 1) {
-          if (this.onePartForm[this.currentCode].stroe) {
+          if (this.onePartForm[this.currentCode].field) {
             this.fieldAdd.stroe = this.onePartForm[this.currentCode].stroe
             this.fieldAdd.space = this.onePartForm[this.currentCode].space
             this.fieldAdd.field = this.onePartForm[this.currentCode].field
           } else {
+            this.fieldData = []
             this.fieldAdd.space = ''
             this.fieldAdd.field = ''
           }
         } else if (this.activityTab === 2) {
-          if (this.twoPartForm[this.currentCode].stroe) {
+          if (this.twoPartForm[this.currentCode].field) {
             this.fieldAdd.stroe = this.twoPartForm[this.currentCode].stroe
             this.fieldAdd.space = this.twoPartForm[this.currentCode].space
             this.fieldAdd.field = this.twoPartForm[this.currentCode].field
           } else {
+            this.fieldData = []
             this.fieldAdd.space = ''
             this.fieldAdd.field = ''
           }

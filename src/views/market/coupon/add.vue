@@ -36,7 +36,7 @@
 
           <el-form-item label="使用期限" prop="useDate">
             <el-radio-group v-model="radioType" @change="useDateChange">
-              <el-radio style="display: block;" label="1">
+              <el-radio style="display: block;margin-bottom: 10px;" label="1">
                 <el-date-picker
                   format="yyyy-MM-dd HH:mm:ss"
                   value-format="yyyy-MM-dd HH:mm:ss"
