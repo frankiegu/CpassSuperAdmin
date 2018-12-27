@@ -30,7 +30,7 @@
   export default {
     data() {
       return {
-        id: this.$route.query.id, // 活动id
+        id: this.$route.query.activityId, // 活动id
         memberid: this.$route.query.member, // 邀请人id
         pages: {
           pageSize: 20,

@@ -57,7 +57,7 @@
             </el-col>
             <el-col :span="8">
               <p v-if="couponBaseInfo.startTime">使用期限: &nbsp;&nbsp;&nbsp;{{couponBaseInfo.startTime}}&nbsp;&nbsp;至&nbsp;&nbsp;{{couponBaseInfo.endTime}}</p>
-              <p v-if="couponBaseInfo.vaild">使用期限: &nbsp;&nbsp;&nbsp;领取{{couponBaseInfo.vaild}}天有效</p>
+              <p v-if="couponBaseInfo.valid">使用期限: &nbsp;&nbsp;&nbsp;领取{{couponBaseInfo.valid}}天有效</p>
             </el-col>
           </el-row>
 

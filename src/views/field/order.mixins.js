@@ -33,7 +33,8 @@ export default {
       },
       sortField: '', // 1-生成时间 2-预订时间 3-订单金额
       descOrAsc: '', // 排序方式 0-升序 1-降序
-      id: this.$route.query.id // 邀请有礼活动数据统计跳转携带的参数id
+      activityId: this.$route.query.activityId, // 邀请有礼活动数据统计跳转携带的活动id
+      memberid: this.$route.query.memberid // 邀请有礼活动数据统计跳转携带的用户id
     }
   },
   props: {},
@@ -97,8 +98,11 @@ export default {
         sortField: this.sortField,
         descOrAsc: this.descOrAsc
       }
-      if (this.id) {
-        paramsObj.customerId = this.id
+      if (this.memberid) {
+        paramsObj.customerId = this.memberid
+      }
+      if (this.activityId) {
+        paramsObj.activityId = this.activityId
       }
       fieldOrderList(paramsObj).then(res => {
         if (res.status === 'true') {
