@@ -819,6 +819,7 @@
         const self = this
         self.fieldAdd.space = ''
         self.fieldAdd.field = ''
+        self.fieldData = []
         console.log(self.fieldAdd.stroe)
         let params = {}
         if (self.fieldAdd.stroe) {
