@@ -409,6 +409,7 @@
           type: [],
           quantity: '',
           expireDate: [],
+          useDate: '',
           useLimit: '', // 使用限制
           couponUsage: '', // 使用方法
           couponType: 1, // 卡券类型
@@ -564,7 +565,7 @@
           this.$set(this.couponForm, 'vaild', '')
         } else if (data === '2') {
           this.$set(this.couponForm, 'vaild', '1')
-          this.couponForm.useDate = []
+          this.couponForm.useDate = ''
         }
       },
       expireDateChange() {
