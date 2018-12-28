@@ -361,6 +361,7 @@
       quillEditor
     },
     data () {
+      const self = this
       const reg = /^[0-9]+$/
       const reg1 = /^[1-9]\d{0,2}$/
       const reg2 = /^([1-9]|[1-9]\d|100)$/
@@ -388,6 +389,10 @@
       const onePartFormRuleRangeActivityDate = (rule, value, callback) => {
         if (value.length === 0) {
           callback(new Error('请选择阶段活动时间'));
+        } else if (self.isTrueDate(value[0])) {
+          callback(new Error('请重新选择开始时间'));
+        } else if (self.isTrueDate(value[1])) {
+          callback(new Error('请重新选择结束时间'));
         } else {
           callback();
         }
@@ -682,16 +687,34 @@
     methods: {
       init () {
         const self = this
-        platformActivityInviteList({
-          filters: {
-            'platform_activity': {
-              'type': {
-                equalTo: 3
+        let pamars = {}
+        if (self.type === 'edit') {
+          pamars = {
+            filters: {
+              'platform_activity': {
+                'type': {
+                  equalTo: 3
+                },
+                'id': {
+                  notEqualTo: self.activityId
+                }
               }
-            }
-          },
-          page_size: 1000
-        }).then(res => {
+            },
+            page_size: 1000
+          }
+        } else {
+          pamars = {
+            filters: {
+              'platform_activity': {
+                'type': {
+                  equalTo: 3
+                }
+              }
+            },
+            page_size: 1000
+          }
+        }
+        platformActivityInviteList(pamars).then(res => {
           if (res.data.info.result.length > 0) {
             res.data.info.result.forEach((item, index) => {
               this.list.push([item.startDate, item.endDate])
@@ -744,6 +767,20 @@
           let data = time.getTime() < Date.now() - 3600 * 1000 * 24
           this.list.forEach(item => {
             data = data || (time.getTime() < new Date(item[1]) && time.getTime() > new Date(item[0]) - 3600 * 1000 * 24)
+          })
+          return data
+        }
+      },
+      /**
+       * 验证是否是合理的时间范围
+       */
+      isTrueDate(time) {
+        if (this.list.length === 0) {
+          return new Date(time) < Date.now() - 3600 * 1000 * 24
+        } else {
+          let data = new Date(time) < Date.now() - 3600 * 1000 * 24
+          this.list.forEach(item => {
+            data = data || (new Date(time) < new Date(item[1]) && new Date(time) > new Date(item[0]) - 3600 * 1000 * 24)
           })
           return data
         }
