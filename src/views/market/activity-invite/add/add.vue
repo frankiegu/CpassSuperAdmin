@@ -102,17 +102,6 @@
             </el-select>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName1" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum1" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
-            <!--<el-upload name="file"-->
-                       <!--:action="action"-->
-                       <!--:disabled="status === 'ing' || status === 'ed'"-->
-                       <!--accept="image/png, image/jpeg"-->
-                       <!--:headers="headers"-->
-                       <!--v-model="onePartForm.grantImg1"-->
-                       <!--style="display: inline-block;"-->
-                       <!--:on-success="uploadGrantImg1"-->
-                       <!--:show-file-list="false">-->
-              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片1</el-button>-->
-            <!--</el-upload>-->
           </el-row>
           <el-row style="margin-bottom: 10px;">
             <lh-upload :accept="'.jpg,png'"
@@ -131,17 +120,6 @@
             </el-select>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName2" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum2" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
-            <!--<el-upload name="file"-->
-                       <!--:action="action"-->
-                       <!--:disabled="status === 'ing' || status === 'ed'"-->
-                       <!--accept="image/png, image/jpeg"-->
-                       <!--:headers="headers"-->
-                       <!--v-model="onePartForm.grantImg2"-->
-                       <!--style="display: inline-block;"-->
-                       <!--:on-success="uploadGrantImg2"-->
-                       <!--:show-file-list="false">-->
-              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片2</el-button>-->
-            <!--</el-upload>-->
           </el-row>
           <el-row style="margin-bottom: 10px;">
             <lh-upload :accept="'.jpg,png'"
@@ -160,17 +138,6 @@
             </el-select>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantName3" class="activity-name" style="width: 138px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.grantNum3" class="activity-name" style="width: 138px;" placeholder="数量展示"></el-input>
-            <!--<el-upload name="file"-->
-                       <!--:action="action"-->
-                       <!--:disabled="status === 'ing' || status === 'ed'"-->
-                       <!--accept="image/png, image/jpeg"-->
-                       <!--:headers="headers"-->
-                       <!--v-model="onePartForm.grantImg3"-->
-                       <!--style="display: inline-block;"-->
-                       <!--:on-success="uploadGrantImg3"-->
-                       <!--:show-file-list="false">-->
-              <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">图片3</el-button>-->
-            <!--</el-upload>-->
           </el-row>
           <el-row>
             <lh-upload :accept="'.jpg,png'"
@@ -193,16 +160,6 @@
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeName" class="activity-name" style="width: 210px;" :maxlength="10" placeholder="奖品名称"></el-input>
             <el-input :disabled="status === 'ing' || status === 'ed'" v-model="onePartForm.bestPrizeMum" class="activity-name" style="width: 210px;" placeholder="数量展示"></el-input>
           </el-row>
-          <!--<el-upload style="display: inline-block;"-->
-                     <!--v-model="onePartForm.bestPrizeImg"-->
-                     <!--:action="action"-->
-                     <!--:disabled="status === 'ing' || status === 'ed'"-->
-                     <!--accept="image/png, image/jpeg"-->
-                     <!--:headers="headers"-->
-                     <!--:on-success="uploadBestImg"-->
-                     <!--:show-file-list="false">-->
-            <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">配图</el-button>-->
-          <!--</el-upload>-->
           <el-row>
             <lh-upload :accept="'.jpg,png'"
                        :imgUrl="onePartForm.bestPrizeImg" class="fl" :disabled="status === 'ing' || status === 'ed'"
@@ -213,16 +170,6 @@
               <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </el-row>
-          <!--<el-upload style="display: inline-block;"-->
-                     <!--v-model="onePartForm.winImg"-->
-                     <!--:action="action"-->
-                     <!--:disabled="status === 'ing' || status === 'ed'"-->
-                     <!--accept="image/png, image/jpeg"-->
-                     <!--:headers="headers"-->
-                     <!--:on-success="uploadWinImg"-->
-                     <!--:show-file-list="false">-->
-            <!--<el-button :disabled="status === 'ing' || status === 'ed'" slot="trigger" size="medium" type="primary">获奖图片</el-button>-->
-          <!--</el-upload>-->
         </el-form-item>
 
         <el-form-item label="显示排行榜" label-width="120px">
@@ -726,9 +673,11 @@
     },
     created() {
       this.getStroe()
-      // this.getSpace()
-      // this.getField()
       this.init()
+      if (this.$route.query.type === 'edit') {
+        this.getSpace()
+        this.getField()
+      }
     },
     methods: {
       init () {
@@ -1798,6 +1747,9 @@
               self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
               self.$set(self.onePartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.onePartForm.recommendField1.text = '已选场地'
+              }
             } else if (resList.info.length === 2) {
               self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
@@ -1805,6 +1757,12 @@
               self.$set(self.onePartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
               self.$set(self.onePartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
               self.$set(self.onePartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.onePartForm.recommendField1.text = '已选场地'
+              }
+              if (resList.info[1].includes.platform_field.id) {
+                self.onePartForm.recommendField2.text = '已选场地'
+              }
             } else if (resList.info.length === 3) {
               self.$set(self.onePartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.onePartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
@@ -1815,6 +1773,15 @@
               self.$set(self.onePartForm.recommendField3, 'stroe', resList.info[2].includes.platform_field.spaceId)
               self.$set(self.onePartForm.recommendField3, 'space', resList.info[2].includes.platform_field.storeId)
               self.$set(self.onePartForm.recommendField3, 'field', resList.info[2].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.onePartForm.recommendField1.text = '已选场地'
+              }
+              if (resList.info[1].includes.platform_field.id) {
+                self.onePartForm.recommendField2.text = '已选场地'
+              }
+              if (resList.info[2].includes.platform_field.id) {
+                self.onePartForm.recommendField3.text = '已选场地'
+              }
             }
           })
           // 查询邀请新人场地信息
@@ -1836,6 +1803,9 @@
               self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
               self.$set(self.twoPartForm.recommendField1, 'field', resList.info[0].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.twoPartForm.recommendField1.text = '已选场地'
+              }
             } else if (resList.info.length === 2) {
               self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
@@ -1843,6 +1813,12 @@
               self.$set(self.twoPartForm.recommendField2, 'stroe', resList.info[1].includes.platform_field.spaceId)
               self.$set(self.twoPartForm.recommendField2, 'space', resList.info[1].includes.platform_field.storeId)
               self.$set(self.twoPartForm.recommendField2, 'field', resList.info[1].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.twoPartForm.recommendField1.text = '已选场地'
+              }
+              if (resList.info[1].includes.platform_field.id) {
+                self.twoPartForm.recommendField2.text = '已选场地'
+              }
             } else if (resList.info.length === 3) {
               self.$set(self.twoPartForm.recommendField1, 'stroe', resList.info[0].includes.platform_field.spaceId)
               self.$set(self.twoPartForm.recommendField1, 'space', resList.info[0].includes.platform_field.storeId)
@@ -1853,6 +1829,15 @@
               self.$set(self.twoPartForm.recommendField3, 'stroe', resList.info[2].includes.platform_field.spaceId)
               self.$set(self.twoPartForm.recommendField3, 'space', resList.info[2].includes.platform_field.storeId)
               self.$set(self.twoPartForm.recommendField3, 'field', resList.info[2].includes.platform_field.id)
+              if (resList.info[0].includes.platform_field.id) {
+                self.twoPartForm.recommendField1.text = '已选场地'
+              }
+              if (resList.info[1].includes.platform_field.id) {
+                self.twoPartForm.recommendField2.text = '已选场地'
+              }
+              if (resList.info[2].includes.platform_field.id) {
+                self.twoPartForm.recommendField3.text = '已选场地'
+              }
             }
           })
         })
