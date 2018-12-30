@@ -908,11 +908,11 @@
             if (this.radioType === '1') {
               params.startTime = form.useDate[0]
               params.endTime = form.useDate[1]
-              params.valid = ''
+              params.valid = 'null'
             } else if (this.radioType === '2') {
               params.valid = form.vaild
-              params.startTime = ''
-              params.endTime = ''
+              params.startTime = 'null'
+              params.endTime = 'null'
             }
             // 编辑优惠券时传入优惠券ID，添加优惠券时跳过
             if (this.$route.query.id) params.id = this.$route.query.id
