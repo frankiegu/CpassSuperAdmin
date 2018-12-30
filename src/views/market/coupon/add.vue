@@ -409,7 +409,8 @@
           type: [],
           quantity: '',
           expireDate: [],
-          useDate: '',
+          useDate: '', // 使用期限：固定时间段
+          vaild: '', // 使用期限：N天后失效
           useLimit: '', // 使用限制
           couponUsage: '', // 使用方法
           couponType: 1, // 卡券类型
