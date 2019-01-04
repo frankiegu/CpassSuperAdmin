@@ -21,7 +21,7 @@
               @uploadImg="showTopBanner"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
             <div v-if="isShowTopBanner">
-              <p>建议尺寸： 750 * 1206PX</p>
+              <p>建议尺寸： 690 * 655PX</p>
               <p class="banner-format" style="margin-left: 190px;">支持格式： JPG / PNG</p>
             </div>
           </div>

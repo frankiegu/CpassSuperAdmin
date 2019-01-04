@@ -26,7 +26,7 @@
             @uploadImg="showTopBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowTopBanner = true"></i>
           <div v-if="isShowTopBanner">
-            <p>建议尺寸： 750 * 1206PX</p>
+            <p>建议尺寸： 1500 * 2412PX</p>
             <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
@@ -109,7 +109,7 @@
                        @uploadImg="showGrantImg1"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg1 = true"></i>
             <div v-if="isShowGrantImg1">
-              <p>建议尺寸： 750 * 1206PX</p>
+              <p>建议尺寸： 180 * 180PX</p>
               <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </el-row>
@@ -127,7 +127,7 @@
                        @uploadImg="showGrantImg2"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg2 = true"></i>
             <div v-if="isShowGrantImg2">
-              <p>建议尺寸： 750 * 1206PX</p>
+              <p>建议尺寸： 180 * 180PX</p>
               <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </el-row>
@@ -145,7 +145,7 @@
                        @uploadImg="showGrantImg3"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowGrantImg3 = true"></i>
             <div v-if="isShowGrantImg3">
-              <p>建议尺寸： 750 * 1206PX</p>
+              <p>建议尺寸： 180 * 180PX</p>
               <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </el-row>
@@ -166,7 +166,7 @@
                        @uploadImg="showBestPrizeImg"></lh-upload>
             <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowBestPrizeImg = true"></i>
             <div v-if="isShowBestPrizeImg">
-              <p>建议尺寸： 750 * 1206PX</p>
+              <p>建议尺寸： 223 * 407PX</p>
               <p class="banner-format">支持格式： JPG / PNG</p>
             </div>
           </el-row>
@@ -203,7 +203,7 @@
             @uploadImg="showActBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowActBanner = true"></i>
           <div v-if="isShowActBanner">
-            <p>建议尺寸： 750 * 1206PX</p>
+            <p>建议尺寸： 1500 * 2412PX</p>
             <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
@@ -225,7 +225,7 @@
             @uploadImg="showAdvBanner"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowAdvBanner = true"></i>
           <div v-if="isShowAdvBanner">
-            <p>建议尺寸： 750 * 1206PX</p>
+            <p>建议尺寸： 630 * 240PX</p>
             <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
@@ -243,7 +243,7 @@
             @uploadImg="showWinImg"></lh-upload>
           <i class="el-icon-question fl theme-light-gray date-warnning upload-text-icon ml10 mt6 mr5" @click="isShowWinImg = true"></i>
           <div v-if="isShowWinImg">
-            <p>建议尺寸： 750 * 1206PX</p>
+            <p>建议尺寸： 376 * 800PX</p>
             <p class="banner-format">支持格式： JPG / PNG</p>
           </div>
         </el-form-item>
