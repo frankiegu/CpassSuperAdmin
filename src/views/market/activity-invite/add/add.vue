@@ -836,11 +836,13 @@
         if (self.fieldAdd.space) {
           params = {
             store_id: self.fieldAdd.space,
-            pageSize: 1000
+            pageSize: 1000,
+            status: 1
           }
         } else {
           params = {
-            pageSize: 1000
+            pageSize: 1000,
+            status: 1
           }
         }
         fieldList(params).then(res => {

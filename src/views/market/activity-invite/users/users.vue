@@ -90,13 +90,14 @@
           page_no: self.pages.pageNo,
           page_size: self.pages.pageSize
         }).then(res => {
-          if (res.info.length === 0) {
+          if (res.headers.total * 1 === 0) {
             this.tableEmpty = '暂时无数据'
             this.pages.total = 0
           } else {
-            this.pages.total = res.info.length
+            console.log(typeof res.headers.total)
+            this.pages.total = res.headers.total * 1
             self.configData = []
-            res.info.forEach((item, index) => {
+            res.data.info.forEach((item, index) => {
               self.configData.push({ 'invitee': item.superior.invitee,
                 'phone': item.includes.customer.telephone,
                 'name': item.includes.customer.nickname,

@@ -101,7 +101,7 @@
 
         <el-table :data="countData" :empty-text="tableEmptyTwo" :slot="tableEmptyTwo" border style="width: 100%">
 
-          <el-table-column label="会员ID" prop="memberid" align="left"></el-table-column>
+          <el-table-column label="会员ID" prop="customerCode" align="left"></el-table-column>
           <el-table-column label="活动阶段ID" prop="code" align="left"></el-table-column>
           <el-table-column label="活动阶段名称" prop="name" align="left"></el-table-column>
           <el-table-column label="成功邀请人数" prop="invitenum" align="left"></el-table-column>
@@ -325,11 +325,11 @@
           page_size: self.onePages.pageSize
         }).then(res => {
           console.log('res', res)
-          if (res.data.info.result.length === 0) {
+          if (res.headers.total * 1 === 0) {
             this.tableEmptyOne = '暂时无数据'
             this.onePages.total = 0
           } else {
-            this.onePages.total = res.data.info.result.length
+            this.onePages.total = res.headers.total * 1
             this.configData = res.data.info.result
             for (let i = 0; i < res.data.info.result.length; i++) {
               if (res.data.info.result[i].startDate <= this.convertDateTime(res.headers.date) && this.convertDateTime(res.headers.date) <= res.data.info.result[i].endDate) {
@@ -462,7 +462,7 @@
             this.tableEmptyTwo = '暂时无数据'
             this.twoPages.total = 0
           } else {
-            this.twoPages.total = res.info.result.length
+            this.twoPages.total = res.info.total
             this.countData = res.info.result
             console.log('this.countData', this.countData)
           }

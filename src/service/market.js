@@ -152,7 +152,7 @@ export const platformActivityInviteImgEdit = (obj, id) => fetch(API_PATH + '/hom
 export const platformActivityStatistics = (obj) => fetch(API_PATH + '/activity-invite/statistics', obj, 'GET')
 
 // 展示被邀请人名单
-export const platformActivityActInvRecordList = (obj) => fetch(API_PATH + '/act_inv_records', obj, 'GET')
+export const platformActivityActInvRecordList = (obj) => fetch(API_PATH + '/act_inv_records', obj, 'GET', 'all')
 
 // 邀请有礼卡券添加、删除、查询、批量删除、批量创建
 export const platformActivityInviteCardAdd = (obj) => fetch(API_PATH + '/act_inv_coupons/new', obj, 'POST')
