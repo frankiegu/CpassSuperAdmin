@@ -332,6 +332,10 @@
             this.onePages.total = res.headers.total * 1
             this.configData = res.data.info.result
             for (let i = 0; i < res.data.info.result.length; i++) {
+              debugger
+              console.log('this.convertDateTime(res.headers.date)', this.convertDateTime(res.headers.date))
+              console.log('res.data.info.result[i].startDate', res.data.info.result[i].startDate)
+              console.log('res.data.info.result[i].endDate', res.data.info.result[i].endDate)
               if (res.data.info.result[i].startDate <= this.convertDateTime(res.headers.date) && this.convertDateTime(res.headers.date) <= res.data.info.result[i].endDate) {
                 console.log(res.data.info.result[i].name, '在活动期内')
                 res.data.info.result[i].isDelete = 'ing'
@@ -385,7 +389,10 @@
        */
       convertDateTime (date) {
         const d = new Date(date)
-        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        return d.getFullYear() + '-' + this.numberDispose((d.getMonth() + 1), 2) + '-' + this.numberDispose(d.getDate(), 2) + ' ' + this.numberDispose(d.getHours(), 2) + ':' + this.numberDispose(d.getMinutes(), 2) + ':' + this.numberDispose(d.getSeconds(), 2);
+      },
+      numberDispose (num, length) {
+        return ('000' + num).substr(-length);
       },
       /**
        * 活动配置的单条删除
