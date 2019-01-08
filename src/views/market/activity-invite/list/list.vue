@@ -332,7 +332,6 @@
             this.onePages.total = res.headers.total * 1
             this.configData = res.data.info.result
             for (let i = 0; i < res.data.info.result.length; i++) {
-              debugger
               console.log('this.convertDateTime(res.headers.date)', this.convertDateTime(res.headers.date))
               console.log('res.data.info.result[i].startDate', res.data.info.result[i].startDate)
               console.log('res.data.info.result[i].endDate', res.data.info.result[i].endDate)
